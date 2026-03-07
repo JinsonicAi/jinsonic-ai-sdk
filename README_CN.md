@@ -2,7 +2,7 @@
 <a href="README_EN.md"><button>English</button></a>
 </div>
 
-# AIBox SDK 客户开发指南（专业版）
+# AIBox SDK 客户开发指南
 
 **适用范围**
 - SDK 版本：`aibox_sdk`（当前仓库）
@@ -88,11 +88,8 @@ extern "C" void plugin_cleanup(SDKInterface* sdk);
 
 运行时流程：
 1. `PluginLoader` 扫描 `.plugin` 文件。
-2. 解包读取 `config.json`，校验 `entry/md5/platform`。
-3. `dlopen(libxxx.so)`。
-4. `dlsym(plugin_init)` 并调用。
-5. `plugin_init` 内部调用 `sdk->register_node(type, creator)`。
-6. 卸载时调用 `plugin_cleanup`，执行 `sdk->unregister_node(type)`。
+2. `plugin_init` 内部调用 `sdk->register_node(type, creator)`。
+3. 卸载时调用 `plugin_cleanup`，执行 `sdk->unregister_node(type)`。
 
 ## 3.2 插件开发标准步骤
 
@@ -511,18 +508,7 @@ cmake --build plugins/build -j
 - 示例程序：`build/example/...`
 - 插件包：`plugins/build_out/*.plugin`
 
-## 8.4 检查插件包内容
-
-```bash
-tar --zstd -tf plugins/build_out/firedet_plugin.plugin
-```
-
-典型应包含：
-- `config.json`
-- `libfiredet_plugin.so`
-- `models/...`
-
-## 8.5 板端部署
+## 8.4 板端部署
 
 1. 安装运行时 `.deb`（板端）。
 2. 拷贝插件到 `/usr/local/aibox/plugins/`。
@@ -544,7 +530,7 @@ service aibox restart
 journalctl -u aibox -f
 ```
 
-## 8.6 快速验收
+## 8.5 快速验收
 1. 运行 `jdk_demo` 验证插件加载与组件结构输出。
 2. 在 Web 端创建任务，检查配置表单是否正确渲染。
 3. 触发目标事件，确认：

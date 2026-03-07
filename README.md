@@ -2,7 +2,7 @@
 <a href="README_CN.md"><button>中文</button></a>
 </div>
 
-# AIBox SDK Customer Development Guide (Professional Edition)
+# AIBox SDK Customer Development Guide 
 
 **Scope**
 - SDK: `aibox_sdk` (this repository)
@@ -88,11 +88,8 @@ extern "C" void plugin_cleanup(SDKInterface* sdk);
 
 Runtime flow:
 1. `PluginLoader` scans `.plugin` files.
-2. Unpacks and reads `config.json`, validates `entry/md5/platform`.
-3. Calls `dlopen(libxxx.so)`.
-4. Resolves and calls `plugin_init` via `dlsym`.
-5. `plugin_init` calls `sdk->register_node(type, creator)`.
-6. On unload, `plugin_cleanup` is called and `sdk->unregister_node(type)` runs.
+2. `plugin_init` calls `sdk->register_node(type, creator)`.
+3. On unload, `plugin_cleanup` is called and `sdk->unregister_node(type)` runs.
 
 ## 3.2 Standard Plugin Development Procedure
 
@@ -511,18 +508,7 @@ Artifacts:
 - sample binaries: `build/example/...`
 - plugin packages: `plugins/build_out/*.plugin`
 
-## 8.4 Verify Plugin Package Content
-
-```bash
-tar --zstd -tf plugins/build_out/firedet_plugin.plugin
-```
-
-Expected entries:
-- `config.json`
-- `libfiredet_plugin.so`
-- `models/...`
-
-## 8.5 Deploy on Device
+## 8.4 Deploy on Device
 
 1. install runtime `.deb` on the board
 2. copy plugin files to `/usr/local/aibox/plugins/`
@@ -544,7 +530,7 @@ service aibox restart
 journalctl -u aibox -f
 ```
 
-## 8.6 Fast Acceptance Checklist
+## 8.5 Fast Acceptance Checklist
 1. run `jdk_demo` to verify plugin loading and component schema output
 2. create tasks in web UI and verify form rendering
 3. trigger events and verify:
