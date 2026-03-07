@@ -1,0 +1,14 @@
+plugins/facerec_plugin/models/*.model
+plugins/wwaCam_plugin/models/*.model
+*.plugin
+build
+plugins_out
+build_out
+objs
+.vscode
+
+#emacs
+._*
+.DS*
+.*~undo-tree~
+\#*\#

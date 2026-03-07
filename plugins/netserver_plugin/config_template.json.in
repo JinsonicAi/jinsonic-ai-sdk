@@ -1,0 +1,63 @@
+{
+	"name": "@PLUGIN_NAME@",
+	"version": "@PLUGIN_VERSION@",
+	"platform": {
+		"arch": "@PLUGIN_ARCH@",
+		"os": "@PLUGIN_OS@",
+		"chip": "@PLUGIN_CHIP@"
+	},
+	"entry": "lib@PLUGIN_NAME@.so",
+	"build_time": "@PLUGIN_BUILD_TIME@",
+	"md5": "@PLUGIN_MD5@",
+	"type": "@PLUGIN_NAME@",
+	"description": "@PLUGIN_NAME@ plugin auto-generated",
+	"component": {
+		"parentType": "output-component",
+		"label": {"zh": "网络推流", "en": "Network Streaming"},
+		"type": "@PLUGIN_NAME@",
+		"component": {
+			"formList": [
+				{
+					"type": "select",
+					"name": {"zh": "推流协议", "en": "Streaming Protocol"},
+					"key": "location",
+					"default": "h264",
+					"list": [
+						{
+							"label": "h264",
+							"value": "h264"
+						}
+					]
+				},
+                 {
+					"type": "divider",
+					"name": { "zh": "RTSP推送", "en": "RTSP PUSH" }
+				},     
+				{
+					"type": "switch",
+					"name": { "zh": "启用RTSP推送", "en": "Enable RTSP Push" },
+					"key": "rtsp_push",
+					"default": false
+				},
+				{
+					"type": "input",
+					"name": {"zh": "用户名", "en": "Username"},
+					"key": "user",
+					"default": "admin"
+				},
+				{
+					"type": "input",
+					"name": {"zh": "密码", "en": "Password"},
+					"key": "pass",
+					"default": "123456"
+				},
+				{
+					"type": "inputNumber",
+					"name": {"zh": "编码队列容量", "en": "Encode Queue Capacity"},
+					"key": "encode_queue_capacity",
+					"default": 3
+				}
+			]
+		}
+	}
+}

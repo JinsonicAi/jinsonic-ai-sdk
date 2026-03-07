@@ -1,0 +1,264 @@
+{
+  "name": "@PLUGIN_NAME@",
+  "version": "@PLUGIN_VERSION@",
+  "platform": {
+    "arch": "@PLUGIN_ARCH@",
+    "os": "@PLUGIN_OS@",
+    "chip": "@PLUGIN_CHIP@"
+  },
+  "entry": "lib@PLUGIN_NAME@.so",
+  "build_time": "@PLUGIN_BUILD_TIME@",
+  "md5": "@PLUGIN_MD5@",
+  "type": "@PLUGIN_NAME@",
+  "description": "@PLUGIN_NAME@ plugin auto-generated",
+  "model_path": "./models",
+  "model_files": [
+    "models/fs_20241231_npu1.model"
+  ],
+  "component": {
+    "parentType": "algorithm-component",
+    "label": {
+      "zh": "火灾检测",
+      "en": "Fire Detection"
+    },
+    "type": "@PLUGIN_NAME@",
+    "component": {
+      "formList": [
+        {
+          "type": "slider",
+          "name": {
+            "zh": "识别阈值",
+            "en": "RecognitionThreshold"
+          },
+          "key": "threshold",
+          "default": 80
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "显示火灾",
+            "en": "ShowFire"
+          },
+          "key": "show_fire",
+          "default": true
+        },
+        {
+          "type": "divider",
+          "name": {
+            "zh": "报警推送",
+            "en": "AlarmPush"
+          }
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "报警推送启用",
+            "en": "AlarmPushEnable"
+          },
+          "key": "alarm_push_enable",
+          "default": true
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "报警推送间隔",
+            "en": "AlarmPushInterval"
+          },
+          "key": "alarm_push_interval",
+          "default": "",
+          "unit": "s"
+        },
+        {
+          "type": "select",
+          "name": {
+            "zh": "报警推送模式",
+            "en": "AlarmPushMode"
+          },
+          "key": "alarm_app_push",
+          "default": 0,
+          "list": [
+            {
+              "label": {
+                "zh": "禁用推送",
+                "en": "DisablePush"
+              },
+              "value": 0
+            },
+            {
+              "label": {
+                "zh": "基础模式",
+                "en": "BasicMode"
+              },
+              "value": 1
+            },
+            {
+              "label": {
+                "zh": "增强模式",
+                "en": "EnhancedMode"
+              },
+              "value": 2
+            }
+          ]
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "记录图片类型",
+            "en": "RecordPictureType"
+          },
+          "key": "record_pic_type",
+          "default": false,
+          "checkboxKey": "recordPicList",
+          "list": [
+            {
+              "label": {
+                "zh": "火灾",
+                "en": "Fire"
+              },
+              "value": 1
+            },
+            {
+              "label": {
+                "zh": "背景",
+                "en": "Background"
+              },
+              "value": 2
+            }
+          ]
+        },
+        {
+          "type": "divider",
+          "name": {
+            "zh": "LLM复核",
+            "en": "LLMReview"
+          }
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "启用LLM复核",
+            "en": "Enable LLM Review"
+          },
+          "key": "llm_review_enable",
+          "default": false
+        },
+        {
+          "type": "textarea",
+          "name": {
+            "zh": "Review Prompt",
+            "en": "Review Prompt"
+          },
+          "key": "llm_review_prompt",
+          "default": {
+            "zh": "Determine if the fire is real. Only answer YES or NO.",
+            "en": "Determine if the fire is real. Only answer YES or NO."
+          }
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "通过关键字",
+            "en": "Allow Keyword"
+          },
+          "key": "llm_review_expected_keyword",
+          "default": "YES"
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "复核超时(ms)",
+            "en": "Review Timeout(ms)"
+          },
+          "key": "llm_review_timeout_ms",
+          "default": "5000"
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "不匹配即拦截",
+            "en": "Deny On Mismatch"
+          },
+          "key": "llm_review_deny_on_mismatch",
+          "default": true
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "异常时沿用上游",
+            "en": "Follow Upstream On Error"
+          },
+          "key": "llm_review_follow_on_error",
+          "default": true
+        },
+        {
+          "type": "divider",
+          "name": {
+            "zh": "报警联动",
+            "en": "AlarmRelay"
+          }
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "报警继电器启用",
+            "en": "AlarmRelayEnable"
+          },
+          "key": "alarm_relay_enable",
+          "default": false
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "报警继电器间隔",
+            "en": "AlarmRelayInterval"
+          },
+          "key": "alarm_relay_interval",
+          "default": "",
+          "unit": "s"
+        },
+        {
+          "type": "divider",
+          "name": {"zh": "报警播报","en": "AlarmBroadcast"}
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "火灾报警播报",
+            "en": "FireAlarmBroadcast"
+          },
+          "key": "tts_fire_enabled",
+          "default": false
+        },
+        {
+          "type": "textarea",
+          "name": {
+            "zh": "播报文字",
+            "en": "BroadcastText"
+          },
+          "key": "tts_fire_text",
+          "default": {
+            "zh": "警报！检测到烟雾或火焰，请注意安全并立即撤离！",
+            "en": "Alert! Smoke or fire detected. Please evacuate immediately!"
+          },
+          "placeholder": {
+            "zh": "默认: 警报！检测到烟雾或火焰，请注意安全并立即撤离！",
+            "en": "Default: Alert! Smoke or fire detected. Please evacuate immediately!"
+          }
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "音频URL(优先)",
+            "en": "AudioURL(Priority)"
+          },
+          "key": "tts_fire_url",
+          "default": "",
+          "placeholder": {
+            "zh": "优先于文字，如: http://xxx/fire_alarm.mp3",
+            "en": "Priority over text, e.g., http://xxx/fire_alarm.mp3"
+          }
+        }
+      ]
+    }
+  }
+}

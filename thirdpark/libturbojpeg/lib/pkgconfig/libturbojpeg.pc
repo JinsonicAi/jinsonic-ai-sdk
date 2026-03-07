@@ -1,0 +1,10 @@
+prefix=/home/work/nfs/tools/libjpeg-turbo-main/build/install
+exec_prefix=/home/work/nfs/tools/libjpeg-turbo-main/build/install
+libdir=/home/work/nfs/tools/libjpeg-turbo-main/build/install/lib
+includedir=/home/work/nfs/tools/libjpeg-turbo-main/build/install/include
+
+Name: libturbojpeg
+Description: A SIMD-accelerated JPEG codec that provides the TurboJPEG API
+Version: 3.1.2
+Libs: -L${libdir} -lturbojpeg
+Cflags: -I${includedir}

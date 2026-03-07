@@ -1,0 +1,66 @@
+{
+	"name": "@PLUGIN_NAME@",
+	"version": "@PLUGIN_VERSION@",
+	"platform": {
+		"arch": "@PLUGIN_ARCH@",
+		"os": "@PLUGIN_OS@",
+		"chip": "@PLUGIN_CHIP@"
+	},
+	"entry": "lib@PLUGIN_NAME@.so",
+	"build_time": "@PLUGIN_BUILD_TIME@",
+	"md5": "@PLUGIN_MD5@",
+	"type": "@PLUGIN_NAME@",
+	"description": "@PLUGIN_NAME@ plugin auto-generated",
+	"component": {
+		"parentType": "input-component",
+		"label": {
+            "zh": "网络拉流",
+            "en": "Network Pull Stream"
+        },
+		"type": "@PLUGIN_NAME@",
+		"component": {
+			"formList": [
+				{
+					"type": "input",
+					"name": {
+						"zh": "RTSP地址",
+						"en": "RTSP Address"
+					},
+					"key": "rtsp_url",
+					"default": "",
+					"placeholder": "rtsp://...",
+					"buttons": [
+						{
+							"type": "onvifSearch",
+							"fillKey": "rtsp_url"
+						},
+						{
+							"type": "rtspTest",
+							"urlKey": "rtsp_url"
+						}
+					]
+				},
+				{
+					"type": "divider",
+					"name": {
+						"zh": "按时布控",
+						"en": "Scheduled Deployment"
+					}
+				},
+				{
+					"type": "schedule",
+					"key": "schedule_config",
+					"name": {
+						"zh": "布控时段",
+						"en": "Schedule"
+					},
+					"enabled": true,
+					"default": {
+						"timezone": "+08:00",
+						"schedule": []
+					}
+				}
+			]
+		}
+	}
+}

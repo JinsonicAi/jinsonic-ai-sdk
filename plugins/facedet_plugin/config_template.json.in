@@ -1,0 +1,35 @@
+{
+	"name": "@PLUGIN_NAME@",
+	"version": "@PLUGIN_VERSION@",
+	"platform": {
+		"arch": "@PLUGIN_ARCH@",
+		"os": "@PLUGIN_OS@",
+		"chip": "@PLUGIN_CHIP@"
+	},
+	"entry": "lib@PLUGIN_NAME@.so",
+	"build_time": "@PLUGIN_BUILD_TIME@",
+	"md5": "@PLUGIN_MD5@",
+	"type": "@PLUGIN_NAME@",
+	"description": "@PLUGIN_NAME@ plugin auto-generated",
+	"model_path": "./models",
+	"model_files": [
+		"models/yolov5n-face.axmodel"
+	],
+	"component": {
+		"parentType": "algorithm-component",
+		"label": {
+			"zh": "人脸检测",
+			"en": "FaceDetection"
+		},
+		"type": "@PLUGIN_NAME@",
+		"component": {
+			"formList": [
+				{
+					"type": "input",
+					"name": {"zh": "识别阈值", "en": "RecognitionThreshold"},
+					"key": "threshold"
+				}
+			]
+		}
+	}
+}

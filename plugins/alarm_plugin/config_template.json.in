@@ -1,0 +1,88 @@
+{
+	"name": "@PLUGIN_NAME@",
+	"version": "@PLUGIN_VERSION@",
+	"platform": {
+		"arch": "@PLUGIN_ARCH@",
+		"os": "@PLUGIN_OS@",
+		"chip": "@PLUGIN_CHIP@"
+	},
+	"entry": "lib@PLUGIN_NAME@.so",
+	"build_time": "@PLUGIN_BUILD_TIME@",
+	"md5": "@PLUGIN_MD5@",
+	"type": "@PLUGIN_NAME@",
+	"description": "@PLUGIN_NAME@ plugin auto-generated",
+	"component": {
+		"parentType": "output-component",
+		"label": {"zh": "报警推送", "en": "AlarmPush"},
+		"type": "@PLUGIN_NAME@",
+		"component": {
+			"formList": [
+                {
+                    "type": "divider",
+                    "name": { "zh": "服务器推送", "en": "ServerPush" }
+                },
+				{
+					"type": "input",
+					"name": {"zh": "HTTP服务器地址", "en": "HTTPServerAddress"},
+					"key": "http_url",
+                    "placeholder": {"zh": "例如: http://192.168.1.100:1883", "en": "For example: http://192.168.1.100:1883"}
+				},
+                {
+                    "type": "divider",
+                    "name": { "zh": "TTS播报", "en": "TTSBroadcast" }
+                },
+				{
+					"type": "switch",
+					"name": {"zh": "TTS播报开关", "en": "TTSBroadcastEnable"},
+					"key": "tts_enabled",
+					"default": false
+				},
+				{
+					"type": "input",
+					"name": {"zh": "音柱IP地址", "en": "TTSIPAddress"},
+					"key": "tts_speaker_ip",
+					"default": "",
+					"placeholder": {"zh": "例如: 192.168.8.88", "en": "For example: 192.168.8.88"}
+				},
+				{
+					"type": "slider",
+					"name": {"zh": "播报音量", "en": "TTSVolume"},
+					"key": "tts_volume",
+					"default": 50,
+					"min": 1,
+					"max": 100
+				},
+				{
+					"type": "slider",
+					"name": {"zh": "语速", "en": "TTSSpeed"},
+					"key": "tts_speed",
+					"default": 50,
+					"min": 0,
+					"max": 100
+				},
+				{
+					"type": "select",
+					"name": {"zh": "发音人", "en": "TTSPerson"},
+					"key": "tts_vcn",
+					"default": "xiaoyan",
+					"list": [
+						{
+							"label": {"zh": "小燕(女声)", "en": "Xiaoyan (Female)"},    
+							"value": "xiaoyan"
+						},
+						{
+							"label": {"zh": "小峰(男声)", "en": "Xiaofeng (Male)"},
+							"value": "xiaofeng"
+						}
+					]
+				},
+				{
+					"type": "input",
+					"name": {"zh": "防抖时间(毫秒)", "en": "TTSDebounceTime (Milliseconds)"},
+					"key": "tts_debounce_ms",
+					"default": "5000"
+				}
+			]
+		}
+	}
+}

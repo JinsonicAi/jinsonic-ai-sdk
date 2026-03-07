@@ -1,0 +1,25 @@
+{
+	"name": "@PLUGIN_NAME@",
+	"version": "@PLUGIN_VERSION@",
+	"platform": {
+		"arch": "@PLUGIN_ARCH@",
+		"os": "@PLUGIN_OS@",
+		"chip": "@PLUGIN_CHIP@"
+	},
+	"entry": "lib@PLUGIN_NAME@.so",
+	"build_time": "@PLUGIN_BUILD_TIME@",
+	"md5": "@PLUGIN_MD5@",
+	"type": "@PLUGIN_NAME@",
+	"description": "@PLUGIN_NAME@ plugin auto-generated",
+	"component": {
+		"parentType": "other-component",
+		"label": {
+            "zh": "OSD叠加",
+            "en": "OSD Overlay"
+        },
+		"type": "@PLUGIN_NAME@",
+		"component": {
+			"formList": []
+		}
+	}
+}
