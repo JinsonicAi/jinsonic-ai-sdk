@@ -93,10 +93,10 @@ public:
 		// if you have landmarks member (static arrays) then traverses and inversely transforms
 		if constexpr (has_landmarks<T>::value) {
 			for (auto &lm : originalObj.landmarks) {
-				auto [x, y] = transformPointInverse(lm.x, lm.y);
+				const auto p = transformPointInverse(lm.x, lm.y);
 				// in the same way you can also choose whether to divide or not orgWidth/Height
-				lm.x = x / float(orgWidth);
-				lm.y = y / float(orgHeight);
+				lm.x = p.first / float(orgWidth);
+				lm.y = p.second / float(orgHeight);
 			}
 		}
 

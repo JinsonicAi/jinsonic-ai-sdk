@@ -18,6 +18,8 @@ extern "C" {
 #endif
 
 bool								isLogin();
+bool								get_cloud_auth_info(std::string& token, std::string& tenant_id, int min_valid_sec);
+void								update_cloud_auth_info(const std::string& token, const std::string& tenant_id, int expire_sec);
 int									push_alarm_to_server(const std::string& path, const std::string& task_id, const std::string& task_name, const std::string& alarm_type, const std::string& msg);
 std::vector<std::vector<cv::Point>> getRegions(const std::string task_id);
 
@@ -27,6 +29,12 @@ int insert_device_message_item(const char* did,
 							   const char* content,
 							   const char* img,
 							   const char* date);
+
+int insert_device_log_item(const char* did,
+						   const char* name,
+						   const char* type,
+						   const char* content,
+						   const char* date);
 
 // delete device_message rows by image path and notify retrieval index removal.
 // remove_file_if_exists: 0 only delete DB rows; non-zero also remove file from disk.

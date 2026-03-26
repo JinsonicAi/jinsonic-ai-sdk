@@ -45,7 +45,10 @@ public:
 					department(""),
 					widelist(false),
 					face_rect(cv::Rect()),
-					stranger(false) {}
+					stranger(false),
+					empty_db(false),
+					uncertain(false),
+					person_type(0) {}
 	bool  matched;
 	float score;
 	//
@@ -65,6 +68,9 @@ public:
 	//
 	cv::Rect face_rect;	 // new face frame coordinates
 	bool	 stranger;	 // added whether it s a stranger or not
+	bool	 empty_db;	 // true when face DB is empty (no registered faces)
+	bool	 uncertain;	 // true when score falls in gray zone
+	int		 person_type; // PersonType bitmask value (1=STRANGER,2=WHITELIST,4=BLACKLIST,8=VIP,16=VISITOR)
 };
 
 // int loadFacesFromDatabase(int folder_id, std::vector<FaceRecord>& out_faces);
@@ -73,7 +79,7 @@ public:
 	FaceRecognizer(const std::string& folder_id);
 
 	// enter features and return matching results
-	MatchResult recognize(float feature[512], float threshold = 0.95f) const;
+	MatchResult recognize(float feature[512], float threshold = 0.95f, float gray_zone = 0.0f) const;
 
 	int						 size();
 	std::vector<FaceRecord>& getFaceDB();

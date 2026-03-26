@@ -3,6 +3,7 @@
 #include <json.hpp>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <string>
 
 #include "jdk_node_base.hpp"
@@ -17,6 +18,7 @@ public:
 	std::shared_ptr<jdk_nodes::jdk_node_base> create(const std::string& type, const std::string& name, const nlohmann::json& config);
 
 private:
+	mutable std::mutex      creators_mutex_;
 	std::map<std::string, Creator> creators_;
 };
 

@@ -53,6 +53,10 @@ private:
 	std::shared_ptr<RingBuffer> frame_buffer_;
 	std::mutex					encoder_mutex_;
 	std::condition_variable		encode_cv_;
+	int							encoder_device_id_{std::numeric_limits<int>::min()};
+	int							encoder_group_{std::numeric_limits<int>::min()};
+	int							encoder_channel_{std::numeric_limits<int>::min()};
+	int							encoder_rtsp_port_{std::numeric_limits<int>::min()};
 	bool						encoding_in_progress_{false};
 	uint64_t					last_encoded_pts_{std::numeric_limits<uint64_t>::max()};
 	uint64_t					last_encoded_seq_{std::numeric_limits<uint64_t>::max()};

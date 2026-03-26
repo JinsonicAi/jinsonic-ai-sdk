@@ -6,6 +6,10 @@ add_executable(jdk_npu_sample
 	main.cpp
 )
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_compile_options(jdk_npu_sample PRIVATE -Wno-psabi)
+endif()
+
 target_include_directories(jdk_npu_sample PRIVATE
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/thirdpark/jdk/include

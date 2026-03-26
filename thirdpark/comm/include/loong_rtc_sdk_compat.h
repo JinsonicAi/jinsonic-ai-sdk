@@ -26,6 +26,7 @@ void SdkGetDeviceIds(const char*** uids, int32_t* count);
 // Set the current active RTC session id (for replying via DataChannel).
 // Usually called from SDK callbacks when receiving a message.
 void LoongRtcCompatSetActiveSessionId(const char* session_id);
+bool LoongRtcCompatSendRawCustomMessage(const char* payload);
 
 #ifdef __cplusplus
 void SdkSendMessage(const char* type, const char* msg, int32_t code, const char* data, bool online = false);
@@ -40,4 +41,3 @@ void SdkSendBinaryMessage(const char* type, const char* msg, int32_t code, const
 #endif
 
 #endif // _LOONG_RTC_SDK_COMPAT_H_
-

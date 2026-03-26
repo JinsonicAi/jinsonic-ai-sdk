@@ -1,0 +1,42 @@
+{
+	"name": "@PLUGIN_NAME@",
+	"version": "@PLUGIN_VERSION@",
+	"platform": {
+		"arch": "@PLUGIN_ARCH@",
+		"os": "@PLUGIN_OS@",
+		"chip": "@PLUGIN_CHIP@"
+	},
+	"entry": "lib@PLUGIN_NAME@.so",
+	"build_time": "@PLUGIN_BUILD_TIME@",
+	"md5": "@PLUGIN_MD5@",
+	"type": "@PLUGIN_NAME@",
+	"description": "@PLUGIN_NAME@ plugin auto-generated",
+	"component": {
+		"parentType": "output-component",
+		"label": {
+			"zh": "HDMI输出",
+			"en": "HDMIOutput"
+		},
+		"type": "@PLUGIN_NAME@",
+		"component": {
+			"formList": [
+				{
+					"type": "select",
+					"name": {"zh": "输出位置", "en": "OutputLocation"},
+					"key": "output",
+					"default": "0",
+					"list": [
+						{
+							"label": {"zh": "HDMI0", "en": "HDMI0"},
+							"value": "0"
+						},
+						{
+							"label": {"zh": "HDMI1", "en": "HDMI1"},
+							"value": "1"
+						}
+					]
+				}
+			]
+		}
+	}
+}

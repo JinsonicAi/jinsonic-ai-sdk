@@ -29,7 +29,7 @@ link_directories(thirdpark/comm/lib
 	thirdpark/backend_plugin/lib
 )
 
-add_compile_definitions(EXPORT_VISIBILITY="__attribute__((visibility(\"default\")))")
+add_compile_options(-DEXPORT_VISIBILITY=__attribute__\(\(visibility\(\"default\"\)\)\))
 
 # public library for samples
 set(JDK_COMMON_LIBS
@@ -59,4 +59,3 @@ add_subdirectory(example/jdk_ivps_sample)
 add_subdirectory(example/jdk_netclient_vdec_sample)
 add_subdirectory(example/jdk_netserver_venc_sample)
 add_subdirectory(example/jdk_npu_sample)
-

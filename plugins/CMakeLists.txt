@@ -59,6 +59,9 @@ set(PLUGIN_COMMON_LIBS
 
 # add_compile_definitions(EXPORT_VISIBILITY="__attribute__((visibility(\"default\")))")
 add_compile_options(-DEXPORT_VISIBILITY=__attribute__\(\(visibility\(\"default\"\)\)\))
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    add_compile_options(-Wno-psabi)
+endif()
 
 # contains common headers
 include_directories(${PLUGIN_COMMON_INCLUDE})

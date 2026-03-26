@@ -17,6 +17,7 @@ enum class PersonType : int {
  * @brief 报警人员类别枚举
  */
 enum class AlarmCategory : int {
+	STRANGER  = 0,	// 陌生人
 	WHITELIST = 1,	// 白名单人员(可信人员)
 	BLACKLIST = 2,	// 黑名单人员(可疑/危险人员)
 	VIP		  = 3,	// VIP人员(重要人员)
@@ -46,7 +47,8 @@ enum class EventType : int {
 	VITAL_SIGN_DETECTION  = 17,	 // 呼吸心跳检测
 	KITCHEN_MONITORING	  = 18,	 // 明厨亮灶检测报警
 	BEHAVIOR_DETECTION	  = 19,	 // 行为检测
-	NON_MOTORIZED_VEHICLE = 20	 // 非机动车检测
+	NON_MOTORIZED_VEHICLE = 20,	 // 非机动车检测
+	STRANGER_DETECTION	  = 21	 // 陌生人检测
 };
 
 /**
