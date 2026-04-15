@@ -281,7 +281,7 @@ fireDetectNode::alarm_fn(const std::any &result_any,
 				{"alarm_type", "fire_smoke"},
 				{"bbox", {{"x", tr.bbox.x}, {"y", tr.bbox.y}, {"w", tr.bbox.w}, {"h", tr.bbox.h}}}};
 			
-			// TTS音柱播报配置（由本插件独立管理，不依赖其他插件）
+			// TTS audio pillar announcement configuration (managed independently by this plugin, not dependent on other plugins)
 			if (nodeParams_->tts_fire.enabled && nodeParams_->tts_fire.hasContent()) {
 				if (nodeParams_->tts_fire.isUrlMode()) {
 					j["local_push_msg"]["tts_url"] = nodeParams_->tts_fire.url;

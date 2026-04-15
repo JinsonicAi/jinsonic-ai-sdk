@@ -52,7 +52,7 @@ public:
 	int32_t bytes() const;
 	bool	isNchw() const;
 	template <typename DType>
-	const DType* cpu();	 // 只声明，不提供实现
+	const DType* cpu();	 // Only declaration, no implementation
 	bool		 save_to_file(const std::string& file = "") const;
 	bool		 load_from_file(const std::string& file = "");
 

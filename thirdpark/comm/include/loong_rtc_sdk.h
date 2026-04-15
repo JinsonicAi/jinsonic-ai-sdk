@@ -62,22 +62,22 @@ typedef struct __SdkConfig {
     uint32_t frameHeight; // frame height
 
     // ============================================================
-    // P2P UID + Token 鉴权（可选：向后兼容）
+    // P2P UID + Token Authentication (optional: backward compatible)
     //
-    // 说明：
-    // - 新版信令服务器在 login 时要求携带 p2p_uid（以及在开启鉴权时要求 token）。
-    // - 为了尽量少改动现有 API，这里采用“在结构体尾部追加字段”的方式扩展。
+    // Instructions:
+    // - The new signaling server requires p2p_uid when logging in (and token when authentication is enabled).
+    // - To minimize changes to the existing API, we extend by "appending fields to the end of the structure".
     //
-    // 约定（与 signaling-server-go/docs 一致）：
-    // - 设备端：deviceId == p2pUid，role = "device"
-    // - 客户端：deviceId 自己生成，p2pUid = 目标设备的 p2p_uid，role = "viewer"
+    // Convention (consistent with signaling-server-go/docs):
+    // - Device side: deviceId == p2pUid, role = "device"
+    // - Client side: deviceId is self-generated, p2pUid = target device's p2p_uid, role = "viewer"
     //
-    // 注意：
-    // - token 可能较长（JWT），请确保缓冲区足够大。
+    // Note:
+    // - Token may be long (JWT), please ensure the buffer is large enough.
     // ============================================================
-    char p2pUid[64];    // 对应登录 payload 的 p2p_uid（也兼容服务端字段 p2pUid）
-    char token[1024];   // 授权服务器签发的 token（auth.enabled 且 allowLegacyNoToken=false 时必填）
-    char role[16];      // "device" / "viewer"（可为空，由服务端兜底）
+    char p2pUid[64];    // p2p_uid corresponding to login payload (also compatible with server field p2pUid)
+    char token[1024];   // Token issued by auth server (required when auth.enabled and allowLegacyNoToken=false)
+    char role[16];      // "device" / "viewer" (can be empty, filled by server)
 } SdkConfig, *PSdkConfig;
 
 typedef struct __SdkFrame{
@@ -103,11 +103,11 @@ typedef struct __SdkCallback {
 LOONG_RTC_SDK_API bool SdkInit(PSdkConfig config, PSdkCallback call_back, void* context);
 LOONG_RTC_SDK_API void SdkDispose();
 
-// P2P-first：设置 STUN-only 超时（毫秒），超时后回退 TURN 并重发 offer。
-// - 推荐在 SdkInit 之前调用
-// - ms=0 表示清除覆盖值，回退到默认/配置文件/环境变量
+// P2P-first: Set STUN-only timeout (milliseconds), fallback to TURN and resend offer after timeout.
+// - Recommended to call before SdkInit
+// - ms=0 means clear the override value and fall back to default/config file/environment variable
 LOONG_RTC_SDK_API void SdkSetP2pFirstTimeoutMs(uint32_t ms);
-// 返回当前生效的 P2P-first 超时（毫秒，已应用：接口覆盖 > env > 配置文件 > 默认值）
+// Returns the current effective P2P-first timeout (milliseconds, applied: interface override > env > config file > default)
 LOONG_RTC_SDK_API uint32_t SdkGetP2pFirstTimeoutMs();
 
 LOONG_RTC_SDK_API void SdkConnectToPeer(const char* session_id);
@@ -119,9 +119,9 @@ LOONG_RTC_SDK_API void SdkSessionClose(const char* session_id);
 LOONG_RTC_SDK_API void SdkSessionSend(const char* session_id, const char* channel, const uint8_t* buffer, const uint32_t size);
 
 LOONG_RTC_SDK_API void SdkWriteVideoFrame(const char* session_id, PSdkFrame frame);
-LOONG_RTC_SDK_API void SdkWriteVideoFrameToAll(PSdkFrame frame);  // 向所有活跃的视频通道发送视频帧
+LOONG_RTC_SDK_API void SdkWriteVideoFrameToAll(PSdkFrame frame);  // Send video frames to all active video channels
 LOONG_RTC_SDK_API void SdkWriteAudioFrame(const char* session_id, PSdkFrame frame);
-LOONG_RTC_SDK_API void SdkWriteAudioFrameToAll(PSdkFrame frame);  // 向所有活跃的视频通道发送音频帧
+LOONG_RTC_SDK_API void SdkWriteAudioFrameToAll(PSdkFrame frame);  // Send audio frames to all active video channels
 
 LOONG_RTC_SDK_API void SdkGetOnlineCount(uint32_t* count);
 // Return a build/version tag string for the loaded libloongrtcsdk.so.

@@ -46,8 +46,8 @@ private:
 
 	std::string				   rtsp_url_;
 	bool					   rtsp_init_	 = false;
-	// 关键：避免在持 mutex_ 时调用 NetClient 的潜在阻塞接口（get_frame/start/stop）
-	// 使用 shared_ptr 便于在锁外安全拷贝引用，消除 stop() 与 handle_run() 之间的互锁死锁。
+	// Critical: Avoid calling NetClient's potentially blocking interfaces (get_frame/start/stop) while holding mutex_
+	// Using shared_ptr allows safe copying of references outside the lock, eliminating deadlocks between stop() and handle_run().
 	std::shared_ptr<NetClient> net_client	 = {nullptr};
 	int						   skip_interval = 0;
 	stream_info				   info_{};
@@ -55,16 +55,16 @@ private:
 	std::mutex		mutex_;
 	MetricsReporter reporter_{5};
 
-	// ---- 按时布控 (schedule-based pause/resume) ----
-	nlohmann::json		schedule_config_;			 // 布控配置 JSON
-	std::atomic<bool>	schedule_paused_{false};		 // 当前是否被布控暂停
-	std::atomic<bool>	schedule_running_{false};	 // checker 线程运行标志
-	std::atomic<bool>	schedule_joined_{false};		 // 保证 join 只执行一次
-	std::thread			schedule_thread_;			 // 定时检查线程
+	// ---- Scheduled deployment (schedule-based pause/resume) ----
+	nlohmann::json		schedule_config_;			 // Deployment configuration JSON
+	std::atomic<bool>	schedule_paused_{false};		 // Whether currently paused by deployment
+	std::atomic<bool>	schedule_running_{false};	 // Checker thread running flag
+	std::atomic<bool>	schedule_joined_{false};		 // Ensure join only executes once
+	std::thread			schedule_thread_;			 // Periodic check thread
 
-	void start_schedule_checker();					 // 启动定时布控检查线程
-	void stop_schedule_checker();					 // 停止定时布控检查线程
-	bool is_in_schedule_now() const;				 // 判断当前时间是否在布控时段内
+	void start_schedule_checker();					 // Start scheduled deployment check thread
+	void stop_schedule_checker();					 // Stop scheduled deployment check thread
+	bool is_in_schedule_now() const;				 // Check if current time is within deployment period
 };
 }  // namespace jdk_nodes
 

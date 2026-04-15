@@ -11,7 +11,7 @@
 namespace jdk_nodes {
 
 // ---------------------------------------------------------------------------
-// 构造 / 析构
+// Constructor / Destructor
 // ---------------------------------------------------------------------------
 NetClientNode::NetClientNode(std::string node_name, std::string rtsp_url, int device_id,
 							 int group, int channel, stream_info info,
@@ -44,15 +44,15 @@ NetClientNode::~NetClientNode() {
 }
 
 // ---------------------------------------------------------------------------
-// stop -- 停止 RTSP 连接和 schedule checker
+// stop -- Stop RTSP connection and schedule checker
 // ---------------------------------------------------------------------------
 void NetClientNode::stop() {
 	gate_open();
 	set_alive(false);
-	// 唤醒可能正在 schedule 暂停中的主循环
+	// Wake up main loop possibly paused in schedule
 	schedule_paused_.store(false);
 	stop_schedule_checker();
-	// 重要：不要在持 mutex_ 时调用 net_client->stop()（可能阻塞），否则与 handle_run 内部阻塞形成死锁。
+	// Important: Do not call net_client->stop() while holding mutex_ (may block), otherwise deadlock with handle_run internal blocking.
 	std::shared_ptr<NetClient> local;
 	{
 		std::lock_guard<std::mutex> lk(mutex_);
@@ -66,25 +66,25 @@ void NetClientNode::stop() {
 }
 
 // ---------------------------------------------------------------------------
-// 按时布控 -- schedule checker 线程
+// Scheduled deployment -- schedule checker thread
 // ---------------------------------------------------------------------------
 void NetClientNode::start_schedule_checker() {
-	// ===== 测试模式：test_cycle_seconds =====
-	// 配置示例: { "test_cycle_seconds": 60 }
-	// 效果: 运行 60 秒 → 暂停 60 秒 → 运行 60 秒 → …… 循环往复
+	// ===== Test mode: test_cycle_seconds =====
+	// Config example: { "test_cycle_seconds": 60 }
+	// Effect: run 60 seconds → pause 60 seconds → run 60 seconds → … cycle
 	if (schedule_config_.contains("test_cycle_seconds")) {
 		int cycle_sec = schedule_config_["test_cycle_seconds"].get<int>();
 		if (cycle_sec < 5)
-			cycle_sec = 5;	// 最低 5 秒，防止太快
+			cycle_sec = 5;	// Minimum 5 seconds to prevent too fast
 		fmt::print("[Schedule] ★ TEST MODE: cycle = {} seconds (run {} → pause {} → repeat)\n",
 				   cycle_sec, cycle_sec, cycle_sec);
 
 		schedule_running_.store(true);
-		schedule_joined_.store(false);	// 重置 join 标志（新线程启动）
+		schedule_joined_.store(false);	// Reset join flag (new thread starting)
 		schedule_thread_ = std::thread([this, cycle_sec]() {
 			fmt::print("[Schedule] Test checker thread started\n");
 			while (schedule_running_.load()) {
-				// ---- 运行阶段 ----
+				// ---- Running phase ----
 				fmt::print("[Schedule] ▶ TEST: running phase ({} sec)\n", cycle_sec);
 				schedule_paused_.store(false);
 				for (int i = 0; i < cycle_sec && schedule_running_.load(); ++i) {
@@ -93,7 +93,7 @@ void NetClientNode::start_schedule_checker() {
 				if (!schedule_running_.load())
 					break;
 
-				// ---- 暂停阶段 ----
+				// ---- Pause phase ----
 				fmt::print("[Schedule] ⏸ TEST: pause phase ({} sec)\n", cycle_sec);
 				schedule_paused_.store(true);
 				for (int i = 0; i < cycle_sec && schedule_running_.load(); ++i) {
@@ -103,11 +103,11 @@ void NetClientNode::start_schedule_checker() {
 			schedule_paused_.store(false);
 			fmt::print("[Schedule] Test checker thread exited\n");
 		});
-		return;	 // 测试模式下不走正常逻辑
+		return;	 // Skip normal logic in test mode
 	}
 
-	// ===== 正常模式 =====
-	// 如果没有有效的 schedule 配置，则不启动检查器（7x24 运行）
+	// ===== Normal mode =====
+	// If no valid schedule config, do not start checker (24/7 operation)
 	if (schedule_config_.empty() || !schedule_config_.contains("schedule")) {
 		fmt::print("[Schedule] No schedule config, running 24/7\n");
 		return;
@@ -118,7 +118,7 @@ void NetClientNode::start_schedule_checker() {
 		return;
 	}
 
-	// 如果所有天都被禁用（全部 enabled=false），等同于未配置，不启动检查器
+	// If all days are disabled (all enabled=false), treat as unconfigured, do not start checker
 	bool any_day_enabled = false;
 	for (const auto& entry : sched) {
 		if (!entry.contains("enabled") || entry["enabled"].get<bool>()) {
@@ -131,7 +131,7 @@ void NetClientNode::start_schedule_checker() {
 		return;
 	}
 
-	// 启动前先做一次初始检查
+	// Perform initial check before starting
 	bool initial_in_schedule = is_in_schedule_now();
 	if (!initial_in_schedule) {
 		fmt::print("[Schedule] Not in active period at startup, starting paused\n");
@@ -139,7 +139,7 @@ void NetClientNode::start_schedule_checker() {
 	}
 
 	schedule_running_.store(true);
-	schedule_joined_.store(false);	// 重置 join 标志（新线程启动）
+	schedule_joined_.store(false);	// Reset join flag (new thread starting)
 	schedule_thread_ = std::thread([this]() {
 		fmt::print("[Schedule] Checker thread started\n");
 		while (schedule_running_.load()) {
@@ -154,7 +154,7 @@ void NetClientNode::start_schedule_checker() {
 				schedule_paused_.store(true);
 			}
 
-			// 每 30 秒检查一次，但分段 sleep 以便快速退出
+			// Check every 30 seconds, but segment sleep for quick exit
 			for (int i = 0; i < 30 && schedule_running_.load(); ++i) {
 				std::this_thread::sleep_for(std::chrono::seconds(1));
 			}
@@ -165,7 +165,7 @@ void NetClientNode::start_schedule_checker() {
 
 void NetClientNode::stop_schedule_checker() {
 	schedule_running_.store(false);
-	// CAS 保证只有一个线程执行 join（stop() 和 handle_run 可能并发调用此函数）
+	// CAS ensures only one thread executes join (stop() and handle_run may call this concurrently)
 	bool expected = false;
 	if (schedule_joined_.compare_exchange_strong(expected, true)) {
 		if (schedule_thread_.joinable()) {
@@ -175,32 +175,32 @@ void NetClientNode::stop_schedule_checker() {
 }
 
 // ---------------------------------------------------------------------------
-// 按时布控 -- 判断当前时间是否在布控时段内
+// Scheduled deployment -- Check if current time is within deployment period
 // ---------------------------------------------------------------------------
 bool NetClientNode::is_in_schedule_now() const {
 	if (schedule_config_.empty() || !schedule_config_.contains("schedule")) {
-		return true;  // 无配置 → 不限制，始终运行
+		return true;  // No config → no restrictions, always run
 	}
 	const auto& sched = schedule_config_["schedule"];
 	if (!sched.is_array() || sched.empty()) {
-		return true;  // 空数组 → 不限制
+		return true;  // Empty array → no restrictions
 	}
 
-	// 1. 获取当前 UTC 时间
+	// 1. Get current UTC time
 	auto	now	  = std::chrono::system_clock::now();
 	auto	now_t = std::chrono::system_clock::to_time_t(now);
 	std::tm utc_tm{};
 	gmtime_r(&now_t, &utc_tm);
 
-	// 2. 应用时区偏移（默认 +08:00）
-	int tz_offset_min = 8 * 60;	 // 默认东八区
+	// 2. Apply timezone offset (default +08:00)
+	int tz_offset_min = 8 * 60;	 // Default UTC+8
 	if (schedule_config_.contains("timezone")) {
 		std::string tz = schedule_config_["timezone"].get<std::string>();
-		// 解析 "+08:00" / "-05:30" 格式
+		// Parse "+08:00" / "-05:30" format
 		if (tz.size() >= 5 && (tz[0] == '+' || tz[0] == '-')) {
 			int sign  = (tz[0] == '+') ? 1 : -1;
 			int hours = 0, mins = 0;
-			// 寻找冒号分隔
+			// Find colon separator
 			auto colon_pos = tz.find(':');
 			if (colon_pos != std::string::npos) {
 				hours = std::stoi(tz.substr(1, colon_pos - 1));
@@ -214,11 +214,11 @@ bool NetClientNode::is_in_schedule_now() const {
 		}
 	}
 
-	// 3. 计算本地时间
+	// 3. Calculate local time
 	int total_min_utc	= utc_tm.tm_hour * 60 + utc_tm.tm_min;
 	int total_min_local = total_min_utc + tz_offset_min;
 
-	// 处理跨日
+	// Handle day crossing
 	int day_offset = 0;
 	if (total_min_local < 0) {
 		total_min_local += 1440;
@@ -228,19 +228,19 @@ bool NetClientNode::is_in_schedule_now() const {
 		day_offset = 1;
 	}
 
-	// 4. 计算星期几 (1=周一 ... 7=周日)
+	// 4. Calculate day of week (1=Monday ... 7=Sunday)
 	// tm_wday: 0=Sunday, 1=Monday ... 6=Saturday
 	int utc_wday = utc_tm.tm_wday;
-	// 转为 ISO 格式: 1=Monday ... 7=Sunday
+	// Convert to ISO format: 1=Monday ... 7=Sunday
 	int iso_wday = (utc_wday == 0) ? 7 : utc_wday;
-	// 应用日期偏移
+	// Apply date offset
 	iso_wday += day_offset;
 	if (iso_wday < 1)
 		iso_wday += 7;
 	if (iso_wday > 7)
 		iso_wday -= 7;
 
-	// 5. 在 schedule 中查找对应 weekday 的条目
+	// 5. Find corresponding weekday entry in schedule
 	for (const auto& entry : sched) {
 		if (!entry.contains("weekday"))
 			continue;
@@ -248,38 +248,38 @@ bool NetClientNode::is_in_schedule_now() const {
 		if (weekday != iso_wday)
 			continue;
 
-		// 找到对应天
-		// 检查 enabled 字段
+		// Found corresponding day
+		// Check enabled field
 		if (entry.contains("enabled") && entry["enabled"].is_boolean() && !entry["enabled"].get<bool>()) {
-			return false;  // 该天被禁用
+			return false;  // Day is disabled
 		}
 
-		// 检查 periods
+		// Check periods
 		if (!entry.contains("periods") || !entry["periods"].is_array()) {
-			return true;  // enabled 但没有 periods → 全天运行
+			return true;  // Enabled but no periods → run all day
 		}
 		const auto& periods = entry["periods"];
 		if (periods.empty()) {
-			return true;  // enabled 但 periods 为空 → 全天运行
+			return true;  // Enabled but periods empty → run all day
 		}
 
-		// 遍历 periods，检查当前分钟是否在某个时段内
+		// Iterate through periods, check if current minute is within any period
 		for (const auto& p : periods) {
 			int start_min = p.value("start_min", 0);
 			int end_min	  = p.value("end_min", 1440);
 			if (total_min_local >= start_min && total_min_local < end_min) {
-				return true;  // 在布控时段内
+				return true;  // Within deployment period
 			}
 		}
-		return false;  // 找到了对应天，但不在任何时段内
+		return false;  // Found corresponding day, but not within any period
 	}
 
-	// 如果 schedule 中没有当天条目，视为该天未配置 → 全天运行（不限制）
+	// If schedule doesn't have entry for today, treat as unconfigured → run all day (no restrictions)
 	return true;
 }
 
 // ---------------------------------------------------------------------------
-// RTSP info 上报
+// RTSP info reporting
 // ---------------------------------------------------------------------------
 void NetClientNode::report_rtsp_info(const std::shared_ptr<AXVideoFrame>& frame, int fps) {
 	std::string resolution = std::to_string(frame->width()) + "x" + std::to_string(frame->height());
@@ -310,21 +310,21 @@ std::shared_ptr<jdk_objects::jdk_frame_meta> NetClientNode::build_frame_meta(
 }
 
 // ---------------------------------------------------------------------------
-// handle_run -- 主处理循环（含按时布控暂停逻辑）
+// handle_run -- main processing loop (with scheduled deployment pause logic)
 // ---------------------------------------------------------------------------
 void NetClientNode::handle_run(std::stop_token stoken) {
 	int			fps	 = 0;
 	int			skip = 0;
 	std::string file_name;
 	bool		pause_drain_sent = false;
-	// 实测帧率统计：滑动窗口（最近 30 帧）
+	// Actual FPS statistics: sliding window (last 30 frames)
 	std::deque<std::chrono::steady_clock::time_point> frame_ts_window;
 	constexpr int									  kFpsWindow = 30;
 	fmt::print(fg(fmt::color::blue),
 			   "NetClientNode::handle_run:device_id_:{}, group_:{}, channel_id_:{}\n",
 			   device_id_, group_, channel_id_);
 
-	// 启动布控定时检查线程
+	// Start scheduled deployment timing check thread
 	start_schedule_checker();
 
 	{
@@ -334,14 +334,14 @@ void NetClientNode::handle_run(std::stop_token stoken) {
 
 	while (!stoken.stop_requested() && is_alive()) {
 		gate_knock();
-		// ---- 按时布控暂停检查 ----
+		// ---- Scheduled deployment pause check ----
 		if (schedule_paused_.load()) {
 			if (!pause_drain_sent) {
 				pend_meta(std::make_shared<jdk_objects::jdk_control_meta>(
 					jdk_objects::jdk_control_type::PIPELINE_DRAIN, channel_id_));
 				pause_drain_sent = true;
 			}
-			// 断开 RTSP（如果还连着）
+			// Disconnect RTSP (if still connected)
 			if (rtsp_init_) {
 				std::shared_ptr<NetClient> local;
 				{
@@ -355,8 +355,8 @@ void NetClientNode::handle_run(std::stop_token stoken) {
 				fmt::print("[Schedule] ⏸ RTSP disconnected for schedule pause\n");
 			}
 
-			// 休眠等待恢复：用 1 秒粒度轮询，保证 stop 时快速退出。
-			// 同时每 5 秒上报一次 PAUSED 状态（保持心跳，防止前端判定超时）
+			// Sleep and wait for resume: use 1-second granularity polling to ensure fast exit when stopping.
+			// Also report PAUSED status every 5 seconds (maintain heartbeat, prevent frontend timeout)
 			int pausedTick = 0;
 			while (schedule_paused_.load() && !stoken.stop_requested() && is_alive()) {
 				if ((pausedTick % 5) == 0) {
@@ -369,19 +369,16 @@ void NetClientNode::handle_run(std::stop_token stoken) {
 			if (stoken.stop_requested() || !is_alive())
 				break;
 
-			// 恢复：重建 NetClient 实例
-			fmt::print("[Schedule] ▶ RTSP resuming from schedule pause\n");
-			pause_drain_sent = false;
-			{
-				std::lock_guard<std::mutex> lk(mutex_);
-				net_client = std::make_shared<NetClient>(device_id_, group_, channel_id_, info_, task_name_);
-			}
-			continue;  // 回到循环顶部，重新 lazy init RTSP
+		// Resume: rebuild NetClient instance
+		fmt::print("[Schedule] ▶ RTSP resuming from schedule pause\n");
+		pause_drain_sent = false;
+		{
+			std::lock_guard<std::mutex> lk(mutex_);
+			net_client = std::make_shared<NetClient>(device_id_, group_, channel_id_, info_, task_name_);
 		}
-		// ---- 以下为原有逻辑 ----
-		MetricsReporter::ScopedTimer timer(reporter_);
-
-		// lazy init rtsp
+		continue;  // Return to loop top, re-lazy init RTSP
+	}
+	// ---- Following is original logic ----
 		if (!rtsp_init_) {
 			std::shared_ptr<NetClient> local;
 			{
@@ -391,13 +388,13 @@ void NetClientNode::handle_run(std::stop_token stoken) {
 			if (stoken.stop_requested() || !is_alive())
 				break;
 			if (local) {
-				// start 可能耗时/阻塞：放在锁外执行，避免 stop() 互锁
+				// start() may be time-consuming/blocking: execute outside the lock to avoid stop() deadlock
 				rtsp_init_ = local->start(rtsp_url_);
 			}
-			// start 返回后立即检查 stop 信号
+			// Immediately check stop signal after start() returns
 			if (stoken.stop_requested() || !is_alive())
 				break;
-			// 可中断等待 1 秒（每 100ms 检查一次 stop 信号）
+			// Interruptible wait 1 second (check stop signal every 100ms)
 			for (int w = 0; w < 10 && !stoken.stop_requested() && is_alive(); ++w) {
 				std::this_thread::sleep_for(std::chrono::milliseconds(100));
 			}
@@ -420,20 +417,20 @@ void NetClientNode::handle_run(std::stop_token stoken) {
 		if (stoken.stop_requested() || !is_alive())
 			break;
 		if (local) {
-			// get_frame 可能阻塞：放在锁外执行，保证 stop() 能调用 local->stop() 来打断阻塞
+			// get_frame() may block: execute outside the lock to ensure stop() can call local->stop() to interrupt the blocking
 			frame = local->get_frame((std::atomic<bool>*)alive_ptr());
 		}
-		// get_frame 阻塞返回后立即检查 stop 信号
+		// Immediately check stop signal after get_frame() blocking returns
 		if (stoken.stop_requested() || !is_alive())
 			break;
 		if (!frame) {
-			usleep(30000);	// 与原逻辑一致，避免多次短 sleep 带来的调度/粒度开销
+			usleep(30000);	// Consistent with original logic, avoid scheduling/granularity overhead from multiple short sleeps
 			continue;
 		}
 
 		this->frame_index++;
 
-		// 实测帧率：滑动窗口统计
+		// Actual FPS: sliding window statistics
 		auto now_tp = std::chrono::steady_clock::now();
 		frame_ts_window.push_back(now_tp);
 		if ((int)frame_ts_window.size() > kFpsWindow)
@@ -458,8 +455,8 @@ void NetClientNode::handle_run(std::stop_token stoken) {
 		std::string codec	   = (frame->enType == 96 ? "H264" : "H265");
 		reporter_.report_input_rtsp(resolution, codec, fps);
 
-		// 不再额外 sleep：get_frame 本身阻塞等待队列，天然跟随流的真实帧率。
-		// 额外 sleep 会叠加在 get_frame 等待时间之上，导致帧率被人为压低。
+		// No additional sleep: get_frame() itself blocks waiting for queue, naturally following stream's real FPS.
+		// Additional sleep will stack on top of get_frame() wait time, causing FPS to be artificially reduced.
 	}
 
 	fmt::print("[NetClientNode] handle_run exiting loop: {}\n", task_id_);
@@ -469,7 +466,7 @@ void NetClientNode::handle_run(std::stop_token stoken) {
 }
 
 // ---------------------------------------------------------------------------
-// handle_control_meta -- 处理控制消息
+// handle_control_meta -- handle control messages
 // ---------------------------------------------------------------------------
 std::shared_ptr<jdk_objects::jdk_meta> NetClientNode::handle_control_meta(
 	std::shared_ptr<jdk_objects::jdk_control_meta> meta) {

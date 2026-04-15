@@ -176,7 +176,7 @@ struct TripwireStats {
 	int count_out = 0;	// backward crossings count
 };
 
-// ─────────────────── 核心引擎 ───────────────────
+// ─────────────────── Core engine ───────────────────
 class RegionAnalyzer {
 public:
 	RegionAnalyzer()  = default;
@@ -237,7 +237,7 @@ private:
 		TripwireStats stats;
 	};
 
-	// ── 数据 ──
+	// ── Data ──
 	mutable std::mutex							  mu_;
 	std::unordered_map<unsigned long, TrackState> tracks_;
 	std::unordered_map<int, RegionState>		  regions_;
@@ -245,7 +245,7 @@ private:
 	EventCallback								  callback_;
 	float										  track_timeout_sec_ = 5.f;
 
-	// ── 内部方法 ──
+	// ── Internal methods ──
 	void fire(const std::vector<RegionEvent>& events, const EventCallback& cb);
 	void process_track(unsigned long tid, TrackState& ts, int64_t ts_ms,
 					   std::vector<RegionEvent>& events);

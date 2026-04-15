@@ -17,12 +17,12 @@
 namespace jdk_nodes {
 
 /**
- * @brief TTS音柱播报配置（插件内独立定义，不依赖其他插件）
+ * @brief TTS audio column broadcast configuration (defined independently within plugin, not dependent on other plugins)
  */
 struct TTSBroadcastConfig {
-	bool        enabled{false};         // 是否启用TTS播报
-	std::string text{};                 // 播报文字（TTS）
-	std::string url{};                  // 音频URL（优先于text）
+	bool        enabled{false};         // Whether to enable TTS broadcast
+	std::string text{};                 // Broadcast text (TTS)
+	std::string url{};                  // Audio URL (takes precedence over text)
 	
 	bool hasContent() const { return !url.empty() || !text.empty(); }
 	bool isUrlMode() const  { return !url.empty(); }
@@ -51,7 +51,7 @@ struct FireNodeParams {
 	std::string model_path{"./models/fs_20241231_npu1.model"};
 	std::string task_id{"0"};
 	
-	// TTS音柱播报配置（火灾/烟雾报警）
+	// TTS audio column broadcast configuration (fire/smoke alarm)
 	TTSBroadcastConfig tts_fire{};
 	FireLLMReviewConfig llm_review{};
 };

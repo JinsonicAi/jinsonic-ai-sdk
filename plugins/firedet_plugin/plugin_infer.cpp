@@ -44,7 +44,7 @@ extern "C" void plugin_init(SDKInterface* sdk) {
 		nodeParams->llm_review.follow_upstream_on_error = jp(config, "llm_review_follow_on_error", true);
 		nodeParams->llm_review.decode_location		 = jp(config, "llm_review_decode_location", std::string(""));
 
-		// TTS音柱播报配置（火灾/烟雾）
+	// TTS audio column broadcast configuration (fire/smoke)
 		nodeParams->tts_fire.enabled = jp(config, "tts_fire_enabled", false);
 		nodeParams->tts_fire.text    = jp(config, "tts_fire_text", std::string("警报！检测到烟雾或火焰，请注意安全并立即撤离！"));
 		nodeParams->tts_fire.url     = jp(config, "tts_fire_url", std::string(""));
