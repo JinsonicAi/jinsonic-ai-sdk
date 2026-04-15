@@ -9,7 +9,7 @@
 #include <thread>
 
 #include "post_node_info.h"
-  
+
 namespace jdk_nodes {
 #define MAX_FRAME_SIZE (2 * 1024 * 1024)
 static bool looks_annexb(const std::vector<uint8_t>& v) {
@@ -59,7 +59,7 @@ static uint32_t getTimestamp() {
 // handle frame meta one by one
 std::shared_ptr<jdk_objects::jdk_meta> NetServerNode::handle_frame_meta(std::shared_ptr<jdk_objects::jdk_frame_meta> meta) {
 	// fmt::print("NetServerNode handle_frame_meta, meta create_time: {}, frame pts: {}\n", meta->create_time, meta->frame_ ? meta->frame_->pts : -1);
-    if (!meta || (!meta->frame_)) {
+	if (!meta || (!meta->frame_)) {
 		std::cerr << "❌ meta is null or contains no valid frame.\n";
 		return jdk_node_base::handle_frame_meta(meta);
 	}
@@ -76,28 +76,30 @@ std::shared_ptr<jdk_objects::jdk_meta> NetServerNode::handle_frame_meta(std::sha
 	// auto						 last_time = std::chrono::system_clock::now();
 	std::lock_guard<std::mutex> lk(mutex_);
 	if (!is_alive()) {
-        fmt::print("NetServerNode is not alive, skipping frame_meta handling.\n");
-        return nullptr;}
+		fmt::print("NetServerNode is not alive, skipping frame_meta handling.\n");
+		return nullptr;
+	}
 
 	////////////////////////
 	TaskEncodeRequest req;
 	req.device_id = device_id_;
 	// Use task-assigned channel as encoder group to avoid cross-topology mismatch.
-	req.group = channel_id_;
-	req.channel = channel_id_;
-	req.rtsp_port = rtsp_port_;
+	req.group		   = channel_id_;
+	req.channel		   = channel_id_;
+	req.rtsp_port	   = rtsp_port_;
 	req.queue_capacity = encode_queue_capacity_;
 	auto encoded_frame = get_task_encoded_frame(task_id_, consumer_id_, frame, req);
 	if (!encoded_frame) {
-        fmt::print("get_task_encoded_frame failed, skipping frame_meta handling.\n");
-        return jdk_node_base::handle_frame_meta(meta);}
+		fmt::print("get_task_encoded_frame failed, skipping frame_meta handling.\n");
+		return jdk_node_base::handle_frame_meta(meta);
+	}
 	auto dump_frame = encoded_frame->toHost();
 	if (!dump_frame || !dump_frame->getPviraddr()) {
 		fprintf(stderr, "❌ dump_frame is nullptr or getPviraddr() failed!");
 		return jdk_node_base::handle_frame_meta(meta);
 	}
-	size_t		sz	 = dump_frame->size();
-	uint8_t*	data = reinterpret_cast<uint8_t*>(dump_frame->getPviraddr());
+	size_t	 sz	  = dump_frame->size();
+	uint8_t* data = reinterpret_cast<uint8_t*>(dump_frame->getPviraddr());
 	if (sz > 0 && sz < MAX_FRAME_SIZE) {
 		std::vector<uint8_t> owned(data, data + sz);
 		if (rtsp_enable_ && rtsp_) {
@@ -114,11 +116,11 @@ std::shared_ptr<jdk_objects::jdk_meta> NetServerNode::handle_frame_meta(std::sha
 		fprintf(stderr, "❌ Encoded frame size %zu exceeds MAX_FRAME_SIZE %d, dropping frame!\n", sz, MAX_FRAME_SIZE);
 	}
 
-	std::string Resolution = std::to_string(frame->width()) + "x" + std::to_string(frame->height());
-	const int fps_for_report = std::max(0, jdk_node_base::node_fps());
+	std::string Resolution	   = std::to_string(frame->width()) + "x" + std::to_string(frame->height());
+	const int	fps_for_report = std::max(0, jdk_node_base::node_fps());
 	reporter_.report_output_rtsp(Resolution, fps_for_report, meta->create_time);
-    // fmt::print("NetServerNode handle_frame_meta done, meta create_time: {}, frame pts: {}, resolution: {}, fps: {}\n",
-    //            meta->create_time, frame->pts, Resolution, fps_for_report);
+	// fmt::print("NetServerNode handle_frame_meta done, meta create_time: {}, frame pts: {}, resolution: {}, fps: {}\n",
+	//            meta->create_time, frame->pts, Resolution, fps_for_report);
 	return jdk_node_base::handle_frame_meta(meta);
 }
 
@@ -128,7 +130,8 @@ void NetServerNode::handle_frame_meta(const std::vector<std::shared_ptr<jdk_obje
 }
 
 std::shared_ptr<jdk_objects::jdk_meta> NetServerNode::handle_control_meta(std::shared_ptr<jdk_objects::jdk_control_meta> meta) {
-	if (!meta) return nullptr;
+	if (!meta)
+		return nullptr;
 	std::cout << "[NetServerNode] handle_control_meta: control_type = " << meta->control_type << std::endl;
 	if (meta->control_type == jdk_objects::jdk_control_type::SPEAK) {
 		stop();

@@ -19,6 +19,8 @@ public:
 	~HwDecoder();
 
 	std::shared_ptr<AXVideoFrame> Decode(const uint8_t* nalu, size_t nalu_size);
+	bool						  NeedKeyFrameSync() const;
+	bool                          IsReady() const;
 	// int							  sendFrame(const uint8_t* nalu, size_t nalu_size);
 	// std::shared_ptr<AXVideoFrame> getFrame();
 

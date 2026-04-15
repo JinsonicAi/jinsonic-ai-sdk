@@ -1,0 +1,540 @@
+{
+  "name": "@PLUGIN_NAME@",
+  "version": "@PLUGIN_VERSION@",
+  "platform": {
+    "arch": "@PLUGIN_ARCH@",
+    "os": "@PLUGIN_OS@",
+    "chip": "@PLUGIN_CHIP@"
+  },
+  "entry": "lib@PLUGIN_NAME@.so",
+  "build_time": "@PLUGIN_BUILD_TIME@",
+  "md5": "@PLUGIN_MD5@",
+  "type": "@PLUGIN_NAME@",
+  "description": "@PLUGIN_NAME@ plugin auto-generated",
+  "model_path": "./models",
+  "model_files": [
+    "models/person_20241206_npu1.model"
+  ],
+  "component": {
+    "parentType": "algorithm-component",
+    "label": {
+      "zh": "行人检测",
+      "en": "Person Detection"
+    },
+    "type": "@PLUGIN_NAME@",
+    "component": {
+      "isDrawingArea": true,
+      "formList": [
+        {
+          "type": "divider",
+          "name": {
+            "zh": "检测区域（可选，留空按全画面报警）",
+            "en": "Detection Region (Optional, full-frame when empty)"
+          }
+        },
+        {
+          "type": "regionDraw",
+          "key": "area",
+          "name": {
+            "zh": "检测区域",
+            "en": "Detection Area"
+          },
+          "enabled": true,
+          "default": []
+        },
+        {
+          "type": "subdivider",
+          "name": {
+            "zh": "区域规则",
+            "en": "Region Rules"
+          },
+          "disabledWhenEmpty": "area"
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "启用进/出检测",
+            "en": "Enable Enter/Leave"
+          },
+          "key": "region_enable_enter",
+          "default": true
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "启用离开检测",
+            "en": "Enable Leave"
+          },
+          "key": "region_enable_leave",
+          "default": true
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "启用徘徊检测",
+            "en": "Enable Loiter"
+          },
+          "key": "region_enable_loiter",
+          "default": false
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "徘徊触发时间(s)",
+            "en": "Loiter Seconds"
+          },
+          "key": "region_loiter_sec",
+          "default": "10"
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "徘徊冷却(s)",
+            "en": "Loiter Cooldown"
+          },
+          "key": "region_loiter_cooldown",
+          "default": "30"
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "启用离岗检测",
+            "en": "Enable Absence"
+          },
+          "key": "region_enable_absence",
+          "default": false
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "离岗触发时间(s)",
+            "en": "Absence Seconds"
+          },
+          "key": "region_absence_sec",
+          "default": "30"
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "离岗冷却(s)",
+            "en": "Absence Cooldown"
+          },
+          "key": "region_absence_cooldown",
+          "default": "60"
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "启用拥挤检测",
+            "en": "Enable Crowd"
+          },
+          "key": "region_enable_crowd",
+          "default": false
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "拥挤阈值",
+            "en": "Crowd Threshold"
+          },
+          "key": "region_crowd_threshold",
+          "default": "10"
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "拥挤恢复间隔",
+            "en": "Crowd Recover Gap"
+          },
+          "key": "region_crowd_recover_gap",
+          "default": "2"
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "启用越线计数",
+            "en": "Enable Line Cross"
+          },
+          "key": "region_enable_line_cross",
+          "default": false
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "Label 过滤 (-1 全部)",
+            "en": "Label Filter (-1 all)"
+          },
+          "key": "region_label_filter",
+          "default": "-1"
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "最小目标尺寸",
+            "en": "Min BBox Size"
+          },
+          "key": "region_min_bbox_size",
+          "default": "30"
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "Track 超时(s)",
+            "en": "Track Timeout(s)"
+          },
+          "key": "region_track_timeout_sec",
+          "default": "10"
+        },
+        {
+          "type": "divider",
+          "name": {
+            "zh": "检测参数",
+            "en": "Detection Parameters"
+          }
+        },
+        {
+          "type": "slider",
+          "name": {
+            "zh": "识别阈值",
+            "en": "Recognition Threshold"
+          },
+          "key": "threshold",
+          "default": 80
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "显示人脸",
+            "en": "Show Face"
+          },
+          "key": "show_face",
+          "default": true
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "显示人体",
+            "en": "Show Human"
+          },
+          "key": "show_human",
+          "default": true
+        },
+        {
+          "type": "slider",
+          "name": {
+            "zh": "最小人脸尺寸",
+            "en": "Minimum Face Size"
+          },
+          "key": "mini_face",
+          "min": 30,
+          "max": 500,
+          "default": 30
+        },
+        {
+          "type": "slider",
+          "name": {
+            "zh": "人脸质量",
+            "en": "Face Quality"
+          },
+          "key": "quality_face",
+          "min": 0,
+          "max": 100,
+          "default": 0
+        },
+        {
+          "type": "slider",
+          "name": {
+            "zh": "最小人体尺寸",
+            "en": "Minimum Human Size"
+          },
+          "key": "mini_human",
+          "min": 30,
+          "max": 500,
+          "default": 30
+        },
+        {
+          "type": "slider",
+          "name": {
+            "zh": "人体质量",
+            "en": "Human Quality"
+          },
+          "key": "quality_human",
+          "min": 0,
+          "max": 100,
+          "default": 0
+        },
+        {
+          "type": "select",
+          "name": {
+            "zh": "抓拍模式",
+            "en": "Capture Mode"
+          },
+          "key": "cap_mode",
+          "default": 2,
+          "list": [
+            {
+              "label": {
+                "zh": "离开抓拍",
+                "en": "Capture After Departure"
+              },
+              "value": 0
+            },
+            {
+              "label": {
+                "zh": "实时抓拍",
+                "en": "Real-Time Capture"
+              },
+              "value": 1
+            },
+            {
+              "label": {
+                "zh": "间隔抓拍",
+                "en": "Interval Capture"
+              },
+              "value": 2
+            }
+          ]
+        },
+        {
+          "type": "divider",
+          "name": {
+            "zh": "报警推送",
+            "en": "AlarmPush"
+          }
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "抓拍间隔",
+            "en": "Capture Interval"
+          },
+          "key": "cap_interval",
+          "default": "10",
+          "unit": "s(1~500)"
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "报警推送启用",
+            "en": "Alarm Push Enable"
+          },
+          "key": "alarm_push_enable",
+          "default": true
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "报警推送间隔",
+            "en": "Alarm Push Interval"
+          },
+          "key": "alarm_push_interval",
+          "default": "5",
+          "unit": "s"
+        },
+        {
+          "type": "select",
+          "name": {
+            "zh": "报警推送模式",
+            "en": "Alarm Push Mode"
+          },
+          "key": "alarm_app_push",
+          "default": 0,
+          "list": [
+            {
+              "label": {
+                "zh": "禁用推送",
+                "en": "Disable Push"
+              },
+              "value": 0
+            },
+            {
+              "label": {
+                "zh": "基础模式",
+                "en": "Basic Mode"
+              },
+              "value": 1
+            },
+            {
+              "label": {
+                "zh": "增强模式",
+                "en": "Enhanced Mode"
+              },
+              "value": 2
+            }
+          ]
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "服务器推送启用",
+            "en": "Server Push Enable"
+          },
+          "key": "server_push_enable",
+          "default": false
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "服务器推送图片类型",
+            "en": "Server Push Picture Type"
+          },
+          "key": "server_pic_type",
+          "default": false,
+          "checkboxKey": "serverPicList",
+          "list": [
+            {
+              "label": {
+                "zh": "人脸图片",
+                "en": "Face Image"
+              },
+              "value": 1
+            },
+            {
+              "label": {
+                "zh": "人体图片",
+                "en": "Body Image"
+              },
+              "value": 2
+            },
+            {
+              "label": {
+                "zh": "背景图片",
+                "en": "Background Image"
+              },
+              "value": 4
+            }
+          ]
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "服务器推送属性启用",
+            "en": "Server Push Attribute Enable"
+          },
+          "key": "server_attr_enable",
+          "default": false
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "记录图片类型",
+            "en": "Record Picture Type"
+          },
+          "key": "record_pic_type",
+          "default": false,
+          "checkboxKey": "recordPicList",
+          "list": [
+            {
+              "label": {
+                "zh": "人脸图片",
+                "en": "Face Image"
+              },
+              "value": 1
+            },
+            {
+              "label": {
+                "zh": "人体图片",
+                "en": "Body Image"
+              },
+              "value": 2
+            },
+            {
+              "label": {
+                "zh": "背景图片",
+                "en": "Background Image"
+              },
+              "value": 4
+            }
+          ]
+        },
+        {
+          "type": "divider",
+          "name": {
+            "zh": "LLM复核",
+            "en": "LLM Review"
+          }
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "启用LLM复核",
+            "en": "Enable LLM Review"
+          },
+          "key": "llm_review_enable",
+          "default": false
+        },
+        {
+          "type": "textarea",
+          "name": {
+            "zh": "复核提示词",
+            "en": "Review Prompt"
+          },
+          "key": "llm_review_prompt",
+          "default": "判断图片中是否存在行人目标，只回答 YES 或 NO。"
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "通过关键字",
+            "en": "Allow Keyword"
+          },
+          "key": "llm_review_expected_keyword",
+          "default": "YES"
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "复核超时(ms)",
+            "en": "Review Timeout(ms)"
+          },
+          "key": "llm_review_timeout_ms",
+          "default": "1200"
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "不匹配即拦截",
+            "en": "Deny On Mismatch"
+          },
+          "key": "llm_review_deny_on_mismatch",
+          "default": true
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "异常时沿用上游",
+            "en": "Follow Upstream On Error"
+          },
+          "key": "llm_review_follow_on_error",
+          "default": true
+        },
+        {
+          "type": "divider",
+          "name": {
+            "zh": "报警联动",
+            "en": "Alarm Relay"
+          }
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "报警继电器启用",
+            "en": "Alarm Relay Enable"
+          },
+          "key": "alarm_relay_enable",
+          "default": false
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "报警继电器间隔",
+            "en": "Alarm Relay Interval"
+          },
+          "key": "alarm_relay_interval",
+          "default": "",
+          "unit": "s"
+        }
+      ]
+    }
+  }
+}

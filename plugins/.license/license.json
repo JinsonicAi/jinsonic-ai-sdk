@@ -1,0 +1,9 @@
+{
+  "serial": "SN-T53B-JLUJ-H6EL",
+  "features": [
+    "aibox_sdk"
+  ],
+  "build": {
+    "product_name": "ax650n"
+  }
+}

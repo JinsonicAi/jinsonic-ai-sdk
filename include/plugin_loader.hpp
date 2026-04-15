@@ -17,21 +17,24 @@
 
 const std::vector<int>& ax_device_ids();
 
-// 插件生命周期状态
+// plugin lifecycle states
 enum class PluginState {
-	Installed,  // 已安装但未加载（如 disabled）
-	Loaded,     // 已加载并注册到 NodeFactory
-	Disabled,   // 用户主动禁用
-	Error,      // 加载失败
+	Installed,	// installed but not loaded (e.g. disabled)
+	Loaded,		// loaded and registered to NodeFactory
+	Disabled,	// disabled by user
+	Error,		// load failed
 };
 
-// 待定操作（温和模式：等任务停止后自动执行）
+// pending actions (gentle mode: execute after tasks stop)
 struct PendingAction {
-	enum class Type { None, Update, Disable };
-	Type        type = Type::None;
-	std::string package_path;    // 仅 Update 使用
-	std::string scheduled_at;    // ISO 8601
-	std::string reason;          // e.g. "in-use-by-tasks"
+	enum class Type { None,
+					  Update,
+					  Disable,
+					  Uninstall };
+	Type		type = Type::None;
+	std::string package_path;  // used by Update only
+	std::string scheduled_at;  // ISO 8601
+	std::string reason;		   // e.g. "in-use-by-tasks"
 };
 
 struct PluginInfo {
@@ -42,27 +45,27 @@ struct PluginInfo {
 	void (*cleanup_func)(SDKInterface* sdk) = nullptr;
 
 	// --- 生命周期管理字段 ---
-	PluginState    state            = PluginState::Installed;
-	bool           enabled          = true;
-	std::string    version;
-	std::string    previous_version;  // 回滚用
-	uint64_t       load_time_ms     = 0;
-	uint32_t       error_count      = 0;
-	std::string    last_error;
-	std::string    installed_at;      // ISO 8601
-	std::string    updated_at;        // ISO 8601
-	PendingAction  pending_action;
+	PluginState	  state	  = PluginState::Installed;
+	bool		  enabled = true;
+	std::string	  version;
+	std::string	  previous_version;	 // 回滚用
+	uint64_t	  load_time_ms = 0;
+	uint32_t	  error_count  = 0;
+	std::string	  last_error;
+	std::string	  installed_at;	 // ISO 8601
+	std::string	  updated_at;	 // ISO 8601
+	PendingAction pending_action;
 };
 
-// 插件卸载清理结果
+// plugin removal cleanup result
 struct PluginRemoveResult {
-	bool                     success = false;
-	std::string              error;
-	std::string              plugin_type;
-	std::string              version;
-	bool                     was_loaded = false;      // 是否热卸载了 .so
-	std::vector<std::string> deleted_model_files;     // 待删除的模型文件路径
-	uint64_t                 freed_bytes = 0;          // 回收的磁盘空间
+	bool					 success = false;
+	std::string				 error;
+	std::string				 plugin_type;
+	std::string				 version;
+	bool					 was_loaded = false;   // whether .so was hot-unloaded
+	std::vector<std::string> deleted_model_files;  // model file paths pending deletion
+	uint64_t				 freed_bytes = 0;	   // freed disk space
 };
 
 class ThreadPool {
@@ -75,7 +78,8 @@ public:
 					{
 						std::unique_lock<std::mutex> lock(this->mtx);
 						this->cv.wait(lock, [this] { return stop || !tasks.empty(); });
-						if (stop && tasks.empty()) return;
+						if (stop && tasks.empty())
+							return;
 						task = std::move(tasks.front());
 						tasks.pop();
 					}
@@ -86,7 +90,8 @@ public:
 	}
 	void shutdown_and_wait() {
 		bool expected = false;
-		if (!has_shutdown_.compare_exchange_strong(expected, true)) return;
+		if (!has_shutdown_.compare_exchange_strong(expected, true))
+			return;
 
 		{
 			std::lock_guard<std::mutex> lk(mtx);
@@ -94,7 +99,8 @@ public:
 		}
 		cv.notify_all();
 		for (auto& w : workers) {
-			if (w.joinable()) w.join();
+			if (w.joinable())
+				w.join();
 		}
 	}
 	~ThreadPool() {
@@ -104,7 +110,8 @@ public:
 	void enqueue(F&& f) {
 		{
 			std::lock_guard<std::mutex> lock(mtx);
-			if (stop) throw std::runtime_error("enqueue on stopped ThreadPool");
+			if (stop)
+				throw std::runtime_error("enqueue on stopped ThreadPool");
 			tasks.emplace(std::forward<F>(f));
 		}
 		cv.notify_one();
@@ -135,61 +142,55 @@ public:
 	}
 	~PluginLoader();  // automatic cleanup of plugins
 
-	bool load_all_plugins(const std::string& plugin_root, SDKInterface* sdk);
-	void loadSingle(const std::string pluginPath);
+	bool		   load_all_plugins(const std::string& plugin_root, SDKInterface* sdk);
+	void		   loadSingle(const std::string pluginPath);
 	nlohmann::json inspect_package(const std::string& plugin_path, std::string* err = nullptr) const;
 
 	const std::vector<PluginInfo>& get_loaded_plugins() const { return plugins_; }
-	std::vector<PluginInfo> get_loaded_plugins_snapshot() const {
+	std::vector<PluginInfo>		   get_loaded_plugins_snapshot() const {
 		std::lock_guard<std::mutex> lk(cwd_m_);
 		return plugins_;
 	}
 
 	nlohmann::json get_component_structure() const {
-		std::lock_guard<std::mutex> lk(cwd_m_);
+		std::lock_guard<std::mutex> lk(component_m_);
 		return component_structure_;
 	}
 
-	// --- 插件生命周期管理 ---
-
-	// 卸载单个插件（cleanup + dlclose + 从 component_structure_ 移除）
-	// 调用方需确保无任务引用该插件（安全约束）
+	// --- plugin lifecycle management ---
 	bool unloadSingle(const std::string& type, std::string* err = nullptr);
 
-	// 重载单个插件（先 unload 再 load）
+	// Reload a single plugin (unload then load)
 	bool reloadSingle(const std::string& type, std::string* err = nullptr);
 
-	// 完整卸载：热卸载 .so（cleanup→dlclose→unregister）+ 从 plugins_ 移除 + 收集待删模型路径
-	// 调用方需确保无任务引用该插件，且卸载后调用 save_plugin_state()
-	// 返回的 deleted_model_files 由调用方异步删除以避免阻塞
+	// Returned deleted_model_files should be deleted asynchronously by caller to avoid blocking
 	PluginRemoveResult removeSingle(const std::string& type);
 
-	// 安装后注册：将新安装的插件注册到内存（state=Installed，不 dlopen）
-	// 使 Phase1 立即包含该插件，无需 Phase2 磁盘扫描
+	// Allows Phase1 to include the plugin immediately without Phase2 disk scan
 	void registerInstalled(const std::string& type, const std::string& path,
-	                       const nlohmann::json& config, const std::string& version);
+						   const nlohmann::json& config, const std::string& version);
 
-	// 启用/禁用
+	// enable/disable
 	bool set_plugin_enabled(const std::string& type, bool enabled, std::string* err = nullptr);
 	bool is_plugin_enabled(const std::string& type) const;
 
-	// 查找插件
-	PluginInfo* find_plugin_by_type(const std::string& type);
+	// find plugin
+	PluginInfo*		  find_plugin_by_type(const std::string& type);
 	const PluginInfo* find_plugin_by_type(const std::string& type) const;
 
-	// 版本比较：返回 -1 (a<b), 0 (a==b), 1 (a>b)
+	// version compare: returns -1 (a<b), 0 (a==b), 1 (a>b)
 	static int compare_versions(const std::string& a, const std::string& b);
 
-	// 待定操作
-	void set_pending_action(const std::string& type, const PendingAction& action);
-	void clear_pending_action(const std::string& type);
+	// pending actions
+	void											   set_pending_action(const std::string& type, const PendingAction& action);
+	void											   clear_pending_action(const std::string& type);
 	std::vector<std::pair<std::string, PendingAction>> get_all_pending_actions() const;
 
-	// 状态持久化
+	// state persistence
 	bool load_plugin_state(const std::string& state_path = "");
 	bool save_plugin_state() const;
 
-	// 获取插件根目录
+	// get plugin root directory
 	const std::string& get_plugin_root() const { return plugin_root_; }
 
 private:
@@ -198,19 +199,20 @@ private:
 
 	std::vector<PluginInfo> plugins_;
 	SDKInterface*			sdk_ = nullptr;
-	std::string             plugin_root_;
-	std::string             state_file_path_;
+	std::string				plugin_root_;
+	std::string				state_file_path_;
 
 	nlohmann::json component_structure_ = nlohmann::json::array();
 	//
 
 	std::unordered_map<std::string, std::string> cache_;
 	mutable std::mutex							 cwd_m_;
+	mutable std::mutex							 component_m_;
 	// io_uring									 ring_;
 	ThreadPool	pool_;
 	bool		support_local_ = false;
 	std::string target_soc_{};
 
-	// 启动时从 state file 预加载的 enabled/disabled 缓存（避免重复读磁盘）
+	// enabled/disabled cache preloaded from state file at startup (avoid duplicate disk reads)
 	std::unordered_map<std::string, bool> state_enabled_cache_;
 };

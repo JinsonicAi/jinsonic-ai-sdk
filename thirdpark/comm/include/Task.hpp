@@ -101,3 +101,5 @@ std::shared_ptr<AXVideoFrame> get_task_encoded_frame(
 	std::shared_ptr<AXVideoFrame> input_frame,
 	TaskEncodeRequest			req = TaskEncodeRequest());
 void unsubscribe_task_encoder(const std::string& task_id, const std::string& consumer_id);
+void p2p_register_legacy_stream(const std::string& task_id, int stream_type);
+void p2p_unregister_legacy_stream(const std::string& task_id);

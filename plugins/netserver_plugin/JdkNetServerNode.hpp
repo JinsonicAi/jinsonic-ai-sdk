@@ -29,15 +29,15 @@ protected:
 	std::shared_ptr<jdk_objects::jdk_meta> handle_control_meta(std::shared_ptr<jdk_objects::jdk_control_meta> meta) override;
 
 private:
-	std::string				   task_id_{};
-	size_t					   encode_queue_capacity_{3};
-	int						   rtsp_port_		 = -1;
-	int						   device_id_		 = -1;
-	int						   channel_id_		 = 0;  //< 32
-	int						   channel_mjpeg_id_ = 0;  //< 32
-	std::string				   rtsp_url_;
+	std::string task_id_{};
+	size_t		encode_queue_capacity_{3};
+	int			rtsp_port_		  = -1;
+	int			device_id_		  = -1;
+	int			channel_id_		  = 0;	//< 32
+	int			channel_mjpeg_id_ = 0;	//< 32
+	std::string rtsp_url_;
 	//
-	std::string			  consumer_id_{};
+	std::string consumer_id_{};
 	// std::shared_ptr<RtspServer> rtsp_{nullptr};
 	std::shared_ptr<RTSPServer> rtsp_{nullptr};
 	bool						rtsp_enable_{false};  //< enable rtsp push

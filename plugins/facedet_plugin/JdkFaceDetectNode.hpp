@@ -5,7 +5,6 @@
 #include <string>
 
 #include "MetricsReporter.hpp"
-#include "SmoothBoxOverlay.hpp"
 #include "jdk_node_base.hpp"
 #include "jdk_node_wrapper.hpp"
 #include "yoloFace.hpp"
@@ -39,6 +38,5 @@ private:
 	int								 channel_id_;  // default 0
 	std::mutex						 mutex_;
 	MetricsReporter					 reporter_{5};
-	TemporalBoxSmoother				 smoother_{};
 };
 }  // namespace jdk_nodes

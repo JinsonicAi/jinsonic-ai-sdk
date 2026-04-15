@@ -18,7 +18,7 @@ extern "C" {
 #endif
 
 // Legacy APIs (removed in new SDK) - provided by project compatibility layer.
-void SdkEnableOnlineServer(bool enable);
+// void SdkEnableOnlineServer(bool enable);
 bool SdkAddDevice(const char* uid);
 bool SdkRemoveDevice(const char* uid);
 void SdkGetDeviceIds(const char*** uids, int32_t* count);
@@ -40,4 +40,4 @@ void SdkSendBinaryMessage(const char* type, const char* msg, int32_t code, const
 }
 #endif
 
-#endif // _LOONG_RTC_SDK_COMPAT_H_
+#endif	// _LOONG_RTC_SDK_COMPAT_H_

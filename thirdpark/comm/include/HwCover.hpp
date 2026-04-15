@@ -74,7 +74,7 @@ public:
 	int orgHeight = 1;
 
 	template <typename T>
-	T inv(const T &obj) const {
+	T inv(const T& obj) const {
 		// make a copy first and prepare to make changes
 		T originalObj = obj;
 
@@ -92,7 +92,7 @@ public:
 
 		// if you have landmarks member (static arrays) then traverses and inversely transforms
 		if constexpr (has_landmarks<T>::value) {
-			for (auto &lm : originalObj.landmarks) {
+			for (auto& lm : originalObj.landmarks) {
 				const auto p = transformPointInverse(lm.x, lm.y);
 				// in the same way you can also choose whether to divide or not orgWidth/Height
 				lm.x = p.first / float(orgWidth);
@@ -102,7 +102,7 @@ public:
 
 		// if you have a keypoints member (std::vector<YPoint>) then traverses and inversely transforms
 		if constexpr (has_keypoints<T>::value) {
-			for (auto &kp : originalObj.keypoints) {
+			for (auto& kp : originalObj.keypoints) {
 				auto p = transformPointInverse(kp.x, kp.y);
 				kp.x   = p.first / float(orgWidth);
 				kp.y   = p.second / float(orgHeight);
@@ -114,7 +114,7 @@ public:
 
 private:
 	std::pair<double, double> transformPointInverse(double x, double y) const;
-	cv::Rect_<float>		  transformRectInverse(const cv::Rect_<float> &rc) const;
+	cv::Rect_<float>		  transformRectInverse(const cv::Rect_<float>& rc) const;
 };
 
 #endif

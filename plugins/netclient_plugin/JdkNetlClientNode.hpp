@@ -2,6 +2,7 @@
 #define __NET_CLIENT_JDK_NODE_HPP__
 
 #include <atomic>
+#include <deque>
 #include <filesystem>
 #include <string>
 #include <thread>

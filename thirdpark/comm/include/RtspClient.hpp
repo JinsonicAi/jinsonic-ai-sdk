@@ -17,6 +17,8 @@ extern "C" {
 #include <libavformat/avformat.h>
 }
 
+#include "H26xDepayAssembler.hpp"
+
 /** single channel instance configuratio n(time unit:millisecond) */
 struct RtspPullOptions {
 	std::string url;							   // RTSP URL
@@ -98,6 +100,7 @@ private:
 
 	// recently seen vps sps pps simple cache
 	std::vector<uint8_t> vps_, sps_, pps_;
+	H26xDepayAssembler	 assembler_;
 };
 
 /** multi instance manager dynamic creation/deletion */

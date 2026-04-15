@@ -17,11 +17,20 @@
 extern "C" {
 #endif
 
-bool								isLogin();
-bool								get_cloud_auth_info(std::string& token, std::string& tenant_id, int min_valid_sec);
-void								update_cloud_auth_info(const std::string& token, const std::string& tenant_id, int expire_sec);
-int									push_alarm_to_server(const std::string& path, const std::string& task_id, const std::string& task_name, const std::string& alarm_type, const std::string& msg);
+bool isLogin();
+bool get_cloud_auth_info(std::string& token, std::string& tenant_id, int min_valid_sec);
+void update_cloud_auth_info(const std::string& token, const std::string& tenant_id, int expire_sec);
+// int									push_alarm_to_server(const std::string& path, const std::string& task_id, const std::string& task_name, const std::string& alarm_type, const std::string& msg);
 std::vector<std::vector<cv::Point>> getRegions(const std::string task_id);
+std::string							get_protocol_runtime_config_json(const std::string& key);
+
+// P2P transport APIs — called by p2p_plugin to send video frames.
+// P2PManager (in TaskManager) handles session management, subscription, and PPCS SDK.
+// The plugin node only needs to call p2p_send_video_frame() per encoded frame.
+void p2p_send_video_frame(const std::string& task_id, bool is_keyframe, const uint8_t* data, size_t size, uint32_t timestamp);
+void p2p_send_audio_frame(const uint8_t* data, size_t size, uint32_t timestamp);
+bool p2p_is_initialized();
+int	 p2p_get_active_session_count();
 
 int insert_device_message_item(const char* did,
 							   const char* name,
