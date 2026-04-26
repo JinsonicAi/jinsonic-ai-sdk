@@ -44,11 +44,11 @@ struct PluginInfo {
 	void*		   handle					= nullptr;
 	void (*cleanup_func)(SDKInterface* sdk) = nullptr;
 
-	// --- Lifecycle management fields ---
+	// --- 生命周期管理字段 ---
 	PluginState	  state	  = PluginState::Installed;
 	bool		  enabled = true;
 	std::string	  version;
-	std::string	  previous_version;	 // For rollback
+	std::string	  previous_version;	 // 回滚用
 	uint64_t	  load_time_ms = 0;
 	uint32_t	  error_count  = 0;
 	std::string	  last_error;

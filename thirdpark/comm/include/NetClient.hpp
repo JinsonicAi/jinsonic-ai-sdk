@@ -28,6 +28,7 @@ public:
 	void						  on_frame(const EncodedAU &au);
 	void						  stop();
 	void                          set_runtime_location(std::string runtime_location) { runtime_location_ = std::move(runtime_location); }
+	void                          reset_decoder_after_stall(uint64_t now_ms);
 
 private:
 	std::string rtsp_url_;
@@ -50,6 +51,8 @@ private:
 			std::atomic<uint64_t>					  last_timeout_log_ms_{0};
 			std::atomic<uint64_t>					  last_keyframe_wait_log_ms_{0};
 			std::atomic<uint64_t>					  last_keyframe_resume_log_ms_{0};
+			std::atomic<uint64_t>					  last_reset_keyframe_wait_log_ms_{0};
+			std::atomic<bool>						  need_keyframe_after_reset_{false};
 			std::atomic<uint32_t>					  decoder_init_failures_{0};
 			std::atomic<uint32_t>                  decoder_rebind_failures_{0};
 			safe_queue<std::shared_ptr<AXVideoFrame>> queue_;

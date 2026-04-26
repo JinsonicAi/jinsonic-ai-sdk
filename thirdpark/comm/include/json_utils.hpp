@@ -1,5 +1,6 @@
 #pragma once
 #include <any>
+#include <cstdlib>
 #include <iostream>
 #include <json.hpp>
 #include <memory>
@@ -70,6 +71,22 @@ static bool parse_number(const std::string& s, T& out) {
 	return false;
 }
 
+template <typename T>
+inline T parse_number_or(const std::string& raw, const T& def) {
+	T out{};
+	return parse_number(raw, out) ? out : def;
+}
+
+template <typename T>
+inline T clamp_value(const T& value, const T& min_v, const T& max_v) {
+	return value < min_v ? min_v : (value > max_v ? max_v : value);
+}
+
+template <typename T>
+inline T parse_number_clamped_or(const std::string& raw, const T& def, const T& min_v, const T& max_v) {
+	return clamp_value(parse_number_or(raw, def), min_v, max_v);
+}
+
 inline std::string normalize_path(const char* path) {
 	if (path == nullptr || *path == '\0') return "/";
 	if (path[0] == '/') return path;  // already have "/"，return as it is
@@ -133,6 +150,25 @@ T jp(const nlohmann::json& j, const char* path, const T& def = T{}) {
 	} catch (...) {
 		return def;
 	}
+}
+
+template <typename T>
+T jp_clamped(const nlohmann::json& j, const char* path, const T& def, const T& min_v, const T& max_v) {
+	static_assert(std::is_arithmetic<T>::value, "jp_clamped only supports arithmetic types");
+	return clamp_value(jp<T>(j, path, def), min_v, max_v);
+}
+
+template <typename T>
+T env_number_or(const char* key, const T& def) {
+	const char* raw = std::getenv(key);
+	if (!raw || !raw[0])
+		return def;
+	return parse_number_or(std::string(raw), def);
+}
+
+template <typename T>
+T env_number_clamped_or(const char* key, const T& def, const T& min_v, const T& max_v) {
+	return clamp_value(env_number_or(key, def), min_v, max_v);
 }
 
 // //----overload for nlohmann::json: when you want to MODIFY json ----

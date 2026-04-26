@@ -7,10 +7,10 @@
 #include <sys/time.h>
 
 #if __has_include(<linux/time_types.h>)
-/* Newer kernel versions have this header which defines __kernel_timespec */
+/* 内核新版本会有这个头，它定义了 __kernel_timespec */
 #include <linux/time_types.h>
 #else
-/* Simple fallback: __kernel_time_t/long in user space; long is sufficient */
+/* 简单补一个：__kernel_time_t/long 在 user space 用 long 够用 */
 typedef long __kernel_time_t;
 typedef long __kernel_long_t;
 struct __kernel_timespec {

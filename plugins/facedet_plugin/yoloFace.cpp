@@ -54,6 +54,7 @@ private:
 	std::shared_ptr<HwIvps> ipvs	   = nullptr;
 	TransformMatrices		tm_		   = {0};
 	int						device_id_ = -1;
+	bool					letterbox_dewarp_failed_{false};
 
 	bool isHost() {
 		return device_id_ < 0;
@@ -75,9 +76,14 @@ bool OjbInfer::pre_process(Job &job, const std::any &input) {
 	// printf(" device_id:%d,size:%d\r\n", frame->device_id(), frame->size());
 	// frame->save_data("pre_process_1280x720_nv12.yuv");
 
-	auto dstDewarpFrame = ipvs->HwIvpsDewarp(frame->raw(), {width, height}, tm_);
+	auto dstDewarpFrame = ipvs->HwIvpsDewarp(frame->raw(), {width, height}, tm_, !letterbox_dewarp_failed_);
+	if (!dstDewarpFrame && !letterbox_dewarp_failed_) {
+		letterbox_dewarp_failed_ = true;
+		std::cout << "[FaceDet] letterbox dewarp failed, retry with stretch resize.\n";
+		dstDewarpFrame = ipvs->HwIvpsDewarp(frame->raw(), {width, height}, tm_, false);
+	}
 	if (!dstDewarpFrame) {
-		std::cout << "Valid dstDewarpFrame\n";
+		std::cout << "[FaceDet] invalid dstDewarpFrame\n";
 		return false;
 	}
 
@@ -86,7 +92,7 @@ bool OjbInfer::pre_process(Job &job, const std::any &input) {
 	//  NV12 TO RGB
 	auto RgbFrame = ipvs->HwIvpsCsc(dstDewarpFrame->raw());
 	if (!RgbFrame) {
-		std::cout << "Valid RgbFrame !!!!!\n";
+		std::cout << "[FaceDet] invalid RgbFrame\n";
 		return false;
 	}
 	// RgbFrame->save_data("416x416_nv12_Dewarp.rgb");

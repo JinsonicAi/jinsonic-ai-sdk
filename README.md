@@ -6,7 +6,7 @@
 
 **Scope**
 - SDK: `aibox_sdk` (this repository)
-- Firmware baseline: `3.6.2`
+- Firmware baseline: `3.10.2`
 - Integration protocol baseline: `Platform Device Integration Protocol Specification V1.0.2` (released on `2026-02-21`)
 - Target hardware: AX650N / AX8850 (dev boards and compute cards)
 - Target audience: algorithm engineers, backend engineers, delivery/integration engineers
@@ -32,7 +32,7 @@
 ### 1.1 Core Design
 - **Node**: the smallest processing unit in the pipeline.
 - **Pipeline**: a DAG built with `attach_to()`.
-- **Plugin**: dynamically loaded `.plugin` package (`libxxx.so + config.json + models`).
+- **Plugin**: dynamically loaded `.plugin` package (`data + config.json`).
 - **SDKInterface**: runtime callbacks exposed to plugins (node registration, logging, config, events).
 
 ### 1.2 Typical Data Flow
@@ -40,7 +40,7 @@
 
 ### 1.3 Alarm Pipeline (High-Frequency Integration Path)
 - Algorithm nodes write `ResultEntry` into `result_map_`.
-- `ResultEntry` includes: `result + render_fn + alarm_fn + push policy`.
+- `ResultEntry` includes: `result + build_overlay + push policy`.
 - `alarm_plugin` consumes `alarm_fn` outputs and performs unified routing:
   - local notification (UI/DB)
   - HTTP server push

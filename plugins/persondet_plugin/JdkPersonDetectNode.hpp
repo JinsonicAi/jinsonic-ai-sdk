@@ -9,6 +9,7 @@
 #include "HwCapture.hpp"
 #include "HwIvps.hpp"
 #include "JdkPersonDetectNode.hpp"
+#include "JdkOsd.hpp"
 #include "MetricsReporter.hpp"
 #include "RegionAnalyzer.hpp"
 #include "alg_comm.hpp"
@@ -79,6 +80,7 @@ private:
 	std::pair<nlohmann::json, std::vector<std::function<std::shared_ptr<AXVideoFrame>()>>>
 		 alarm_fn(const std::any& future_any, std::shared_ptr<AXVideoFrame> canvas);
 	void render_fn(std::shared_ptr<AXVideoFrame>& canvas, const std::any& future_any, const std::any& extra = {});
+	jdk_osd::Overlay build_overlay_(const ax_result_t& det);
 	// std::string imageToBase64(std::shared_ptr<AXVideoFrame> frame);
 
 	std::shared_ptr<HwIvps>			 ivps_		 = nullptr;

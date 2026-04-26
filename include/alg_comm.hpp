@@ -145,6 +145,8 @@ public:
 	float face_compare(float a[AX_ALGORITHM_FACE_FEATURE_LEN], float b[AX_ALGORITHM_FACE_FEATURE_LEN]);
 	// person
 	int get_body_attr(std::shared_ptr<AXVideoFrame> frame, ax_bbox_t *bbox, ax_body_attr_t *body_attr, std::shared_ptr<HwCapture> Capture, ax_color_space_e type = ax_color_space_nv12);
+	// vehicle
+	int get_car_attr(std::shared_ptr<AXVideoFrame> frame, ax_bbox_t *bbox, ax_car_attr_t *car_attr, std::shared_ptr<HwCapture> Capture, ax_color_space_e type = ax_color_space_nv12);
 	// plate
 	std::string get_plate(ax_image_t *image);
 

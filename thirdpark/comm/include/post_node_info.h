@@ -22,6 +22,7 @@ bool get_cloud_auth_info(std::string& token, std::string& tenant_id, int min_val
 void update_cloud_auth_info(const std::string& token, const std::string& tenant_id, int expire_sec);
 // int									push_alarm_to_server(const std::string& path, const std::string& task_id, const std::string& task_name, const std::string& alarm_type, const std::string& msg);
 std::vector<std::vector<cv::Point>> getRegions(const std::string task_id);
+std::vector<std::vector<cv::Point>> getRegionShapes(const std::string task_id);
 std::string							get_protocol_runtime_config_json(const std::string& key);
 
 // P2P transport APIs — called by p2p_plugin to send video frames.

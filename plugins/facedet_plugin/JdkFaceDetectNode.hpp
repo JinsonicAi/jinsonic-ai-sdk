@@ -4,16 +4,22 @@
 #include <opencv2/imgproc.hpp>
 #include <string>
 
+#include "JdkOsd.hpp"
 #include "MetricsReporter.hpp"
 #include "jdk_node_base.hpp"
 #include "jdk_node_wrapper.hpp"
 #include "yoloFace.hpp"
 
 namespace jdk_nodes {
-class faceDetectNode : public jdk_node_base, public CustomHandleFrame, public CustomHandleControl {
+class faceDetectV2Node : public jdk_node_base, public CustomHandleFrame, public CustomHandleControl {
 public:
-	faceDetectNode(std::string node_name, const std::string& filename, float threshold, int device_id, std::string task_id = "");
-	~faceDetectNode();
+	faceDetectV2Node(std::string node_name,
+					 const std::string& filename,
+					 float threshold,
+					 int device_id,
+					 std::string task_id = "",
+					 int label_score_step = 5);
+	~faceDetectV2Node();
 	void stop();
 
 protected:
@@ -31,9 +37,11 @@ private:
 	std::pair<nlohmann::json, std::vector<std::function<std::shared_ptr<AXVideoFrame>()>>>
 									 alarm_fn(const std::any& future_any, std::shared_ptr<AXVideoFrame> canvas);
 	void							 render_fn(std::shared_ptr<AXVideoFrame>& canvas, const std::any& future_any, const std::any& extra = {});
+	jdk_osd::Overlay				 build_overlay_(const YOLOFACE::Objects& det);
 	std::shared_ptr<YOLOFACE::Infer> infer;
 	float							 threshold_ = 0.7;
 	int								 device_id_ = -1;
+	int								 label_score_step_ = 5;
 	std::string						 task_id_{};
 	int								 channel_id_;  // default 0
 	std::mutex						 mutex_;

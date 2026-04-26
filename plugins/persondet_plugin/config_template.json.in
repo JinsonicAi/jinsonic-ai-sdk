@@ -531,7 +531,7 @@
             "en": "Alarm Relay Interval"
           },
           "key": "alarm_relay_interval",
-          "default": "",
+          "default": "5",
           "unit": "s"
         }
       ]

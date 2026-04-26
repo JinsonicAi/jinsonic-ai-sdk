@@ -1,5 +1,6 @@
 #include "JdkPersonDetectNode.hpp"
 
+#include <algorithm>
 #include <iomanip>
 #include <optional>
 #include <utility>
@@ -281,7 +282,7 @@ personDetectNode::personDetectNode(std::string node_name, std::unique_ptr<Person
 	ivps_	 = std::make_shared<HwIvps>(device_id_, 0, 0);
 	Capture_ = std::make_shared<HwCapture>(device_id_);
 
-	regions_ = getRegions(task_id_);
+	regions_ = getRegionShapes(task_id_);
 	printRegions(regions_);
 	init_region_analyzer();
 	reporter_.set_algorithm_config({task_id_,
@@ -339,10 +340,29 @@ void personDetectNode::render_fn(std::shared_ptr<AXVideoFrame>& canvas,
 		ivps = *p;
 	}
 
-	// visit only if any holds ax_result_t; otherwise warn and return
-	if (!anyx::visit<ax_result_t>(result_any, [&](const ax_result_t& det) { draw(det, ivps); })) {
-		fmt::print("⚠️ [{}] unexpected any type: {} \r\n", PLUGIN_NODE_NAME, anyx::type_name(result_any));
+	const auto& payload_any = jdk_osd::payload_from_any(result_any);
+	if (!anyx::visit<ax_result_t>(payload_any, [&](const ax_result_t& det) { draw(det, ivps); })) {
+		fmt::print("⚠️ [{}] unexpected any type: {} \r\n", PLUGIN_NODE_NAME, anyx::type_name(payload_any));
 	}
+}
+
+jdk_osd::Overlay personDetectNode::build_overlay_(const ax_result_t& det) {
+	jdk_osd::Overlay overlay;
+	if (!nodeParams_ || !nodeParams_->show_human || det.n_objects <= 0) return overlay;
+
+	const int count = std::min(det.n_objects, AX_ALGORITHM_MAX_OBJ_NUM);
+	overlay.boxes.reserve(count);
+	for (int i = 0; i < count; ++i) {
+		const auto& obj = det.objects[i];
+		if (obj.bbox.w * obj.bbox.h <= 200) continue;
+
+		auto color = jdk_osd::Color::from_rgb(random_color(obj.track_id), 255);
+		auto box = jdk_osd::make_box(obj.bbox.x, obj.bbox.y, obj.bbox.w, obj.bbox.h, color, 0, "person", 22, 100);
+		box.score = obj.score;
+		box.track_id = obj.track_id;
+		overlay.boxes.push_back(std::move(box));
+	}
+	return overlay;
 }
 
 std::pair<nlohmann::json,
@@ -662,7 +682,7 @@ void personDetectNode::run_infer_combinations(
 	{
 		std::lock_guard<std::mutex> lk(*meta->mtx_);
 		auto						new_entry = std::make_shared<jdk_objects::ResultEntry>(
-			anyx::any_make<ax_result_t>(det),
+			jdk_osd::make_overlay_result(anyx::any_make<ax_result_t>(det), build_overlay_(det)),
 			/* render_cb */
 			[this](std::shared_ptr<AXVideoFrame>& canvas,
 				   const std::any& any, const std::any& extra) {

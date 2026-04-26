@@ -218,7 +218,10 @@
         },
         {
           "type": "divider",
-          "name": {"zh": "报警播报","en": "AlarmBroadcast"}
+          "name": {
+            "zh": "报警播报",
+            "en": "AlarmBroadcast"
+          }
         },
         {
           "type": "switch",

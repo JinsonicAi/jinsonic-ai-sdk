@@ -1,5 +1,6 @@
 #include "JdkFireDetectNode.hpp"
 
+#include <algorithm>
 #include <iomanip>
 #include <optional>
 
@@ -235,10 +236,30 @@ void fireDetectNode::render_fn(std::shared_ptr<AXVideoFrame> &canvas,
 		ivps = *p;
 	}
 
-	// visit only if any holds ax_result_t; otherwise warn and return
-	if (!anyx::visit<ax_result_t>(result_any, [&](const ax_result_t &det) { draw(det, ivps); })) {
-		fmt::print("⚠️ [{}] unexpected any type: {} \r\n", PLUGIN_NODE_NAME, anyx::type_name(result_any));
+	const auto& payload_any = jdk_osd::payload_from_any(result_any);
+	if (!anyx::visit<ax_result_t>(payload_any, [&](const ax_result_t &det) { draw(det, ivps); })) {
+		fmt::print("⚠️ [{}] unexpected any type: {} \r\n", PLUGIN_NODE_NAME, anyx::type_name(payload_any));
 	}
+}
+
+jdk_osd::Overlay fireDetectNode::build_overlay_(const ax_result_t& det) {
+	jdk_osd::Overlay overlay;
+	if (!nodeParams_ || !nodeParams_->show_fire || det.n_objects <= 0) return overlay;
+
+	const int count = std::min(det.n_objects, AX_ALGORITHM_MAX_OBJ_NUM);
+	overlay.boxes.reserve(count);
+	for (int i = 0; i < count; ++i) {
+		const auto& obj = det.objects[i];
+		if (obj.bbox.w * obj.bbox.h <= 200) continue;
+
+		const char* label = obj.fire_smoke_info.label == 1 ? "smoke" : "fire";
+		auto color = jdk_osd::Color::from_rgb(random_color(obj.track_id), 255);
+		auto box = jdk_osd::make_box(obj.bbox.x, obj.bbox.y, obj.bbox.w, obj.bbox.h, color, 0, label, 22, 100);
+		box.score = obj.fire_smoke_info.score > 0.0f ? obj.fire_smoke_info.score : obj.score;
+		box.track_id = obj.track_id;
+		overlay.boxes.push_back(std::move(box));
+	}
+	return overlay;
 }
 
 std::pair<nlohmann::json,
@@ -281,7 +302,7 @@ fireDetectNode::alarm_fn(const std::any &result_any,
 				{"alarm_type", "fire_smoke"},
 				{"bbox", {{"x", tr.bbox.x}, {"y", tr.bbox.y}, {"w", tr.bbox.w}, {"h", tr.bbox.h}}}};
 			
-			// TTS audio pillar announcement configuration (managed independently by this plugin, not dependent on other plugins)
+			// TTS音柱播报配置（由本插件独立管理，不依赖其他插件）
 			if (nodeParams_->tts_fire.enabled && nodeParams_->tts_fire.hasContent()) {
 				if (nodeParams_->tts_fire.isUrlMode()) {
 					j["local_push_msg"]["tts_url"] = nodeParams_->tts_fire.url;
@@ -422,7 +443,7 @@ void fireDetectNode::run_infer_combinations(
 		std::lock_guard<std::mutex> lk(*meta->mtx_);
 		auto						new_entry = std::make_shared<jdk_objects::ResultEntry>(
 			   //    std::make_shared<std::any>(det_sp),
-			   anyx::any_make<ax_result_t>(det),
+			   jdk_osd::make_overlay_result(anyx::any_make<ax_result_t>(det), build_overlay_(det)),
 			   /* render_cb */
 			   [this](std::shared_ptr<AXVideoFrame> &canvas,
 					  const std::any &any, const std::any &extra) {

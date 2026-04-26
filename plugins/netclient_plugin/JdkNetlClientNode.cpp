@@ -49,10 +49,10 @@ NetClientNode::~NetClientNode() {
 void NetClientNode::stop() {
 	gate_open();
 	set_alive(false);
-	// Wake up main loop possibly paused in schedule
+	// wake up main loop if it's in schedule pause
 	schedule_paused_.store(false);
 	stop_schedule_checker();
-	// Important: Do not call net_client->stop() while holding mutex_ (may block), otherwise deadlock with handle_run internal blocking.
+	// important: do not call net_client->stop() while holding mutex_ (may block), else deadlock
 	std::shared_ptr<NetClient> local;
 	{
 		std::lock_guard<std::mutex> lk(mutex_);
@@ -66,25 +66,25 @@ void NetClientNode::stop() {
 }
 
 // ---------------------------------------------------------------------------
-// Scheduled deployment -- schedule checker thread
+// Time-based control -- schedule checker thread
 // ---------------------------------------------------------------------------
 void NetClientNode::start_schedule_checker() {
 	// ===== Test mode: test_cycle_seconds =====
 	// Config example: { "test_cycle_seconds": 60 }
-	// Effect: run 60 seconds → pause 60 seconds → run 60 seconds → … cycle
+	// Effect: run 60s -> pause 60s -> run 60s -> ... repeat
 	if (schedule_config_.contains("test_cycle_seconds")) {
 		int cycle_sec = schedule_config_["test_cycle_seconds"].get<int>();
 		if (cycle_sec < 5)
-			cycle_sec = 5;	// Minimum 5 seconds to prevent too fast
+			cycle_sec = 5;	// minimum 5 seconds to prevent too fast
 		fmt::print("[Schedule] ★ TEST MODE: cycle = {} seconds (run {} → pause {} → repeat)\n",
 				   cycle_sec, cycle_sec, cycle_sec);
 
 		schedule_running_.store(true);
-		schedule_joined_.store(false);	// Reset join flag (new thread starting)
+		schedule_joined_.store(false);	// reset join flag (new thread starting)
 		schedule_thread_ = std::thread([this, cycle_sec]() {
 			fmt::print("[Schedule] Test checker thread started\n");
 			while (schedule_running_.load()) {
-				// ---- Running phase ----
+				// ---- running phase ----
 				fmt::print("[Schedule] ▶ TEST: running phase ({} sec)\n", cycle_sec);
 				schedule_paused_.store(false);
 				for (int i = 0; i < cycle_sec && schedule_running_.load(); ++i) {
@@ -93,7 +93,7 @@ void NetClientNode::start_schedule_checker() {
 				if (!schedule_running_.load())
 					break;
 
-				// ---- Pause phase ----
+				// ---- pause phase ----
 				fmt::print("[Schedule] ⏸ TEST: pause phase ({} sec)\n", cycle_sec);
 				schedule_paused_.store(true);
 				for (int i = 0; i < cycle_sec && schedule_running_.load(); ++i) {
@@ -103,11 +103,11 @@ void NetClientNode::start_schedule_checker() {
 			schedule_paused_.store(false);
 			fmt::print("[Schedule] Test checker thread exited\n");
 		});
-		return;	 // Skip normal logic in test mode
+		return;	 // test mode: skip normal logic
 	}
 
-	// ===== Normal mode =====
-	// If no valid schedule config, do not start checker (24/7 operation)
+	// ===== normal mode =====
+	// if no valid schedule config, don't start checker (run 24/7)
 	if (schedule_config_.empty() || !schedule_config_.contains("schedule")) {
 		fmt::print("[Schedule] No schedule config, running 24/7\n");
 		return;
@@ -118,7 +118,7 @@ void NetClientNode::start_schedule_checker() {
 		return;
 	}
 
-	// If all days are disabled (all enabled=false), treat as unconfigured, do not start checker
+	// if all days disabled (all enabled=false), equivalent to no config, don't start checker
 	bool any_day_enabled = false;
 	for (const auto& entry : sched) {
 		if (!entry.contains("enabled") || entry["enabled"].get<bool>()) {
@@ -131,7 +131,7 @@ void NetClientNode::start_schedule_checker() {
 		return;
 	}
 
-	// Perform initial check before starting
+	// do initial check before starting
 	bool initial_in_schedule = is_in_schedule_now();
 	if (!initial_in_schedule) {
 		fmt::print("[Schedule] Not in active period at startup, starting paused\n");
@@ -139,7 +139,7 @@ void NetClientNode::start_schedule_checker() {
 	}
 
 	schedule_running_.store(true);
-	schedule_joined_.store(false);	// Reset join flag (new thread starting)
+	schedule_joined_.store(false);	// reset join flag (new thread starting)
 	schedule_thread_ = std::thread([this]() {
 		fmt::print("[Schedule] Checker thread started\n");
 		while (schedule_running_.load()) {
@@ -154,7 +154,7 @@ void NetClientNode::start_schedule_checker() {
 				schedule_paused_.store(true);
 			}
 
-			// Check every 30 seconds, but segment sleep for quick exit
+			// check every 30s, but segmented sleep for quick exit
 			for (int i = 0; i < 30 && schedule_running_.load(); ++i) {
 				std::this_thread::sleep_for(std::chrono::seconds(1));
 			}
@@ -165,7 +165,7 @@ void NetClientNode::start_schedule_checker() {
 
 void NetClientNode::stop_schedule_checker() {
 	schedule_running_.store(false);
-	// CAS ensures only one thread executes join (stop() and handle_run may call this concurrently)
+	// CAS ensures only one thread executes join (stop() and handle_run may call concurrently)
 	bool expected = false;
 	if (schedule_joined_.compare_exchange_strong(expected, true)) {
 		if (schedule_thread_.joinable()) {
@@ -175,32 +175,32 @@ void NetClientNode::stop_schedule_checker() {
 }
 
 // ---------------------------------------------------------------------------
-// Scheduled deployment -- Check if current time is within deployment period
+// Time-based control -- check if current time is in scheduled period
 // ---------------------------------------------------------------------------
 bool NetClientNode::is_in_schedule_now() const {
 	if (schedule_config_.empty() || !schedule_config_.contains("schedule")) {
-		return true;  // No config → no restrictions, always run
+		return true;  // no config -> no restriction, always run
 	}
 	const auto& sched = schedule_config_["schedule"];
 	if (!sched.is_array() || sched.empty()) {
-		return true;  // Empty array → no restrictions
+		return true;  // empty array -> no restriction
 	}
 
-	// 1. Get current UTC time
+	// 1. get current UTC time
 	auto	now	  = std::chrono::system_clock::now();
 	auto	now_t = std::chrono::system_clock::to_time_t(now);
 	std::tm utc_tm{};
 	gmtime_r(&now_t, &utc_tm);
 
-	// 2. Apply timezone offset (default +08:00)
-	int tz_offset_min = 8 * 60;	 // Default UTC+8
+	// 2. apply timezone offset (default +08:00)
+	int tz_offset_min = 8 * 60;	 // default UTC+8
 	if (schedule_config_.contains("timezone")) {
 		std::string tz = schedule_config_["timezone"].get<std::string>();
-		// Parse "+08:00" / "-05:30" format
+		// parse "+08:00" / "-05:30" format
 		if (tz.size() >= 5 && (tz[0] == '+' || tz[0] == '-')) {
 			int sign  = (tz[0] == '+') ? 1 : -1;
 			int hours = 0, mins = 0;
-			// Find colon separator
+			// find colon separator
 			auto colon_pos = tz.find(':');
 			if (colon_pos != std::string::npos) {
 				hours = std::stoi(tz.substr(1, colon_pos - 1));
@@ -214,11 +214,11 @@ bool NetClientNode::is_in_schedule_now() const {
 		}
 	}
 
-	// 3. Calculate local time
+	// 3. calculate local time
 	int total_min_utc	= utc_tm.tm_hour * 60 + utc_tm.tm_min;
 	int total_min_local = total_min_utc + tz_offset_min;
 
-	// Handle day crossing
+	// handle day boundary crossing
 	int day_offset = 0;
 	if (total_min_local < 0) {
 		total_min_local += 1440;
@@ -228,19 +228,19 @@ bool NetClientNode::is_in_schedule_now() const {
 		day_offset = 1;
 	}
 
-	// 4. Calculate day of week (1=Monday ... 7=Sunday)
+	// 4. calculate weekday (1=Monday ... 7=Sunday)
 	// tm_wday: 0=Sunday, 1=Monday ... 6=Saturday
 	int utc_wday = utc_tm.tm_wday;
-	// Convert to ISO format: 1=Monday ... 7=Sunday
+	// convert to ISO format: 1=Monday ... 7=Sunday
 	int iso_wday = (utc_wday == 0) ? 7 : utc_wday;
-	// Apply date offset
+	// apply day offset
 	iso_wday += day_offset;
 	if (iso_wday < 1)
 		iso_wday += 7;
 	if (iso_wday > 7)
 		iso_wday -= 7;
 
-	// 5. Find corresponding weekday entry in schedule
+	// 5. find entry in schedule for corresponding weekday
 	for (const auto& entry : sched) {
 		if (!entry.contains("weekday"))
 			continue;
@@ -248,38 +248,38 @@ bool NetClientNode::is_in_schedule_now() const {
 		if (weekday != iso_wday)
 			continue;
 
-		// Found corresponding day
-		// Check enabled field
+		// found entry for this day
+		// check enabled field
 		if (entry.contains("enabled") && entry["enabled"].is_boolean() && !entry["enabled"].get<bool>()) {
-			return false;  // Day is disabled
+			return false;  // this day is disabled
 		}
 
-		// Check periods
+		// check periods
 		if (!entry.contains("periods") || !entry["periods"].is_array()) {
-			return true;  // Enabled but no periods → run all day
+			return true;  // enabled but no periods -> run all day
 		}
 		const auto& periods = entry["periods"];
 		if (periods.empty()) {
-			return true;  // Enabled but periods empty → run all day
+			return true;  // enabled but periods empty -> run all day
 		}
 
-		// Iterate through periods, check if current minute is within any period
+		// iterate periods, check if current minute is in any time slot
 		for (const auto& p : periods) {
 			int start_min = p.value("start_min", 0);
 			int end_min	  = p.value("end_min", 1440);
 			if (total_min_local >= start_min && total_min_local < end_min) {
-				return true;  // Within deployment period
+				return true;  // in scheduled period
 			}
 		}
-		return false;  // Found corresponding day, but not within any period
+		return false;  // found day, but not in any time slot
 	}
 
-	// If schedule doesn't have entry for today, treat as unconfigured → run all day (no restrictions)
+	// if no entry for today in schedule, treat as unconfigured -> run all day (no restriction)
 	return true;
 }
 
 // ---------------------------------------------------------------------------
-// RTSP info reporting
+// Report RTSP info
 // ---------------------------------------------------------------------------
 void NetClientNode::report_rtsp_info(const std::shared_ptr<AXVideoFrame>& frame, int fps) {
 	std::string resolution = std::to_string(frame->width()) + "x" + std::to_string(frame->height());
@@ -310,21 +310,21 @@ std::shared_ptr<jdk_objects::jdk_frame_meta> NetClientNode::build_frame_meta(
 }
 
 // ---------------------------------------------------------------------------
-// handle_run -- main processing loop (with scheduled deployment pause logic)
+// handle_run -- main processing loop (with time-based control pause logic)
 // ---------------------------------------------------------------------------
 void NetClientNode::handle_run(std::stop_token stoken) {
 	int			fps	 = 0;
 	int			skip = 0;
 	std::string file_name;
 	bool		pause_drain_sent = false;
-	// Actual FPS statistics: sliding window (last 30 frames)
+	// measured FPS stats: sliding window (last 30 frames)
 	std::deque<std::chrono::steady_clock::time_point> frame_ts_window;
 	constexpr int									  kFpsWindow = 30;
 	fmt::print(fg(fmt::color::blue),
 			   "NetClientNode::handle_run:device_id_:{}, group_:{}, channel_id_:{}\n",
 			   device_id_, group_, channel_id_);
 
-	// Start scheduled deployment timing check thread
+	// start time-based control checker thread
 	start_schedule_checker();
 
 	{
@@ -334,14 +334,14 @@ void NetClientNode::handle_run(std::stop_token stoken) {
 
 	while (!stoken.stop_requested() && is_alive()) {
 		gate_knock();
-		// ---- Scheduled deployment pause check ----
+		// ---- time-based control pause check ----
 		if (schedule_paused_.load()) {
 			if (!pause_drain_sent) {
 				pend_meta(std::make_shared<jdk_objects::jdk_control_meta>(
 					jdk_objects::jdk_control_type::PIPELINE_DRAIN, channel_id_));
 				pause_drain_sent = true;
 			}
-			// Disconnect RTSP (if still connected)
+			// disconnect RTSP (if still connected)
 			if (rtsp_init_) {
 				std::shared_ptr<NetClient> local;
 				{
@@ -355,8 +355,8 @@ void NetClientNode::handle_run(std::stop_token stoken) {
 				fmt::print("[Schedule] ⏸ RTSP disconnected for schedule pause\n");
 			}
 
-			// Sleep and wait for resume: use 1-second granularity polling to ensure fast exit when stopping.
-			// Also report PAUSED status every 5 seconds (maintain heartbeat, prevent frontend timeout)
+			// sleep and wait for resume: poll with 1s granularity to ensure fast exit on stop
+			// report PAUSED status every 5s to maintain heartbeat and prevent timeout
 			int pausedTick = 0;
 			while (schedule_paused_.load() && !stoken.stop_requested() && is_alive()) {
 				if ((pausedTick % 5) == 0) {
@@ -369,16 +369,19 @@ void NetClientNode::handle_run(std::stop_token stoken) {
 			if (stoken.stop_requested() || !is_alive())
 				break;
 
-		// Resume: rebuild NetClient instance
-		fmt::print("[Schedule] ▶ RTSP resuming from schedule pause\n");
-		pause_drain_sent = false;
-		{
-			std::lock_guard<std::mutex> lk(mutex_);
-			net_client = std::make_shared<NetClient>(device_id_, group_, channel_id_, info_, task_name_);
+			// resume: rebuild NetClient instance
+			fmt::print("[Schedule] ▶ RTSP resuming from schedule pause\n");
+			pause_drain_sent = false;
+			{
+				std::lock_guard<std::mutex> lk(mutex_);
+				net_client = std::make_shared<NetClient>(device_id_, group_, channel_id_, info_, task_name_);
+			}
+			continue;  // go back to loop top, re-initialize RTSP lazily
 		}
-		continue;  // Return to loop top, re-lazy init RTSP
-	}
-	// ---- Following is original logic ----
+		// ---- original logic follows ----
+		MetricsReporter::ScopedTimer timer(reporter_);
+
+		// lazy initialize RTSP
 		if (!rtsp_init_) {
 			std::shared_ptr<NetClient> local;
 			{
@@ -388,13 +391,13 @@ void NetClientNode::handle_run(std::stop_token stoken) {
 			if (stoken.stop_requested() || !is_alive())
 				break;
 			if (local) {
-				// start() may be time-consuming/blocking: execute outside the lock to avoid stop() deadlock
+				// start may take time/block: execute outside lock to avoid stop() deadlock
 				rtsp_init_ = local->start(rtsp_url_);
 			}
-			// Immediately check stop signal after start() returns
+			// check stop signal immediately after start returns
 			if (stoken.stop_requested() || !is_alive())
 				break;
-			// Interruptible wait 1 second (check stop signal every 100ms)
+			// interruptible wait 1s (check stop signal every 100ms)
 			for (int w = 0; w < 10 && !stoken.stop_requested() && is_alive(); ++w) {
 				std::this_thread::sleep_for(std::chrono::milliseconds(100));
 			}
@@ -417,20 +420,20 @@ void NetClientNode::handle_run(std::stop_token stoken) {
 		if (stoken.stop_requested() || !is_alive())
 			break;
 		if (local) {
-			// get_frame() may block: execute outside the lock to ensure stop() can call local->stop() to interrupt the blocking
+			// get_frame 可能阻塞：放在锁外执行，保证 stop() 能调用 local->stop() 来打断阻塞
 			frame = local->get_frame((std::atomic<bool>*)alive_ptr());
 		}
-		// Immediately check stop signal after get_frame() blocking returns
+		// check stop signal immediately after get_frame returns
 		if (stoken.stop_requested() || !is_alive())
 			break;
 		if (!frame) {
-			usleep(30000);	// Consistent with original logic, avoid scheduling/granularity overhead from multiple short sleeps
+			usleep(30000);	// consistent with original logic, avoid scheduling overhead from multiple short sleeps
 			continue;
 		}
 
 		this->frame_index++;
 
-		// Actual FPS: sliding window statistics
+		// measured FPS: sliding window stats
 		auto now_tp = std::chrono::steady_clock::now();
 		frame_ts_window.push_back(now_tp);
 		if ((int)frame_ts_window.size() > kFpsWindow)
@@ -455,8 +458,8 @@ void NetClientNode::handle_run(std::stop_token stoken) {
 		std::string codec	   = (frame->enType == 96 ? "H264" : "H265");
 		reporter_.report_input_rtsp(resolution, codec, fps);
 
-		// No additional sleep: get_frame() itself blocks waiting for queue, naturally following stream's real FPS.
-		// Additional sleep will stack on top of get_frame() wait time, causing FPS to be artificially reduced.
+		// do not add extra sleep: get_frame itself blocks waiting for queue, naturally following real stream fps
+		// extra sleep would stack on top of get_frame wait time, artificially lowering fps
 	}
 
 	fmt::print("[NetClientNode] handle_run exiting loop: {}\n", task_id_);

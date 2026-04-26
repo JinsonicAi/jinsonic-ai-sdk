@@ -14,6 +14,8 @@ public:
 	virtual int							  Init()										= 0;
 	virtual void						  Release()										= 0;
 	virtual std::shared_ptr<AXVideoFrame> Decode(const uint8_t* nalu, size_t nalu_size) = 0;
+	virtual bool						  NeedKeyFrameSync() const noexcept { return false; }
+	virtual bool						  NeedReset() const noexcept { return false; }
 	// virtual int							  sendFrame(const uint8_t* nalu, size_t nalu_size) = 0;
 	// virtual std::shared_ptr<AXVideoFrame> getFrame()									   = 0;
 };

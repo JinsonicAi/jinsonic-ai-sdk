@@ -45,15 +45,15 @@ int main(int argc, char *argv[]) {
 
     std::atomic<bool> alive(true);
 
-    // Input thread: press Enter to exit
+    // 输入线程：按回车退出
     std::thread input_thread([&alive]() {
-        std::cout << "Press Enter to exit..." << std::endl;
+        std::cout << "按回车退出..." << std::endl;
         std::string wait;
         std::getline(std::cin, wait);
         alive = false;
     });
 
-    // Loop to get frames
+    // 循环取帧
     while (alive.load()) {
         auto frame = netclient->get_frame(&alive);
 

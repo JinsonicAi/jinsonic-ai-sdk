@@ -12,9 +12,9 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--allow-shlib-undefine
 include_directories(include
 	thirdpark/jdk/include/
 	thirdpark/comm/include
-	thirdpark/650nv3.6.2/aibox/include 
-	thirdpark/650nv3.6.2/axcl/axcl_linux_arm64/include  
-	thirdpark/650nv3.6.2/axcl/axcl_linux_arm64/include/ffmpeg
+	thirdpark/650nv3.10.2/aibox/include 
+	thirdpark/650nv3.10.2/axcl/axcl_linux_arm64/include  
+	thirdpark/650nv3.10.2/axcl/axcl_linux_arm64/include/ffmpeg
 	thirdpark/opencv4/include/opencv4
 	thirdpark/openssl/include
 	thirdpark/libfmt/include
@@ -23,9 +23,9 @@ include_directories(include
 link_directories(thirdpark/comm/lib
 	thirdpark/opencv4/lib
 	thirdpark/jdk/lib
-	thirdpark/650nv3.6.2/aibox/lib
-	thirdpark/650nv3.6.2/axcl/axcl_linux_arm64/lib
-	thirdpark/650nv3.6.2/axcl/axcl_linux_arm64/lib/ffmpeg
+	thirdpark/650nv3.10.2/aibox/lib
+	thirdpark/650nv3.10.2/axcl/axcl_linux_arm64/lib
+	thirdpark/650nv3.10.2/axcl/axcl_linux_arm64/lib/ffmpeg
 	thirdpark/backend_plugin/lib
 )
 

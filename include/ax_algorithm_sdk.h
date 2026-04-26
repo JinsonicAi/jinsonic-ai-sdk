@@ -45,6 +45,8 @@ extern "C"
         ax_error_code_run_invalid_index,
         ax_error_code_run_type_not_match,
         ax_error_code_run_no_implement,
+        ax_error_code_run_invalid_image,
+        ax_error_code_run_device_id_mismatch,
     } ax_error_code_e;
 
     typedef enum _color_space_e
@@ -55,6 +57,23 @@ extern "C"
         ax_color_space_bgr,
         ax_color_space_rgb,
     } ax_color_space_e;
+
+    /**
+     * @brief: 图像前处理后端选择（AXCL 用）
+     *
+     * - auto: host 输入优先走 OpenCV；device 输入走硬件（IVPS）
+     * - hardware: 强制走硬件（host 输入会触发整帧上传到 device）
+     * - opencv: 强制走 OpenCV（device 输入会自动回退到硬件）
+     *
+     * 环境变量：
+     * - AISDK_IMGPROC_BACKEND=auto|hardware|opencv
+     */
+    typedef enum _imgproc_backend_e
+    {
+        ax_imgproc_backend_auto = 0,
+        ax_imgproc_backend_hardware = 1,
+        ax_imgproc_backend_opencv = 2,
+    } ax_imgproc_backend_e;
 
     typedef struct _point_t
     {
@@ -155,6 +174,45 @@ extern "C"
         unsigned char expression; // ["Anger", "Disgust", "Fear", "Happiness", "Neutral", "Sadness", "Surprise"]
     } ax_face_attr_t;
 
+    typedef struct _car_attr_t
+    {
+        /**
+         * 车辆属性: 品牌/类型/颜色
+         *
+         * brand:
+         *   0:UNKNOWN, 1:奥迪, 2:华泰, 3:奇瑞, 4:保时捷, 5:奔驰
+         *   6:福田, 7:中华, 8:兰博基尼, 9:蔚来, 10:奔腾, 11:道奇
+         *   12:GMC, 13:斯柯达, 14:北京汽车, 15:东南, 16:东风, 17:特斯拉
+         *   18:沃尔沃, 19:日产, 20:力帆汽车, 21:起亚, 22:江铃, 23:迈凯伦
+         *   24:北汽幻速, 25:哪吒汽车, 26:帕加尼, 27:英菲尼迪, 28:广汽, 29:马自达
+         *   30:一汽, 31:大众, 32:宝骏, 33:玛莎拉蒂, 34:克莱斯勒, 35:纳智捷
+         *   36:雪佛兰, 37:雪铁龙, 38:雷诺, 39:铃木, 40:陆风, 41:比亚迪
+         *   42:福特, 43:欧拉, 44:捷途, 45:长城, 46:标致, 47:上汽大通MAXUS
+         *   48:名爵, 49:五菱汽车, 50:捷豹, 51:问界, 52:Polestar汽车, 53:欧宝
+         *   54:坦克, 55:阿斯顿马丁, 56:林肯, 57:Jeep, 58:哈弗, 59:劳斯莱斯
+         *   60:理想, 61:MINI, 62:凯迪拉克, 63:本田, 64:红旗, 65:别克
+         *   66:长安凯程, 67:众泰, 68:金杯, 69:斯巴鲁, 70:迈莎锐, 71:DS
+         *   72:智己, 73:路虎, 74:海马, 75:岚图汽车, 76:北汽威旺, 77:零跑汽车
+         *   78:吉利, 79:五十铃, 80:启辰, 81:宾利, 82:法拉利, 83:ARCFOX极狐
+         *   84:长安欧尚, 85:宝马, 86:江淮, 87:荣威, 88:现代, 89:长安
+         *   90:三菱, 91:魏牌, 92:丰田, 93:小鹏汽车, 94:讴歌, 95:菲亚特
+         *   96:领克, 97:雷克萨斯, 98:乐道, 99:享界, 100:仰望, 101:埃安
+         *   102:尊界, 103:小米汽车, 104:方程豹, 105:智界, 106:极氪, 107:深蓝汽车
+         *   108:腾势, 109:阿维塔
+         *
+         * vType:
+         *   0:UNKNOWN, 1:SEDAN, 2:SUV, 3:BUS, 4:MICROBUS, 5:TRUCK, 6:BICYCLE, 7:MOTORCYCLE, 8:ELECTRIC_VEHICLE
+         *
+         * vColor:
+         *   0:UNKNOWN, 1:BROWN, 2:ORANGE, 3:GRAY, 4:WHITE, 5:PINK, 6:PURPLE, 7:RED, 8:GREEN, 9:BLUE, 10:SILVER, 11:YELLOW, 12:BLACK
+         *
+         * 类别表源文件: algo_models/vehicle_attrs.txt
+         */
+        unsigned char brand;
+        unsigned char vType;
+        unsigned char vColor;
+    } ax_car_attr_t;
+
     typedef struct _object_t
     {
         ax_bbox_t bbox;
@@ -190,11 +248,6 @@ extern "C"
 
         struct
         {
-            /*
-            车辆类型: 0：UNKNOWN 1：SEDAN 2：SUV 3：BUS 4：MICROBUS 5：TRUCK
-            */
-            int cartype;
-
             /*
             如果 b_is_track_plate = 1，则表示当前帧没有识别到车牌，返回的是历史上 track_id 上一次识别到的车牌结果
             如果 b_is_track_plate = 0，且 len_plate_id > 0, 则表示当前帧识别到了车牌
@@ -292,6 +345,22 @@ extern "C"
     int ax_algorithm_set_affinity(ax_algorithm_handle_t handle, ax_npu_affinity_e affinity);
 
     /**
+     * @brief: 设置图像前处理后端（handle 级别）
+     * @param[in] handle: 算法句柄
+     * @param[in] backend: 前处理后端
+     * @return 0 成功，非零表示失败。
+     */
+    int ax_algorithm_set_imgproc_backend_for_handle(ax_algorithm_handle_t handle, ax_imgproc_backend_e backend);
+    ax_imgproc_backend_e ax_algorithm_get_imgproc_backend_for_handle(ax_algorithm_handle_t handle);
+
+    /**
+     * @brief: 设置图像前处理后端（全局默认，影响未设置 handle override 的句柄）
+     * @return 0 成功，非零表示失败。
+     */
+    int ax_algorithm_set_imgproc_backend(ax_imgproc_backend_e backend);
+    ax_imgproc_backend_e ax_algorithm_get_imgproc_backend(void);
+
+    /**
      * @brief: 与ax_algorithm_track的区别是不进行跟踪, 一般只用作精度验证，或者人脸注册的检测阶段
      * @param[in] handle: 算法句柄
      * @param[in] image: 图像数据
@@ -366,6 +435,16 @@ extern "C"
      * @return 0 成功，非零表示失败。
      */
     int ax_algorithm_get_plate_str(int *plate_id, int len, char *plate_str);
+
+    /**
+     * @brief: 获取车辆属性(品牌/类型/颜色)
+     * @param[in] handle: 算法句柄
+     * @param[in] image: 图像数据
+     * @param[in] bbox: 车辆 bounding box, 传 NULL 表示整图
+     * @param[out] car_attr: 车辆属性
+     * @return 0 成功，非零表示失败。
+     */
+    int ax_algorithm_get_car_attr(ax_algorithm_handle_t handle, ax_image_t *image, ax_bbox_t *bbox, ax_car_attr_t *car_attr);
 
     /**
      * @brief: 获取检测到的人体属性

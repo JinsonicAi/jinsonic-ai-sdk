@@ -21,7 +21,7 @@ extern "C" void plugin_init(SDKInterface* sdk) {
 		info.video.width   = jp(config, "width", 0);
 		info.video.height  = jp(config, "height", 0);
 
-		// Extract scheduled deployment configuration (optional)
+		// 提取按时布控配置（可选）
 		nlohmann::json schedule_config = config.value("schedule_config", nlohmann::json{});
 
 		return jdk_nodes::jdk_node_wrapper::create(

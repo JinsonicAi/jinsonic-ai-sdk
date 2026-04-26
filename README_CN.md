@@ -6,7 +6,7 @@
 
 **适用范围**
 - SDK 版本：`aibox_sdk`（当前仓库）
-- 固件基线：`3.6.2`
+- 固件基线：`3.10.2`
 - 对接协议版本：`平台设备对接协议规范 V1.0.2`（发布时间：`2026-02-21`）
 - 目标硬件：AX650N / AX8850（板卡与算力卡）
 - 目标读者：算法工程师、平台后端工程师、交付实施工程师
@@ -32,7 +32,7 @@
 ### 1.1 核心设计
 - **Node（节点）**：最小处理单元，负责输入、算法、输出中的某个环节。
 - **Pipeline（管线）**：通过 `attach_to()` 将多个节点按 DAG 连接。
-- **Plugin（插件）**：运行时动态加载的功能包（`.plugin`），包含 `libxxx.so + config.json + models`。
+- **Plugin（插件）**：运行时动态加载的功能包（`.plugin`），包含 `data + config.json`。
 - **SDKInterface**：运行时向插件提供的回调入口（注册节点、日志、配置、事件）。
 
 ### 1.2 典型数据流
@@ -40,7 +40,7 @@
 
 ### 1.3 报警链路（高频对接场景）
 - 算法节点通过 `result_map_` 写入 `ResultEntry`。
-- `ResultEntry` 包含：`result + render_fn + alarm_fn + push策略`。
+- `ResultEntry` 包含：`result + build_overlay + push策略`。
 - `alarm_plugin` 拉取各算法节点 `alarm_fn` 的返回结果并统一推送：
   - 本地通知（UI/数据库）
   - HTTP 服务器推送

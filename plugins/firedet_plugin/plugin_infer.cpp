@@ -36,18 +36,18 @@ extern "C" void plugin_init(SDKInterface* sdk) {
 		nodeParams->model_path = jp(config, "model_path", "./models/fs_20241231_npu1.model");
 		nodeParams->task_id	   = jp(config, "task_id", "0");
 
-		nodeParams->llm_review.enabled				 = jp(config, "llm_review_enable", false);
-		nodeParams->llm_review.prompt				 = jp(config, "llm_review_prompt", std::string("判断火焰是否真实存在，只回答 YES 或 NO。"));
-			nodeParams->llm_review.expected_keyword	 = jp(config, "llm_review_expected_keyword", std::string("YES"));
-			nodeParams->llm_review.timeout_ms			 = std::max(200, jp(config, "llm_review_timeout_ms", 3000));
-		nodeParams->llm_review.deny_on_mismatch	 = jp(config, "llm_review_deny_on_mismatch", true);
+		nodeParams->llm_review.enabled					= jp(config, "llm_review_enable", false);
+		nodeParams->llm_review.prompt					= jp(config, "llm_review_prompt", std::string("判断火焰是否真实存在，只回答 YES 或 NO。"));
+		nodeParams->llm_review.expected_keyword			= jp(config, "llm_review_expected_keyword", std::string("YES"));
+		nodeParams->llm_review.timeout_ms				= std::max(200, jp(config, "llm_review_timeout_ms", 3000));
+		nodeParams->llm_review.deny_on_mismatch			= jp(config, "llm_review_deny_on_mismatch", true);
 		nodeParams->llm_review.follow_upstream_on_error = jp(config, "llm_review_follow_on_error", true);
-		nodeParams->llm_review.decode_location		 = jp(config, "llm_review_decode_location", std::string(""));
+		nodeParams->llm_review.decode_location			= jp(config, "llm_review_decode_location", std::string(""));
 
-	// TTS audio column broadcast configuration (fire/smoke)
+		// TTS音柱播报配置（火灾/烟雾）
 		nodeParams->tts_fire.enabled = jp(config, "tts_fire_enabled", false);
-		nodeParams->tts_fire.text    = jp(config, "tts_fire_text", std::string("警报！检测到烟雾或火焰，请注意安全并立即撤离！"));
-		nodeParams->tts_fire.url     = jp(config, "tts_fire_url", std::string(""));
+		nodeParams->tts_fire.text	 = jp(config, "tts_fire_text", std::string("警报！检测到烟雾或火焰，请注意安全并立即撤离！"));
+		nodeParams->tts_fire.url	 = jp(config, "tts_fire_url", std::string(""));
 
 		return jdk_nodes::jdk_node_wrapper::create(
 			name,

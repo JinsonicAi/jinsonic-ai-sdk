@@ -40,14 +40,14 @@ private:
 	void		report_rtsp_info(const std::shared_ptr<AXVideoFrame>& frame, int fps);
 	std::string task_id_{};
 	std::string task_name_{};
-	int			device_id_;	  //-1 host,0 >= device
+	int		device_id_;	  //-1 host, 0 >= device
 	int			group_;		  // < 32
 	int			channel_id_;  // default 0
 
 	std::string				   rtsp_url_;
 	bool					   rtsp_init_	 = false;
-	// Critical: Avoid calling NetClient's potentially blocking interfaces (get_frame/start/stop) while holding mutex_
-	// Using shared_ptr allows safe copying of references outside the lock, eliminating deadlocks between stop() and handle_run().
+	// key: avoid blocking NetClient methods (get_frame/start/stop) while holding mutex_
+	// use shared_ptr to safely copy ref outside lock, eliminating deadlock between stop() and handle_run()
 	std::shared_ptr<NetClient> net_client	 = {nullptr};
 	int						   skip_interval = 0;
 	stream_info				   info_{};
@@ -55,16 +55,16 @@ private:
 	std::mutex		mutex_;
 	MetricsReporter reporter_{5};
 
-	// ---- Scheduled deployment (schedule-based pause/resume) ----
-	nlohmann::json		schedule_config_;			 // Deployment configuration JSON
-	std::atomic<bool>	schedule_paused_{false};		 // Whether currently paused by deployment
-	std::atomic<bool>	schedule_running_{false};	 // Checker thread running flag
-	std::atomic<bool>	schedule_joined_{false};		 // Ensure join only executes once
-	std::thread			schedule_thread_;			 // Periodic check thread
+	// ---- time-based control (schedule-based pause/resume) ----
+	nlohmann::json		schedule_config_;		 // schedule config JSON
+	std::atomic<bool>	schedule_paused_{false};		 // whether currently paused by schedule
+	std::atomic<bool>	schedule_running_{false};	 // checker thread running flag
+	std::atomic<bool>	schedule_joined_{false};		 // ensure join only executes once
+	std::thread			schedule_thread_;		 // periodic check thread
 
-	void start_schedule_checker();					 // Start scheduled deployment check thread
-	void stop_schedule_checker();					 // Stop scheduled deployment check thread
-	bool is_in_schedule_now() const;				 // Check if current time is within deployment period
+	void start_schedule_checker();					 // start periodic schedule check thread
+	void stop_schedule_checker();					 // stop periodic schedule check thread
+	bool is_in_schedule_now() const;				 // check if current time is in scheduled period
 };
 }  // namespace jdk_nodes
 

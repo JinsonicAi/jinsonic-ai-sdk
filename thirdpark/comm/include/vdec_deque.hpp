@@ -177,6 +177,15 @@ public:
 		cond_var_not_empty_.notify_all();  // wake up all waiting threads
 		cond_var_not_full_.notify_all();
 	}
+	void clear() {
+		{
+			std::lock_guard<std::mutex> lock(mutex_);
+			while (!queue_.empty()) {
+				queue_.pop();
+			}
+		}
+		cond_var_not_full_.notify_all();
+	}
 
 private:
 	mutable std::mutex		mutex_;

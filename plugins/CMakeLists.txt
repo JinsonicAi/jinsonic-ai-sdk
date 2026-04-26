@@ -18,9 +18,9 @@ set(PLUGIN_COMMON_INCLUDE
 	${CMAKE_SOURCE_DIR}/../include
 	${CMAKE_SOURCE_DIR}/../thirdpark/jdk/include
 	${CMAKE_SOURCE_DIR}/../thirdpark/comm/include
-	${CMAKE_SOURCE_DIR}/../thirdpark/650nv3.6.2/aibox/include
-	${CMAKE_SOURCE_DIR}/../thirdpark/650nv3.6.2/axcl/axcl_linux_arm64/include
-	${CMAKE_SOURCE_DIR}/../thirdpark/650nv3.6.2/axcl/axcl_linux_arm64/include/ffmpeg
+	${CMAKE_SOURCE_DIR}/../thirdpark/650nv3.10.2/aibox/include
+	${CMAKE_SOURCE_DIR}/../thirdpark/650nv3.10.2/axcl/axcl_linux_arm64/include
+	${CMAKE_SOURCE_DIR}/../thirdpark/650nv3.10.2/axcl/axcl_linux_arm64/include/ffmpeg
 	${CMAKE_SOURCE_DIR}/../thirdpark/backend_plugin/include/
 	${CMAKE_SOURCE_DIR}/../thirdpark/opencv4/include/opencv4
 	${CMAKE_SOURCE_DIR}/../thirdpark/comm/include/gb28181
