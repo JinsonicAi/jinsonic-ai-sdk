@@ -30,7 +30,7 @@ public:
 
 	void			   registerPlugin(const std::string& name, const InferencePluginPtr& plugin);
 	InferencePluginPtr findPlugin(const std::string& name) const;
-	bool			   startup(std::tuple<std::string, std::string> param, int device_id);
+	bool			   startup(std::tuple<std::string, std::string> param, int device_id, const std::string &model_name = "");
 	void			   stop();
 
 	std::shared_future<std::any>			  commit(const std::any& input);

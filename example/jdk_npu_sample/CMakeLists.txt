@@ -1,7 +1,7 @@
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(jdk_npu_sample
-	infer.cpp
+	yoloFace.cpp
 	main.cpp
 )
 

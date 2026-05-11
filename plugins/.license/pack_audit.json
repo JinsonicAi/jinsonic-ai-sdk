@@ -1,0 +1,12 @@
+{
+  "build_cert_id": "BCERT_146C0A11FF39D8B5",
+  "certificate_expires_at": "permanent",
+  "certificate_issued_at": "2026-04-25 17:20:52",
+  "packaged_at": "2026-05-11T15:31:20+08:00",
+  "plugin": "persondet",
+  "product": "ax650x",
+  "schema_version": 1,
+  "scope": "customer-all",
+  "source": "buildkit",
+  "tool": "pack"
+}

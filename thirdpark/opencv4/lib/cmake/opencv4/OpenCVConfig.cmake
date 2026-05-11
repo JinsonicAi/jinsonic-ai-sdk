@@ -105,7 +105,7 @@ set(OpenCV_SHARED ON)
 # Enables mangled install paths, that help with side by side installs
 set(OpenCV_USE_MANGLED_PATHS FALSE)
 
-set(OpenCV_LIB_COMPONENTS opencv_core;opencv_features2d;opencv_flann;opencv_highgui;opencv_imgcodecs;opencv_imgproc;opencv_video;opencv_videoio;opencv_world;opencv_freetype)
+set(OpenCV_LIB_COMPONENTS opencv_calib3d;opencv_core;opencv_features2d;opencv_flann;opencv_highgui;opencv_imgcodecs;opencv_imgproc;opencv_photo;opencv_video;opencv_videoio;opencv_world;opencv_freetype;opencv_videostab)
 set(__OpenCV_INCLUDE_DIRS "${OpenCV_INSTALL_PATH}/include/opencv4")
 
 set(OpenCV_INCLUDE_DIRS "")
@@ -195,7 +195,7 @@ if(NOT OpenCV_FIND_COMPONENTS)
   endif()
 endif()
 
-set(OpenCV_WORLD_COMPONENTS opencv_core;opencv_features2d;opencv_flann;opencv_freetype;opencv_highgui;opencv_imgcodecs;opencv_imgproc;opencv_video;opencv_videoio)
+set(OpenCV_WORLD_COMPONENTS opencv_calib3d;opencv_core;opencv_features2d;opencv_flann;opencv_freetype;opencv_highgui;opencv_imgcodecs;opencv_imgproc;opencv_photo;opencv_video;opencv_videoio;opencv_videostab)
 
 # expand short module names and see if requested components exist
 foreach(__cvcomponent ${OpenCV_FIND_COMPONENTS})

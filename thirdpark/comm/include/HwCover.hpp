@@ -27,7 +27,8 @@
 //     float confidence;
 //     std::vector<YPoint> keypoints;
 // };
-
+#ifndef CV_MEMBER_TRAITS_DEFINED
+#define CV_MEMBER_TRAITS_DEFINED
 template <typename, typename = std::void_t<>>
 struct has_rect : std::false_type {};
 
@@ -49,7 +50,7 @@ struct has_keypoints : std::false_type {};
 
 template <typename T>
 struct has_keypoints<T, std::void_t<decltype(std::declval<T>().keypoints)>> : std::true_type {};
-
+#endif
 class FillRect {
 public:
 	AX_U32 x;

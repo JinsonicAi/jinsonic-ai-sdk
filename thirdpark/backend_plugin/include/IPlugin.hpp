@@ -78,7 +78,7 @@ public:
 	virtual ~IInferencePlugin() {}
 
 public:
-	virtual int32_t Initialize(const std::string& model_filename, int device_id = -1) = 0;
+	virtual int32_t Initialize(const std::string& model_filename, int device_id = -1, const std::string& model_name = "") = 0;
 	virtual int32_t SetPriority(const int32_t priority)								  = 0;
 	virtual int32_t SetNumThreads(const int32_t num_threads)						  = 0;
 	virtual int32_t SetCustomOps(const TensorParam& custom_ops)						  = 0;
