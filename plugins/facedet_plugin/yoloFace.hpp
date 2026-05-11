@@ -74,7 +74,7 @@ public:
 	virtual int paramsGet(Params &params)	   = 0;
 };
 
-std::shared_ptr<Infer> create_infer(const std::string &file, const std::string &type = "ax", int device_id = -1, int batch_size = 1);
+std::shared_ptr<Infer> create_infer(const std::string &file, const std::string &type = "ax", int device_id = -1, const std::string &model_name = "", int batch_size = 1);
 }  // namespace YOLOFACE
 
 typedef YOLOFACE::Objects FaceDetTarget;

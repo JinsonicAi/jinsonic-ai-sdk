@@ -24,12 +24,12 @@ public:
 		std::cout << "Destructor of OjbInfer called" << std::endl;
 	}
 	virtual bool startup(const std::string &file, int batch_size,
-						 const std::string type, int device_id) {
+						 const std::string type, const std::string &model_name, int device_id) {
 		device_id_ = device_id;
 		if (ipvs == nullptr) {
 			ipvs = std::make_shared<HwIvps>(device_id_, 0, 0);
 		}
-		return InferenceEngine::startup(make_tuple(file, type), device_id);
+		return InferenceEngine::startup(make_tuple(file, type), device_id,model_name);
 	}
 	virtual bool	 pre_process(Job &job, const std::any &input) override;
 	virtual std::any post_process(const Job &job) override;
@@ -109,19 +109,7 @@ bool OjbInfer::pre_process(Job &job, const std::any &input) {
 							  (float *)inputFrame->getPviraddr() + index * Fp32Image.total());
 	}
 	cv::split(Fp32Image, channels);
-	if (isHost()) {
-		job.input = inputFrame;
-		// cv::Mat merged;
-		// cv::vconcat(channels, merged);
-		// job.input = merged;
-		// printf("job.input ------>size:%d\r\n", inputFrame->size());
-	} else {
-		cv::Mat merged;
-		cv::vconcat(channels, merged);
-		job.input = merged;
-	}
-
-	// }
+	job.input = inputFrame;
 	return true;
 }
 
@@ -201,7 +189,7 @@ std::any OjbInfer::post_process(const Job &job) {
 		// printf("[%d,%d,%d,%d],stride:%d\r\n", batch, channel, height, width, stride);
 		decode(tensor->host<float>(), width, height, stride, anchor[&tensor - &engine->outputs[0]], bboxes, confThreshold_);
 	}
-
+ 
 	// printf("bboxes size: %d\n", bboxes.size());
 	auto fast_mns = [&](Objects &src_box, Objects &box_result, float threshold) {
 		std::sort(src_box.begin(), src_box.end(),
@@ -309,10 +297,10 @@ void OjbName::JsonCfg::save_to_json(const std::string &json_file) {
 }
 
 EXPORT_VISIBILITY std::shared_ptr<Infer> OjbName::create_infer(
-	const std::string &file, const std::string &type, int device_id, int batch_size) {
-	printf("create_infer file:%s, type:%s, device_id:%d, batch_size:%d\r\n", file.data(), type.data(), device_id, batch_size);
+	const std::string &file, const std::string &type, int device_id, const std::string &model_name, int batch_size) {
+	printf("create_infer file:%s, type:%s, device_id:%d, model_name:%s, batch_size:%d\r\n", file.data(), type.data(), device_id, model_name.data(), batch_size);
 	shared_ptr<OjbInfer> instance(new OjbInfer());
-	if (!instance->startup(file, batch_size, type, device_id)) {
+	if (!instance->startup(file, batch_size, type,model_name, device_id)) {
 		instance.reset();
 	}
 	return instance;

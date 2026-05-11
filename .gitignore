@@ -6,6 +6,10 @@ plugins_out
 build_out
 objs
 .vscode
+.cursor
+.codex
+.bak
+CMakeFiles
 
 #emacs
 ._*
