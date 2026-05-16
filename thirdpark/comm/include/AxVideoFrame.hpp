@@ -78,6 +78,7 @@ public:	 // encode
 
 private:
 	class Impl;
+	AXVideoFrame(uint32_t width, uint32_t height, int device_id, AX_IMG_FORMAT_E format, AX_U32 nAlign, bool pool_backed);
 	std::unique_ptr<Impl> impl_;
 };
 

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <typeinfo>
+#include "ResizeOptions.hpp"
 
 #include "AxVideoFrame.hpp"
 #include "HwIvps.hpp"
@@ -76,11 +77,10 @@ bool OjbInfer::pre_process(Job &job, const std::any &input) {
 	// printf(" device_id:%d,size:%d\r\n", frame->device_id(), frame->size());
 	// frame->save_data("pre_process_1280x720_nv12.yuv");
 
-	auto dstDewarpFrame = ipvs->HwIvpsDewarp(frame->raw(), {width, height}, tm_, !letterbox_dewarp_failed_);
-	if (!dstDewarpFrame && !letterbox_dewarp_failed_) {
-		letterbox_dewarp_failed_ = true;
+	auto dstDewarpFrame = ipvs->HwIvpsDewarp(frame->raw(), {width, height}, tm_, ResizeMode{ResizeMode::Stretch});
+	if (!dstDewarpFrame ) {
 		std::cout << "[FaceDet] letterbox dewarp failed, retry with stretch resize.\n";
-		dstDewarpFrame = ipvs->HwIvpsDewarp(frame->raw(), {width, height}, tm_, false);
+		dstDewarpFrame = ipvs->HwIvpsDewarp(frame->raw(), {width, height}, tm_, ResizeMode{ResizeMode::Stretch});
 	}
 	if (!dstDewarpFrame) {
 		std::cout << "[FaceDet] invalid dstDewarpFrame\n";
@@ -189,7 +189,7 @@ std::any OjbInfer::post_process(const Job &job) {
 		// printf("[%d,%d,%d,%d],stride:%d\r\n", batch, channel, height, width, stride);
 		decode(tensor->host<float>(), width, height, stride, anchor[&tensor - &engine->outputs[0]], bboxes, confThreshold_);
 	}
- 
+
 	// printf("bboxes size: %d\n", bboxes.size());
 	auto fast_mns = [&](Objects &src_box, Objects &box_result, float threshold) {
 		std::sort(src_box.begin(), src_box.end(),

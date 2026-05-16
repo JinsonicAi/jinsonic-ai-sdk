@@ -43,6 +43,7 @@ set(PLUGIN_COMMON_LINK_DIRS
 	${CMAKE_SOURCE_DIR}/../thirdpark/mqtt/lib
 	${CMAKE_SOURCE_DIR}/../thirdpark/libfmt/lib
 	${CMAKE_SOURCE_DIR}/../thirdpark/sqlite/lib
+	${CMAKE_SOURCE_DIR}/../thirdpark/650nv3.10.2/axcl/axcl_linux_arm64/lib/ffmpeg
 )
 
 set(PLUGIN_COMMON_LIBS

@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
 
 	TransformMatrices tm = {0};
 
-	auto dstDewarpFrame = ipvs->HwIvpsDewarp(DewarpFrame->raw(), {416, 416}, tm, false);
+	auto dstDewarpFrame = ipvs->HwIvpsDewarp(DewarpFrame->raw(), {416, 416}, tm, ResizeOptions());
 
 	if (dstDewarpFrame == nullptr) {
 		printf("HwIvpsDewarp failed.\n");

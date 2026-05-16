@@ -48,32 +48,6 @@ void faceDetectV2Node::stop() {
 	fmt::print("✅ faceDetectV2Node stop ok!\n");
 }
 
-#if 0
-void faceDetectV2Node::render_fn(std::shared_ptr<AXVideoFrame>& canvas, const std::any& result_any, const std::any& extra) {
-	auto draw = [&](const FaceDetTarget& target, std::shared_ptr<HwIvps> ivps) {
-		for (const auto& ibox : target) {
-			AX_U32 color = random_color(ibox.label);
-			if (ivps) {
-				cv::Rect clipped_rect = cv::Rect(0, 0, canvas->width(), canvas->height()) & cv::Rect(ibox.rect);
-				if (clipped_rect.area() <= 200) continue;
-				ivps->HwDrawRect(canvas->raw(), {clipped_rect.x, clipped_rect.y, clipped_rect.width, clipped_rect.height}, color);
-			}
-		}
-	};
-
-	// best-effort get ivps from extra
-	std::shared_ptr<HwIvps> ivps = nullptr;
-	if (auto p = anyx::get<std::shared_ptr<HwIvps>>(extra)) {
-		ivps = *p;
-	}
-
-	// visit only if any holds ax_result_t; otherwise warn and return
-	if (!anyx::visit<YOLOFACE::Objects>(result_any, [&](const YOLOFACE::Objects& det) { draw(det, ivps); })) {
-		fmt::print("⚠️ [{}  Render] unexpected any type: {} \r\n", PLUGIN_NODE_NAME, anyx::type_name(result_any));
-	}
-}
-#endif
-
 void faceDetectV2Node::render_fn(std::shared_ptr<AXVideoFrame>& canvas,
 								 const std::any&				result_any,
 								 const std::any&				extra) {

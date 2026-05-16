@@ -637,9 +637,10 @@ extern "C" void plugin_cleanup(SDKInterface* sdk) {
 ---
 
 ## 附录 B：参考文档
-- `doc/PLUGIN_CONFIG_REFERENCE_ZH.md`
-- `doc/平台设备对接协议规范-V1.0.2.docx`
-- `plugins/alarm_plugin/TTS_README.md`
+- [用户使用手册](doc/USER_MANUAL/USER_MANUAL_ZH.md)
+- [插件使用说明](doc/PLUGIN_CONFIG_REFERENCE_ZH.md)
+- [平台设备对接协议规范-V1.0.2.docx](doc/平台设备对接协议规范-V1.0.2.docx)
+- [文本TTS与媒体URL播放接口.pdf](doc/文本TTS与媒体URL播放接口.pdf)
 
 ---
 
