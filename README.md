@@ -11,7 +11,8 @@
 > **Target hardware**
 > - ① AX650N / AX8850 standalone boards (all-in-one devices)
 > - ② AX650N / AX8850 compute cards inserted into AX-based hosts (multi-card mix)
-> - ③ Third-party hosts + AX compute cards (RK3588 / Raspberry Pi 5 / x86)
+> - ③ Third-party hosts + AX compute cards (RK / Raspberry Pi 5 / x86)
+> - ④ RK local devices (RK35xx / RV1126B, with native RK codec, RGA, and RKNN acceleration)
 >
 > **Audience**
 > - Algorithm engineers
@@ -84,6 +85,34 @@ alarm_plugin
        ├─ server_push_msg →  POST server_push_uri (capture upload)
        └─ alarm_push_msg  →  POST /api/v1/device/report/event
 ```
+
+
+### 1.4 Runtime Locations and RK Local Acceleration
+
+AIBox Runtime supports a unified **Runtime Location** abstraction. Applications, plugins, and the Web UI select where a task runs; they do not need to know whether the underlying implementation is AX local hardware, an AXCL compute card, or RK local hardware.
+
+| Runtime location | Typical hardware | Media pipeline | Inference backend | Description |
+|---|---|---|---|---|
+| `ax.local` | AX650N / AX8850 standalone devices | AX VDEC / IVPS / VENC | AX NPU | Full local AX SoC pipeline for all-in-one devices |
+| `rk.local` | RK35xx / RV1126B RK platforms | RK MPP VDEC / RGA / MPP VENC | RKNN | Full local RK pipeline with reduced cross-device frame movement |
+| `compute_card_N` | AXCL compute cards | AXCL VDEC / IVPS / VENC | AXCL NPU | Used by RK, Raspberry Pi, x86, or AX hosts with AXCL cards; `N` starts from 1 |
+
+Design principles:
+- **Local acceleration is exposed only when the platform supports it**: AX devices expose `ax.local`, RK devices expose `rk.local`; generic x86 / Raspberry Pi hosts do not expose a local NPU option.
+- **Task-level closed-loop execution**: decode, image processing, inference, and encode are kept on the same runtime location by default to avoid moving large frames between RK and AXCL unnecessarily.
+- **Stable plugin-facing API**: plugins receive common abstractions such as `AXVideoFrame` and `jdk_frame_meta`; the underlying frame may come from AX, AXCL, or RK.
+- **RK local path is optimized for low-copy execution**: RK decode output, RGA processing, and RKNN input prefer dma-buf / MPP buffer handoff. Host synchronization is reserved for snapshots, debugging, or CPU-only algorithms.
+
+Typical deployments:
+
+```text
+AX appliance:        RTSP -> AX VDEC   -> AX IVPS/RGA-equivalent -> AX NPU   -> AX VENC/WebRTC
+RK local device:     RTSP -> RK MPP    -> RGA                    -> RKNN     -> RK MPP VENC/WebRTC
+RK + AXCL card:      RTSP -> AXCL VDEC -> AXCL IVPS              -> AXCL NPU -> AXCL VENC/WebRTC
+Generic host + AXCL: RTSP -> AXCL VDEC -> AXCL IVPS              -> AXCL NPU -> AXCL VENC/WebRTC
+```
+
+> Plugin developers should always create backends from the TaskManager-provided `runtime_location / runtime_device_id` fields instead of hard-coding platform branches inside plugins.
 
 ---
 
@@ -248,14 +277,19 @@ Use `jp(config, key, default)` and register node:
 
 ```cpp
 sdk->register_node(PLUGIN_NODE_NAME, [](const std::string& name, const nlohmann::json& config) {
+    const auto runtime = PluginRuntime::from_task_config(config);
+
     auto nodeParams = std::make_unique<MyNodeParams>();
     nodeParams->threshold = jp(config, "threshold", 0.8f);
-    nodeParams->device_id = jp(config, "device_id", -1);
-    nodeParams->model_path = jp(config, "model_path", "./models/xxx.model");
+    nodeParams->runtime_location = runtime.location;          // ax.local / rk.local / compute_card_N
+    nodeParams->runtime_device_id = runtime.runtime_device_id; // local=-1, compute_card_N=N-1
+    nodeParams->model_path = runtime.is_rk_local()
+        ? jp(config, "model_path_rk", "./models/xxx.rknn")
+        : jp(config, "model_path_ax", "./models/xxx.axmodel");
 
     return jdk_nodes::jdk_node_wrapper::create(
         name,
-        std::make_shared<jdk_nodes::MyNode>(name, std::move(nodeParams)));
+        std::make_shared<jdk_nodes::MyNode>(name, std::move(nodeParams), runtime));
 });
 ```
 
@@ -271,15 +305,24 @@ Minimum implementations:
 - optional `run_infer_combinations(...)`
 
 ### Step 5: Integrate Inference Logic
-For AX algorithm SDK integration, prefer `SafeAlgorithm`:
+For AX algorithm SDK integration, prefer `SafeAlgorithm`. If the plugin also supports RKNN, select the backend during construction from `PluginRuntime`:
 
 ```cpp
-SafeAlgorithm::Options opt{ax_model_type_fire_smoke, nodeParams_->model_path, nodeParams_->device_id};
+SafeAlgorithm::Options opt{ax_model_type_fire_smoke, nodeParams_->model_path, nodeParams_->runtime_device_id};
 alg_ = std::make_shared<SafeAlgorithm>(opt);
 alg_->set_affinity(true);
 alg_->update_params([&](auto &p) {
     p.det_threshold = 0.8f;
 });
+```
+
+Dual RK / AX backend example:
+
+```cpp
+// runtime.infer_type(): rk.local -> "rk", ax.local / compute_card_N -> "ax"
+infer_ = YOLOV5FACE::create_infer(model_path,
+                                   runtime.infer_type(),
+                                   runtime.runtime_device_id);
 ```
 
 Common APIs:
@@ -611,6 +654,41 @@ Common APIs:
 
 Choose based on node role; you do not need to implement all of them.
 
+## 8.5 `PluginRuntime` (Runtime Location Normalization)
+
+TaskManager injects standardized runtime fields into each node config:
+
+```json
+{
+  "runtime_location": "rk.local",
+  "device_id": -1,
+  "runtime_device_id": -1
+}
+```
+
+Plugins should parse these fields through `PluginRuntime::from_task_config(config)` instead of using legacy `device_id` checks as platform detection.
+
+```cpp
+const auto runtime = PluginRuntime::from_task_config(config);
+
+if (runtime.is_rk_local()) {
+    // RK local: RK MPP / RGA / RKNN, runtime.runtime_device_id == -1
+} else if (runtime.is_ax_local()) {
+    // AX local: AX VDEC / IVPS / NPU / VENC, runtime.runtime_device_id == -1
+} else if (runtime.is_compute_card()) {
+    // AXCL compute card: runtime.runtime_device_id is zero-based
+}
+
+const char* backend = runtime.infer_type(); // rk.local -> "rk", AX paths -> "ax"
+```
+
+Resource isolation rules:
+- `rk.local` and `ax.local` are local runtimes and use `runtime_device_id=-1`.
+- `compute_card_1` maps to `runtime_device_id=0`, `compute_card_2` maps to `1`, and so on.
+- Decoder, encoder, and image-processing channels are allocated per `runtime_location`.
+- Generic hosts without a local media/NPU backend must not treat `local` as an inference backend.
+
+
 ---
 
 ## 9. Build, Deployment, and Runtime
@@ -683,6 +761,31 @@ journalctl -u aibox -f
    - snapshot persistence
    - TTS playback (if enabled)
 
+## 9.6 RK Local Runtime Environment
+
+When the selected runtime location is `rk.local`, the target board must provide Rockchip runtime libraries and drivers:
+
+| Capability | Dependency | Purpose |
+|---|---|---|
+| Video decode / encode | RK MPP | RTSP H.264/H.265 decode, encoded output, WebRTC preview |
+| Image processing | librga / RGA driver | OSD composition, resize, crop, format conversion, affine transform |
+| NPU inference | RKNN Runtime | `.rknn` model loading and execution |
+| Frame memory | dma-buf / MPP buffer | Reduces large-frame copies between MPP, RGA, and RKNN |
+
+Recommended checks:
+
+```bash
+ls /dev/rga /dev/mpp_service 2>/dev/null
+ldd /usr/local/aibox/bin/TaskManager | grep -E 'rga|mpp|rknn'
+export LD_LIBRARY_PATH=/usr/local/aibox/lib:$LD_LIBRARY_PATH
+```
+
+RK local development notes:
+- Provide RKNN models separately, preferably via `model_path_rk`.
+- Keep real-time MPP / RGA frames inside the common `AXVideoFrame` abstraction; avoid calling `toHost()` on every frame unless a CPU algorithm, snapshot, or debug dump truly needs it.
+- RGA / RKNN scheduling is managed by the runtime; plugins should not create global hardware-context singletons for multi-task workloads.
+
+
 ---
 
 ## 10. Troubleshooting
@@ -723,6 +826,24 @@ Set env:
 Set env:
 - `PLUGIN_DECRYPT_KEY=<your_key>`
 
+### 10.8 RK Local Runtime Does Not Appear in the Web UI
+Check:
+- whether the target is an RK / RV / Rockchip platform (`cat /proc/device-tree/compatible`)
+- whether RK runtime libraries are installed with the firmware
+- generic x86 / Raspberry Pi hosts expose only `compute_card_N` when AXCL cards are present; they do not expose `rk.local` or `ax.local`
+
+### 10.9 RK Local Video Works but Inference Looks Wrong
+Check:
+- the plugin uses `PluginRuntime` and loads `.rknn` under `rk.local`
+- preprocessing matches the model input layout, commonly NV12 -> resize/letterbox -> RGB/NHWC
+- the real-time path does not call `toHost()` unnecessarily on every MPP/RGA frame
+- temporarily enable `AIBOX_RK_IVPS_DIAG=1` for RGA path diagnostics, then turn it off in production
+
+Useful RK diagnostics:
+- `AIBOX_RK_IVPS_DIAG=1`: print RK RGA / IVPS diagnostics
+- `AIBOX_RKNN_DMA_INPUT=1`: try RKNN dma-buf input binding, only when the RKNN Runtime and model input format support it
+
+
 ---
 
 ## 11. Additional Engineering Recommendations
@@ -743,8 +864,9 @@ Recommend setting these consistently per project storage policy.
 
 ## 11.3 Performance Suggestions
 - tune `det_threshold` and `push_interval_ms` to avoid push storms
-- use `device_id/channel_id` for multi-stream resource isolation
+- use `runtime_location` for resource isolation: `ax.local` for AX local, `rk.local` for RK local, and `compute_card_N` for AXCL cards
 - minimize upload payload by controlling picture types (`record_pic_type/server_pic_type`)
+- keep RK local pipelines closed-loop through MPP/RGA/RKNN and avoid per-frame CPU copies for large NV12/RGB buffers
 
 ---
 

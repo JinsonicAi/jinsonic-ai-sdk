@@ -11,7 +11,8 @@
 > **目标硬件**
 > - ① AX650N / AX8850 独立板卡（独立设备）
 > - ② AX650N / AX8850 算力卡插入 AX 主机（多卡混用）
-> - ③ 第三方主机 + AX 算力卡（RK3588 / 树莓派 5 / x86 等）
+> - ③ 第三方主机 + AX 算力卡（RK / 树莓派 5 / x86 等）
+> - ④ RK 本地设备（RK35xx / RV1126B 等，支持直接调用 RK 本地编解码、RGA 与 RKNN）
 >
 > **目标读者**
 > - 算法工程师
@@ -84,6 +85,34 @@ alarm_plugin
        ├─ server_push_msg →  POST server_push_uri（业务抓拍上报）
        └─ alarm_push_msg  →  POST /api/v1/device/report/event
 ```
+
+
+### 1.4 多运行位置与 RK 本地算力支持
+
+AIBox Runtime 已支持统一的 **Runtime Location（运行位置）** 抽象。上层任务、插件和前端只需要选择任务运行位置，不需要关心底层是 AX 本地、AXCL 计算卡还是 RK 本地硬件。
+
+| 运行位置 | 典型硬件 | 媒体链路 | 推理后端 | 说明 |
+|---|---|---|---|---|
+| `ax.local` | AX650N / AX8850 独立设备 | AX VDEC / IVPS / VENC | AX NPU | AX SoC 本地闭环处理，适合一体机部署 |
+| `rk.local` | RK35xx / RV1126B 等 RK 平台 | RK MPP VDEC / RGA / MPP VENC | RKNN | RK 本地闭环处理，减少跨设备搬运，适合 RK 主机独立部署 |
+| `compute_card_N` | AXCL 计算卡 | AXCL VDEC / IVPS / VENC | AXCL NPU | RK / 树莓派 / x86 / AX 主机插卡时使用，`N` 从 1 开始 |
+
+核心原则：
+- **本地算力只在平台明确支持时开放**：AX 平台显示 `ax.local`，RK 平台显示 `rk.local`；普通 x86 / 树莓派等 Host 不会暴露本地 NPU 选项。
+- **任务级闭环运行**：同一任务的解码、图像处理、推理、编码默认在同一个运行位置完成，避免 RK 与 AXCL 之间频繁搬运大帧数据。
+- **插件接口保持一致**：插件统一接收 `AXVideoFrame` / `jdk_frame_meta` 等公共抽象；底层帧可能来自 AX、AXCL 或 RK，但上层算法节点不需要直接操作平台私有结构。
+- **RK 本地路径面向零拷贝优化**：RK 解码输出、RGA 处理、RKNN 输入优先使用 dma-buf / MPP buffer 传递；只有抓拍、调试保存或 CPU 算法确实需要时才同步到 Host。
+
+典型部署形态：
+
+```text
+AX 一体机：        RTSP -> AX VDEC  -> AX IVPS/RGA-equivalent -> AX NPU  -> AX VENC/WebRTC
+RK 本地设备：      RTSP -> RK MPP   -> RGA                   -> RKNN    -> RK MPP VENC/WebRTC
+RK + AXCL 计算卡： RTSP -> AXCL VDEC -> AXCL IVPS             -> AXCL NPU -> AXCL VENC/WebRTC
+普通 Host + AXCL：RTSP -> AXCL VDEC -> AXCL IVPS             -> AXCL NPU -> AXCL VENC/WebRTC
+```
+
+> 对插件开发者而言，推荐始终从 TaskManager 注入的 `runtime_location / runtime_device_id` 创建后端，不要在插件内部写死平台分支。
 
 ---
 
@@ -252,14 +281,19 @@ extern "C" void plugin_cleanup(SDKInterface* sdk);
 
 ```cpp
 sdk->register_node(PLUGIN_NODE_NAME, [](const std::string& name, const nlohmann::json& config) {
+    const auto runtime = PluginRuntime::from_task_config(config);
+
     auto nodeParams = std::make_unique<MyNodeParams>();
     nodeParams->threshold = jp(config, "threshold", 0.8f);
-    nodeParams->device_id = jp(config, "device_id", -1);
-    nodeParams->model_path = jp(config, "model_path", "./models/xxx.model");
+    nodeParams->runtime_location = runtime.location;          // ax.local / rk.local / compute_card_N
+    nodeParams->runtime_device_id = runtime.runtime_device_id; // local=-1, compute_card_N=N-1
+    nodeParams->model_path = runtime.is_rk_local()
+        ? jp(config, "model_path_rk", "./models/xxx.rknn")
+        : jp(config, "model_path_ax", "./models/xxx.axmodel");
 
     return jdk_nodes::jdk_node_wrapper::create(
         name,
-        std::make_shared<jdk_nodes::MyNode>(name, std::move(nodeParams)));
+        std::make_shared<jdk_nodes::MyNode>(name, std::move(nodeParams), runtime));
 });
 ```
 
@@ -275,15 +309,24 @@ sdk->register_node(PLUGIN_NODE_NAME, [](const std::string& name, const nlohmann:
 - （可选）`run_infer_combinations(...)`
 
 ### 步骤 5：接入算法推理
-若使用 AX 算法 SDK，优先使用 `SafeAlgorithm` 封装：
+若使用 AX 算法 SDK，优先使用 `SafeAlgorithm` 封装；若插件同时支持 RKNN，建议在构造阶段基于 `PluginRuntime` 选择后端：
 
 ```cpp
-SafeAlgorithm::Options opt{ax_model_type_fire_smoke, nodeParams_->model_path, nodeParams_->device_id};
+SafeAlgorithm::Options opt{ax_model_type_fire_smoke, nodeParams_->model_path, nodeParams_->runtime_device_id};
 alg_ = std::make_shared<SafeAlgorithm>(opt);
 alg_->set_affinity(true);
 alg_->update_params([&](auto &p) {
     p.det_threshold = 0.8f;
 });
+```
+
+RK / AX 双后端示例：
+
+```cpp
+// runtime.infer_type(): rk.local -> "rk"，ax.local / compute_card_N -> "ax"
+infer_ = YOLOV5FACE::create_infer(model_path,
+                                   runtime.infer_type(),
+                                   runtime.runtime_device_id);
 ```
 
 常用推理接口：
@@ -694,6 +737,41 @@ auto entry = meta->result_map_["persondet"].load();
 if (entry) { /* 使用 entry->result */ }
 ```
 
+
+## 8.6 `PluginRuntime`（运行位置标准化）
+
+TaskManager 会在创建节点时向插件配置注入标准运行时字段：
+
+```json
+{
+  "runtime_location": "rk.local",
+  "device_id": -1,
+  "runtime_device_id": -1
+}
+```
+
+插件应通过 `PluginRuntime::from_task_config(config)` 统一解析，不建议直接读取旧式 `device_id` 做平台判断。
+
+```cpp
+const auto runtime = PluginRuntime::from_task_config(config);
+
+if (runtime.is_rk_local()) {
+    // RK 本地：RK MPP / RGA / RKNN，runtime.runtime_device_id == -1
+} else if (runtime.is_ax_local()) {
+    // AX 本地：AX VDEC / IVPS / NPU / VENC，runtime.runtime_device_id == -1
+} else if (runtime.is_compute_card()) {
+    // AXCL 计算卡：runtime.runtime_device_id 为卡索引，从 0 开始
+}
+
+const char* backend = runtime.infer_type(); // rk.local -> "rk"，其它 AX 路径 -> "ax"
+```
+
+运行位置与资源隔离规则：
+- `rk.local` 与 `ax.local` 均为本地资源，`runtime_device_id=-1`。
+- `compute_card_1` 对应 `runtime_device_id=0`，`compute_card_2` 对应 `1`，以此类推。
+- 解码、编码和图像处理通道按 `runtime_location` 独立分配，避免本地与计算卡资源互相覆盖。
+- 普通 Host 没有本地媒体/NPU 后端时，前端不会开放本地运行位置；插件也不应把 `local` 当作可推理后端。
+
 ---
 
 ## 9. 编译、部署与运行
@@ -763,6 +841,37 @@ journalctl -u aibox -f
    - 图像落盘（`sdcard/capture/`）
    - TTS 播报（若启用）
 
+
+## 9.6 RK 本地运行环境
+
+当设备运行位置选择 `rk.local` 时，需要板端运行环境包含 Rockchip 相关运行库和驱动：
+
+| 能力 | 依赖 | 用途 |
+|---|---|---|
+| 视频解码 / 编码 | RK MPP | RTSP H.264/H.265 拉流解码、编码输出、WebRTC 预览 |
+| 图像处理 | librga / RGA 驱动 | OSD 合成、缩放、裁剪、格式转换、仿射变换 |
+| NPU 推理 | RKNN Runtime | `.rknn` 模型加载与推理 |
+| 帧内存 | dma-buf / MPP buffer | 在 MPP、RGA、RKNN 之间减少大帧拷贝 |
+
+建议部署检查：
+
+```bash
+# 1. 确认 RK 设备节点和驱动可用
+ls /dev/rga /dev/mpp_service 2>/dev/null
+
+# 2. 确认运行库可被加载
+ldd /usr/local/aibox/bin/TaskManager | grep -E 'rga|mpp|rknn'
+
+# 3. 启动服务前设置运行库路径
+export LD_LIBRARY_PATH=/usr/local/aibox/lib:$LD_LIBRARY_PATH
+```
+
+RK 本地开发注意事项：
+- 推理模型必须提供 RKNN 格式，建议使用 `model_path_rk` 与 AX 模型分开配置。
+- 对实时 MPP / RGA 帧，优先沿用 `AXVideoFrame` 抽象继续传递；不要为了普通处理流程频繁 `toHost()`，否则会引入缓存同步和大内存拷贝。
+- 需要保存调试图、业务抓拍或 CPU 算法输入时，再使用保存接口或显式 Host 同步。
+- 多任务场景下，RGA / RKNN 由运行时调度，不建议插件自行创建全局单例硬件上下文。
+
 ---
 
 ## 10. 常见问题与排障
@@ -808,6 +917,21 @@ extern "C" void plugin_cleanup(SDKInterface* sdk) { ... }
 | `PLUGIN_DECRYPT_KEY=<key>` | 加密插件解密密钥 |
 | `ALARM_SNAPSHOT_RETENTION_DAYS=7` | 快照保留天数（默认 7） |
 | `ALARM_SNAPSHOT_MAX_BYTES_MB=500` | 快照占用上限（MB，默认 500） |
+| `AIBOX_RK_IVPS_DIAG=1` | 打开 RK RGA / IVPS 诊断日志，定位缩放、OSD、格式转换问题 |
+| `AIBOX_RKNN_DMA_INPUT=1` | RKNN 输入尝试 dma-buf 绑定路径，需确认模型输入格式与 RKNN Runtime 支持情况 |
+
+### 10.7 `rk.local` 不出现在运行位置列表
+检查：
+- 当前设备是否为 RK / RV / Rockchip 平台（`cat /proc/device-tree/compatible`）。
+- RK 运行库是否随固件安装完整。
+- 普通 x86 / 树莓派 Host 仅在插入 AXCL 计算卡时显示 `compute_card_N`，不会显示 `rk.local` 或 `ax.local`。
+
+### 10.8 RK 本地视频正常但推理异常
+检查：
+- 插件是否从 `PluginRuntime` 获取 `runtime_location`，并在 `rk.local` 下加载 `.rknn` 模型。
+- 输入帧格式是否与模型预处理一致（常见为 NV12 -> resize/letterbox -> RGB/NHWC）。
+- 是否在实时链路中无必要地调用 `toHost()`，导致缓存同步时机或性能异常。
+- 如需排查 RGA 路径，可临时设置 `AIBOX_RK_IVPS_DIAG=1`，定位后关闭。
 
 ---
 
@@ -822,9 +946,10 @@ extern "C" void plugin_cleanup(SDKInterface* sdk) { ... }
 
 ## 11.2 性能建议
 - 合理设置 `det_threshold`（推荐 0.5–0.7）和 `push_interval_ms`（推荐 5000ms），避免过载告警。
-- 多路场景中每个节点独立设置 `device_id`，利用多个 NPU 核并行。
+- 多路场景优先通过 Web 端选择 `runtime_location` 做资源隔离：AX 本地使用 `ax.local`，RK 本地使用 `rk.local`，计算卡使用 `compute_card_N`。
 - 控制上报图片类型（`record_pic_type` 位掩码），优先只上报 `bg_data`，减少带宽。
 - LLM 二次审核（`llm_review_enable`）会增加延迟，仅在误报率高的场景启用。
+- RK 本地链路应尽量保持 MPP/RGA/RKNN 闭环，避免在每帧上做 NV12/RGB 大块 CPU 拷贝。
 
 ---
 
