@@ -27,6 +27,7 @@
 				{
 					"type": "input",
 					"name": {"zh": "识别阈值", "en": "RecognitionThreshold"},
+                    "default": 0.7,
 					"key": "threshold"
 				},
 				{

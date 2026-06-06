@@ -15,18 +15,18 @@
 #include "post_node_info.h"
 
 namespace jdk_nodes {
-faceDetectV2Node::faceDetectV2Node(std::string node_name,
+faceDetectV2Node::faceDetectV2Node(std::string		  node_name,
 								   const std::string& filename,
-								   float threshold,
-								   int device_id,
-								   std::string task_id,
-								   int label_score_step)
+								   float			  threshold,
+								   int				  device_id,
+								   std::string		  task_id,
+								   int				  label_score_step)
 	: channel_id_(device_id),
 	  threshold_(threshold),
 	  device_id_(device_id),
 	  label_score_step_(std::clamp(label_score_step, 0, 100)),
 	  task_id_(task_id) {
-	infer = YOLOFACE::create_infer(filename, "ax", device_id_);
+	infer = YOLOV5FACE::create_infer(filename, "ax", device_id_);
 	reporter_.set_algorithm_config({task_id_,
 									PLUGIN_NODE_NAME,
 									"-"});
@@ -56,8 +56,8 @@ void faceDetectV2Node::render_fn(std::shared_ptr<AXVideoFrame>& canvas,
 	if (auto p = anyx::get<std::shared_ptr<HwIvps>>(extra))
 		ivps = *p;
 
-	YOLOFACE::Objects det;
-	bool			  ok = anyx::visit<YOLOFACE::Objects>(payload_any, [&](const auto& v) { det = v; });
+	YOLOV5FACE::Objects det;
+	bool				ok = anyx::visit<YOLOV5FACE::Objects>(payload_any, [&](const auto& v) { det = v; });
 
 	if (ivps) {
 		for (const auto& b : det) {
@@ -73,7 +73,7 @@ void faceDetectV2Node::render_fn(std::shared_ptr<AXVideoFrame>& canvas,
 	}
 }
 
-jdk_osd::Overlay faceDetectV2Node::build_overlay_(const YOLOFACE::Objects& det) {
+jdk_osd::Overlay faceDetectV2Node::build_overlay_(const YOLOV5FACE::Objects& det) {
 	jdk_osd::Overlay overlay;
 
 	overlay.boxes.reserve(det.size());
@@ -99,12 +99,12 @@ jdk_osd::Overlay faceDetectV2Node::build_overlay_(const YOLOFACE::Objects& det) 
 		box.label_style.fg		  = jdk_osd::Color{255, 255, 255, 255};
 		box.label_style.bg		  = box.style.color;
 		box.label_style.bg_alpha  = box.style.color.a;
-		int score_pct = static_cast<int>(std::round(std::clamp(b.prob, 0.0f, 1.0f) * 100.0f));
+		int score_pct			  = static_cast<int>(std::round(std::clamp(b.prob, 0.0f, 1.0f) * 100.0f));
 		if (label_score_step_ > 1) {
 			score_pct = ((score_pct + label_score_step_ / 2) / label_score_step_) * label_score_step_;
 			score_pct = std::clamp(score_pct, 0, 100);
 		}
-		box.label				  = fmt::format("face {}%", score_pct);
+		box.label = fmt::format("face {}%", score_pct);
 		overlay.boxes.push_back(std::move(box));
 	}
 
@@ -148,10 +148,10 @@ static std::string get_guid() {
 std::pair<nlohmann::json, std::vector<std::function<std::shared_ptr<AXVideoFrame>()>>>
 faceDetectV2Node::alarm_fn(const std::any& result_any, std::shared_ptr<AXVideoFrame> canvas) {
 	(void)canvas;
-	const auto&		  payload_any = jdk_osd::payload_from_any(result_any);
-	YOLOFACE::Objects value;
+	const auto&			payload_any = jdk_osd::payload_from_any(result_any);
+	YOLOV5FACE::Objects value;
 
-	bool ok = anyx::visit<YOLOFACE::Objects>(payload_any, [&](const auto& v) { value = v; });
+	bool ok = anyx::visit<YOLOV5FACE::Objects>(payload_any, [&](const auto& v) { value = v; });
 	if (!ok || value.empty()) {
 		if (!ok)
 			fmt::print("⚠️ [{} Alarm] unexpected any type: {} \r\n", PLUGIN_NODE_NAME, anyx::type_name(result_any));
@@ -162,7 +162,7 @@ faceDetectV2Node::alarm_fn(const std::any& result_any, std::shared_ptr<AXVideoFr
 	const int64_t		  now_ms	 = getCurrentTimestamp();
 	const std::string	  now_iso	 = get_current_iso_time();
 
-	auto to_bbox = [](const YOLOFACE::FaceBox& box) {
+	auto to_bbox = [](const YOLOV5FACE::FaceBox& box) {
 		return nlohmann::json{
 			{"x", box.rect.x},
 			{"y", box.rect.y},
@@ -170,7 +170,7 @@ faceDetectV2Node::alarm_fn(const std::any& result_any, std::shared_ptr<AXVideoFr
 			{"h", box.rect.height}};
 	};
 
-	auto to_landmarks = [](const YOLOFACE::FaceBox& box) {
+	auto to_landmarks = [](const YOLOV5FACE::FaceBox& box) {
 		nlohmann::json arr = nlohmann::json::array();
 		for (const auto& pt : box.landmarks) {
 			arr.push_back({{"x", pt.x}, {"y", pt.y}});
@@ -178,7 +178,7 @@ faceDetectV2Node::alarm_fn(const std::any& result_any, std::shared_ptr<AXVideoFr
 		return arr;
 	};
 
-	auto build_alarm_item = [&](const YOLOFACE::FaceBox& box) -> nlohmann::json {
+	auto build_alarm_item = [&](const YOLOV5FACE::FaceBox& box) -> nlohmann::json {
 		const auto bbox		 = to_bbox(box);
 		const auto landmarks = to_landmarks(box);
 
@@ -215,13 +215,13 @@ void faceDetectV2Node::run_infer_combinations(const std::vector<std::shared_ptr<
 	assert(frame_meta_with_batch.size() == 1);
 	auto& frame_meta = frame_meta_with_batch[0];
 	auto  result_any = infer->commit(frame_meta->frame_).get();
-	auto  result_sp	 = anyx::any_try_cast<YOLOFACE::Objects>(result_any);
+	auto  result_sp	 = anyx::any_try_cast<YOLOV5FACE::Objects>(result_any);
 	if (!result_sp) {
 		fmt::print("⚠️ FaceDet skip: got {}\n", anyx::type_name(result_any));
 		return;
 	}
-	YOLOFACE::Objects det;
-	anyx::visit<YOLOFACE::Objects>(*result_sp, [&](const auto& v) { det = v; });
+	YOLOV5FACE::Objects det;
+	anyx::visit<YOLOV5FACE::Objects>(*result_sp, [&](const auto& v) { det = v; });
 	auto overlay_result = jdk_osd::make_overlay_result(result_sp, build_overlay_(det));
 	{
 		std::lock_guard<std::mutex> lk(*frame_meta->mtx_);

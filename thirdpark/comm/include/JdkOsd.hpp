@@ -367,9 +367,9 @@ struct OsdRendererConfig {
 	float  composer_max_single_roi_ratio{0.65f};
 	size_t max_boxes{64};
 	size_t max_labels{16};
-	size_t max_lines{32};
+	size_t max_lines{256};
 	size_t max_polygons{16};
-	size_t max_keypoints{128};
+	size_t max_keypoints{512};
 	size_t osd_batch_size{32};
 };
 

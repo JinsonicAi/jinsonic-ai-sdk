@@ -14,7 +14,7 @@
 #include "AxVideoFrame.hpp"
 #include "HwCover.hpp"
 #include "HwIvps.hpp"
-#include "yoloFace.hpp"
+#include "YOLOV5FACE.hpp"
 
 using namespace std;
 using namespace std::filesystem;
@@ -97,7 +97,7 @@ void mkdir(const std::string& path) {
 	}
 }
 #if 1
-int draw_result(cv::Mat& image, std::vector<YOLOFACE::FaceBox> box_result,
+int draw_result(cv::Mat& image, std::vector<YOLOV5FACE::FaceBox> box_result,
 				std::string file	 = "image-draw.jpg",
 				std::string save_dir = "./") {
 	printf(" box_result.size:%d\r\n", box_result.size());
@@ -148,7 +148,7 @@ vector<string> file_list(const string dir) {
 	return files;
 }
 
-int draw_nv12(std::shared_ptr<AXVideoFrame> frame, std::vector<YOLOFACE::FaceBox> box_result, int device_id_) {
+int draw_nv12(std::shared_ptr<AXVideoFrame> frame, std::vector<YOLOV5FACE::FaceBox> box_result, int device_id_) {
 	// printf(" box_result.size:%d\r\n", box_result.size());
 	auto ipvs = std::make_shared<HwIvps>(device_id_, 0, 0);
 	for (int i = 0; i < box_result.size(); ++i) {
@@ -180,14 +180,14 @@ int main(int argc, char* argv[]) {
 	DewarpFrame->load_data("1280x886_nv12.yuv");
 	printf(" info:%s,%d\r\n", __FUNCTION__, __LINE__);
 
-	auto Engin = YOLOFACE::create_infer("models/yolov5n-face.axmodel", "ax", device_id);
+	auto Engin = YOLOV5FACE::create_infer("models/yolov5n-face.axmodel", "ax", device_id);
 	if (!Engin) {
 		std::cerr << "create_infer error!!!!" << std::endl;
 		return -1;
 		// continue;
 	}
 	auto result = Engin->commit(DewarpFrame).get();
-	draw_nv12(DewarpFrame, std::any_cast<YOLOFACE::Objects>(result), device_id);
+	draw_nv12(DewarpFrame, std::any_cast<YOLOV5FACE::Objects>(result), device_id);
 	std::cout << "create_infer exit ok." << std::endl;
 	return 0;
 }

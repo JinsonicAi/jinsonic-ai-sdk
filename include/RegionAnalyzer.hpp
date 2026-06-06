@@ -57,20 +57,26 @@ inline cv::Point2f bbox_center(const ax_bbox_t& b) noexcept {
 	return {b.x + b.w * 0.5f, b.y + b.h * 0.5f};
 }
 
+/// bbox foot point (bottom-center)
+inline cv::Point2f bbox_foot(const ax_bbox_t& b) noexcept {
+	return {b.x + b.w * 0.5f, b.y + b.h};
+}
+
 /// whether the center point is inside the polygon
 inline bool point_in_polygon(const cv::Point2f&			   pt,
 							 const std::vector<cv::Point>& poly) {
 	return cv::pointPolygonTest(poly, pt, false) >= 0;
 }
 
-/// whether the center point is inside any region (empty region list means full frame)
+/// whether bbox is inside any region: center OR foot point hits → true (empty list = full frame)
 inline bool in_any_region(const ax_bbox_t&							 b,
 						  const std::vector<std::vector<cv::Point>>& regions) {
 	if (regions.empty())
 		return true;
-	auto c = bbox_center(b);
+	const auto c = bbox_center(b);
+	const auto f = bbox_foot(b);
 	for (const auto& poly : regions)
-		if (point_in_polygon(c, poly))
+		if (point_in_polygon(c, poly) || point_in_polygon(f, poly))
 			return true;
 	return false;
 }
