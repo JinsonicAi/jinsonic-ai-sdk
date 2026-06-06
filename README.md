@@ -619,7 +619,9 @@ Choose based on node role; you do not need to implement all of them.
 - OS: Ubuntu 20.04/22.04 (recommended)
 - Compiler: `aarch64-none-linux-gnu-gcc/g++`
 - CMake: >= 3.10
-- SDK download (runtime packages/toolchain): [Baidu Netdisk](https://pan.baidu.com/s/18CczjjNDnMhM15VDcAJcpQ), extraction code: `v8me`
+- SDK download (runtime packages/toolchain):
+  - [Baidu Netdisk](https://pan.baidu.com/s/18CczjjNDnMhM15VDcAJcpQ?pwd=v8me), extraction code: `v8me`
+  - [Google Drive](https://drive.google.com/drive/folders/15cmvIBABTxfgwNvJvhgTI9tMyAiH8vVT?usp=drive_link)
 
 ## 9.2 One-Click Build
 

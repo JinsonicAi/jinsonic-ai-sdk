@@ -705,7 +705,7 @@ if (entry) { /* 使用 entry->result */ }
 | 主机 OS | Ubuntu 20.04 / 22.04 |
 | 交叉编译器 | `aarch64-none-linux-gnu-g++`（12.2.rel1） |
 | CMake | ≥ 3.10 |
-| 工具链下载 | [百度网盘](https://pan.baidu.com/s/18CczjjNDnMhM15VDcAJcpQ)（提取码：`v8me`） |
+| 工具链下载 | [百度网盘](https://pan.baidu.com/s/18CczjjNDnMhM15VDcAJcpQ?pwd=v8me)（提取码：`v8me`）<br>[谷歌网盘](https://drive.google.com/drive/folders/15cmvIBABTxfgwNvJvhgTI9tMyAiH8vVT?usp=drive_link) |
 
 ## 9.2 一键构建
 
