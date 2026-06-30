@@ -10,6 +10,7 @@
 
 #include "HwDecoder.hpp"
 #include "NetClient.hpp"
+#include "../sample_runtime.hpp"
 
 int main(int argc, char *argv[]) {
 	// int device_id  = 0;
@@ -30,16 +31,19 @@ int main(int argc, char *argv[]) {
 
 	// netclient.reset();
 	// return 0;
-    int device_id = 0;
+    print_sample_runtime_usage(argv[0]);
+    const auto runtime = parse_sample_runtime(argc, argv);
     int channel_id = 0;
-
-    if (argc == 3) {
-        device_id = atoi(argv[1]);
+    if (argc >= 3) {
         channel_id = atoi(argv[2]);
+    }
+    if (runtime.is_rk_local()) {
+        std::cerr << "This standalone NetClient sample still uses the legacy NetClient constructor. "
+                  << "Use netclient_plugin/TaskManager for full rk.local MPP decode validation." << std::endl;
     }
 
     stream_info info;
-    auto netclient = std::make_shared<NetClient>(device_id, channel_id, 0, info, "");
+    auto netclient = std::make_shared<NetClient>(runtime.runtime_device_id, channel_id, 0, info, "");
 
     netclient->start("rtsp://192.168.1.250:8554/fire");
 

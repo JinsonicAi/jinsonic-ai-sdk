@@ -13,20 +13,21 @@ namespace jdk_nodes {
 // ---------------------------------------------------------------------------
 // Constructor / Destructor
 // ---------------------------------------------------------------------------
-NetClientNode::NetClientNode(std::string node_name, std::string rtsp_url, int device_id,
+NetClientNode::NetClientNode(std::string node_name, std::string rtsp_url, PluginRuntime runtime,
 							 int group, int channel, stream_info info,
 							 std::string task_id, std::string task_name,
 							 nlohmann::json schedule_config)
 	: rtsp_url_(rtsp_url),
-	  device_id_(device_id),
+	  device_id_(runtime.runtime_device_id),
 	  group_(group),
 	  channel_id_(channel),
 	  info_(info),
 	  task_id_(task_id),
 	  task_name_(task_name),
+	  runtime_(std::move(runtime)),
 	  schedule_config_(std::move(schedule_config)) {
-	fmt::print("NetClientNode::NetClientNode:device_id_:{}, group_:{}, channel_id_:{}\n",
-			   device_id_, group_, channel_id_);
+	fmt::print("NetClientNode::NetClientNode:device_id_:{}, group_:{}, channel_id_:{} runtime:{}\n",
+			   device_id_, group_, channel_id_, runtime_.location);
 	reporter_.set_input_rtsp_config({task_id_, PLUGIN_NODE_NAME, rtsp_url_});
 
 	if (!schedule_config_.empty()) {
@@ -330,6 +331,7 @@ void NetClientNode::handle_run(std::stop_token stoken) {
 	{
 		std::lock_guard<std::mutex> lk(mutex_);
 		net_client = std::make_shared<NetClient>(device_id_, group_, channel_id_, info_, task_name_);
+		net_client->set_runtime_location(runtime_.location);
 	}
 
 	while (!stoken.stop_requested() && is_alive()) {
@@ -375,6 +377,7 @@ void NetClientNode::handle_run(std::stop_token stoken) {
 			{
 				std::lock_guard<std::mutex> lk(mutex_);
 				net_client = std::make_shared<NetClient>(device_id_, group_, channel_id_, info_, task_name_);
+				net_client->set_runtime_location(runtime_.location);
 			}
 			continue;  // go back to loop top, re-initialize RTSP lazily
 		}
@@ -452,7 +455,7 @@ void NetClientNode::handle_run(std::stop_token stoken) {
 			assert(meta->result_map_.empty());
 			out_queue_push(meta, (std::atomic<bool>*)alive_ptr());
 		}
-
+		// printf("w:%d,h:%d\r\n",frame->width(),frame->height());
 		// Minimal reporting: only transmit the changing fps/delay
 		std::string resolution = std::to_string(frame->width()) + "x" + std::to_string(frame->height());
 		std::string codec	   = (frame->enType == 96 ? "H264" : "H265");

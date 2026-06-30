@@ -7,6 +7,7 @@
 
 #include "jdk_node_base.hpp"
 #include "jdk_node_wrapper.hpp"
+#include "PluginRuntime.hpp"
 //
 #include "HwEncoder.hpp"
 
@@ -17,7 +18,9 @@
 namespace jdk_nodes {
 class NetServerNode : public jdk_node_base, public CustomHandleFrame, public CustomHandleControl {
 public:
-	NetServerNode(std::string node_name, int device_id, int channel_id, bool rtsp_enable, int rtsp_port, std::string user, std::string pass, std::string task_id = "", size_t encode_queue_capacity = 3);
+	NetServerNode(std::string node_name, PluginRuntime runtime, int channel_id, bool rtsp_enable, int rtsp_port,
+				  std::string user, std::string pass, std::string task_id = "",
+				  size_t encode_queue_capacity = 3);
 	~NetServerNode();
 	void stop();
 
@@ -31,6 +34,7 @@ protected:
 private:
 	std::string task_id_{};
 	size_t		encode_queue_capacity_{3};
+	PluginRuntime runtime_{};
 	int			rtsp_port_		  = -1;
 	int			device_id_		  = -1;
 	int			channel_id_		  = 0;	//< 32

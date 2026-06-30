@@ -15,6 +15,7 @@
 #include "HwCover.hpp"
 #include "HwIvps.hpp"
 #include "YOLOV5FACE.hpp"
+#include "../sample_runtime.hpp"
 
 using namespace std;
 using namespace std::filesystem;
@@ -148,9 +149,9 @@ vector<string> file_list(const string dir) {
 	return files;
 }
 
-int draw_nv12(std::shared_ptr<AXVideoFrame> frame, std::vector<YOLOV5FACE::FaceBox> box_result, int device_id_) {
-	// printf(" box_result.size:%d\r\n", box_result.size());
-	auto ipvs = std::make_shared<HwIvps>(device_id_, 0, 0);
+int draw_nv12(std::shared_ptr<AXVideoFrame> frame, std::vector<YOLOV5FACE::FaceBox> box_result, const SampleRuntime& runtime) {
+	printf(" box_result.size:%d\r\n", box_result.size());
+	auto ipvs = std::make_shared<HwIvps>(runtime.runtime_device_id, 0, 0, runtime.location);
 	for (int i = 0; i < box_result.size(); ++i) {
 		auto& ibox		  = box_result[i];
 		float left		  = ibox.rect.tl().x;
@@ -159,6 +160,7 @@ int draw_nv12(std::shared_ptr<AXVideoFrame> frame, std::vector<YOLOV5FACE::FaceB
 		float bottom	  = ibox.rect.br().y;
 		int	  class_label = ibox.label;
 		float confidence  = ibox.prob;
+		printf("----->box[%d]:left:%f,top:%f,right:%f,bottom:%f,label:%d,prob:%f\r\n", i, left, top, right, bottom, class_label, confidence);
 		ipvs->HwDrawRect(frame->raw(), {ibox.rect.x, ibox.rect.y, ibox.rect.width, ibox.rect.height}, 0xff0000);
 	}
 	printf("----->w:%d, stride:%d\r\n", frame->raw()->u32Width, frame->raw()->u32PicStride[0]);
@@ -170,11 +172,12 @@ int draw_nv12(std::shared_ptr<AXVideoFrame> frame, std::vector<YOLOV5FACE::FaceB
 }
 
 int main(int argc, char* argv[]) {
-	int device_id = -1;
-	if (argc == 2) {
-		device_id = atoi(argv[1]);
-	}
-
+	print_sample_runtime_usage(argv[0]);
+	const auto runtime = parse_sample_runtime(argc, argv);
+	std::cout << "runtime_location=" << runtime.location
+			  << ", runtime_device_id=" << runtime.runtime_device_id
+			  << ", infer_type=" << runtime.infer_type() << std::endl;
+	#if 0
 	auto DewarpFrame = std::make_shared<AXVideoFrame>(1280, 886, device_id, AX_FORMAT_YUV420_SEMIPLANAR, 16);  // decode 256
 
 	DewarpFrame->load_data("1280x886_nv12.yuv");
@@ -187,7 +190,27 @@ int main(int argc, char* argv[]) {
 		// continue;
 	}
 	auto result = Engin->commit(DewarpFrame).get();
-	draw_nv12(DewarpFrame, std::any_cast<YOLOV5FACE::Objects>(result), device_id);
+	#endif
+
+	// 根据运行位置创建输入帧：rk.local 使用 RK dma-buf，其它路径使用 AX/AXCL/Host frame。
+	auto frame = make_sample_video_frame(runtime, 1280, 886, AX_FORMAT_YUV420_SEMIPLANAR, 16);
+
+	frame->load_data("data/1280x886_nv12.yuv");
+	const std::string model_path = runtime.is_rk_local()
+		? "models/yolov5n-face_rk3588.rknn"
+		: "models/yolov5n-face.axmodel";
+	auto Engin = YOLOV5FACE::create_infer(model_path, runtime.infer_type(), runtime.runtime_device_id);
+	if (!Engin) {
+		std::cerr << "create_infer error!!!!" << std::endl;
+		return -1;
+		// continue;
+	}
+	auto result = Engin->commit(frame).get();
+	if (!result.has_value() || result.type() != typeid(YOLOV5FACE::Objects)) {
+		std::cerr << "inference failed, result type=" << (result.has_value() ? result.type().name() : "empty") << std::endl;
+		return -1;
+	}
+	draw_nv12(frame, std::any_cast<YOLOV5FACE::Objects>(result), runtime);
 	std::cout << "create_infer exit ok." << std::endl;
 	return 0;
 }

@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "JdkFireDetectNode.hpp"
+#include "PluginRuntime.hpp"
 #include "sdk_interface.hpp"
 
 #ifndef PLUGIN_NODE_NAME
@@ -17,6 +18,7 @@ extern "C" void plugin_init(SDKInterface* sdk) {
 	}
 
 	sdk->register_node(PLUGIN_NODE_NAME, [](const std::string& name, const nlohmann::json& config) {
+		const auto runtime = PluginRuntime::from_task_config(config);
 		auto nodeParams = std::make_unique<jdk_nodes::FireNodeParams>();
 
 		float threshold					= std::clamp(jp(config, "threshold", 80), 0, 100) / 100.0f;
@@ -32,7 +34,9 @@ extern "C" void plugin_init(SDKInterface* sdk) {
 		nodeParams->alarm_relay_enable	 = jp(config, "alarm_relay_enable", false);
 		nodeParams->alarm_relay_interval = jp(config, "alarm_relay_interval", 5);
 
-		nodeParams->device_id  = jp(config, "device_id", -1);
+		nodeParams->device_id  = runtime.runtime_device_id;
+		nodeParams->runtime_location = runtime.location;
+		nodeParams->infer_type = runtime.infer_type();
 		nodeParams->model_path = jp(config, "model_path", "./models/fs_20241231_npu1.model");
 		nodeParams->task_id	   = jp(config, "task_id", "0");
 

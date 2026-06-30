@@ -14,9 +14,12 @@
 	"component": {
 		"parentType": "input-component",
 		"label": {
-            "zh": "网络拉流",
-            "en": "Network Pull Stream"
-        },
+			"zh": "网络拉流",
+			"en": "Network Pull Stream",
+			"vi": "Luồng mạng đầu vào",
+			"km": "ទាញស្ទ្រីមតាមបណ្តាញ",
+			"lo": "ດຶງສະຕຣີມຜ່ານເຄືອຂ່າຍ"
+		},
 		"type": "@PLUGIN_NAME@",
 		"component": {
 			"formList": [
@@ -24,7 +27,10 @@
 					"type": "input",
 					"name": {
 						"zh": "RTSP地址",
-						"en": "RTSP Address"
+						"en": "RTSP Address",
+						"vi": "Địa chỉ RTSP",
+						"km": "RTSP អាសយដ្ឋាន",
+						"lo": "RTSP ທີ່ຢູ່"
 					},
 					"key": "rtsp_url",
 					"default": "",
@@ -41,10 +47,26 @@
 					]
 				},
 				{
+					"type": "input",
+					"key": "runtime_location",
+					"visible": false,
+					"default": "",
+					"name": {
+						"zh": "运行位置",
+						"en": "Runtime Location",
+						"vi": "Vị trí chạy",
+						"km": "ទីតាំងដំណើរការ",
+						"lo": "ຕຳແໜ່ງການເຮັດວຽກ"
+					}
+				},
+				{
 					"type": "divider",
 					"name": {
 						"zh": "按时布控",
-						"en": "Scheduled Deployment"
+						"en": "Scheduled Deployment",
+						"vi": "Lịch triển khai",
+						"km": "ការដាក់ឱ្យប្រើតាមកាលវិភាគ",
+						"lo": "ການນຳໃຊ້ຕາມຕາຕະລາງ"
 					}
 				},
 				{
@@ -52,7 +74,10 @@
 					"key": "schedule_config",
 					"name": {
 						"zh": "布控时段",
-						"en": "Schedule"
+						"en": "Schedule",
+						"vi": "Lịch trình",
+						"km": "កាលវិភាគ",
+						"lo": "ຕາຕະລາງ"
 					},
 					"enabled": true,
 					"default": {

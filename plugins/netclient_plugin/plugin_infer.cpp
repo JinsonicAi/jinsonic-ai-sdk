@@ -16,6 +16,7 @@ extern "C" void plugin_init(SDKInterface* sdk) {
 	}
 
 	sdk->register_node(PLUGIN_NODE_NAME, [](const std::string& name, const nlohmann::json& config) {
+		const auto runtime = PluginRuntime::from_task_config(config);
 		stream_info info{};
 		info.video.payload = static_cast<AX_PAYLOAD_TYPE_E>(jp(config, "payload", 96));
 		info.video.width   = jp(config, "width", 0);
@@ -29,7 +30,7 @@ extern "C" void plugin_init(SDKInterface* sdk) {
 			std::make_shared<jdk_nodes::NetClientNode>(
 				name,
 				jp(config, "rtsp_url", ""),
-				jp(config, "device_id", -1),
+				runtime,
 				jp(config, "channel_id", 0),
 				jp(config, "channel", 0),
 				info,

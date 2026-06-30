@@ -113,6 +113,8 @@ RK + AXCL 计算卡： RTSP -> AXCL VDEC -> AXCL IVPS             -> AXCL NPU ->
 ```
 
 > 对插件开发者而言，推荐始终从 TaskManager 注入的 `runtime_location / runtime_device_id` 创建后端，不要在插件内部写死平台分支。
+>
+> - 详细适配指南：[`doc/RUNTIME_LOCATION_AND_RK_LOCAL_ZH.md`](doc/RUNTIME_LOCATION_AND_RK_LOCAL_ZH.md)
 
 ---
 
@@ -132,6 +134,8 @@ aibox_sdk/
 ├── plugins/                    # 插件源码（参考实现）
 │   ├── netclient_plugin/       # 输入：网络拉流（RTSP）
 │   ├── persondet_plugin/       # 算法：行人检测（含区域规则）
+│   ├── absence_plugin/         # 算法：离岗检测
+│   ├── promptdet_plugin/       # 算法：开放词汇提示词检测
 │   ├── facedet_plugin/         # 算法：人脸检测
 │   ├── firedet_plugin/         # 算法：火灾/烟雾检测
 │   ├── catdog_plugin/          # 算法：宠物检测
@@ -139,6 +143,7 @@ aibox_sdk/
 │   └── hdmi_plugin/            # 输出：HDMI 显示
 ├── example/                    # SDK 功能样例程序
 ├── doc/                        # 协议文档与配置参考
+│   ├── ALGORITHM_BROCHURE_CN.md # 软件算法宣传彩页
 │   ├── PLUGIN_CONFIG_REFERENCE_ZH.md
 │   └── USER_MANUAL/
 ├── build_sdk_sample.sh         # 一键构建（样例 + 所有插件）
@@ -169,6 +174,7 @@ SDK 出厂内置以下算法插件（`.plugin` 包），可直接在 Web 端创�
 | :-- | :-- | :-- |
 | `intrusion` | 区域入侵检测 | 多边形区域进入/离开实时报警 |
 | `loitering` | 徘徊检测 | 目标在区域内停留超时报警 |
+| `absence` | 离岗检测 | 岗位区域无人或人员离开超时报警 |
 | `crowd` | 人群聚集检测 | 区域内目标数量超阈值报警 |
 | `tripwire` | 绊线方向检测 | 虚拟线越线 + 方向判断（支持正行/逆行） |
 | `peopleflow` | 人流统计 | 进出计数 + 峰值超阈值报警 |
@@ -201,11 +207,17 @@ SDK 出厂内置以下算法插件（`.plugin` 包），可直接在 Web 端创�
 | `calling` | 打电话检测 | 手持设备打电话行为识别 |
 | `smoking` | 吸烟检测 | 吸烟行为识别 |
 
+#### 🧠 开放词汇与智能审核类
+
+| 插件 | 显示名 | 关键能力 |
+| :-- | :-- | :-- |
+| `promptdet` | 提示词检测 | 基于开放词汇提示词的通用目标检测，支持区域、规则、跟踪去重与报警推送 |
+| `llm` | LLM 二次审核 | 调用外部大模型对告警帧进行语义校验，降低误报 |
+
 #### 🔧 功能辅助类
 
 | 插件 | 显示名 | 关键能力 |
 | :-- | :-- | :-- |
-| `llm` | LLM 二次审核 | 调用外部大模型对告警帧进行语义校验，降低误报 |
 | `osd` | OSD 叠加 | 字幕 / Logo / 时间水印叠加 |
 
 ### 3.3 视频输出组件
@@ -247,6 +259,29 @@ SDK 出厂内置以下算法插件（`.plugin` 包），可直接在 Web 端创�
 | `region_enable_crowd` | `false` | 开启人群聚集 |
 | `region_crowd_threshold` | `10` | 聚集触发人数 |
 | `region_enable_line_cross` | `false` | 开启绊线越线 |
+
+### 3.5 开放词汇提示词检测
+
+`promptdet` 插件面向“类别经常变化、但不希望为每个场景重新训练模型”的业务。用户在 Web 端下发英文提示词，例如 `person`、`bus`、`traffic cone`、`trash bag`、`cardboard box`，系统会理解提示词语义，并在实时视频中检测对应目标。
+
+核心能力：
+- **动态提示词**：每个任务最多 5 个英文提示词；一行一个，提示词内部可以包含空格。
+- **统一资源交付**：检测能力、提示词理解能力和必要资源随插件统一交付，插件根据运行平台自动选择合适的运行后端。
+- **区域规则**：未绘制区域时默认全画面检测；绘制多边形后只对区域内目标生效。
+- **通用事件规则**：支持目标出现、目标缺失、目标静止、新增物体、数量超限、动作候选等规则类型。
+- **报警治理**：内置轻量跟踪、连续帧确认、重复报警间隔、本地网页报警和服务器报警推送，适合实时视频场景长期运行。
+
+典型场景：
+
+| 场景 | 推荐提示词 | 推荐规则 |
+| :-- | :-- | :-- |
+| 门口包裹检测 | `package` / `cardboard box` | 新增物体或目标出现 |
+| 通道堆物检测 | `box` / `trash bag` / `carton` | 目标静止 |
+| 道路异物检测 | `traffic cone` / `debris` | 目标出现或目标静止 |
+| 岗位物品缺失 | `fire extinguisher` / `helmet` | 目标缺失 |
+| 行为类候选触发 | `cigarette` / `smoke` | 动作候选，建议接二阶段审核 |
+
+> 当前版本建议使用英文提示词。中文提示词不会报错，但语义对齐不稳定，不建议用于正式布控。
 
 ---
 
@@ -1050,6 +1085,7 @@ extern "C" void plugin_cleanup(SDKInterface* sdk) {
 ---
 
 ## 附录 B：参考文档
+- [软件算法宣传彩页](doc/ALGORITHM_BROCHURE_CN.md)
 - [用户使用手册](doc/USER_MANUAL/USER_MANUAL_ZH.md)
 - [插件使用说明](doc/PLUGIN_CONFIG_REFERENCE_ZH.md)
 - [平台设备对接协议规范-V1.0.2.docx](doc/平台设备对接协议规范-V1.0.2.docx)

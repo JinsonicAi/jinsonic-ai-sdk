@@ -15,23 +15,44 @@
 		"parentType": "output-component",
 		"label": {
 			"zh": "HDMI输出",
-			"en": "HDMIOutput"
+			"en": "HDMIOutput",
+			"vi": "Đầu ra HDMI",
+			"km": "លទ្ធផល HDMI",
+			"lo": "ຜົນອອກ HDMI"
 		},
 		"type": "@PLUGIN_NAME@",
 		"component": {
 			"formList": [
 				{
 					"type": "select",
-					"name": {"zh": "输出位置", "en": "OutputLocation"},
+					"name": {
+						"zh": "输出位置",
+						"en": "OutputLocation",
+						"vi": "Vị trí đầu ra",
+						"km": "ទីតាំងលទ្ធផលចេញ",
+						"lo": "ຕຳແໜ່ງຜົນອອກ"
+					},
 					"key": "output",
 					"default": "0",
 					"list": [
 						{
-							"label": {"zh": "HDMI0", "en": "HDMI0"},
+							"label": {
+								"zh": "HDMI0",
+								"en": "HDMI0",
+								"vi": "HDMI0",
+								"km": "HDMI0",
+								"lo": "HDMI0"
+							},
 							"value": "0"
 						},
 						{
-							"label": {"zh": "HDMI1", "en": "HDMI1"},
+							"label": {
+								"zh": "HDMI1",
+								"en": "HDMI1",
+								"vi": "HDMI1",
+								"km": "HDMI1",
+								"lo": "HDMI1"
+							},
 							"value": "1"
 						}
 					]

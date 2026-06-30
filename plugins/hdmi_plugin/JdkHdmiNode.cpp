@@ -72,7 +72,7 @@ std::shared_ptr<jdk_objects::jdk_meta> HdmiNode::handle_control_meta(std::shared
 	std::cout << "[HdmiNode] handle_control_meta: control_type = " << meta->control_type << std::endl;
 	if (meta->control_type == jdk_objects::jdk_control_type::SPEAK) this->stop();
 
-	return meta;
+	return jdk_node_base::handle_control_meta(meta);
 };
 
 }  // namespace jdk_nodes

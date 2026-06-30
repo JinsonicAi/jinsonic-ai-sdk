@@ -113,6 +113,8 @@ Generic host + AXCL: RTSP -> AXCL VDEC -> AXCL IVPS              -> AXCL NPU -> 
 ```
 
 > Plugin developers should always create backends from the TaskManager-provided `runtime_location / runtime_device_id` fields instead of hard-coding platform branches inside plugins.
+>
+> - Detailed integration guide: [`doc/RUNTIME_LOCATION_AND_RK_LOCAL_EN.md`](doc/RUNTIME_LOCATION_AND_RK_LOCAL_EN.md)
 
 ---
 
@@ -132,6 +134,8 @@ aibox_sdk/
 ├── plugins/                    # Plugin source code (reference implementations)
 │   ├── netclient_plugin/       # Input: RTSP pull stream
 │   ├── persondet_plugin/       # Algorithm: person detection (with region rules)
+│   ├── absence_plugin/         # Algorithm: post abandonment / absence detection
+│   ├── promptdet_plugin/       # Algorithm: open-vocabulary prompt detection
 │   ├── facedet_plugin/         # Algorithm: face detection
 │   ├── firedet_plugin/         # Algorithm: fire/smoke detection
 │   ├── catdog_plugin/          # Algorithm: pet detection
@@ -165,6 +169,7 @@ aibox_sdk/
 | :-- | :-- | :-- |
 | `intrusion` | Intrusion Detection | Polygon zone enter/leave real-time alert |
 | `loitering` | Loitering Detection | Target stays in zone beyond time threshold |
+| `absence` | Post Abandonment / Absence Detection | Alerts when a staffed area becomes empty beyond the configured duration |
 | `crowd` | Crowd Gathering | Object count in zone exceeds threshold |
 | `tripwire` | Tripwire Detection | Virtual line cross + direction check (forward/reverse) |
 | `peopleflow` | People Flow Statistics | Entry/exit counting + over-capacity alert |
@@ -197,11 +202,17 @@ aibox_sdk/
 | `calling` | Phone-calling Detection | Detects hand-held phone calling behavior |
 | `smoking` | Smoking Detection | Smoking behavior recognition |
 
+#### 🧠 Open Vocabulary and Intelligent Review
+
+| Plugin | Label | Key capability |
+| :-- | :-- | :-- |
+| `promptdet` | Prompt Detection | Open-vocabulary object detection from configurable prompts, with regions, rules, tracking de-duplication, and alarm push |
+| `llm` | LLM Second-pass Review | Calls external LLM to semantically validate alert frames, reducing false positives |
+
 #### 🔧 Utility
 
 | Plugin | Label | Key capability |
 | :-- | :-- | :-- |
-| `llm` | LLM Second-pass Review | Calls external LLM to semantically validate alert frames, reducing false positives |
 | `osd` | OSD Overlay | Caption / logo / timestamp watermark |
 
 ### 3.3 Output Components
@@ -243,6 +254,29 @@ Key config parameters:
 | `region_enable_crowd` | `false` | Enable crowd gathering |
 | `region_crowd_threshold` | `10` | Crowd trigger count |
 | `region_enable_line_cross` | `false` | Enable tripwire |
+
+### 3.5 Open-vocabulary Prompt Detection
+
+`promptdet` is designed for scenarios where the target category changes often and retraining a model for each project is not practical. Users configure English prompts in the Web UI, such as `person`, `bus`, `traffic cone`, `trash bag`, or `cardboard box`. The system understands the prompt semantics and detects the corresponding targets in real-time video streams.
+
+Core capabilities:
+- **Dynamic prompts**: up to 5 English prompts per task; one prompt per line, and spaces inside a prompt are supported.
+- **Unified resource delivery**: detection capability, prompt understanding capability, and required resources are delivered together; the plugin automatically selects the proper runtime backend for the current platform.
+- **Region-aware detection**: no region means full-frame detection; polygon regions restrict detection and alarms to configured areas.
+- **Generic event rules**: supports presence, absence, stationary object, new object, count threshold, and action-candidate rules.
+- **Alarm governance**: includes lightweight tracking, continuous-frame confirmation, repeated-alarm interval, local Web alarms, and server-side alarm push for long-running video workloads.
+
+Typical use cases:
+
+| Scenario | Suggested prompts | Suggested rule |
+| :-- | :-- | :-- |
+| Doorstep package detection | `package` / `cardboard box` | New object or presence |
+| Corridor clutter detection | `box` / `trash bag` / `carton` | Stationary |
+| Road obstacle detection | `traffic cone` / `debris` | Presence or stationary |
+| Missing safety equipment | `fire extinguisher` / `helmet` | Absence |
+| Action candidate trigger | `cigarette` / `smoke` | Action candidate, preferably followed by second-stage review |
+
+> English prompts are recommended for the current version. Non-English prompts may run, but semantic alignment is not guaranteed for production deployments.
 
 ---
 

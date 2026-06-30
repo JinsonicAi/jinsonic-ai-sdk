@@ -17,6 +17,8 @@ using InferencePluginPtr = std::shared_ptr<IInferencePlugin>;
 class EXPORT_VISIBILITY InferenceEngine : public std::enable_shared_from_this<InferenceEngine> {
 public:
 	struct Job {
+		// Empty means pre_process wrote directly into the Tensor staging buffer.
+		// A value means CopyToDevice must copy this job-owned explicit input.
 		std::any input;
 		std::any output;
 		int		 batch_size{0};

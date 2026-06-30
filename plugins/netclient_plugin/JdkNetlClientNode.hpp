@@ -9,6 +9,7 @@
 
 #include "jdk_node_base.hpp"
 #include "jdk_node_wrapper.hpp"
+#include "PluginRuntime.hpp"
 //
 #include "MetricsReporter.hpp"
 #include "NetClient.hpp"
@@ -18,7 +19,7 @@
 namespace jdk_nodes {
 class NetClientNode : public jdk_node_base, public CustomHandleRun, public CustomHandleControl {
 public:
-	NetClientNode(std::string node_name, std::string rtsp_url, int device_id, int group, int channel,
+	NetClientNode(std::string node_name, std::string rtsp_url, PluginRuntime runtime, int group, int channel,
 				  stream_info info, std::string task_id = "", std::string task_name = "",
 				  nlohmann::json schedule_config = nlohmann::json{});
 	~NetClientNode();
@@ -40,6 +41,7 @@ private:
 	void		report_rtsp_info(const std::shared_ptr<AXVideoFrame>& frame, int fps);
 	std::string task_id_{};
 	std::string task_name_{};
+	PluginRuntime runtime_{};
 	int		device_id_;	  //-1 host, 0 >= device
 	int			group_;		  // < 32
 	int			channel_id_;  // default 0

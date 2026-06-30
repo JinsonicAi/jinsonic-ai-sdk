@@ -1,8 +1,10 @@
 // #include <opencv2/opencv.hpp>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <typeinfo>
+#include <vector>
 
 // #include "IConver.hpp"
 #include "IEngine.hpp"
@@ -27,6 +29,7 @@ public:
 	virtual bool startup(const std::string& file, int batch_size,
 						 const std::string type, const std::string& model_name, int device_id) {
 		device_id_ = device_id;
+		infer_type_ = type;
 		return InferenceEngine::startup(make_tuple(file, type), device_id, model_name);
 	}
 	virtual bool	 pre_process(Job& job, const std::any& input) override;
@@ -53,6 +56,7 @@ private:
 	std::shared_ptr<HwIvps> ipvs	   = nullptr;
 	TransformMatrices		tm_		   = {0};
 	int						device_id_ = -1;
+	std::string					infer_type_{};
 
 	bool isHost() {
 		return device_id_ < 0;
@@ -64,46 +68,110 @@ private:
 
 bool OjbInfer::pre_process(Job& job, const std::any& input) {
 	if (ipvs == nullptr) {
-		ipvs = std::make_shared<HwIvps>(device_id_, 0, 0);
+		ipvs = std::make_shared<HwIvps>(device_id_, 0, 0, infer_type_ == "rk" ? "rk.local" : (device_id_ < 0 ? "ax.local" : "compute_card_" + std::to_string(device_id_ + 1)));
 	}
 	auto tensor = engine->inputs[0];
-	int	 width	= tensor->GetWidth();
-	int	 height = tensor->GetHeight();
-	// std::cout << "Input type: " << input.type().name() << std::endl;
-	auto frame = std::any_cast<std::shared_ptr<AXVideoFrame>>(input);
-	if (frame) {
-		auto dstDewarpFrame = ipvs->HwIvpsDewarp(frame->raw(), {width, height}, tm_);
-		if (dstDewarpFrame == nullptr) {
-			std::cout << "Valid dstDewarpFrame\n";
-			return false;
-		}
-		// dstDewarpFrame->save_data("frame_416x416_nv12_Dewarp.yuv");
-		// ⚠️ it is recommended to put the implementation code directly into the model,implemented in the npu！!!!!!!!!!!!!
-		// ⚠️  !!!!!!!!!!
-		//  NV12 TO RGB
-		auto RgbFrame = ipvs->HwIvpsCsc(dstDewarpFrame->raw());
-		if (!RgbFrame) {
-			std::cout << "Valid RgbFrame\n";
-			return false;
-		}
-		// RgbFrame->save_data("frame_416x416_nv12_Dewarp.rgb");
-		// auto inputImage = cv::Mat(height, width, CV_8UC3, RgbFrame->toHost()->getPviraddr());
-		// cv::imwrite("HwIvpsCsc_inputImage.jpg", inputImage);
-		// uchar to float32
-		auto inputFrame = std::make_shared<AXVideoFrame>(width, height, -1 /*device_id_*/, width * height * 3 * 4);	 // decode 256
-		printf("inputFrame ------>size:%d\r\n", inputFrame->size());
-		cv::Mat Fp32Image;	//(height, width, CV_32FC3, inputFrame->getPviraddr());
-		cv::Mat(height, width, CV_8UC3, RgbFrame->toHost()->getPviraddr()).convertTo(Fp32Image, CV_32FC3, 1.0 / 255.0);
 
-		std::vector<cv::Mat> channels(Fp32Image.channels());
-		for (int i = 0; i < Fp32Image.channels(); ++i) {
-			auto index	= true ? (2 - i) : i;
-			channels[i] = cv::Mat(height, width, CV_32F,
-								  (float*)inputFrame->getPviraddr() + index * Fp32Image.total());
+	// STG/时序等非图像模型直接提交连续 FP32 特征。input_attr.type 来自
+	// .rknn 模型本身且只读；vector<float> 则声明本次 rknn_input.type 为
+	// RKNN_TENSOR_FLOAT32，Runtime 负责转换到模型 native input 类型。
+	if (input.type() == typeid(TensorInput)) {
+		auto tensor_input = std::any_cast<TensorInput>(input);
+		if (tensor_input.type != ::Fp32 ||
+			tensor_input.bytes != static_cast<size_t>(tensor->GetElementNum()) * sizeof(float)) {
+			std::cerr << "[FP32] TensorInput does not match YOLO input shape/type" << std::endl;
+			return false;
 		}
-		cv::split(Fp32Image, channels);
-		job.input = inputFrame;
+		job.input = std::move(tensor_input);
+		return true;
 	}
+	if (input.type() == typeid(std::vector<float>)) {
+		auto values = std::any_cast<std::vector<float>>(input);
+		if (values.size() != static_cast<size_t>(tensor->GetElementNum())) {
+			std::cerr << "[FP32] input element count does not match model input" << std::endl;
+			return false;
+		}
+		job.input = TensorInput::fromVector(std::move(values), TensorLayout::Model, false);
+		return true;
+	}
+	int width = tensor->GetWidth();
+	int height = tensor->GetHeight();
+	auto frame = std::any_cast<std::shared_ptr<AXVideoFrame>>(input);
+	if (!frame) {
+		std::cerr << "[FaceDet] input is not an AXVideoFrame\n";
+		return false;
+	}
+
+	auto dstDewarpFrame = ipvs->HwIvpsDewarp(frame->raw(), {width, height}, tm_);
+	if (!dstDewarpFrame) {
+		std::cerr << "[FaceDet] resize/letterbox failed\n";
+		return false;
+	}
+	// Keep the same RGB frame contract as AX/AXCL; RkPlugin owns backend packing.
+	auto RgbFrame = ipvs->HwIvpsCsc(dstDewarpFrame->raw(), AX_FORMAT_RGB888);
+	if (!RgbFrame) {
+		std::cerr << "[FaceDet] NV12 color conversion failed\n";
+		return false;
+	}
+	if (std::getenv("AIBOX_DUMP_PREPROCESS")) {
+		dstDewarpFrame->save_data("frame_416x416_nv12_Dewarp.yuv");
+		RgbFrame->save_data("frame_416x416_rgb.rgb");
+		if (infer_type_ == "rk") {
+			auto host_rgb = RgbFrame->toHost();
+			if (host_rgb && host_rgb->getPviraddr()) {
+				cv::Mat rgb(height, width, CV_8UC3, host_rgb->getPviraddr());
+				cv::Mat bgr;
+				cv::cvtColor(rgb, bgr, cv::COLOR_RGB2BGR);
+				cv::imwrite("frame_416x416_rgb.jpg", bgr);
+			}
+		}
+	}
+	if (infer_type_ == "rk" && std::getenv("AIBOX_YOLO_FP32_INPUT")) {
+		// Direct-staging example: no job.input is needed. prepareInput records
+		// FLOAT32/NHWC for RkPlugin and allocates enough host staging memory.
+		if (!tensor->prepareInput({::Fp32, TensorLayout::NHWC, false})) {
+			std::cerr << "[FP32] unable to prepare RKNN FP32/NHWC input staging" << std::endl;
+			return false;
+		}
+		auto* input_data = tensor->host<float>();
+		if (!input_data) return false;
+		cv::Mat rgb(height, width, CV_8UC3, RgbFrame->toHost()->getPviraddr());
+		cv::Mat fp32(height, width, CV_32FC3, input_data);
+		rgb.convertTo(fp32, CV_32FC3);  // values remain 0..255
+		job.input.reset();
+		return true;
+	}
+	if (infer_type_ == "rk") {
+		if (!RgbFrame->isRKFrame() || RgbFrame->dmaFd() < 0 || !RgbFrame->getPviraddr() ||
+			RgbFrame->size() < tensor->bytes()) {
+			std::cerr << "[FaceDet] invalid RKNN RGB dma-buf, fd=" << RgbFrame->dmaFd()
+					  << ", frame_bytes=" << RgbFrame->size()
+					  << ", tensor_bytes=" << tensor->bytes() << std::endl;
+			return false;
+		}
+		job.input = RgbFrame;
+		return true;
+	}
+
+	auto inputFrame = std::make_shared<AXVideoFrame>(
+		width, height, -1, width * height * 3 * static_cast<int>(sizeof(float)));
+	if (!inputFrame->getPviraddr() || inputFrame->size() != tensor->bytes()) {
+		std::cerr << "Invalid input frame buffer, data=" << inputFrame->getPviraddr()
+				  << ", frame_bytes=" << inputFrame->size()
+				  << ", tensor_bytes=" << tensor->bytes() << std::endl;
+		return false;
+	}
+	cv::Mat Fp32Image;
+	cv::Mat(height, width, CV_8UC3, RgbFrame->toHost()->getPviraddr()).convertTo(Fp32Image, CV_32FC3, 1.0 / 255.0);
+
+	std::vector<cv::Mat> channels(Fp32Image.channels());
+	for (int i = 0; i < Fp32Image.channels(); ++i) {
+		auto index = 2 - i;
+		channels[i] = cv::Mat(height, width, CV_32F,
+			static_cast<float*>(inputFrame->getPviraddr()) + index * Fp32Image.total());
+	}
+	cv::split(Fp32Image, channels);
+	job.input = inputFrame;
 	return true;
 }
 

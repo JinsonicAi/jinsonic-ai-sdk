@@ -17,11 +17,12 @@ extern "C" void plugin_init(SDKInterface* sdk) {
 	}
 
 	sdk->register_node(PLUGIN_NODE_NAME, [](const std::string& name, const nlohmann::json& config) {
+		const auto runtime = PluginRuntime::from_task_config(config);
 		return jdk_nodes::jdk_node_wrapper::create(
 			name,
 			std::make_shared<jdk_nodes::NetServerNode>(
 				name,
-				jp(config, "device_id", -1),
+				runtime,
 				jp(config, "channel_id", 0),
 				jp(config, "rtsp_push", false),
 				jp(config, "rtsp_port", 8554),
@@ -29,7 +30,6 @@ extern "C" void plugin_init(SDKInterface* sdk) {
 				jp(config, "pass", "123456"),
 				jp(config, "task_id", "0"),
 				static_cast<size_t>(std::max(1, jp(config, "encode_queue_capacity", 3)))));
-		;
 	});
 }
 

@@ -1,63 +1,118 @@
 {
-	"name": "@PLUGIN_NAME@",
-	"version": "@PLUGIN_VERSION@",
-	"platform": {
-		"arch": "@PLUGIN_ARCH@",
-		"os": "@PLUGIN_OS@",
-		"chip": "@PLUGIN_CHIP@"
-	},
-	"entry": "lib@PLUGIN_NAME@.so",
-	"build_time": "@PLUGIN_BUILD_TIME@",
-	"md5": "@PLUGIN_MD5@",
-	"type": "@PLUGIN_NAME@",
-	"description": "@PLUGIN_NAME@ plugin auto-generated",
-	"component": {
-		"parentType": "output-component",
-		"label": {"zh": "网络推流", "en": "Network Streaming"},
-		"type": "@PLUGIN_NAME@",
-		"component": {
-			"formList": [
-				{
-					"type": "select",
-					"name": {"zh": "推流协议", "en": "Streaming Protocol"},
-					"key": "location",
-					"default": "h264",
-					"list": [
-						{
-							"label": "h264",
-							"value": "h264"
-						}
-					]
-				},
-                 {
-					"type": "divider",
-					"name": { "zh": "RTSP推送", "en": "RTSP PUSH" }
-				},     
-				{
-					"type": "switch",
-					"name": { "zh": "启用RTSP推送", "en": "Enable RTSP Push" },
-					"key": "rtsp_push",
-					"default": false
-				},
-				{
-					"type": "input",
-					"name": {"zh": "用户名", "en": "Username"},
-					"key": "user",
-					"default": "admin"
-				},
-				{
-					"type": "input",
-					"name": {"zh": "密码", "en": "Password"},
-					"key": "pass",
-					"default": "123456"
-				},
-				{
-					"type": "inputNumber",
-					"name": {"zh": "编码队列容量", "en": "Encode Queue Capacity"},
-					"key": "encode_queue_capacity",
-					"default": 3
-				}
-			]
-		}
-	}
+  "name": "@PLUGIN_NAME@",
+  "version": "@PLUGIN_VERSION@",
+  "platform": {
+    "arch": "@PLUGIN_ARCH@",
+    "os": "@PLUGIN_OS@",
+    "chip": "@PLUGIN_CHIP@"
+  },
+  "entry": "lib@PLUGIN_NAME@.so",
+  "build_time": "@PLUGIN_BUILD_TIME@",
+  "md5": "@PLUGIN_MD5@",
+  "type": "@PLUGIN_NAME@",
+  "description": "@PLUGIN_NAME@ plugin auto-generated",
+  "component": {
+    "parentType": "output-component",
+    "label": {
+      "zh": "网络推流",
+      "en": "Network Streaming",
+      "vi": "Phát luồng mạng",
+      "km": "ផ្សាយស្ទ្រីមតាមបណ្តាញ",
+      "lo": "ສະຕຣີມຜ່ານເຄືອຂ່າຍ"
+    },
+    "type": "@PLUGIN_NAME@",
+    "component": {
+      "formList": [
+        {
+          "type": "select",
+          "name": {
+            "zh": "推流协议",
+            "en": "Streaming Protocol",
+            "vi": "Giao thức phát luồng",
+            "km": "ពិធីការផ្សាយ",
+            "lo": "ໂປຣໂຕຄອນສະຕຣີມ"
+          },
+          "key": "location",
+          "default": "h264",
+          "list": [
+            {
+              "label": "h264",
+              "value": "h264"
+            }
+          ]
+        },
+        {
+          "type": "divider",
+          "name": {
+            "zh": "RTSP推送",
+            "en": "RTSP PUSH",
+            "vi": "Đẩy RTSP",
+            "km": "ការផ្ញើ RTSP",
+            "lo": "ສົ່ງ RTSP"
+          }
+        },
+        {
+          "type": "switch",
+          "name": {
+            "zh": "启用RTSP推送",
+            "en": "Enable RTSP Push",
+            "vi": "Bật đẩy RTSP",
+            "km": "បើក RTSP ផ្ញើ",
+            "lo": "ເປີດ RTSP ສົ່ງ"
+          },
+          "key": "rtsp_push",
+          "default": false
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "用户名",
+            "en": "Username",
+            "vi": "Tên người dùng",
+            "km": "ឈ្មោះអ្នកប្រើ",
+            "lo": "ຊື່ຜູ້ໃຊ້"
+          },
+          "key": "user",
+          "default": "admin"
+        },
+        {
+          "type": "input",
+          "name": {
+            "zh": "密码",
+            "en": "Password",
+            "vi": "Mật khẩu",
+            "km": "ពាក្យសម្ងាត់",
+            "lo": "ລະຫັດຜ່ານ"
+          },
+          "key": "pass",
+          "default": "123456"
+        },
+        {
+          "type": "inputNumber",
+          "name": {
+            "zh": "编码队列容量",
+            "en": "Encode Queue Capacity",
+            "vi": "Dung lượng hàng đợi mã hóa",
+            "km": "អ៊ិនកូដ ជួរ សមត្ថភាព",
+            "lo": "ຄວາມຈຸຄິວເຂົ້າລະຫັດ"
+          },
+          "key": "encode_queue_capacity",
+          "default": 3
+        },
+        {
+          "type": "input",
+          "visible": false,
+          "name": {
+            "zh": "运行位置",
+            "en": "Runtime Location",
+            "vi": "Vị trí chạy",
+            "km": "ទីតាំងដំណើរការ",
+            "lo": "ຕຳແໜ່ງຣັນໄທມ໌"
+          },
+          "key": "runtime_location",
+          "default": ""
+        }
+      ]
+    }
+  }
 }

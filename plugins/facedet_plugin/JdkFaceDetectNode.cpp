@@ -5,6 +5,7 @@
 #include <ctime>
 #include <iomanip>
 #include <sstream>
+#include <stdexcept>
 
 #include "DevProtoDef.hpp"
 #include "DeviceInfo.hpp"
@@ -18,15 +19,22 @@ namespace jdk_nodes {
 faceDetectV2Node::faceDetectV2Node(std::string		  node_name,
 								   const std::string& filename,
 								   float			  threshold,
-								   int				  device_id,
+								   PluginRuntime	  runtime,
 								   std::string		  task_id,
 								   int				  label_score_step)
-	: channel_id_(device_id),
+	: channel_id_(runtime.runtime_device_id),
 	  threshold_(threshold),
-	  device_id_(device_id),
+	  runtime_(std::move(runtime)),
+	  device_id_(runtime_.runtime_device_id),
 	  label_score_step_(std::clamp(label_score_step, 0, 100)),
 	  task_id_(task_id) {
-	infer = YOLOV5FACE::create_infer(filename, "ax", device_id_);
+	infer = YOLOV5FACE::create_infer(filename, runtime_.infer_type(), device_id_);
+	if (!infer) {
+		throw std::runtime_error(fmt::format("face detector failed to create {} backend for runtime_location={} device_id={}",
+			runtime_.infer_type(), runtime_.location, device_id_));
+	}
+	fmt::print("[FaceDet] runtime_location={} infer_type={} runtime_device_id={}\n",
+		runtime_.location, runtime_.infer_type(), device_id_);
 	reporter_.set_algorithm_config({task_id_,
 									PLUGIN_NODE_NAME,
 									"-"});
@@ -61,6 +69,8 @@ void faceDetectV2Node::render_fn(std::shared_ptr<AXVideoFrame>& canvas,
 
 	if (ivps) {
 		for (const auto& b : det) {
+			if (b.prob < threshold_)
+				continue;
 			cv::Rect clipped = cv::Rect(0, 0, canvas->width(), canvas->height()) &
 							   cv::Rect((int)b.rect.x, (int)b.rect.y, (int)b.rect.width, (int)b.rect.height);
 
@@ -73,11 +83,17 @@ void faceDetectV2Node::render_fn(std::shared_ptr<AXVideoFrame>& canvas,
 	}
 }
 
-jdk_osd::Overlay faceDetectV2Node::build_overlay_(const YOLOV5FACE::Objects& det) {
+jdk_osd::Overlay faceDetectV2Node::build_overlay_(const YOLOV5FACE::Objects& det, int frame_w, int frame_h) {
 	jdk_osd::Overlay overlay;
+	const int max_dim = std::max(frame_w, frame_h);
+	const int line_thickness = std::clamp((max_dim + 639) / 640 + 1, 3, 10);
+	const int label_font_size = std::clamp(static_cast<int>(std::lround(max_dim * 0.018f)), 18, 42);
+	const int keypoint_radius = std::max(2, line_thickness + 1);
 
 	overlay.boxes.reserve(det.size());
 	for (const auto& b : det) {
+		if (b.prob < threshold_)
+			continue;
 		if (b.rect.width * b.rect.height <= 200)
 			continue;
 		jdk_osd::Box box;
@@ -93,9 +109,9 @@ jdk_osd::Overlay faceDetectV2Node::build_overlay_(const YOLOV5FACE::Objects& det
 		const AX_U32 color_rgb	  = random_color(box.track_id ? static_cast<int>(box.track_id) : b.label);
 		box.style.color			  = is_ghost ? jdk_osd::Color::from_rgb(color_rgb, 180)
 											 : jdk_osd::Color::from_rgb(color_rgb, 255);
-		box.style.thickness		  = 0;
+		box.style.thickness		  = line_thickness;
 		box.style.alpha			  = box.style.color.a;
-		box.label_style.font_size = 22;
+		box.label_style.font_size = label_font_size;
 		box.label_style.fg		  = jdk_osd::Color{255, 255, 255, 255};
 		box.label_style.bg		  = box.style.color;
 		box.label_style.bg_alpha  = box.style.color.a;
@@ -109,10 +125,12 @@ jdk_osd::Overlay faceDetectV2Node::build_overlay_(const YOLOV5FACE::Objects& det
 	}
 
 	for (const auto& face : det) {
+		if (face.prob < threshold_)
+			continue;
 		for (const auto& pt : face.landmarks) {
 			jdk_osd::Keypoint kp;
 			kp.p			   = {pt.x, pt.y};
-			kp.radius		   = 2;
+			kp.radius		   = keypoint_radius;
 			kp.style.color	   = jdk_osd::Color{0, 210, 255, 255};
 			kp.style.thickness = 1;
 			kp.priority		   = 80;
@@ -222,7 +240,11 @@ void faceDetectV2Node::run_infer_combinations(const std::vector<std::shared_ptr<
 	}
 	YOLOV5FACE::Objects det;
 	anyx::visit<YOLOV5FACE::Objects>(*result_sp, [&](const auto& v) { det = v; });
-	auto overlay_result = jdk_osd::make_overlay_result(result_sp, build_overlay_(det));
+	auto overlay_result = jdk_osd::make_overlay_result(
+		result_sp,
+		build_overlay_(det,
+			static_cast<int>(frame_meta->frame_->width()),
+			frame_meta->frame_->height()));
 	{
 		std::lock_guard<std::mutex> lk(*frame_meta->mtx_);
 		auto						new_entry = std::make_shared<jdk_objects::ResultEntry>(
@@ -270,7 +292,7 @@ std::shared_ptr<jdk_objects::jdk_meta> faceDetectV2Node::handle_control_meta(std
 	if (meta->control_type == jdk_objects::jdk_control_type::SPEAK)
 		this->stop();
 
-	return meta;
+	return jdk_node_base::handle_control_meta(meta);
 };
 
 }  // namespace jdk_nodes

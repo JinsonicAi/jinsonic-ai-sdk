@@ -11,16 +11,16 @@
 
 #include "AxVideoFrame.hpp"
 #include "HwIvps.hpp"
+#include "../sample_runtime.hpp"
 
 int main(int argc, char* argv[]) {
-	int device_id = 0;
-	if (argc == 2) {
-		device_id = atoi(argv[1]);
-	}
+	print_sample_runtime_usage(argv[0]);
+	const auto runtime = parse_sample_runtime(argc, argv);
+	std::cout << "runtime_location=" << runtime.location << ", runtime_device_id=" << runtime.runtime_device_id << std::endl;
 
-	auto ipvs = std::make_shared<HwIvps>(device_id, 0, 0);
+	auto ipvs = std::make_shared<HwIvps>(runtime.runtime_device_id, 0, 0, runtime.location);
 
-	auto DewarpFrame = std::make_shared<AXVideoFrame>(1280, 720, device_id, AX_FORMAT_YUV420_SEMIPLANAR, 16);  // decode 256
+	auto DewarpFrame = make_sample_video_frame(runtime, 1280, 720, AX_FORMAT_YUV420_SEMIPLANAR, 16);
 	DewarpFrame->load_data("pre_process_1280x720_nv12.yuv", 1280 * 720 * 3 / 2);							   // 2048*1080*3/2
 	// AX_VIDEO_FRAME_T& dewarpFrame = *DewarpFrame;
 

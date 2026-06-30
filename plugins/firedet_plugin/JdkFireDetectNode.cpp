@@ -181,7 +181,7 @@ fireDetectNode::fireDetectNode(std::string node_name, std::unique_ptr<FireNodePa
 		p.fire_smoke_param.fire_smoke_threshold = nodeParams_->threshold;
 	});
 
-	ivps_	 = std::make_shared<HwIvps>(device_id_, 0, 0);
+	ivps_	 = std::make_shared<HwIvps>(device_id_, 0, 0, nodeParams_->runtime_location);
 	Capture_ = std::make_shared<HwCapture>(device_id_);
 
 	// last_report_time = std::chrono::steady_clock::now();

@@ -13,27 +13,49 @@
 	"description": "@PLUGIN_NAME@ plugin auto-generated, emits OSD overlay packets",
 	"model_path": "./models",
 	"model_files": [
-		"models/yolov5n-face.axmodel"
+		"models/yolov5n-face.axmodel",
+		"models/yolov5n-face_rk3588.rknn"
 	],
 	"component": {
 		"parentType": "algorithm-component",
 		"label": {
 			"zh": "人脸检测",
-			"en": "FaceDetection"
+			"en": "FaceDetection",
+			"vi": "Phát hiện khuôn mặt",
+			"km": "ការរកឃើញមុខ",
+			"lo": "ການກວດຈັບໃບໜ້າ"
 		},
 		"type": "@PLUGIN_NAME@",
 		"component": {
 			"formList": [
 				{
 					"type": "input",
-					"name": {"zh": "识别阈值", "en": "RecognitionThreshold"},
-                    "default": 0.7,
-					"key": "threshold"
+					"name": {
+						"zh": "识别阈值",
+						"en": "RecognitionThreshold",
+						"vi": "Ngưỡng nhận diện",
+						"km": "កម្រិតកំណត់ការសម្គាល់",
+						"lo": "ການຮັບຮູ້ ຄ່າກຳນົດ"
+					},
+					"key": "threshold",
+					"min": 0.05,
+					"max": 0.95,
+					"step": 0.05,
+					"default": 0.45
 				},
 				{
 					"type": "input",
-					"name": {"zh": "OSD置信度分桶", "en": "OSD Score Step"},
+					"name": {
+						"zh": "OSD置信度分桶",
+						"en": "OSD Score Step",
+						"vi": "OSD Score Step",
+						"km": "ជំហានពិន្ទុ OSD",
+						"lo": "ຂັ້ນຄະແນນ OSD"
+					},
 					"key": "osd_label_score_step",
+					"min": 0,
+					"max": 100,
+					"step": 1,
 					"default": 5
 				}
 			]

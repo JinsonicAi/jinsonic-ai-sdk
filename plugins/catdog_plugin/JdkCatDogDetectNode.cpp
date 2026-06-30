@@ -1,6 +1,7 @@
 #include "JdkCatDogDetectNode.hpp"
 
 #include <iomanip>
+#include <utility>
 
 #include "HwIvps.hpp"
 #include "alg_comm.hpp"
@@ -25,14 +26,15 @@ std::string get_current_iso_time() {
 catDogDetectNode::catDogDetectNode(std::string		  node_name,
 								   const std::string &filename,
 								   float			  threshold,
-								   int				  device_id,
+								   PluginRuntime	  runtime,
 								   std::string		  task_id)
-	: channel_id_(device_id),
+	: channel_id_(runtime.runtime_device_id),
 	  threshold_(threshold),
-	  device_id_(device_id),
+	  runtime_(std::move(runtime)),
+	  device_id_(runtime_.runtime_device_id),
 	  task_id_(std::move(task_id)) {
 	fmt::print("#node_name:{}, filename:{}, device_id:{}, task_id:{}\n",
-			   node_name, filename, device_id, task_id_);
+			   node_name, filename, device_id_, task_id_);
 
 	SafeAlgorithm::Options opt{ax_model_type_cat_dog, filename, device_id_};
 	if (alg_ = std::make_shared<SafeAlgorithm>(opt); !alg_ || !alg_->ok()) {

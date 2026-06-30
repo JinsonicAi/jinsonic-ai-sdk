@@ -19,9 +19,11 @@
 class HwEncoder {
 public:
 	HwEncoder(int device_id, int group, int channel, int rtsp_port, std::string task_id);
+	HwEncoder(int device_id, int group, int channel, int rtsp_port, std::string task_id, std::string runtime_location);
 	~HwEncoder();
 
 	std::shared_ptr<AXVideoFrame> Encode(AX_VIDEO_FRAME_T* srcFrame, const uint8_t* nalu, size_t nalu_size, AX_PAYLOAD_TYPE_E enType = PT_H265);
+	std::shared_ptr<AXVideoFrame> EncodeFrame(const std::shared_ptr<AXVideoFrame>& frame, AX_PAYLOAD_TYPE_E enType = PT_H265);
 
 	// std::string rtsp_url() const;
 
@@ -31,6 +33,7 @@ private:
 	int						  group_;
 	int						  channel_id_;
 	int						  rtsp_port_;
+	std::string				  runtime_location_{};
 	std::shared_ptr<IEncoder> encoder_{nullptr};
 	// std::shared_ptr<RtspServer> rtsp_{nullptr};
 };

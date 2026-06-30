@@ -49,6 +49,8 @@ struct PersonDetParams {
 	bool		alarm_relay_enable{false};
 	int			alarm_relay_interval{5};
 	int			device_id{-1};	// -1 means local
+	std::string runtime_location{"ax.local"};
+	std::string infer_type{"ax"};
 	std::string model_path{"./models/person_20241206_npu1.model"};
 	std::string task_id{"0"};
 

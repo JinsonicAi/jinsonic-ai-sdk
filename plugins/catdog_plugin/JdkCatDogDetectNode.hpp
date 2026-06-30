@@ -7,6 +7,7 @@
 #include "HwIvps.hpp"
 #include "JdkCatDogDetectNode.hpp"
 #include "MetricsReporter.hpp"
+#include "PluginRuntime.hpp"
 #include "alg_comm.hpp"
 #include "ax_algorithm_sdk.h"
 #include "jdk_node_base.hpp"
@@ -16,7 +17,7 @@
 namespace jdk_nodes {
 class catDogDetectNode : public jdk_node_base, public CustomHandleFrame, public CustomHandleControl {
 public:
-	catDogDetectNode(std::string node_name, const std::string& filename, float threshold, int device_id, std::string task_id = "");
+	catDogDetectNode(std::string node_name, const std::string& filename, float threshold, PluginRuntime runtime, std::string task_id = "");
 	~catDogDetectNode();
 	void stop();
 
@@ -39,6 +40,7 @@ private:
 	std::shared_ptr<HwCapture> Capture_ = nullptr;
 	// axdl_sdk_t*										   infer_ = nullptr;
 	float				  threshold_ = 0.7;
+	PluginRuntime			   runtime_{};
 	ax_algorithm_handle_t handle_;
 	int					  device_id_ = -1;
 	std::string			  task_id_{};

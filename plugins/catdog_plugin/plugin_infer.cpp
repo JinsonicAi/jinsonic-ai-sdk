@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "JdkCatDogDetectNode.hpp"
+#include "PluginRuntime.hpp"
 #include "sdk_interface.hpp"
 
 #ifndef PLUGIN_NODE_NAME
@@ -16,13 +17,14 @@ extern "C" void plugin_init(SDKInterface* sdk) {
 	}
 
 	sdk->register_node(PLUGIN_NODE_NAME, [](const std::string& name, const nlohmann::json& config) {
+		const auto runtime = PluginRuntime::from_task_config(config);
 		return jdk_nodes::jdk_node_wrapper::create(
 			name,
 			std::make_shared<jdk_nodes::catDogDetectNode>(
 				name,
 				jp(config, "model_path", "./models/catdog_20250107.model"),
 				jp(config, "threshold", 0.7),
-				jp(config, "device_id", -1),
+				runtime,
 				jp(config, "task_id", "0")));
 		;
 	});

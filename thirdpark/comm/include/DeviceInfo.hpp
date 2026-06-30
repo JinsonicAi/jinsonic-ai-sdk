@@ -29,6 +29,12 @@ public:
 
 	bool supportLocal() const noexcept;	  //
 	bool supportDevice() const noexcept;  //
+	static bool isAx650Target(const std::string& target_soc);
+	static bool isRockchipTarget(const std::string& target_soc);
+	// Canonical local runtime identifier exposed to task configs and plugins.
+	// Legacy "local" remains accepted as input, but is resolved to this value.
+	std::string localRuntimeLocation() const;
+	std::string localRuntimeLabel() const;
 	static std::string normalizeLocation(const std::string& raw, int fallback_device_id = -1);
 	static int inferDeviceIdFromLocation(const std::string& raw, int fallback_device_id = -1);
 	static std::string locationFromInferDeviceId(int infer_device_id);
@@ -56,7 +62,7 @@ private:
 	bool		support_device_{false};
 	//
 	mutable std::string	   swVersion_;	// deb version
-	mutable std::string	   fwVersion_;	// 3.6.2
+	mutable std::string	   fwVersion_;	// 3.10.2
 	mutable std::string	   osVersion_;	// system os version
 	mutable std::once_flag osOnce_;
 	mutable std::once_flag fwOnce_;

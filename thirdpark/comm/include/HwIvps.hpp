@@ -22,6 +22,9 @@
 class HwIvps {
 public:
 	HwIvps(int device_id, int group, int channel);
+	// 显式指定运行后端: runtime_location 形如 "rk"/"rk.local"/"rk.*" 走 RK(RGA)后端,
+	// 其余按 device_id 走 AXCL(device)/AX(host)。runtime_location 为空时自动探测当前平台。
+	HwIvps(int device_id, int group, int channel, std::string runtime_location);
 	~HwIvps();
 
 	int							  HwDrawRect(const AX_VIDEO_FRAME_T *ptSrcFrame, AX_IVPS_RECT_T tRect, AX_U32 nColor = RED);

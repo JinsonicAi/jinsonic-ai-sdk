@@ -16,6 +16,7 @@
 class EXPORT_VISIBILITY HwDecoder {
 public:
 	HwDecoder(int device_id, int group, int channel, stream_info info);
+	HwDecoder(int device_id, int group, int channel, stream_info info, std::string runtime_location);
 	~HwDecoder();
 
 	std::shared_ptr<AXVideoFrame> Decode(const uint8_t* nalu, size_t nalu_size);
@@ -30,6 +31,7 @@ private:
 	int						  device_id_;
 	int						  group_;
 	int						  channel_id_;
+	std::string				  runtime_location_{};
 	std::shared_ptr<IDecoder> decoder_;
 };
 

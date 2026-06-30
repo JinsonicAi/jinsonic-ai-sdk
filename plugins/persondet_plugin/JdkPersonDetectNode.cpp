@@ -279,7 +279,7 @@ personDetectNode::personDetectNode(std::string node_name, std::unique_ptr<Person
 		});
 	}
 
-	ivps_	 = std::make_shared<HwIvps>(device_id_, 0, 0);
+	ivps_	 = std::make_shared<HwIvps>(device_id_, 0, 0, nodeParams_->runtime_location);
 	Capture_ = std::make_shared<HwCapture>(device_id_);
 
 	regions_ = getRegionShapes(task_id_);

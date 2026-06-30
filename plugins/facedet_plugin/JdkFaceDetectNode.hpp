@@ -6,6 +6,7 @@
 
 #include "JdkOsd.hpp"
 #include "MetricsReporter.hpp"
+#include "PluginRuntime.hpp"
 #include "YOLOV5FACE.hpp"
 #include "jdk_node_base.hpp"
 #include "jdk_node_wrapper.hpp"
@@ -16,7 +17,7 @@ public:
 	faceDetectV2Node(std::string		node_name,
 					 const std::string& filename,
 					 float				threshold,
-					 int				device_id,
+					 PluginRuntime		runtime,
 					 std::string		task_id			 = "",
 					 int				label_score_step = 5);
 	~faceDetectV2Node();
@@ -37,9 +38,10 @@ private:
 	std::pair<nlohmann::json, std::vector<std::function<std::shared_ptr<AXVideoFrame>()>>>
 									   alarm_fn(const std::any& future_any, std::shared_ptr<AXVideoFrame> canvas);
 	void							   render_fn(std::shared_ptr<AXVideoFrame>& canvas, const std::any& future_any, const std::any& extra = {});
-	jdk_osd::Overlay				   build_overlay_(const YOLOV5FACE::Objects& det);
+	jdk_osd::Overlay				   build_overlay_(const YOLOV5FACE::Objects& det, int frame_w, int frame_h);
 	std::shared_ptr<YOLOV5FACE::Infer> infer;
-	float							   threshold_		 = 0.7;
+	float							   threshold_		 = 0.45;
+	PluginRuntime					   runtime_{};
 	int								   device_id_		 = -1;
 	int								   label_score_step_ = 5;
 	std::string						   task_id_{};

@@ -17,6 +17,7 @@
 #include "HwCapture.hpp"
 #include "HwIvps.hpp"
 #include "alg_comm.hpp"
+#include "../sample_runtime.hpp"
 
 using DecodePair = std::pair<cv::Mat, std::shared_ptr<AXVideoFrame>>;
 

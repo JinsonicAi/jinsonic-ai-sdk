@@ -5,6 +5,7 @@
 #include "node_factory.hpp"
 #include "plugin_loader.hpp"
 #include "sdk_interface.hpp"
+#include "../sample_runtime.hpp"
 //
 #include <ax_engine_api.h>
 #include <ax_ivps_api.h>
@@ -18,10 +19,14 @@ extern void setup_sdk(SDKInterface& sdk);
 // extern int	ax_alg_init();
 
 int main(int argc, char* argv[]) {
-	int device_id = 0;
-	if (argc == 2) {
-		device_id = atoi(argv[1]);
-	}
+	print_sample_runtime_usage(argv[0]);
+	const auto runtime = parse_sample_runtime(argc, argv);
+	const int device_id = runtime.runtime_device_id;
+	auto add_runtime = [&](nlohmann::json& cfg) {
+		cfg["device_id"] = runtime.runtime_device_id;
+		cfg["runtime_device_id"] = runtime.runtime_device_id;
+		cfg["runtime_location"] = runtime.location;
+	};
 	jdk_nodes::set_log_level(jdk_nodes::jdk_log_level::DEBUG);
 	SDKInterface sdk = {0};
 	setup_sdk(sdk);	 // set callbacks for the sdk
@@ -43,6 +48,7 @@ int main(int argc, char* argv[]) {
 		{"device_id", device_id},
 		{"channel_id", 1},
 		{"task_id", "42"}};
+	add_runtime(node_config);
 	auto netclient = NodeFactory::instance().create(
 		node_config["type"], node_config["node_name"], node_config);
 
@@ -88,6 +94,7 @@ int main(int argc, char* argv[]) {
 		{"model_path", "./models/fs_20241231_npu1.model"},
 		{"device_id", device_id},
 		{"task_id", "2"}};
+	add_runtime(fire_config);
 	auto fire = NodeFactory::instance().create(
 		fire_config["type"], fire_config["node_name"], fire_config);
 	if (fire) {
@@ -121,6 +128,7 @@ int main(int argc, char* argv[]) {
 		{"pushInterval", 0},
 		{"device_id", device_id},
 		{"task_id", "2"}};
+	add_runtime(faceRec_config);
 	auto faceRec = NodeFactory::instance().create(
 		faceRec_config["type"], faceRec_config["node_name"], faceRec_config);
 	if (faceRec) {
@@ -136,6 +144,7 @@ int main(int argc, char* argv[]) {
 		{"device_id", device_id},
 		{"hdmi_device_id", 1},
 		{"task_id", "42"}};
+	add_runtime(hdmi_config);
 	auto hdmi = NodeFactory::instance().create(
 		hdmi_config["type"], hdmi_config["node_name"], hdmi_config);
 

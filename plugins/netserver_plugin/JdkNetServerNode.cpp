@@ -7,27 +7,33 @@
 #include <fstream>
 #include <iostream>
 #include <thread>
+#include <utility>
 
 #include "post_node_info.h"
 
 namespace jdk_nodes {
 #define MAX_FRAME_SIZE (2 * 1024 * 1024)
-static bool looks_annexb(const std::vector<uint8_t>& v) {
-	for (size_t i = 0; i + 3 < v.size(); ++i)
-		if (v[i] == 0 && v[i + 1] == 0 && (v[i + 2] == 1 || (i + 4 < v.size() && v[i + 2] == 0 && v[i + 3] == 1)))
-			return true;
-	return false;
-}
-
-NetServerNode::NetServerNode(std::string node_name, int device_id, int channel_id, bool rtsp_enable, int rtsp_port, std::string user, std::string pass, std::string task_id, size_t encode_queue_capacity)
-	: device_id_(device_id), channel_id_(channel_id), rtsp_enable_(rtsp_enable), rtsp_port_(rtsp_port), user_(user), pass_(pass), task_id_(task_id), encode_queue_capacity_(std::max<size_t>(1, encode_queue_capacity)) {
+NetServerNode::NetServerNode(std::string node_name, PluginRuntime runtime, int channel_id, bool rtsp_enable, int rtsp_port,
+							 std::string user, std::string pass, std::string task_id,
+							 size_t encode_queue_capacity)
+	: device_id_(runtime.runtime_device_id),
+	  channel_id_(channel_id),
+	  rtsp_enable_(rtsp_enable),
+	  rtsp_port_(rtsp_port),
+	  user_(std::move(user)),
+	  pass_(std::move(pass)),
+	  task_id_(std::move(task_id)),
+	  encode_queue_capacity_(std::max<size_t>(1, encode_queue_capacity)),
+	  runtime_(std::move(runtime)) {
 	consumer_id_ = node_name;
 	if (rtsp_enable_) {
 		rtsp_ = std::make_shared<RTSPServer>("ch1", device_id_, rtsp_port_, VideoCodecType::H264, user_, pass_);
 	}
+	const std::string rtsp_url = (rtsp_enable_ && rtsp_) ? rtsp_->rtsp_url() : "";
+	register_task_rtsp_output(task_id_.c_str(), consumer_id_.c_str(), rtsp_url.c_str(), "H264", rtsp_port_);
 	reporter_.set_output_rtsp_config({task_id_,
 									  PLUGIN_NODE_NAME,
-									  (rtsp_enable_ && rtsp_) ? rtsp_->rtsp_url() : "N/A",
+									  rtsp_url.empty() ? "N/A" : rtsp_url,
 									  "H264"});
 	fmt::print("✅ NetServerNode constructed! BUILD TIME: {} {}\n", __DATE__, __TIME__);
 }
@@ -40,6 +46,7 @@ NetServerNode::~NetServerNode() {
 void NetServerNode::stop() {
 	std::lock_guard<std::mutex> lk(mutex_);
 	set_alive(false);
+	unregister_task_rtsp_output(task_id_.c_str(), consumer_id_.c_str());
 	fmt::print("rtsp_ stop ...\n");
 	if (rtsp_) {
 		rtsp_->deinit();
@@ -88,28 +95,30 @@ std::shared_ptr<jdk_objects::jdk_meta> NetServerNode::handle_frame_meta(std::sha
 	req.channel		   = channel_id_;
 	req.rtsp_port	   = rtsp_port_;
 	req.queue_capacity = encode_queue_capacity_;
+	req.runtime_location = runtime_.location;
 	auto encoded_frame = get_task_encoded_frame(task_id_, consumer_id_, frame, req);
 	if (!encoded_frame) {
 		fmt::print("get_task_encoded_frame failed, skipping frame_meta handling.\n");
 		return jdk_node_base::handle_frame_meta(meta);
 	}
-	auto dump_frame = encoded_frame->toHost();
+	const bool encoded_on_axcl = encoded_frame->backend() == VFrameBackend::Axcl ||
+								 encoded_frame->memoryDomain() == VFrameMemoryDomain::AxclDevice;
+	auto dump_frame = (!encoded_on_axcl && encoded_frame->cpuAccessible()) ? encoded_frame : encoded_frame->toHost();
 	if (!dump_frame || !dump_frame->getPviraddr()) {
 		fprintf(stderr, "❌ dump_frame is nullptr or getPviraddr() failed!");
 		return jdk_node_base::handle_frame_meta(meta);
 	}
-	size_t	 sz	  = dump_frame->size();
-	uint8_t* data = reinterpret_cast<uint8_t*>(dump_frame->getPviraddr());
+	size_t		   sz	= dump_frame->size();
+	uint8_t*	   data = reinterpret_cast<uint8_t*>(dump_frame->getPviraddr());
 	if (sz > 0 && sz < MAX_FRAME_SIZE) {
-		std::vector<uint8_t> owned(data, data + sz);
 		if (rtsp_enable_ && rtsp_) {
 			AX_U64 pts = frame->pts;
-			rtsp_->send_nalu(owned.data(), (int)owned.size(), pts);
+			rtsp_->send_nalu(data, static_cast<int>(sz), pts);
 		}
 
 		SdkFrame Frame{};
-		Frame.size			 = owned.size();
-		Frame.frameData		 = owned.data();
+		Frame.size			 = sz;
+		Frame.frameData		 = data;
 		Frame.presentationTs = getTimestamp();
 		SdkWriteVideoFrame(task_id_.data(), &Frame);
 	} else {
@@ -137,7 +146,7 @@ std::shared_ptr<jdk_objects::jdk_meta> NetServerNode::handle_control_meta(std::s
 		stop();
 		fmt::print("✅ NetServerNode stop ok!\n");
 	}
-	return meta;
+	return jdk_node_base::handle_control_meta(meta);
 }
 
 }  // namespace jdk_nodes

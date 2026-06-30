@@ -50,6 +50,42 @@ int insert_device_log_item(const char* did,
 // remove_file_if_exists: 0 only delete DB rows; non-zero also remove file from disk.
 int delete_device_message_by_image_path(const char* img_path, int remove_file_if_exists);
 
+enum MediaEventTypeC {
+	MEDIA_EVENT_UNKNOWN = 0,
+	MEDIA_EVENT_ALARM_IMAGE_UPSERT = 1,
+	MEDIA_EVENT_ALARM_IMAGE_DELETE = 2,
+	MEDIA_EVENT_VIDEO_FILE_CLOSED = 3,
+	MEDIA_EVENT_VIDEO_FILE_DELETED = 4,
+};
+
+struct MediaEventC {
+	int type;
+	const char* task_id;
+	int64_t message_id;
+	const char* file_path;
+	const char* alarm_type;
+	int64_t updated_at_ms;
+	const char* source;
+};
+
+typedef void (*MediaEventCallback)(const MediaEventC* event, void* user_data);
+
+// Subscribe/publish media lifecycle events asynchronously via TaskManager's MediaEventBus.
+// Return value > 0 is a subscription id; pass it to unsubscribe_media_event().
+// Callback is invoked on the MediaEventBus worker thread; keep it lightweight.
+// The const char* fields in MediaEventC are valid only during the callback.
+int subscribe_media_event(MediaEventCallback callback, void* user_data);
+void unsubscribe_media_event(int subscription_id);
+int publish_media_event(const MediaEventC* event);
+
+// Task media context registry/query APIs.
+// netserver-like output plugins should register their runtime RTSP output when it is available.
+// Consumers can query by task_id; return value is the bytes required including trailing '\0'.
+// If buf is null or buf_size is too small, the required size is still returned and buf is untouched/truncated safely.
+void register_task_rtsp_output(const char* task_id, const char* node_id, const char* url, const char* codec, int rtsp_port);
+void unregister_task_rtsp_output(const char* task_id, const char* node_id);
+int get_task_media_context_json(const char* task_id, char* buf, int buf_size);
+
 // set rtsp decoding
 // const char* id,  // device id
 // const char* url,  // rtsp address

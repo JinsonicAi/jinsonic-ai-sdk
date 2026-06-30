@@ -57,7 +57,7 @@ struct YPoint {
 
 typedef struct {
 	cv::Rect_<float> rect;
-	int				 label{0};
+	int				 label{1};
 	float			 prob;
 	// YPoint			 landmarks[5];
 	std::array<YPoint, 5> landmarks;

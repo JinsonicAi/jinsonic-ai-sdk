@@ -28,7 +28,8 @@ public:
 	std::unordered_map<std::string, std::shared_ptr<jdk_nodes::jdk_node_base>> nodes;
 
 	std::shared_ptr<HwEncoder> getEncoder(int device_id, int group, int channel, int rtsp_port,
-										  const std::string& plugin_name, size_t buffer_size = 3);
+										  const std::string& plugin_name, size_t buffer_size = 3,
+										  std::string runtime_location = "");
 
 	std::shared_ptr<AXVideoFrame> getFrame(
 		std::shared_ptr<AXVideoFrame> input_frame,
@@ -57,6 +58,7 @@ private:
 	int							encoder_group_{std::numeric_limits<int>::min()};
 	int							encoder_channel_{std::numeric_limits<int>::min()};
 	int							encoder_rtsp_port_{std::numeric_limits<int>::min()};
+	std::string					encoder_runtime_location_{};
 	bool						encoding_in_progress_{false};
 	uint64_t					last_encoded_pts_{std::numeric_limits<uint64_t>::max()};
 	uint64_t					last_encoded_seq_{std::numeric_limits<uint64_t>::max()};
@@ -92,6 +94,7 @@ struct TaskEncodeRequest {
 	int	   channel{0};
 	int	   rtsp_port{8554};
 	size_t queue_capacity{3};
+	std::string runtime_location{};
 };
 
 std::shared_ptr<Task> get_task(const std::string& task_id);

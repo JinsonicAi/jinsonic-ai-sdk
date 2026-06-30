@@ -1,15 +1,18 @@
-
+// #include <opencv2/opencv.hpp>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <typeinfo>
+#include <vector>
 
-#include "AxVideoFrame.hpp"
-#include "HwIvps.hpp"
+// #include "IConver.hpp"
 #include "IEngine.hpp"
 #include "IPlugin.hpp"
-#include "ResizeOptions.hpp"
 #include "Tensor.hpp"
+// #include "onnxruntime_plugin.hpp"
+#include "AxVideoFrame.hpp"
+#include "HwIvps.hpp"
 #include "YOLOV5FACE.hpp"
 
 using namespace std;
@@ -26,9 +29,7 @@ public:
 	virtual bool startup(const std::string& file, int batch_size,
 						 const std::string type, const std::string& model_name, int device_id) {
 		device_id_ = device_id;
-		if (ipvs == nullptr) {
-			ipvs = std::make_shared<HwIvps>(device_id_, 0, 0);
-		}
+		infer_type_ = type;
 		return InferenceEngine::startup(make_tuple(file, type), device_id, model_name);
 	}
 	virtual bool	 pre_process(Job& job, const std::any& input) override;
@@ -51,61 +52,127 @@ public:
 	}
 
 private:
+	// AffineMatrix<FaceBox>	affine;
 	std::shared_ptr<HwIvps> ipvs	   = nullptr;
 	TransformMatrices		tm_		   = {0};
 	int						device_id_ = -1;
-	bool					letterbox_dewarp_failed_{false};
+	std::string					infer_type_{};
 
 	bool isHost() {
 		return device_id_ < 0;
 	}
+	// auto					ipvs = std::make_shared<HwIvps>(device_id, 0, 0);
 };
 
 /*-----------------------------------------------------------------*/
 
 bool OjbInfer::pre_process(Job& job, const std::any& input) {
+	if (ipvs == nullptr) {
+		ipvs = std::make_shared<HwIvps>(device_id_, 0, 0, infer_type_ == "rk" ? "rk.local" : "");
+	}
 	auto tensor = engine->inputs[0];
-	int	 width	= tensor->GetWidth();
-	int	 height = tensor->GetHeight();
-	// std::cout << "Input type: " << input.type().name() << std::endl;
+
+	// STG/时序等非图像模型直接提交连续 FP32 特征。input_attr.type 来自
+	// .rknn 模型本身且只读；vector<float> 则声明本次 rknn_input.type 为
+	// RKNN_TENSOR_FLOAT32，Runtime 负责转换到模型 native input 类型。
+	if (input.type() == typeid(TensorInput)) {
+		auto tensor_input = std::any_cast<TensorInput>(input);
+		if (tensor_input.type != ::Fp32 ||
+			tensor_input.bytes != static_cast<size_t>(tensor->GetElementNum()) * sizeof(float)) {
+			std::cerr << "[FP32] TensorInput does not match YOLO input shape/type" << std::endl;
+			return false;
+		}
+		job.input = std::move(tensor_input);
+		return true;
+	}
+	if (input.type() == typeid(std::vector<float>)) {
+		auto values = std::any_cast<std::vector<float>>(input);
+		if (values.size() != static_cast<size_t>(tensor->GetElementNum())) {
+			std::cerr << "[FP32] input element count does not match model input" << std::endl;
+			return false;
+		}
+		job.input = TensorInput::fromVector(std::move(values), TensorLayout::Model, false);
+		return true;
+	}
+	int width = tensor->GetWidth();
+	int height = tensor->GetHeight();
 	auto frame = std::any_cast<std::shared_ptr<AXVideoFrame>>(input);
-
 	if (!frame) {
-		return false;
-	}
-	// printf(" device_id:%d,size:%d\r\n", frame->device_id(), frame->size());
-	// frame->save_data("pre_process_1280x720_nv12.yuv");
-
-	auto dstDewarpFrame = ipvs->HwIvpsDewarp(frame->raw(), {width, height}, tm_, ResizeMode{ResizeMode::Stretch});
-	if (!dstDewarpFrame) {
-		std::cout << "[FaceDet] letterbox dewarp failed, retry with stretch resize.\n";
-		dstDewarpFrame = ipvs->HwIvpsDewarp(frame->raw(), {width, height}, tm_, ResizeMode{ResizeMode::Stretch});
-	}
-	if (!dstDewarpFrame) {
-		std::cout << "[FaceDet] invalid dstDewarpFrame\n";
+		std::cerr << "[FaceDet] input is not an AXVideoFrame\n";
 		return false;
 	}
 
-	// dstDewarpFrame->save_data("416x416_nv12_Dewarp.yuv");
-	// ⚠️ it is strongly recommended to directly implement the code downwards in the model and realize it in the npu!!!!!!!
-	//  NV12 TO RGB
-	auto RgbFrame = ipvs->HwIvpsCsc(dstDewarpFrame->raw());
+	auto dstDewarpFrame = ipvs->HwIvpsDewarp(frame->raw(), {width, height}, tm_);
+	if (!dstDewarpFrame) {
+		std::cerr << "[FaceDet] resize/letterbox failed\n";
+		return false;
+	}
+	// Keep the same RGB frame contract as AX/AXCL; RkPlugin owns backend packing.
+	auto RgbFrame = ipvs->HwIvpsCsc(dstDewarpFrame->raw(), AX_FORMAT_RGB888);
 	if (!RgbFrame) {
-		std::cout << "[FaceDet] invalid RgbFrame\n";
+		std::cerr << "[FaceDet] NV12 color conversion failed\n";
 		return false;
 	}
-	// RgbFrame->save_data("416x416_nv12_Dewarp.rgb");
-	// NV12 -> RGB -> Float32
-	auto inputFrame = std::make_shared<AXVideoFrame>(width, height, -1 /*device_id_*/, width * height * 3 * 4);	 // decode 256
-	// printf("inputFrame ------>size:%d\r\n", inputFrame->size());
-	cv::Mat Fp32Image;	//(height, width, CV_32FC3, inputFrame->getPviraddr());
+	if (std::getenv("AIBOX_DUMP_PREPROCESS")) {
+		static int dump_count = 0;
+		if(dump_count == 0){
+			dstDewarpFrame->save_data("frame_416x416_nv12_Dewarp.yuv");
+			RgbFrame->save_data("frame_416x416_rgb.rgb");
+			if (infer_type_ == "rk") {
+				auto host_rgb = RgbFrame->toHost();
+				if (host_rgb && host_rgb->getPviraddr()) {
+					cv::Mat rgb(height, width, CV_8UC3, host_rgb->getPviraddr());
+					cv::Mat bgr;
+					cv::cvtColor(rgb, bgr, cv::COLOR_RGB2BGR);
+					cv::imwrite("frame_416x416_rgb.jpg", bgr);
+				}
+			}
+			dump_count++;
+		}
+	}
+	if (infer_type_ == "rk" && std::getenv("AIBOX_YOLO_FP32_INPUT")) {
+		// Direct-staging example: no job.input is needed. prepareInput records
+		// FLOAT32/NHWC for RkPlugin and allocates enough host staging memory.
+		if (!tensor->prepareInput({::Fp32, TensorLayout::NHWC, false})) {
+			std::cerr << "[FP32] unable to prepare RKNN FP32/NHWC input staging" << std::endl;
+			return false;
+		}
+		auto* input_data = tensor->host<float>();
+		if (!input_data) return false;
+		cv::Mat rgb(height, width, CV_8UC3, RgbFrame->toHost()->getPviraddr());
+		cv::Mat fp32(height, width, CV_32FC3, input_data);
+		rgb.convertTo(fp32, CV_32FC3);  // values remain 0..255
+		job.input.reset();
+		return true;
+	}
+	if (infer_type_ == "rk") {
+		if (!RgbFrame->isRKFrame() || RgbFrame->dmaFd() < 0 || !RgbFrame->getPviraddr() ||
+			RgbFrame->size() < tensor->bytes()) {
+			std::cerr << "[FaceDet] invalid RKNN RGB dma-buf, fd=" << RgbFrame->dmaFd()
+					  << ", frame_bytes=" << RgbFrame->size()
+					  << ", tensor_bytes=" << tensor->bytes() << std::endl;
+			return false;
+		}
+		job.input = RgbFrame;
+		return true;
+	}
+
+	auto inputFrame = std::make_shared<AXVideoFrame>(
+		width, height, -1, width * height * 3 * static_cast<int>(sizeof(float)));
+	if (!inputFrame->getPviraddr() || inputFrame->size() != tensor->bytes()) {
+		std::cerr << "Invalid input frame buffer, data=" << inputFrame->getPviraddr()
+				  << ", frame_bytes=" << inputFrame->size()
+				  << ", tensor_bytes=" << tensor->bytes() << std::endl;
+		return false;
+	}
+	cv::Mat Fp32Image;
 	cv::Mat(height, width, CV_8UC3, RgbFrame->toHost()->getPviraddr()).convertTo(Fp32Image, CV_32FC3, 1.0 / 255.0);
 
 	std::vector<cv::Mat> channels(Fp32Image.channels());
 	for (int i = 0; i < Fp32Image.channels(); ++i) {
-		auto index	= true ? (2 - i) : i;
+		auto index = 2 - i;
 		channels[i] = cv::Mat(height, width, CV_32F,
-							  (float*)inputFrame->getPviraddr() + index * Fp32Image.total());
+			static_cast<float*>(inputFrame->getPviraddr()) + index * Fp32Image.total());
 	}
 	cv::split(Fp32Image, channels);
 	job.input = inputFrame;
@@ -156,8 +223,8 @@ void decode(float* ptr, int fea_w, int fea_h, int stride, std::vector<int> ancho
 				if (score > dthreshold) {
 					FaceBox obj;
 					obj.prob = fast_sigmoid(score);
-
 					calculate_box(ptrs, index, stride, j, i, anchor_w, anchor_h, obj.rect);
+
 					calculate_landmarks(ptrs, index, stride, j, i, anchor_w, anchor_h, &obj.landmarks[0]);
 					prebox.push_back(obj);
 				}
@@ -167,6 +234,7 @@ void decode(float* ptr, int fea_w, int fea_h, int stride, std::vector<int> ancho
 }
 
 std::any OjbInfer::post_process(const Job& job) {
+	// DEBUG
 	// without grid
 	std::vector<int> anchor0 = {4, 5, 8, 10, 13, 16};
 	std::vector<int> anchor1 = {23, 29, 43, 55, 73, 105};
@@ -188,8 +256,10 @@ std::any OjbInfer::post_process(const Job& job) {
 		// printf("[%d,%d,%d,%d],stride:%d\r\n", batch, channel, height, width, stride);
 		decode(tensor->host<float>(), width, height, stride, anchor[&tensor - &engine->outputs[0]], bboxes, confThreshold_);
 	}
-
-	// printf("bboxes size: %d\n", bboxes.size());
+	const bool dump_boxes = std::getenv("AIBOX_FACEDET_DUMP_BOXES") != nullptr;
+	if (dump_boxes) {
+		std::printf("[FaceDet][raw] count=%zu\n", bboxes.size());
+	}
 	auto fast_mns = [&](Objects& src_box, Objects& box_result, float threshold) {
 		std::sort(src_box.begin(), src_box.end(),
 				  [](FaceBox& a, FaceBox& b) { return a.prob > b.prob; });
@@ -236,16 +306,28 @@ std::any OjbInfer::post_process(const Job& job) {
 			}
 		}
 	};
-
 	Objects box_result;
 	fast_mns(bboxes, box_result, nmsThreshold_);
-
+	if (dump_boxes) {
+		std::printf("[FaceDet][final] count=%zu\n", box_result.size());
+		for (size_t index = 0; index < box_result.size(); ++index) {
+			const auto& box = box_result[index];
+			std::printf("[FaceDet][final] #%zu score=%.6f rect=(%.3f,%.3f,%.3f,%.3f)",
+						index, box.prob, box.rect.x, box.rect.y, box.rect.width, box.rect.height);
+			for (const auto& point : box.landmarks) {
+				std::printf(" kp=(%.3f,%.3f)", point.x, point.y);
+			}
+			std::printf("\n");
+		}
+	}
 	// for (auto &box : box_result) {
 	// 	for (auto &landmark : box.landmarks) {
 	// 		printf("==>x,y [%d,%d]\r\n", int(landmark.x), int(landmark.y));
 	// 	}
 	// }
-	// printf("fast_mns box_result size: %d\n", box_result.size());
+	if (dump_boxes) {
+		std::printf("[FaceDet][nms] count=%zu\n", box_result.size());
+	}
 	return box_result;
 }
 
