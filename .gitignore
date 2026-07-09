@@ -16,3 +16,6 @@ CMakeFiles
 .DS*
 .*~undo-tree~
 \#*\#
+
+# mkdocs build output
+site/

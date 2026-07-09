@@ -1,0 +1,11 @@
+version: 2
+
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3.11"
+  # 使用自定义构建命令，避免 RTD 内置 mkdocs 集成执行 `pip install --upgrade mkdocs`
+  # 覆盖锁定版本、污染依赖环境（曾导致 Pygments 版本漂移引发构建崩溃）。
+  commands:
+    - pip install --no-cache-dir -r docs/requirements.txt
+    - mkdocs build --strict --site-dir $READTHEDOCS_OUTPUT/html --config-file mkdocs.yml

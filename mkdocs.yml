@@ -1,0 +1,144 @@
+site_name: AIBox SDK 文档
+site_description: AIBox 边缘智能算法平台 SDK、插件开发、算法能力与部署交付文档
+site_author: Jinsonic
+site_url: https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/
+repo_name: jinsonic-ai-sdk
+
+theme:
+  name: material
+  language: zh
+  font: false
+  icon:
+    repo: fontawesome/brands/git-alt
+    admonition:
+      note: material/pencil-circle
+      tip: material/lightbulb-on
+      warning: material/alert
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - navigation.tracking
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - content.tooltips
+  palette:
+    - scheme: slate
+      primary: black
+      accent: blue
+      toggle:
+        icon: material/weather-sunny
+        name: 切换到浅色模式
+    - scheme: default
+      primary: black
+      accent: blue
+      toggle:
+        icon: material/weather-night
+        name: 切换到深色模式
+
+extra:
+  alternate:
+    - name: 简体中文
+      link: https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/
+      lang: zh
+    - name: English
+      link: https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/en/
+      lang: en
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - https://unpkg.com/mermaid@11.4.1/dist/mermaid.min.js
+  - javascripts/mermaid.js
+
+plugins:
+  - search:
+      lang:
+        - zh
+        - en
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - fenced_code
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      title: 本页目录
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.details
+  - pymdownx.caret
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.keys
+  - pymdownx.smartsymbols
+  - pymdownx.critic
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_div_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+nav:
+  - 首页: index.md
+  - 中文文档:
+      - 快速开始: zh/quickstart.md
+      - 设备开箱与快速上手: zh/device-onboarding.md
+      - SDK 开发指南: zh/sdk-guide.md
+      - Web 用户使用手册: zh/user-manual/index.md
+      - 运行位置与部署: zh/runtime-location.md
+      - 插件开发: zh/plugin-development.md
+      - 报警联动: zh/alarm-linkage.md
+      - 算法能力: zh/algorithm-capabilities.md
+      - 软件算法宣传彩页: zh/reference/algorithm-brochure.md
+      - 配置参考:
+          - 配置设计概要: zh/plugin-config.md
+          - 插件配置完整参考: zh/reference/plugin-config-full.md
+      - 交付运维: zh/deployment-ops.md
+      - 常见问题 FAQ: zh/faq.md
+      - 更新记录: zh/changelog.md
+      - 原始资料下载: zh/reference/downloads.md
+  - English:
+      - Home: en/index.md
+      - Quick Start: en/quickstart.md
+      - Device Onboarding & Quick Start: en/device-onboarding.md
+      - SDK Development Guide: en/sdk-guide.md
+      - Web User Manual: en/user-manual/index.md
+      - Runtime Location and Deployment: en/runtime-location.md
+      - Plugin Development: en/plugin-development.md
+      - Alarm Linkage: en/alarm-linkage.md
+      - Algorithm Capabilities: en/algorithm-capabilities.md
+      - Configuration Reference:
+          - Configuration Overview: en/plugin-config.md
+          - Full Plugin Configuration Reference: en/reference/plugin-config-full.md
+      - Deployment and Operations: en/deployment-ops.md
+      - FAQ: en/faq.md
+      - Changelog: en/changelog.md
+      - Downloads: en/reference/downloads.md

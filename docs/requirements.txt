@@ -1,0 +1,9 @@
+# 锁定文档构建依赖，确保 Read the Docs 与本地环境完全一致。
+# pymdown-extensions 10.12 与新版 Pygments 存在 filename=None 兼容回归，
+# 会导致 RTD 报 "'NoneType' object has no attribute 'replace'"；升级到 10.14+ 修复。
+mkdocs==1.6.1
+mkdocs-material==9.5.49
+mkdocs-material-extensions==1.3.1
+pymdown-extensions==10.14.3
+Pygments==2.18.0
+Markdown==3.7
