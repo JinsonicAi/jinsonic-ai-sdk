@@ -15,6 +15,7 @@
 class HwCapture {
 public:
 	HwCapture(int device_id);
+	HwCapture(int device_id, std::string runtime_location);
 	~HwCapture();
 
 	std::shared_ptr<AXVideoFrame> capture(AX_VIDEO_FRAME_T* srcFrame, __u32 QPLevel = 90);
@@ -23,8 +24,9 @@ public:
 		size_t		   jpeg_size);
 
 private:
-	int	 device_id_;
+	int device_id_;
 	bool isHost();
+	bool useRKBackend() const;
 	// void  SysDeinit();
 	// int	  SysInit();
 	// void* context_ = nullptr;

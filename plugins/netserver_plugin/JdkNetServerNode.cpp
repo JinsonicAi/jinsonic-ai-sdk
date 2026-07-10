@@ -9,6 +9,7 @@
 #include <thread>
 #include <utility>
 
+#include "PluginFrameUtils.hpp"
 #include "post_node_info.h"
 
 namespace jdk_nodes {
@@ -28,8 +29,26 @@ NetServerNode::NetServerNode(std::string node_name, PluginRuntime runtime, int c
 	consumer_id_ = node_name;
 	if (rtsp_enable_) {
 		rtsp_ = std::make_shared<RTSPServer>("ch1", device_id_, rtsp_port_, VideoCodecType::H264, user_, pass_);
+		// rtsp_ready_ = rtsp_ && rtsp_->init();
+		// if (rtsp_ready_) {
+		// 	rtsp_url_ = rtsp_->rtsp_url();
+		// } else {
+		// 	std::cerr << "[NetServerNode] RTSP init failed, disable RTSP push. task=" << task_id_
+		// 			  << " node=" << consumer_id_ << " port=" << rtsp_port_ << std::endl;
+		// 	if (rtsp_) {
+		// 		rtsp_->deinit();
+		// 		rtsp_.reset();
+		// 	}
+		// }
 	}
+	// register_task_rtsp_output(task_id_.c_str(), consumer_id_.c_str(), rtsp_url_.c_str(), "H264", rtsp_port_);
+	// reporter_.set_output_rtsp_config({task_id_,
+	// 								  PLUGIN_NODE_NAME,
+	// 								  rtsp_url_.empty() ? "N/A" : rtsp_url_,
+	// 								  "H264"});
 	const std::string rtsp_url = (rtsp_enable_ && rtsp_) ? rtsp_->rtsp_url() : "";
+	printf("NetServerNode constructed! task=%s node=%s rtsp_enable=%d rtsp_port=%d rtsp_url=%s BUILD TIME: %s %s\n",
+		   task_id_.c_str(), consumer_id_.c_str(), rtsp_enable_, rtsp_port_, rtsp_url.c_str(), __DATE__, __TIME__);
 	register_task_rtsp_output(task_id_.c_str(), consumer_id_.c_str(), rtsp_url.c_str(), "H264", rtsp_port_);
 	reporter_.set_output_rtsp_config({task_id_,
 									  PLUGIN_NODE_NAME,
@@ -48,6 +67,9 @@ void NetServerNode::stop() {
 	set_alive(false);
 	unregister_task_rtsp_output(task_id_.c_str(), consumer_id_.c_str());
 	fmt::print("rtsp_ stop ...\n");
+	// rtsp_ready_ = false;
+	// rtsp_send_error_logged_ = false;
+	rtsp_url_.clear();
 	if (rtsp_) {
 		rtsp_->deinit();
 		rtsp_.reset();
@@ -104,16 +126,31 @@ std::shared_ptr<jdk_objects::jdk_meta> NetServerNode::handle_frame_meta(std::sha
 	const bool encoded_on_axcl = encoded_frame->backend() == VFrameBackend::Axcl ||
 								 encoded_frame->memoryDomain() == VFrameMemoryDomain::AxclDevice;
 	auto dump_frame = (!encoded_on_axcl && encoded_frame->cpuAccessible()) ? encoded_frame : encoded_frame->toHost();
-	if (!dump_frame || !dump_frame->getPviraddr()) {
+	if (!jdk_plugin::frame_has_host_memory(dump_frame)) {
 		fprintf(stderr, "❌ dump_frame is nullptr or getPviraddr() failed!");
 		return jdk_node_base::handle_frame_meta(meta);
 	}
 	size_t		   sz	= dump_frame->size();
 	uint8_t*	   data = reinterpret_cast<uint8_t*>(dump_frame->getPviraddr());
 	if (sz > 0 && sz < MAX_FRAME_SIZE) {
-		if (rtsp_enable_ && rtsp_) {
+		if (rtsp_enable_ && /*rtsp_ready_ &&*/ rtsp_) {
 			AX_U64 pts = frame->pts;
 			rtsp_->send_nalu(data, static_cast<int>(sz), pts);
+			// if (int ret = rtsp_->send_nalu(data, static_cast<int>(sz), pts);0 != ret) {
+			// 	printf("data:%p, size:%zu, pts:%llu, send_nalu failed![%d]\n", data, sz, pts, ret);
+			// 	// rtsp_ready_ = false;
+			// 	// rtsp_url_.clear();
+			// 	// if (!rtsp_send_error_logged_) {
+			// 	// 	rtsp_send_error_logged_ = true;
+			// 		std::cerr << "[NetServerNode] RTSP send failed, disable RTSP push. task=" << task_id_
+			// 				  << " node=" << consumer_id_ << " port=" << rtsp_port_ << std::endl;
+			// 	// }
+			// 	// unregister_task_rtsp_output(task_id_.c_str(), consumer_id_.c_str());
+			// 	// register_task_rtsp_output(task_id_.c_str(), consumer_id_.c_str(), "", "H264", rtsp_port_);
+			// 	// reporter_.set_output_rtsp_config({task_id_, PLUGIN_NODE_NAME, "N/A", "H264"});
+			// 	// rtsp_->deinit();
+			// 	// rtsp_.reset();
+			// }
 		}
 
 		SdkFrame Frame{};

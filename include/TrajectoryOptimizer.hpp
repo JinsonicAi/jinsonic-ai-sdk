@@ -1,12 +1,12 @@
 #pragma once
 /**
- * TrajectoryOptimizer.hpp  —  High-performance trajectory point decimation/drawing utility
+ * TrajectoryOptimizer.hpp  —  High-performance trajectory point thinning and rendering utility
  *
  * Core strategy:
- *   1. Distance-based decimation: skip a point when its distance to the previous one is below a threshold (avoids blindly drawing dense points)
- *   2. Draw only key points (dots), no connecting lines → saves the cost of cv::polylines
- *   3. Tail gradient radius (newest point larger, older points smaller), both aesthetic and fill-area saving
- *   4. The decimated point count has an upper bound, preventing excessive points in extreme cases
+ *   1. Distance-based thinning: skip adjacent points closer than the threshold to avoid redundant rendering.
+ *   2. Render keypoints only (circles), without connecting lines, to avoid the cost of cv::polylines.
+ *   3. Use a trailing radius gradient (newer points larger than older points) for directional visual feedback.
+ *   4. Limit the number of thinned points to bound work in extreme cases.
  *
  * Usage:
  *   #include "TrajectoryOptimizer.hpp"
@@ -23,13 +23,13 @@
 namespace trajectory_opt {
 
 /**
- * Distance-based trajectory point decimation (Douglas-Peucker is too heavy; a simple linear scan is used here)
+ * Distance-based trajectory point thinning using a lightweight linear scan instead of Douglas-Peucker.
  *
- * @param raw            Raw trajectory points (ordered by time)
- * @param min_dist_sq    Square of the minimum pixel distance (skip when distance between adjacent points < sqrt(min_dist_sq))
- *                       Recommended: square of 0.5~1% of frame_max_dim, e.g. 1080p → ~25 (5px²)
- * @param max_output     Maximum output point count after decimation; 0 means no limit
- * @return               Decimated point set (keeps endpoints + intermediate points with sufficient distance)
+ * @param raw            Source trajectory points in chronological order.
+ * @param min_dist_sq    Squared minimum pixel distance; adjacent points closer than sqrt(min_dist_sq) are skipped.
+ *                       Recommended: the square of 0.5-1% of frame_max_dim, e.g. about 25 for 1080p (5 px squared).
+ * @param max_output     Maximum number of output points after thinning; 0 disables the limit.
+ * @return               Thinned points, preserving the first, last, and sufficiently distant intermediate points.
  */
 inline std::vector<jdk_osd::Point> thin_points(
     const std::vector<cv::Point2f>& raw,
@@ -44,7 +44,7 @@ inline std::vector<jdk_osd::Point> thin_points(
     std::vector<jdk_osd::Point> result;
     result.reserve(std::min(static_cast<int>(raw.size()), max_output > 0 ? max_output : 64));
 
-    // Always keep the first point
+    // Always preserve the first point.
     result.push_back({raw[0].x, raw[0].y});
     float last_x = raw[0].x;
     float last_y = raw[0].y;
@@ -59,23 +59,23 @@ inline std::vector<jdk_osd::Point> thin_points(
         if (max_output > 0 && static_cast<int>(result.size()) >= max_output - 1) break;
     }
 
-    // Always keep the last point (latest position)
+    // Always preserve the last point (the newest position).
     const auto& last_pt = raw.back();
     result.push_back({last_pt.x, last_pt.y});
     return result;
 }
 
 /**
- * Append the decimated trajectory points to the overlay as keypoints (draw points only, no connecting lines)
+ * Append thinned trajectory points to an overlay as keypoints only, without connecting lines.
  *
- * Gradient radius: older points have a smaller radius, newer points a larger one, giving a visual sense of direction.
+ * Radius gradient: older points are smaller and newer points are larger to show direction.
  *
- * @param overlay       Target overlay
- * @param points        Decimated point set
- * @param color         Point color
- * @param base_radius   Radius of old points (head)
- * @param tail_radius   Radius of new points (tail/latest)
- * @param priority      Drawing priority
+ * @param overlay       Destination overlay.
+ * @param points        Thinned point collection.
+ * @param color         Keypoint color.
+ * @param base_radius   Radius of the oldest (first) point.
+ * @param tail_radius   Radius of the newest (last) point.
+ * @param priority      Rendering priority.
  */
 inline void append_keypoints(
     jdk_osd::Overlay& overlay,
@@ -88,7 +88,7 @@ inline void append_keypoints(
     if (points.empty()) return;
     const int n = static_cast<int>(points.size());
     for (int i = 0; i < n; ++i) {
-        // Linear interpolation of radius: the first point uses base_radius, the last uses tail_radius
+        // Linearly interpolate the radius from base_radius to tail_radius.
         int radius = base_radius;
         if (n > 1) {
             radius = base_radius + (tail_radius - base_radius) * i / (n - 1);
@@ -99,16 +99,16 @@ inline void append_keypoints(
 }
 
 /**
- * All-in-one interface: decimate the raw trajectory + draw points only (no connecting lines)
+ * Convenience API that thins a source trajectory and renders keypoints without connecting lines.
  *
- * @param overlay       Target overlay
- * @param raw           Raw trajectory (cv::Point2f sequence)
- * @param color         Point color
- * @param frame_max_dim Maximum frame dimension (used for adaptive min_dist)
- * @param base_radius   Old point radius
- * @param tail_radius   Latest point radius
- * @param max_points    Maximum point count after decimation
- * @param priority      Drawing priority
+ * @param overlay       Destination overlay.
+ * @param raw           Source trajectory as a cv::Point2f sequence.
+ * @param color         Keypoint color.
+ * @param frame_max_dim Largest frame dimension, used to adapt min_dist.
+ * @param base_radius   Radius of older points.
+ * @param tail_radius   Radius of the newest point.
+ * @param max_points    Maximum number of points after thinning.
+ * @param priority      Rendering priority.
  */
 inline void draw_trajectory_optimized(
     jdk_osd::Overlay& overlay,
@@ -122,7 +122,7 @@ inline void draw_trajectory_optimized(
 {
     if (raw.empty()) return;
 
-    // Adaptive minimum distance: larger frames allow a larger minimum spacing
+    // Adapt the minimum distance: larger frames permit wider spacing.
     // 1080p → min_dist ~5px, 4K → ~10px, 720p → ~4px
     const float min_dist = std::max(3.0f, frame_max_dim * 0.005f);
     const float min_dist_sq = min_dist * min_dist;

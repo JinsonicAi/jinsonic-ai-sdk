@@ -47,19 +47,6 @@
 					]
 				},
 				{
-					"type": "input",
-					"key": "runtime_location",
-					"visible": false,
-					"default": "",
-					"name": {
-						"zh": "运行位置",
-						"en": "Runtime Location",
-						"vi": "Vị trí chạy",
-						"km": "ទីតាំងដំណើរការ",
-						"lo": "ຕຳແໜ່ງການເຮັດວຽກ"
-					}
-				},
-				{
 					"type": "divider",
 					"name": {
 						"zh": "按时布控",

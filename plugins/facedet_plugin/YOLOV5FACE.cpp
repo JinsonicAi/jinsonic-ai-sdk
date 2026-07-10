@@ -13,6 +13,7 @@
 // #include "onnxruntime_plugin.hpp"
 #include "AxVideoFrame.hpp"
 #include "HwIvps.hpp"
+#include "PluginFrameUtils.hpp"
 #include "YOLOV5FACE.hpp"
 
 using namespace std;
@@ -120,7 +121,7 @@ bool OjbInfer::pre_process(Job& job, const std::any& input) {
 			RgbFrame->save_data("frame_416x416_rgb.rgb");
 			if (infer_type_ == "rk") {
 				auto host_rgb = RgbFrame->toHost();
-				if (host_rgb && host_rgb->getPviraddr()) {
+				if (jdk_plugin::frame_has_host_memory(host_rgb, static_cast<size_t>(width) * height * 3)) {
 					cv::Mat rgb(height, width, CV_8UC3, host_rgb->getPviraddr());
 					cv::Mat bgr;
 					cv::cvtColor(rgb, bgr, cv::COLOR_RGB2BGR);
@@ -139,15 +140,19 @@ bool OjbInfer::pre_process(Job& job, const std::any& input) {
 		}
 		auto* input_data = tensor->host<float>();
 		if (!input_data) return false;
-		cv::Mat rgb(height, width, CV_8UC3, RgbFrame->toHost()->getPviraddr());
+		auto host_rgb = RgbFrame->toHost();
+		if (!jdk_plugin::frame_has_host_memory(host_rgb, static_cast<size_t>(width) * height * 3)) {
+			std::cerr << "[FP32] unable to map RKNN RGB input to host memory" << std::endl;
+			return false;
+		}
+		cv::Mat rgb(height, width, CV_8UC3, host_rgb->getPviraddr());
 		cv::Mat fp32(height, width, CV_32FC3, input_data);
 		rgb.convertTo(fp32, CV_32FC3);  // values remain 0..255
 		job.input.reset();
 		return true;
 	}
 	if (infer_type_ == "rk") {
-		if (!RgbFrame->isRKFrame() || RgbFrame->dmaFd() < 0 || !RgbFrame->getPviraddr() ||
-			RgbFrame->size() < tensor->bytes()) {
+		if (!jdk_plugin::frame_has_device_memory(RgbFrame) || RgbFrame->size() < tensor->bytes()) {
 			std::cerr << "[FaceDet] invalid RKNN RGB dma-buf, fd=" << RgbFrame->dmaFd()
 					  << ", frame_bytes=" << RgbFrame->size()
 					  << ", tensor_bytes=" << tensor->bytes() << std::endl;
@@ -159,14 +164,19 @@ bool OjbInfer::pre_process(Job& job, const std::any& input) {
 
 	auto inputFrame = std::make_shared<AXVideoFrame>(
 		width, height, -1, width * height * 3 * static_cast<int>(sizeof(float)));
-	if (!inputFrame->getPviraddr() || inputFrame->size() != tensor->bytes()) {
+	if (!jdk_plugin::frame_has_host_memory(inputFrame, tensor->bytes()) || inputFrame->size() != tensor->bytes()) {
 		std::cerr << "Invalid input frame buffer, data=" << inputFrame->getPviraddr()
 				  << ", frame_bytes=" << inputFrame->size()
 				  << ", tensor_bytes=" << tensor->bytes() << std::endl;
 		return false;
 	}
 	cv::Mat Fp32Image;
-	cv::Mat(height, width, CV_8UC3, RgbFrame->toHost()->getPviraddr()).convertTo(Fp32Image, CV_32FC3, 1.0 / 255.0);
+	auto host_rgb = RgbFrame->toHost();
+	if (!jdk_plugin::frame_has_host_memory(host_rgb, static_cast<size_t>(width) * height * 3)) {
+		std::cerr << "[FaceDet] unable to map RGB input to host memory" << std::endl;
+		return false;
+	}
+	cv::Mat(height, width, CV_8UC3, host_rgb->getPviraddr()).convertTo(Fp32Image, CV_32FC3, 1.0 / 255.0);
 
 	std::vector<cv::Mat> channels(Fp32Image.channels());
 	for (int i = 0; i < Fp32Image.channels(); ++i) {

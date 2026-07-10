@@ -35,6 +35,10 @@ public:
 	// Legacy "local" remains accepted as input, but is resolved to this value.
 	std::string localRuntimeLocation() const;
 	std::string localRuntimeLabel() const;
+
+	std::string platformLogicalSuffix(const std::string& soc = {}) const;
+	std::string packLogicalName(const std::string& base, const std::string& soc = {}) const;
+
 	static std::string normalizeLocation(const std::string& raw, int fallback_device_id = -1);
 	static int inferDeviceIdFromLocation(const std::string& raw, int fallback_device_id = -1);
 	static std::string locationFromInferDeviceId(int infer_device_id);

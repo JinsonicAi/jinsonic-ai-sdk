@@ -59,10 +59,7 @@ struct RkFrameCreateOptions {
 	uint32_t vstride{0};
 	uint32_t size{0};
 	bool	 cpu_mapped{true};
-	// When raw_linear=true, allocates a linear dma-buf of `size` bytes (size is not computed from the image format),
-	// used for H264/H265 bitstreams, JPEG, and other arbitrary-size data with no alignment requirements.
-	// Matches the AX_FORMAT_BITMAP semantics of the AX-side AXVideoFrame(w,h,device_id,size).
-	bool	 raw_linear{false};
+	bool 	raw_linear{false};
 };
 
 inline const char* vframe_backend_name(VFrameBackend backend) {

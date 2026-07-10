@@ -45,6 +45,8 @@ private:
 	// std::shared_ptr<RtspServer> rtsp_{nullptr};
 	std::shared_ptr<RTSPServer> rtsp_{nullptr};
 	bool						rtsp_enable_{false};  //< enable rtsp push
+	bool						rtsp_ready_{false};
+	bool						rtsp_send_error_logged_{false};
 	// std::vector<uint8_t>		frame_tmp;
 	std::string		user_;
 	std::string		pass_;

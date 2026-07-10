@@ -27,9 +27,9 @@ public:
 	//   >=0: AXCL device physical address on the specified logical device.
 	// Host physical addresses require the explicit SRC_HOST_PHY tag.
 	// Keep SRC_CPU_VIRT=-2 for source compatibility with existing callers.
-	static constexpr int SRC_CPU_VIRT = -2;	// src_ptr is CPU virtual address (e.g. cv::Mat::data)
-	static constexpr int SRC_HOST_PHY = -3;	// src_ptr encodes a local-SoC host physical address
-	static constexpr int SRC_RK_MPP   = -4;	// src_ptr is owned by an RK MPP/RGA native frame
+	static constexpr int SRC_CPU_VIRT = -2;	 // src_ptr is CPU virtual address (e.g. cv::Mat::data)
+	static constexpr int SRC_HOST_PHY = -3;	 // src_ptr encodes a local-SoC host physical address
+	static constexpr int SRC_RK_MPP	  = -4;	 // src_ptr is owned by an RK MPP/RGA native frame
 
 	AXVideoFrame(uint32_t width, uint32_t height, int device_id = 0, AX_IMG_FORMAT_E format = AX_FORMAT_YUV420_SEMIPLANAR, AX_U32 nAlign = 16);
 	AXVideoFrame(uint32_t width, uint32_t height, int device_id, AX_U32 size);
@@ -37,9 +37,9 @@ public:
 	explicit AXVideoFrame(const RkFrameCreateOptions& rk_options);
 	static std::shared_ptr<AXVideoFrame> createRK(uint32_t width, uint32_t height,
 												  AX_IMG_FORMAT_E format = AX_FORMAT_YUV420_SEMIPLANAR,
-												  AX_U32 nAlign = 16);
-	// Linear buffer (AX_FORMAT_BITMAP semantics): allocates an RK dma-buf of `size` bytes, with no format/alignment constraints.
-	// Corresponds to the AX-side AXVideoFrame(w,h,device_id,size); used for H264/H265 bitstreams, JPEG, and other arbitrary-size data.
+												  AX_U32		  nAlign = 16);
+	// 线性 buffer (AX_FORMAT_BITMAP 语义): 分配 size 字节的 RK dma-buf, 无格式/对齐约束。
+	// 对应 AX 侧 AXVideoFrame(w,h,device_id,size); 用于 H264/H265 码流、JPEG 等任意大小数据。
 	static std::shared_ptr<AXVideoFrame> createRK(uint32_t width, uint32_t height, AX_U32 size);
 	// fin(vf) will be automatically called upon destruction to perform the corresponding return/release.
 	AXVideoFrame(const AX_VIDEO_FRAME_INFO_T&					   vf,
@@ -58,12 +58,12 @@ public:
 	std::shared_ptr<AXVideoFrame> toHost();	 // to host
 	std::shared_ptr<AXVideoFrame> clone() const;
 
-	int		 fill(uint8_t value, int x = 0, int y = 0);
+	int fill(uint8_t value, int x = 0, int y = 0);
 	// src_device_id:
 	//   >=0: source is device physical memory on that logical device
 	//   -1 or SRC_CPU_VIRT(-2): source is a CPU virtual pointer
 	//   SRC_HOST_PHY(-3): source is a local-SoC host physical address
-	int		 CopyFrom(const uint8_t* src, int size, int offset = 0, int src_device_id = -1);
+	int CopyFrom(const uint8_t* src, int size, int offset = 0, int src_device_id = -1);
 	// int		 MemCopy(const uint8_t* nalu, int nalu_size, int offset = 0, int src_device_id = -1);
 	// Copy frame content out to a CPU buffer. RK frames perform the required
 	// dma-buf cache sync internally; AX/AXCL frames keep the existing toHost fallback.
@@ -74,22 +74,22 @@ public:
 	void load_data(const std::string& filename, int length = -1);
 	void save_data(const std::string& filename, int length = -1);
 
-	operator AX_VIDEO_FRAME_T&();
+							operator AX_VIDEO_FRAME_T&();
 	AX_VIDEO_FRAME_T*		raw() noexcept;
 	const AX_VIDEO_FRAME_T* raw() const noexcept;
 	AX_VIDEO_FRAME_T*		axRaw() noexcept;
 	const AX_VIDEO_FRAME_T* axRaw() const noexcept;
 
-	VFrameBackend		backend() const;
-	const char*			backendName() const;
+	VFrameBackend	   backend() const;
+	const char*		   backendName() const;
 	VFrameMemoryDomain memoryDomain() const;
-	bool				cpuAccessible() const;
-	bool				isAXFrame() const;
-	bool				isRKFrame() const;
-	int				dmaFd() const;
-	bool				syncForCpuRead();
-	void*				nativeHandle(VFrameNativeHandleType type);
-	const void*			nativeHandle(VFrameNativeHandleType type) const;
+	bool			   cpuAccessible() const;
+	bool			   isAXFrame() const;
+	bool			   isRKFrame() const;
+	int				   dmaFd() const;
+	bool			   syncForCpuRead();
+	void*			   nativeHandle(VFrameNativeHandleType type);
+	const void*		   nativeHandle(VFrameNativeHandleType type) const;
 
 	int&	  size();
 	uint32_t& width();

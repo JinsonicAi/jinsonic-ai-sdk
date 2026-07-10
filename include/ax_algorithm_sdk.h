@@ -59,13 +59,13 @@ extern "C"
     } ax_color_space_e;
 
     /**
-     * @brief: 图像前处理后端选择（AXCL 用）
+    * @brief Image preprocessing backend selection for AXCL.
      *
-     * - auto: host 输入优先走 OpenCV；device 输入走硬件（IVPS）
-     * - hardware: 强制走硬件（host 输入会触发整帧上传到 device）
-     * - opencv: 强制走 OpenCV（device 输入会自动回退到硬件）
+    * - auto: Prefer OpenCV for host input and hardware (IVPS) for device input.
+    * - hardware: Force hardware processing; host input causes a full-frame upload to the device.
+    * - opencv: Force OpenCV; device input automatically falls back to hardware processing.
      *
-     * 环境变量：
+    * Environment variable:
      * - AISDK_IMGPROC_BACKEND=auto|hardware|opencv
      */
     typedef enum _imgproc_backend_e
@@ -130,7 +130,8 @@ extern "C"
     typedef struct _body_attr_t
     {
         /**
-         * track_id: 跟踪ID,用作历史状态跟踪，如果设置成 0，则不跟踪，只输出当前图像推理结果
+         * track_id: Tracking ID used to maintain historical state. Set to 0 to disable tracking and
+         * output only the inference result for the current image.
          */
         unsigned long int track_id;
 
@@ -164,7 +165,8 @@ extern "C"
     typedef struct _face_attr_t
     {
         /**
-         * track_id: 跟踪ID,用作历史状态跟踪，如果设置成 0，则不跟踪，只输出当前图像推理结果
+         * track_id: Tracking ID used to maintain historical state. Set to 0 to disable tracking and
+         * output only the inference result for the current image.
          */
         unsigned long int track_id;
 
@@ -177,28 +179,28 @@ extern "C"
     typedef struct _car_attr_t
     {
         /**
-         * 车辆属性: 品牌/类型/颜色
+         * Vehicle attributes: brand, type, and color.
          *
          * brand:
-         *   0:UNKNOWN, 1:奥迪, 2:华泰, 3:奇瑞, 4:保时捷, 5:奔驰
-         *   6:福田, 7:中华, 8:兰博基尼, 9:蔚来, 10:奔腾, 11:道奇
-         *   12:GMC, 13:斯柯达, 14:北京汽车, 15:东南, 16:东风, 17:特斯拉
-         *   18:沃尔沃, 19:日产, 20:力帆汽车, 21:起亚, 22:江铃, 23:迈凯伦
-         *   24:北汽幻速, 25:哪吒汽车, 26:帕加尼, 27:英菲尼迪, 28:广汽, 29:马自达
-         *   30:一汽, 31:大众, 32:宝骏, 33:玛莎拉蒂, 34:克莱斯勒, 35:纳智捷
-         *   36:雪佛兰, 37:雪铁龙, 38:雷诺, 39:铃木, 40:陆风, 41:比亚迪
-         *   42:福特, 43:欧拉, 44:捷途, 45:长城, 46:标致, 47:上汽大通MAXUS
-         *   48:名爵, 49:五菱汽车, 50:捷豹, 51:问界, 52:Polestar汽车, 53:欧宝
-         *   54:坦克, 55:阿斯顿马丁, 56:林肯, 57:Jeep, 58:哈弗, 59:劳斯莱斯
-         *   60:理想, 61:MINI, 62:凯迪拉克, 63:本田, 64:红旗, 65:别克
-         *   66:长安凯程, 67:众泰, 68:金杯, 69:斯巴鲁, 70:迈莎锐, 71:DS
-         *   72:智己, 73:路虎, 74:海马, 75:岚图汽车, 76:北汽威旺, 77:零跑汽车
-         *   78:吉利, 79:五十铃, 80:启辰, 81:宾利, 82:法拉利, 83:ARCFOX极狐
-         *   84:长安欧尚, 85:宝马, 86:江淮, 87:荣威, 88:现代, 89:长安
-         *   90:三菱, 91:魏牌, 92:丰田, 93:小鹏汽车, 94:讴歌, 95:菲亚特
-         *   96:领克, 97:雷克萨斯, 98:乐道, 99:享界, 100:仰望, 101:埃安
-         *   102:尊界, 103:小米汽车, 104:方程豹, 105:智界, 106:极氪, 107:深蓝汽车
-         *   108:腾势, 109:阿维塔
+         *   0:UNKNOWN, 1:AUDI, 2:HAWTAI, 3:CHERY, 4:PORSCHE, 5:MERCEDES_BENZ
+         *   6:FOTON, 7:BRILLIANCE, 8:LAMBORGHINI, 9:NIO, 10:BESTUNE, 11:DODGE
+         *   12:GMC, 13:SKODA, 14:BAIC, 15:SOUTHEAST, 16:DONGFENG, 17:TESLA
+         *   18:VOLVO, 19:NISSAN, 20:LIFAN, 21:KIA, 22:JMC, 23:MCLAREN
+         *   24:BAIC_HUANSU, 25:NETA, 26:PAGANI, 27:INFINITI, 28:GAC, 29:MAZDA
+         *   30:FAW, 31:VOLKSWAGEN, 32:BAOJUN, 33:MASERATI, 34:CHRYSLER, 35:LUXGEN
+         *   36:CHEVROLET, 37:CITROEN, 38:RENAULT, 39:SUZUKI, 40:LANDWIND, 41:BYD
+         *   42:FORD, 43:ORA, 44:JETOUR, 45:GREAT_WALL, 46:PEUGEOT, 47:SAIC_MAXUS
+         *   48:MG, 49:WULING, 50:JAGUAR, 51:AITO, 52:POLESTAR, 53:OPEL
+         *   54:TANK, 55:ASTON_MARTIN, 56:LINCOLN, 57:JEEP, 58:HAVAL, 59:ROLLS_ROYCE
+         *   60:LI_AUTO, 61:MINI, 62:CADILLAC, 63:HONDA, 64:HONGQI, 65:BUICK
+         *   66:CHANGAN_KAICENE, 67:ZOTYE, 68:JINBEI, 69:SUBARU, 70:MSRT, 71:DS
+         *   72:IM_MOTORS, 73:LAND_ROVER, 74:HAIMA, 75:VOYAH, 76:BAIC_WEIWANG, 77:LEAPMOTOR
+         *   78:GEELY, 79:ISUZU, 80:VENUCIA, 81:BENTLEY, 82:FERRARI, 83:ARCFOX
+         *   84:CHANGAN_OSHAN, 85:BMW, 86:JAC, 87:ROEWE, 88:HYUNDAI, 89:CHANGAN
+         *   90:MITSUBISHI, 91:WEY, 92:TOYOTA, 93:XPENG, 94:ACURA, 95:FIAT
+         *   96:LYNK_AND_CO, 97:LEXUS, 98:ONVO, 99:STELATO, 100:YANGWANG, 101:AION
+         *   102:MAEXTRO, 103:XIAOMI_AUTO, 104:FANGCHENGBAO, 105:LUXEED, 106:ZEEKR, 107:DEEPAL
+         *   108:DENZA, 109:AVATR
          *
          * vType:
          *   0:UNKNOWN, 1:SEDAN, 2:SUV, 3:BUS, 4:MICROBUS, 5:TRUCK, 6:BICYCLE, 7:MOTORCYCLE, 8:ELECTRIC_VEHICLE
@@ -206,7 +208,7 @@ extern "C"
          * vColor:
          *   0:UNKNOWN, 1:BROWN, 2:ORANGE, 3:GRAY, 4:WHITE, 5:PINK, 6:PURPLE, 7:RED, 8:GREEN, 9:BLUE, 10:SILVER, 11:YELLOW, 12:BLACK
          *
-         * 类别表源文件: algo_models/vehicle_attrs.txt
+         * Class table source: algo_models/vehicle_attrs.txt
          */
         unsigned char brand;
         unsigned char vType;
@@ -223,7 +225,7 @@ extern "C"
         struct
         {
             /*
-            0到1之间的值，表示人脸质量，越高越好
+            A value from 0 to 1 indicating face quality; higher is better.
             */
             float quality;
             ax_point_t points[AX_ALGORITHM_FACE_POINT_LEN];
@@ -232,7 +234,7 @@ extern "C"
         struct
         {
             /*
-            人体状态： 0：正面， 1：侧面，2：背面， 3：非人
+            Body orientation: 0 front, 1 side, 2 back, 3 non-human.
             */
             int status;
         } person_info;
@@ -240,7 +242,7 @@ extern "C"
         struct
         {
             /**
-            火、烟、其他
+            Fire, smoke, or other.
             */
             int label;
             float score;
@@ -249,9 +251,11 @@ extern "C"
         struct
         {
             /*
-            如果 b_is_track_plate = 1，则表示当前帧没有识别到车牌，返回的是历史上 track_id 上一次识别到的车牌结果
-            如果 b_is_track_plate = 0，且 len_plate_id > 0, 则表示当前帧识别到了车牌
-            如果 b_is_track_plate = 0，且 len_plate_id = 0, 则表示当前帧没有识别到车牌，且是历史上 track_id 也没有结果
+            If b_is_track_plate = 1, no plate was recognized in the current frame; the most recent historical
+            plate result for track_id is returned.
+            If b_is_track_plate = 0 and len_plate_id > 0, a plate was recognized in the current frame.
+            If b_is_track_plate = 0 and len_plate_id = 0, neither the current frame nor the history for track_id
+            contains a plate result.
             */
             int b_is_track_plate;
             int len_plate_id;
@@ -261,7 +265,7 @@ extern "C"
         struct
         {
             /**
-            猫、狗、其他
+            Cat, dog, or other.
             */
             int label;
         } pet_info;
@@ -286,13 +290,13 @@ extern "C"
     typedef struct _algorithm_param_t
     {
         /**
-         * det_threshold: 检测阈值，0-1之间
+         * det_threshold: Detection threshold in the range [0, 1].
          */
         float det_threshold;
         struct
         {
             /**
-             *  quality_threshold: 人脸质量评分阈值，0-1之间
+             * quality_threshold: Face-quality score threshold in the range [0, 1].
              */
             float quality_threshold;
         } face_param;
@@ -300,7 +304,7 @@ extern "C"
         struct
         {
             /**
-             *  fire_smoke_threshold: 置信度阈值，0-1之间，低于这个阈值label返回 其他
+             * fire_smoke_threshold: Confidence threshold in the range [0, 1]. Labels below it are returned as other.
              */
             float fire_smoke_threshold;
         } fire_smoke_param;
@@ -308,7 +312,7 @@ extern "C"
         struct
         {
             /**
-             *  lpr_threshold: 车牌识别阈值，0-1之间
+             * lpr_threshold: License plate recognition threshold in the range [0, 1].
              */
             float lpr_threshold;
         } vehicle_param;
@@ -337,198 +341,198 @@ extern "C"
     int ax_algorithm_get_fingerprint(ax_algorithm_fingerprint_t *fingerprint);
 
     /**
-     * @brief: 设置算法的亲和性（目前都是NPU1模型）
-     * @param[in] handle: 算法句柄
-     * @param[in] affinity: 亲和性
-     * @return 0 成功，非零表示失败。
+    * @brief Set algorithm affinity. All current models use NPU1.
+    * @param[in] handle Algorithm handle.
+    * @param[in] affinity NPU affinity.
+    * @return 0 on success; non-zero on failure.
      */
     int ax_algorithm_set_affinity(ax_algorithm_handle_t handle, ax_npu_affinity_e affinity);
 
     /**
-     * @brief: 设置图像前处理后端（handle 级别）
-     * @param[in] handle: 算法句柄
-     * @param[in] backend: 前处理后端
-     * @return 0 成功，非零表示失败。
+    * @brief Set the image preprocessing backend for one handle.
+    * @param[in] handle Algorithm handle.
+    * @param[in] backend Preprocessing backend.
+    * @return 0 on success; non-zero on failure.
      */
     int ax_algorithm_set_imgproc_backend_for_handle(ax_algorithm_handle_t handle, ax_imgproc_backend_e backend);
     ax_imgproc_backend_e ax_algorithm_get_imgproc_backend_for_handle(ax_algorithm_handle_t handle);
 
     /**
-     * @brief: 设置图像前处理后端（全局默认，影响未设置 handle override 的句柄）
-     * @return 0 成功，非零表示失败。
+    * @brief Set the global default image preprocessing backend for handles without an override.
+    * @return 0 on success; non-zero on failure.
      */
     int ax_algorithm_set_imgproc_backend(ax_imgproc_backend_e backend);
     ax_imgproc_backend_e ax_algorithm_get_imgproc_backend(void);
 
     /**
-     * @brief: 与ax_algorithm_track的区别是不进行跟踪, 一般只用作精度验证，或者人脸注册的检测阶段
-     * @param[in] handle: 算法句柄
-     * @param[in] image: 图像数据
-     * @param[out] result: 检测结果
-     * @return 0 成功，非零表示失败。
+    * @brief Detect objects without tracking. Typically used for accuracy validation or the detection phase of face enrollment.
+    * @param[in] handle Algorithm handle.
+    * @param[in] image Image data.
+    * @param[out] result Detection result.
+    * @return 0 on success; non-zero on failure.
      */
     int ax_algorithm_detect(ax_algorithm_handle_t handle, ax_image_t *image, ax_result_t *result);
     /**
-     * @brief: 检测+跟踪等一系列算法
-     * @param[in] handle: 算法句柄
-     * @param[in] image: 图像数据
-     * @param[out] result: 跟踪结果
-     * @return 0 成功，非零表示失败。
+    * @brief Run detection, tracking, and related algorithms.
+    * @param[in] handle Algorithm handle.
+    * @param[in] image Image data.
+    * @param[out] result Tracking result.
+    * @return 0 on success; non-zero on failure.
      */
     int ax_algorithm_track(ax_algorithm_handle_t handle, ax_image_t *image, ax_result_t *result);
 
     /**
-     * @brief: 重置算法状态，主要是跟踪信息
-     * @param[in] handle: 算法句柄
-     * @return 0 成功，非零表示失败。
+    * @brief Reset algorithm state, primarily tracking information.
+    * @param[in] handle Algorithm handle.
+    * @return 0 on success; non-zero on failure.
      */
     int ax_algorithm_reset(ax_algorithm_handle_t handle);
 
     ax_model_type_e ax_algorithm_get_model_type(ax_algorithm_handle_t handle);
 
     /**
-     * @brief: 获取算法参数
-     * @param[in] handle: 算法句柄
-     * @return 算法参数
+    * @brief Get algorithm parameters.
+    * @param[in] handle Algorithm handle.
+    * @return Algorithm parameters.
      */
     ax_algorithm_param_t ax_algorithm_get_param(ax_algorithm_handle_t handle);
     /**
-     * @brief: 设置算法参数
-     * @param[in] handle: 算法句柄
-     * @param[in] param: 算法参数
+    * @brief Set algorithm parameters.
+    * @param[in] handle Algorithm handle.
+    * @param[in] param Algorithm parameters.
      */
     void ax_algorithm_set_param(ax_algorithm_handle_t handle, ax_algorithm_param_t *param);
     /**
-     * @brief: 获取默认算法参数
-     * @return 算法参数
+    * @brief Get default algorithm parameters.
+    * @return Default algorithm parameters.
      */
     ax_algorithm_param_t ax_algorithm_get_default_param();
 
     /**
-     * @brief: 设置日志级别
-     * @param[in] level: 小于level的日志将被打印，大于level的日志将被忽略
+    * @brief Set the log level.
+    * @param[in] level Messages at or below this level are printed; messages above it are ignored.
      */
     void ax_algorithm_set_log_level(ax_log_level_e level);
 
     /**
-     * @brief: 保存调试图像
-     * @param[in] handle: 算法句柄
-     * @param[in] enable: 1: 启用保存调试图像, 0: 禁用
+    * @brief Save debug images.
+    * @param[in] handle Algorithm handle.
+    * @param[in] enable 1 to enable debug image saving; 0 to disable it.
      */
     void ax_algorithm_save_debug_image(ax_algorithm_handle_t handle, int enable);
 
     /**
-     * @brief: 车牌识别
-     * @param[in] handle: 算法句柄
-     * @param[in] image: 图像数据
-     * @param[out] plate_id: 识别到的车牌id
-     * @param[out] len: plate_id 数组的长度
-     * @return 0 成功，非零表示失败。
+    * @brief Recognize a license plate.
+    * @param[in] handle Algorithm handle.
+    * @param[in] image Image data.
+    * @param[out] plate_id Recognized license plate ID.
+    * @param[out] len Length of the plate_id array.
+    * @return 0 on success; non-zero on failure.
      */
     int ax_algorithm_get_plate_id(ax_algorithm_handle_t handle, ax_image_t *image, int plate_id[16], int *len_plate_id);
 
     /**
-     * @brief: 将 plate_id 转换为字符串
-     * @param[in] plate_id: plate_id 数组
-     * @param[in] len: plate_id 数组的长度
-     * @param[out] plate_str: plate_id 的字符串
-     * @return 0 成功，非零表示失败。
+    * @brief Convert plate_id to a string.
+    * @param[in] plate_id plate_id array.
+    * @param[in] len Length of the plate_id array.
+    * @param[out] plate_str String representation of plate_id.
+    * @return 0 on success; non-zero on failure.
      */
     int ax_algorithm_get_plate_str(int *plate_id, int len, char *plate_str);
 
     /**
-     * @brief: 获取车辆属性(品牌/类型/颜色)
-     * @param[in] handle: 算法句柄
-     * @param[in] image: 图像数据
-     * @param[in] bbox: 车辆 bounding box, 传 NULL 表示整图
-     * @param[out] car_attr: 车辆属性
-     * @return 0 成功，非零表示失败。
+    * @brief Get vehicle attributes: brand, type, and color.
+    * @param[in] handle Algorithm handle.
+    * @param[in] image Image data.
+    * @param[in] bbox Vehicle bounding box; pass NULL for the entire image.
+    * @param[out] car_attr Vehicle attributes.
+    * @return 0 on success; non-zero on failure.
      */
     int ax_algorithm_get_car_attr(ax_algorithm_handle_t handle, ax_image_t *image, ax_bbox_t *bbox, ax_car_attr_t *car_attr);
 
     /**
-     * @brief: 获取检测到的人体属性
-     * @param[in] handle: 算法句柄
-     * @param[in] image: 图像数据
-     * @param[in] bbox: 检测到的人体 bounding box
-     * @param[out] body_attr: 检测到的人体属性
-     * @return 0 成功，非零表示失败。
+    * @brief Get attributes for a detected person.
+    * @param[in] handle Algorithm handle.
+    * @param[in] image Image data.
+    * @param[in] bbox Bounding box of the detected person.
+    * @param[out] body_attr Attributes of the detected person.
+    * @return 0 on success; non-zero on failure.
      */
     int ax_algorithm_get_body_attr(ax_algorithm_handle_t handle, ax_image_t *image, ax_bbox_t *bbox, ax_body_attr_t *body_attr);
 
     /**
-     * @brief: 获取检测到的人脸属性
-     * @param[in] handle: 算法句柄
-     * @param[in] image: 图像数据
-     * @param[in] result: 检测结果
-     * @param[in] idx: result.objects 中的人脸索引,此api不会自动检测人脸
-     *                  - 视频流:使用 ax_algorithm_track 返回的 results 中所需的 idx，
-     *                  - 单张图:使用 ax_algorithm_detect 进行非跟踪人脸检测
-     * @param[out] face_attr: 检测到的人脸属性
-     * @return 0 成功，非零表示失败。
+    * @brief Get attributes for a detected face.
+    * @param[in] handle Algorithm handle.
+    * @param[in] image Image data.
+    * @param[in] result Detection result.
+    * @param[in] idx Index of the face in result.objects. This API does not detect faces automatically.
+    *                  - Video stream: use the required idx from results returned by ax_algorithm_track.
+    *                  - Single image: use ax_algorithm_detect for non-tracking face detection.
+    * @param[out] face_attr Attributes of the detected face.
+    * @return 0 on success; non-zero on failure.
      */
     int ax_algorithm_get_face_attr(ax_algorithm_handle_t handle, ax_image_t *image, ax_result_t *result, int idx, ax_face_attr_t *face_attr);
 
     /**
-     * @brief: 获取人脸属性
-     * @param[in] handle: 算法句柄
-     * @param[in] image: 图像数据(头肩图像, 会自动检测人脸)
-     * @param[out] feature: 检测到的人脸属性
+    * @brief Get face attributes.
+    * @param[in] handle Algorithm handle.
+    * @param[in] image Image data containing a head-and-shoulders image; faces are detected automatically.
+        * @param[out] face_attr Attributes of the detected face.
      */
     int ax_algorithm_get_face_attr_2(ax_algorithm_handle_t handle, ax_image_t *image, ax_object_t *obj, ax_face_attr_t *face_attr);
 
     /**
-     * @brief: 获取人脸质量
-     * @param[in] handle: 算法句柄
-     * @param[in] image: 图像数据(头肩图像, 会自动检测人脸)
-     * @param[out] quality: 人脸质量
-     * @return 0 成功，非零表示失败。
+    * @brief Get face quality.
+    * @param[in] handle Algorithm handle.
+    * @param[in] image Image data containing a head-and-shoulders image; faces are detected automatically.
+    * @param[out] quality Face quality.
+    * @return 0 on success; non-zero on failure.
      */
     int ax_algorithm_get_face_quality(ax_algorithm_handle_t handle, ax_image_t *image, float *quality);
 
     /**
-     * @brief: 获取检测到的人脸特征
-     * @param[in] handle: 算法句柄
-     * @param[in] image: 图像数据
-     * @param[in] result: 检测结果
-     * @param[in] idx: result.objects 中的人脸索引,此api不会自动检测人脸
-     *                  - 视频流:使用 ax_algorithm_track 返回的 results 中所需的 idx，
-     *                  - 单张图:使用 ax_algorithm_detect 进行非跟踪人脸检测
-     * @param[out] feature: 512维的人脸特征
-     * @return 0 成功，非零表示失败。
+    * @brief Get features for a detected face.
+    * @param[in] handle Algorithm handle.
+    * @param[in] image Image data.
+    * @param[in] result Detection result.
+    * @param[in] idx Index of the face in result.objects. This API does not detect faces automatically.
+    *                  - Video stream: use the required idx from results returned by ax_algorithm_track.
+    *                  - Single image: use ax_algorithm_detect for non-tracking face detection.
+    * @param[out] feature 512-dimensional face feature vector.
+    * @return 0 on success; non-zero on failure.
      */
     int ax_algorithm_get_face_feature(ax_algorithm_handle_t handle, ax_image_t *image, ax_result_t *result, int idx, float feature[AX_ALGORITHM_FACE_FEATURE_LEN]);
 
     /**
-     * @brief: 获取人脸特征
-     * @param[in] handle: 算法句柄
-     * @param[in] image: 图像数据(头肩图像, 会自动检测人脸)
-     * @param[out] feature: 512维的人脸特征
+    * @brief Get face features.
+    * @param[in] handle Algorithm handle.
+    * @param[in] image Image data containing a head-and-shoulders image; faces are detected automatically.
+    * @param[out] feature 512-dimensional face feature vector.
      */
     int ax_algorithm_get_face_feature_2(ax_algorithm_handle_t handle, ax_image_t *image, ax_object_t *obj, float feature[AX_ALGORITHM_FACE_FEATURE_LEN]);
 
     /**
-     * @brief: 比较两个人脸特征
-     * @param[in] a: 第一个人脸特征数组
-     * @param[in] b: 第二个人脸特征数组
-     * @return 两个人脸特征之间的相似度评分
+    * @brief Compare two face feature vectors.
+    * @param[in] a First face feature vector.
+    * @param[in] b Second face feature vector.
+    * @return Similarity score between the two face feature vectors.
      */
     float ax_algorithm_face_compare(float a[AX_ALGORITHM_FACE_FEATURE_LEN], float b[AX_ALGORITHM_FACE_FEATURE_LEN]);
 
     /**
-     * @brief: 根据指定的参数创建一幅图像。
-     * @param[in] width: 图像的宽度。
-     * @param[in] height: 图像的高度。
-     * @param[in] stride: 图像的步幅。
-     * @param[in] color: 图像的颜色空间 (例如，NV12, NV21, BGR, RGB)。
-     * @param[out] image: 指向图像结构体的指针，用于初始化。
-     * @return 成功时返回 0，失败时返回非零值。
+    * @brief Create an image with the specified parameters.
+    * @param[in] width Image width.
+    * @param[in] height Image height.
+    * @param[in] stride Image stride.
+    * @param[in] color Image color space, for example NV12, NV21, BGR, or RGB.
+    * @param[out] image Pointer to the image structure to initialize.
+    * @return 0 on success; non-zero on failure.
      */
     int ax_create_image(int width, int height, int stride, ax_color_space_e color, ax_image_t *image, int device_id);
 
     /**
-     * @brief: 释放ax_create_image创建的一幅图像。
-     * @param[in] image: 指向要释放的图像结构体的指针。
+    * @brief Release an image created by ax_create_image.
+    * @param[in] image Pointer to the image structure to release.
      */
     void ax_release_image(ax_image_t *image, int device_id);
 

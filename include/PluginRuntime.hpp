@@ -5,6 +5,8 @@
 #include <stdexcept>
 #include <string>
 
+#include "DeviceInfo.hpp"
+
 struct PluginRuntime {
 	std::string location;
 	int         device_id{-1};
@@ -17,6 +19,29 @@ struct PluginRuntime {
 
 	const char* infer_type() const noexcept {
 		return is_rk_local() ? "rk" : "ax";
+	}
+
+	std::string model_soc() const {
+		return model_soc_for(location, infer_type());
+	}
+
+	std::string pack_model_name(const std::string& base) const {
+		return DeviceInfo::instance().packLogicalName(base, model_soc());
+	}
+
+	static std::string model_soc_for(std::string location, std::string infer_type) {
+		location = normalize_location(std::move(location));
+		for (char& ch : infer_type)
+			ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
+		if (location == "rk.local" || infer_type == "rk") {
+			return DeviceInfo::instance().targetSoc();
+		}
+		// AX local runtimes and AXCL compute cards use AX-platform models, not the RK/x86 host SoC.
+		return "ax650";
+	}
+
+	static std::string pack_model_name(const std::string& base, const std::string& location, const std::string& infer_type) {
+		return DeviceInfo::instance().packLogicalName(base, model_soc_for(location, infer_type));
 	}
 
 	static PluginRuntime from_task_config(const nlohmann::json& config) {
