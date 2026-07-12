@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: "17 2 * * *"
   workflow_dispatch:
+    inputs:
+      debug_schema:
+        description: "Print RUM filter fields and exit without publishing assets"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -16,13 +22,40 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Generate public traffic assets
+        if: ${{ !inputs.debug_schema }}
         env:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           CF_WEB_ANALYTICS_SITE_TAG: ${{ secrets.CF_WEB_ANALYTICS_SITE_TAG }}
         run: python3 .github/scripts/generate_docs_traffic.py
 
+      - name: Inspect RUM filter schema
+        if: ${{ inputs.debug_schema }}
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import urllib.request
+
+          payload = {"query": "{ __type(name: \"RumPageloadEventsAdaptiveGroupsFilter_InputObject\") { inputFields { name type { kind name ofType { kind name } } } } }"}
+          request = urllib.request.Request(
+              "https://api.cloudflare.com/client/v4/graphql",
+              data=json.dumps(payload).encode("utf-8"),
+              headers={"Authorization": f"Bearer {os.environ['CF_API_TOKEN']}", "Content-Type": "application/json"},
+              method="POST",
+          )
+          with urllib.request.urlopen(request, timeout=30) as response:
+              result = json.load(response)
+          if result.get("errors"):
+              raise SystemExit(result["errors"])
+          for field in result["data"]["__type"]["inputFields"]:
+              print(field["name"])
+          PY
+
       - name: Publish assets to analytics branch
+        if: ${{ !inputs.debug_schema }}
         run: |
           mkdir -p /tmp/docs-traffic
           cp analytics/docs-traffic.svg analytics/docs-traffic.json /tmp/docs-traffic/
