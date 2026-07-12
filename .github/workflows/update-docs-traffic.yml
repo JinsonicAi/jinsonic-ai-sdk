@@ -28,7 +28,7 @@ jobs:
           cp analytics/docs-traffic.svg analytics/docs-traffic.json /tmp/docs-traffic/
           git fetch origin analytics || true
           git switch --orphan analytics-publish
-          git rm -rf .
+          git rm -rf . || true
           mkdir -p analytics
           cp /tmp/docs-traffic/docs-traffic.svg /tmp/docs-traffic/docs-traffic.json analytics/
           git add analytics
