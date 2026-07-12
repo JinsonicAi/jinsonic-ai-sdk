@@ -44,11 +44,9 @@ def query_analytics(account_id: str, site_tag: str, token: str) -> list[dict]:
         "variables": {
             "accountTag": account_id,
             "filter": {
-                "AND": [
-                    {"date_geq": start_date.isoformat()},
-                    {"date_leq": end_date.isoformat()},
-                    {"siteTag": site_tag},
-                ]
+                "date_geq": start_date.isoformat(),
+                "date_leq": end_date.isoformat(),
+                "siteTag": site_tag,
             },
         },
     }
