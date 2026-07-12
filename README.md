@@ -6,7 +6,6 @@
 
 <p align="left">
   <a href="https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/"><img alt="Online Docs" src="https://img.shields.io/badge/%F0%9F%93%96%20Online%20Docs-Read%20the%20Docs-2088FF?style=for-the-badge"></a>
-  <a href="https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/"><img alt="Docs views in the last 30 days" src="https://raw.githubusercontent.com/JinsonicAi/jinsonic-ai-sdk/analytics/analytics/docs-traffic.svg"></a>
   <img alt="Firmware" src="https://img.shields.io/badge/Firmware-3.10.2-3DDC84?style=flat-square">
   <img alt="Protocol" src="https://img.shields.io/badge/Protocol-V1.0.2-orange?style=flat-square">
   <img alt="Hardware" src="https://img.shields.io/badge/Hardware-AX650N%20%7C%20AX8850%20%7C%20RK-lightgrey?style=flat-square">
