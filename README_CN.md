@@ -6,6 +6,7 @@
 
 <p align="left">
   <a href="https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/"><img alt="在线文档" src="https://img.shields.io/badge/%F0%9F%93%96%20%E5%9C%A8%E7%BA%BF%E6%96%87%E6%A1%A3-Read%20the%20Docs-2088FF?style=for-the-badge"></a>
+  <a href="https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/"><img alt="近 30 天文档浏览量" src="https://raw.githubusercontent.com/JinsonicAi/jinsonic-ai-sdk/analytics/analytics/docs-traffic.svg"></a>
   <img alt="固件基线" src="https://img.shields.io/badge/%E5%9B%BA%E4%BB%B6%E5%9F%BA%E7%BA%BF-3.10.2-3DDC84?style=flat-square">
   <img alt="协议规范" src="https://img.shields.io/badge/%E5%8D%8F%E8%AE%AE%E8%A7%84%E8%8C%83-V1.0.2-orange?style=flat-square">
   <img alt="硬件" src="https://img.shields.io/badge/%E7%A1%AC%E4%BB%B6-AX650N%20%7C%20AX8850%20%7C%20RK-lightgrey?style=flat-square">

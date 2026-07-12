@@ -1,0 +1,37 @@
+name: Update documentation traffic badge
+
+on:
+  schedule:
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-traffic:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+
+      - name: Generate public traffic assets
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_WEB_ANALYTICS_SITE_TAG: ${{ secrets.CF_WEB_ANALYTICS_SITE_TAG }}
+        run: python3 .github/scripts/generate_docs_traffic.py
+
+      - name: Publish assets to analytics branch
+        run: |
+          mkdir -p /tmp/docs-traffic
+          cp analytics/docs-traffic.svg analytics/docs-traffic.json /tmp/docs-traffic/
+          git fetch origin analytics || true
+          git switch --orphan analytics-publish
+          git rm -rf .
+          mkdir -p analytics
+          cp /tmp/docs-traffic/docs-traffic.svg /tmp/docs-traffic/docs-traffic.json analytics/
+          git add analytics
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "chore: update documentation traffic"
+          git branch -M analytics
+          git push --force origin analytics
