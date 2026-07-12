@@ -28,17 +28,17 @@ def query_analytics(account_id: str, site_tag: str, token: str) -> list[dict]:
     end_date = dt.datetime.now(dt.UTC).date()
     start_date = end_date - dt.timedelta(days=WINDOW_DAYS - 1)
     query = """
-    query WebAnalytics($accountTag: String!, $filter: WebAnalyticsAdaptiveGroupsFilter_InputObject!) {
-      viewer {
-        accounts(filter: { accountTag: $accountTag }) {
-          webAnalyticsAdaptiveGroups(limit: 1000, filter: $filter, orderBy: [date_ASC]) {
-            dimensions { date }
-            sum { pageViews visits }
-          }
+        query WebAnalytics($accountTag: String!, $filter: RumPageloadEventsAdaptiveGroupsFilter_InputObject!) {
+            viewer {
+                accounts(filter: { accountTag: $accountTag }) {
+                    rumPageloadEventsAdaptiveGroups(limit: 1000, filter: $filter, orderBy: [date_ASC]) {
+                        dimensions { date }
+                        count
+                    }
+                }
+            }
         }
-      }
-    }
-    """
+        """
     payload = {
         "query": query,
         "variables": {
@@ -75,9 +75,9 @@ def query_analytics(account_id: str, site_tag: str, token: str) -> list[dict]:
     if len(accounts) != 1:
         raise RuntimeError("Cloudflare returned no matching account for the configured account ID")
 
-    groups = accounts[0].get("webAnalyticsAdaptiveGroups")
+    groups = accounts[0].get("rumPageloadEventsAdaptiveGroups")
     if not isinstance(groups, list):
-        raise RuntimeError("Cloudflare response did not include Web Analytics groups")
+        raise RuntimeError("Cloudflare response did not include RUM page-load analytics groups")
     return groups
 
 
@@ -110,13 +110,11 @@ def main() -> None:
     daily = [
         {
             "date": group["dimensions"]["date"],
-            "page_views": int(group["sum"].get("pageViews") or 0),
-            "visits": int(group["sum"].get("visits") or 0),
+            "page_views": int(group.get("count") or 0),
         }
         for group in groups
     ]
     page_views = sum(day["page_views"] for day in daily)
-    visits = sum(day["visits"] for day in daily)
     updated_at = dt.datetime.now(dt.UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -126,7 +124,6 @@ def main() -> None:
             {
                 "window_days": WINDOW_DAYS,
                 "page_views": page_views,
-                "visits": visits,
                 "updated_at": updated_at,
                 "daily": daily,
             },
