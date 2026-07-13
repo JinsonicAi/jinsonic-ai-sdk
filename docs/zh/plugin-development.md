@@ -58,15 +58,15 @@ xxx_plugin/
 
 ```mermaid
 flowchart TB
-    S1[1. 复制模板插件] --> S2[2. 定义 NodeParams]
-    S2 --> S3[3. 解析配置并注册节点]
-    S3 --> S4[4. 实现节点类]
-    S4 --> S5[5. 接入算法推理]
-    S5 --> S6[6. 写入 result_map_]
-    S6 --> S7[7. 定义 alarm_fn 报文]
-    S7 --> S8[8. 配置 config_template]
-    S8 --> S9[9. 编译打包 .plugin]
-    S9 --> S10[10. 部署验证]
+    S1["1 复制模板插件"] --> S2["2 定义 NodeParams"]
+    S2 --> S3["3 解析配置并注册节点"]
+    S3 --> S4["4 实现节点类"]
+    S4 --> S5["5 接入算法推理"]
+    S5 --> S6["6 写入 result_map_"]
+    S6 --> S7["7 定义 alarm_fn 报文"]
+    S7 --> S8["8 配置 config_template"]
+    S8 --> S9["9 编译打包 .plugin"]
+    S9 --> S10["10 部署验证"]
 ```
 
 ### 步骤 1：复制最接近的模板

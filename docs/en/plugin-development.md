@@ -58,15 +58,15 @@ xxx_plugin/
 
 ```mermaid
 flowchart TB
-    S1[1. Copy a template plugin] --> S2[2. Define NodeParams]
-    S2 --> S3[3. Parse config and register node]
-    S3 --> S4[4. Implement the node class]
-    S4 --> S5[5. Integrate algorithm inference]
-    S5 --> S6[6. Write to result_map_]
-    S6 --> S7[7. Define the alarm_fn payload]
-    S7 --> S8[8. Configure config_template]
-    S8 --> S9[9. Build and package the .plugin]
-    S9 --> S10[10. Deploy and verify]
+    S1["1 Copy a template plugin"] --> S2["2 Define NodeParams"]
+    S2 --> S3["3 Parse config and register node"]
+    S3 --> S4["4 Implement the node class"]
+    S4 --> S5["5 Integrate algorithm inference"]
+    S5 --> S6["6 Write to result_map_"]
+    S6 --> S7["7 Define the alarm_fn payload"]
+    S7 --> S8["8 Configure config_template"]
+    S8 --> S9["9 Build and package the .plugin"]
+    S9 --> S10["10 Deploy and verify"]
 ```
 
 ### Step 1: Copy the Closest Template
