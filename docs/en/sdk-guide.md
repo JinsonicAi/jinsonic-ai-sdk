@@ -5,12 +5,14 @@
 > - Protocol Spec V1.0.2 (2026-02-21)
 >
 > **Target hardware**
+>
 > - ① AX650N / AX8850 standalone boards (all-in-one devices)
 > - ② AX650N / AX8850 compute cards inserted into AX-based hosts (multi-card mix)
 > - ③ Third-party hosts + AX compute cards (RK / Raspberry Pi 5 / x86)
 > - ④ RK local devices (RK35xx / RV1126B, with native RK codec, RGA, and RKNN acceleration)
 >
 > **Audience**
+>
 > - Algorithm engineers
 > - Backend engineers
 > - Delivery / integration engineers
