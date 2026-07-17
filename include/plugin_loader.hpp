@@ -48,7 +48,7 @@ struct PluginInfo {
 	PluginState	  state	  = PluginState::Installed;
 	bool		  enabled = true;
 	std::string	  version;
-	std::string	  previous_version;	 // Used for rollback.
+	std::string	  previous_version;	 // used for rollback
 	uint64_t	  load_time_ms = 0;
 	uint32_t	  error_count  = 0;
 	std::string	  last_error;
