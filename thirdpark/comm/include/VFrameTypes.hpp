@@ -59,7 +59,10 @@ struct RkFrameCreateOptions {
 	uint32_t vstride{0};
 	uint32_t size{0};
 	bool	 cpu_mapped{true};
-	bool 	raw_linear{false};
+	// raw_linear=true 时分配一块 size 字节的线性 dma-buf（不按图像格式计算大小），
+	// 用于 H264/H265 码流、JPEG 等任意大小、无对齐要求的数据。
+	// 对齐 AX 侧 AXVideoFrame(w,h,device_id,size) 的 AX_FORMAT_BITMAP 语义。
+	bool raw_linear{false};
 };
 
 inline const char* vframe_backend_name(VFrameBackend backend) {

@@ -118,8 +118,16 @@ inline int assign_tracker_ids_by_iou(const TrackList& tracks,
 		if (track.track_id_ < 0) continue;
 
 		int best_index = -1;
+		// BotSort already records the exact input detection selected by LAPJV.
+		// Preserve that association; geometric matching is only compatibility
+		// fallback for old libraries or malformed indices.
+		if (track.det_index_ >= 0 && track.det_index_ < static_cast<int>(n)
+		    && !used[track.det_index_] && track_ids[track.det_index_] < 0) {
+			best_index = track.det_index_;
+		}
+
 		float best_iou = min_iou;
-		if (track.track_tlwh_.size() >= 4) {
+		if (best_index < 0 && track.track_tlwh_.size() >= 4) {
 			const cv::Rect trk_rect = rect_from_tlwh(track.track_tlwh_);
 			if (trk_rect.area() > 0) {
 				for (size_t i = 0; i < n; ++i) {
@@ -131,12 +139,6 @@ inline int assign_tracker_ids_by_iou(const TrackList& tracks,
 					}
 				}
 			}
-		}
-
-		if (best_index < 0 && track.track_tlwh_.size() < 4 && track.det_index_ >= 0
-		    && track.det_index_ < static_cast<int>(n) && !used[track.det_index_]
-		    && track_ids[track.det_index_] < 0) {
-			best_index = track.det_index_;
 		}
 
 		if (best_index >= 0) {

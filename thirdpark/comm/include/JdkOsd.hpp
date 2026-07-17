@@ -1,11 +1,14 @@
 #pragma once
 
+#include <algorithm>
 #include <any>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <opencv2/core.hpp>
 #include <string>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -37,6 +40,92 @@ struct Color {
 			static_cast<uint8_t>((rgb >> 8) & 0xff),
 			static_cast<uint8_t>(rgb & 0xff),
 			alpha};
+	}
+
+	// Uniformly "vivify" a color: keep the original hue and alpha while pushing
+	// saturation and value into a high range, so OSD elements such as text, points,
+	// lines, boxes, polygons and masks always stay bright and eye-catching.
+	// Hue-less colors like black/white/gray are left unchanged, to avoid tinting
+	// white text or black outlines by mistake.
+	// min_s / min_v are the lower bounds for saturation and value (0~1), pushed high by default.
+	Color vivid(float min_s = 0.75f, float min_v = 1.0f) const {
+		const uint8_t max_u8   = std::max({r, g, b});
+		const uint8_t min_u8   = std::min({r, g, b});
+		const int	  delta_u8 = static_cast<int>(max_u8) - static_cast<int>(min_u8);
+
+		// Return as-is when nearly hue-less (grayscale).
+		if (delta_u8 == 0) return *this;
+
+		const float max_c	  = max_u8 / 255.0f;
+		const float delta	  = delta_u8 / 255.0f;
+		const float current_s = delta_u8 / static_cast<float>(max_u8);
+		// An overlay may cross multiple shared boundaries. Return already-vivid colors
+		// directly to avoid redundant HSV conversions.
+		if (current_s >= min_s && max_c >= min_v) return *this;
+
+		const float rf = r / 255.0f;
+		const float gf = g / 255.0f;
+		const float bf = b / 255.0f;
+
+		// Compute hue H (0~6).
+		float h = 0.0f;
+		if (max_c == rf) {
+			h = std::fmod((gf - bf) / delta, 6.0f);
+		} else if (max_c == gf) {
+			h = (bf - rf) / delta + 2.0f;
+		} else {
+			h = (rf - gf) / delta + 4.0f;
+		}
+		if (h < 0.0f) h += 6.0f;
+
+		// Boost saturation and value.
+		const float s = std::max(min_s, current_s);
+		const float v = std::max(min_v, max_c);
+
+		const int	h_i = static_cast<int>(h);
+		const float f	= h - h_i;
+		const float p	= v * (1.0f - s);
+		const float q	= v * (1.0f - f * s);
+		const float t	= v * (1.0f - (1.0f - f) * s);
+		float		nr = v, ng = v, nb = v;
+		switch (h_i) {
+		case 0:
+			nr = v;
+			ng = t;
+			nb = p;
+			break;
+		case 1:
+			nr = q;
+			ng = v;
+			nb = p;
+			break;
+		case 2:
+			nr = p;
+			ng = v;
+			nb = t;
+			break;
+		case 3:
+			nr = p;
+			ng = q;
+			nb = v;
+			break;
+		case 4:
+			nr = t;
+			ng = p;
+			nb = v;
+			break;
+		default:
+			nr = v;
+			ng = p;
+			nb = q;
+			break;
+		}
+
+		return Color{
+			static_cast<uint8_t>(std::lround(nr * 255.0f)),
+			static_cast<uint8_t>(std::lround(ng * 255.0f)),
+			static_cast<uint8_t>(std::lround(nb * 255.0f)),
+			a};
 	}
 };
 
@@ -130,6 +219,31 @@ struct Overlay {
 			   boxes.empty() && keypoints.empty() && texts.empty();
 	}
 
+	// Vivify geometry elements only; plain text foreground/background keep their
+	// business configuration semantics.
+	// This runs per element, does not enter the mask pixel loop, and does not change
+	// the number of bitmap uploads or hardware submissions.
+	void normalize_geometry_colors() {
+		for (auto& mask : masks) mask.color = mask.color.vivid();
+		for (auto& mask : bitmap_masks) mask.color = mask.color.vivid();
+		for (auto& polygon : polygons) {
+			polygon.style.color = polygon.style.color.vivid();
+			polygon.style.alpha = polygon.style.color.a;
+		}
+		for (auto& line : lines) {
+			line.style.color = line.style.color.vivid();
+			line.style.alpha = line.style.color.a;
+		}
+		for (auto& box : boxes) {
+			box.style.color = box.style.color.vivid();
+			box.style.alpha = box.style.color.a;
+		}
+		for (auto& keypoint : keypoints) {
+			keypoint.style.color = keypoint.style.color.vivid();
+			keypoint.style.alpha = keypoint.style.color.a;
+		}
+	}
+
 	void append(const Overlay& rhs) {
 		masks.insert(masks.end(), rhs.masks.begin(), rhs.masks.end());
 		bitmap_masks.insert(bitmap_masks.end(), rhs.bitmap_masks.begin(), rhs.bitmap_masks.end());
@@ -138,6 +252,25 @@ struct Overlay {
 		boxes.insert(boxes.end(), rhs.boxes.begin(), rhs.boxes.end());
 		keypoints.insert(keypoints.end(), rhs.keypoints.begin(), rhs.keypoints.end());
 		texts.insert(texts.end(), rhs.texts.begin(), rhs.texts.end());
+		// append() is also used by callers that construct geometry structs directly.
+		// Normalize only the newly appended elements; text colors keep their business semantics.
+		auto normalize_range = [](auto& items, size_t begin) {
+			for (size_t i = begin; i < items.size(); ++i) {
+				using Item = std::decay_t<decltype(items[i])>;
+				if constexpr (std::is_same_v<Item, Mask> || std::is_same_v<Item, BitmapMask>) {
+					items[i].color = items[i].color.vivid();
+				} else {
+					items[i].style.color = items[i].style.color.vivid();
+					items[i].style.alpha = items[i].style.color.a;
+				}
+			}
+		};
+		normalize_range(masks, masks.size() - rhs.masks.size());
+		normalize_range(bitmap_masks, bitmap_masks.size() - rhs.bitmap_masks.size());
+		normalize_range(polygons, polygons.size() - rhs.polygons.size());
+		normalize_range(lines, lines.size() - rhs.lines.size());
+		normalize_range(boxes, boxes.size() - rhs.boxes.size());
+		normalize_range(keypoints, keypoints.size() - rhs.keypoints.size());
 	}
 };
 
@@ -174,6 +307,7 @@ inline const std::any& payload_from_any(const std::any& value) {
 
 inline std::shared_ptr<std::any> make_overlay_result(std::shared_ptr<std::any> payload,
 													 Overlay				   overlay) {
+	overlay.normalize_geometry_colors();
 	return std::make_shared<std::any>(
 		OverlayResult{std::move(payload), std::move(overlay)});
 }
@@ -183,8 +317,8 @@ inline TextStyle make_text_style(int   font_size = 24,
 								 Color bg		 = {0, 0, 0, 128}) {
 	TextStyle style;
 	style.font_size = font_size;
-	style.fg		= fg;
-	style.bg		= bg;
+	style.fg		= fg.vivid();
+	style.bg		= bg.vivid();
 	style.bg_alpha	= bg.a;
 	return style;
 }
@@ -215,10 +349,10 @@ inline Box make_box(float		x,
 	box.h				= h;
 	box.label			= std::move(label);
 	box.draw_label		= !box.label.empty();
-	box.style.color		= color;
+	box.style.color		= color.vivid();
 	box.style.alpha		= color.a;
 	box.style.thickness = thickness;
-	box.label_style		= make_text_style(label_font_size, {255, 255, 255, 255}, color);
+	box.label_style		= make_text_style(label_font_size, {255, 255, 255, 255}, box.style.color);
 	box.priority		= priority;
 	return box;
 }
@@ -229,7 +363,7 @@ inline Line make_line(std::vector<Point> points,
 					  int				 priority  = 0) {
 	Line line;
 	line.points			 = std::move(points);
-	line.style.color	 = color;
+	line.style.color	 = color.vivid();
 	line.style.alpha	 = color.a;
 	line.style.thickness = thickness;
 	line.priority		 = priority;
@@ -244,7 +378,7 @@ inline Polygon make_polygon(std::vector<Point> points,
 							int				   priority	 = 0) {
 	Polygon polygon;
 	polygon.points			= std::move(points);
-	polygon.style.color		= color;
+	polygon.style.color		= color.vivid();
 	polygon.style.alpha		= color.a;
 	polygon.style.thickness = thickness;
 	polygon.style.solid		= filled;
@@ -261,7 +395,7 @@ inline Keypoint make_keypoint(float x,
 	Keypoint keypoint;
 	keypoint.p			 = {x, y};
 	keypoint.radius		 = radius;
-	keypoint.style.color = color;
+	keypoint.style.color = color.vivid();
 	keypoint.style.alpha = color.a;
 	keypoint.priority	 = priority;
 	return keypoint;
@@ -272,7 +406,7 @@ inline Mask make_mask(std::vector<std::vector<Point>> contours,
 					  int							  priority = 0) {
 	Mask mask;
 	mask.contours = std::move(contours);
-	mask.color	  = color;
+	mask.color	  = color.vivid();
 	mask.priority = priority;
 	return mask;
 }
@@ -285,7 +419,7 @@ inline BitmapMask make_bitmap_mask(cv::Mat	mask,
 	BitmapMask item;
 	item.mask	   = std::move(mask);
 	item.roi	   = roi;
-	item.color	   = color;
+	item.color	   = color.vivid();
 	item.threshold = threshold;
 	item.priority  = priority;
 	return item;
@@ -469,11 +603,15 @@ public:
 					  PreparedBitmap&	out,
 					  bool				reuse_scratch = true);
 
-	// 为每个 bitmap_mask 生成一张仅覆盖其自身 bbox 的紧凑 ARGB bitmap。
-	// 这样 mask 不再和框/文字合成为覆盖并集 ROI 的整帧大 bitmap，
-	// 上传/绘制的数据量随目标 bbox 面积缩小，且框/文字可继续走硬件低带宽直绘。
-	// 生成的 attr 与静态/动态 attr 一起批量提交给 HwDrawOsd 逐张独立混合。
-	// 内部使用跨帧复用的 bitmap 池，避免每帧反复分配 DMA 帧。
+	// Generate a compact ARGB bitmap for each bitmap_mask covering only its own bbox.
+	// This way masks are no longer composited with boxes/text into one large bitmap
+	// spanning the union ROI of the whole frame; the amount of data uploaded/drawn
+	// shrinks with the target bbox area, and boxes/text can still use hardware
+	// low-bandwidth direct drawing.
+	// The generated attrs are batch-submitted to HwDrawOsd together with the
+	// static/dynamic attrs and blended independently one by one.
+	// Internally uses a cross-frame reusable bitmap pool to avoid repeatedly
+	// allocating DMA frames every frame.
 	bool prepare_mask_attrs(AX_VIDEO_FRAME_T*			 frame,
 							const Overlay&				 overlay,
 							std::vector<PreparedBitmap>& out);
