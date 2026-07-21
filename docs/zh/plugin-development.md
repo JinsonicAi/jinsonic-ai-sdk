@@ -166,6 +166,64 @@ service aibox restart
 ./jdk_node_sample      # 确认节点注册成功、组件结构正确
 ```
 
+## 节点信息上报（MetricsReporter）
+
+画布上节点的运行状态（帧率、单帧耗时、链路延迟）由节点主动上报，网页据此判断链路是否健康、连线是否变红。上报能力封装在 `MetricsReporter`（`thirdpark/comm/include/MetricsReporter.hpp`）中，标准用法分三步。
+
+### 1. 声明 reporter 成员并设置节流周期
+
+在节点头文件里声明成员，构造参数是**节流周期（秒）**，即两次上报之间的最小间隔，默认 5 秒：
+
+```cpp
+// JdkXxxNode.hpp
+MetricsReporter reporter_{5};   // 每 5 秒最多上报一次
+```
+
+### 2. 构造时设置上报配置
+
+`MetricsReporter` 支持四类配置，按节点角色**选其一**设置。设置后 `report_*` 才会真正发送：
+
+| 配置方法 | 适用节点 | 字段 |
+|---|---|---|
+| `set_input_rtsp_config({task_id, plugin_id, url})` | 输入/拉流节点 | 任务 ID、插件 ID、流地址 |
+| `set_algorithm_config({task_id, plugin_id, threshold})` | 算法节点 | 任务 ID、插件 ID、阈值（字符串） |
+| `set_osd_config({task_id, plugin_id})` | OSD 叠加节点 | 任务 ID、插件 ID |
+| `set_output_rtsp_config({task_id, plugin_id, url, codec})` | 输出/推流节点 | 任务 ID、插件 ID、流地址、编码 |
+
+```cpp
+// 构造函数中
+reporter_.set_algorithm_config({task_id_, PLUGIN_NODE_NAME, "-"});
+```
+
+!!! note "threshold 用字符串"
+    `AlgorithmConfig.threshold` 是字符串，建议初始化时把阈值转成字符串（无值时填 `"-"`）。
+
+### 3. 每帧计时并上报
+
+在 `handle_frame_meta()` 里用 `ScopedTimer` 自动统计单帧耗时，推理结束后调用 `report_*`：
+
+```cpp
+std::shared_ptr<jdk_objects::jdk_meta>
+JdkXxxNode::handle_frame_meta(std::shared_ptr<jdk_objects::jdk_frame_meta> meta) {
+    // ScopedTimer 析构时把本帧耗时(ms)写回 reporter_，供上报使用
+    MetricsReporter::ScopedTimer timer(reporter_);
+    run_infer_combinations({meta});
+
+    // 上报节点信息：当前帧率 + 本帧的创建时间（用于计算链路延迟）
+    reporter_.report_algorithm(jdk_node_base::node_fps(), meta->create_time);
+    return jdk_node_base::handle_frame_meta(meta);
+}
+```
+
+要点：
+
+- **`ScopedTimer`**：在作用域析构时把本帧耗时写入 `reporter_`，`report_*` 会用它算出「处理耗时」和「链路延迟」。不用 `ScopedTimer` 时也可用 `set_last_exec_time_ms(ms)` 手动注入。
+- **`report_algorithm(fps, create_time)`**：第一个参数是节点帧率（`jdk_node_base::node_fps()`），第二个是当前帧的 `create_time`；延迟 = 当前时间 − 帧创建时间 − 本帧耗时。
+- **节流**：`report_*` 内部按构造时的周期自动限流，每帧调用也不会刷屏。需要立即上报时传 `force=true`。
+- **对应关系**：输入节点用 `report_input_rtsp(...)`、OSD 用 `report_osd(...)`、输出节点用 `report_output_rtsp(...)`，参数含义与 `report_algorithm` 一致。
+
+只要节点持续调用 `report_*`，网页就会持续收到心跳，连线保持正常色；一旦停止上报或从未配置，连线会变红（见下一节）。
+
 ## 运行时排障：连线变红
 
 !!! warning "节点连线变红 = 信息上报异常"
@@ -173,7 +231,7 @@ service aibox restart
 
 常见原因与排查顺序：
 
-- **节点未持续产出**：`handle_frame_meta()` 遇到异常提前 `return`，或推理阻塞导致不再向下游传递帧。确认推理异常已捕获并仍能透传帧。
+- **节点未持续上报**：`handle_frame_meta()` 遇到异常提前 `return`，导致 `report_*` 不再被调用；或根本没设置对应的 `set_*_config`。确认推理异常已捕获、每帧都能走到 `report_algorithm(...)`（见上一节）。
 - **`result_map_` 未写入或 `push_enabled=false`**：结果总线没有有效条目，下游无可上报。检查 `ResultEntry` 是否正确填充。
 - **上报冷却过长**：`push_interval_ms` 过大时上报稀疏，可能被误判为超时，适当调小。
 - **上下游未正确 `attach_to()`**：节点未成功连接，链路未建立。核对节点 `type` 三处一致（配置/注册/前端）。

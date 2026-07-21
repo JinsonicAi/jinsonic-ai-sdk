@@ -166,6 +166,64 @@ service aibox restart
 ./jdk_node_sample      # Confirm the node registered successfully and the component structure is correct
 ```
 
+## Node Information Reporting (MetricsReporter)
+
+A node's runtime state on the canvas (frame rate, per-frame latency, link delay) is actively reported by the node itself; the Web UI uses it to decide whether the link is healthy and whether a connection turns red. This capability is wrapped in `MetricsReporter` (`thirdpark/comm/include/MetricsReporter.hpp`), and the standard usage has three steps.
+
+### 1. Declare the reporter member and set the throttle interval
+
+Declare the member in the node header. The constructor argument is the **throttle interval (seconds)**, i.e. the minimum gap between two reports, default 5 seconds:
+
+```cpp
+// JdkXxxNode.hpp
+MetricsReporter reporter_{5};   // report at most once every 5 seconds
+```
+
+### 2. Set the reporting config in the constructor
+
+`MetricsReporter` supports four config types. Set **one** according to the node role. `report_*` only sends after the matching config is set:
+
+| Config method | Node type | Fields |
+|---|---|---|
+| `set_input_rtsp_config({task_id, plugin_id, url})` | Input/pull node | task ID, plugin ID, stream URL |
+| `set_algorithm_config({task_id, plugin_id, threshold})` | Algorithm node | task ID, plugin ID, threshold (string) |
+| `set_osd_config({task_id, plugin_id})` | OSD overlay node | task ID, plugin ID |
+| `set_output_rtsp_config({task_id, plugin_id, url, codec})` | Output/push node | task ID, plugin ID, stream URL, codec |
+
+```cpp
+// in the constructor
+reporter_.set_algorithm_config({task_id_, PLUGIN_NODE_NAME, "-"});
+```
+
+!!! note "threshold is a string"
+    `AlgorithmConfig.threshold` is a string. Convert the threshold to a string at init time (use `"-"` when there is no value).
+
+### 3. Time each frame and report
+
+In `handle_frame_meta()`, use `ScopedTimer` to measure per-frame cost automatically, then call `report_*` after inference:
+
+```cpp
+std::shared_ptr<jdk_objects::jdk_meta>
+JdkXxxNode::handle_frame_meta(std::shared_ptr<jdk_objects::jdk_frame_meta> meta) {
+    // On destruction, ScopedTimer writes this frame's cost (ms) back to reporter_
+    MetricsReporter::ScopedTimer timer(reporter_);
+    run_infer_combinations({meta});
+
+    // Report node info: current fps + this frame's create_time (used to compute link delay)
+    reporter_.report_algorithm(jdk_node_base::node_fps(), meta->create_time);
+    return jdk_node_base::handle_frame_meta(meta);
+}
+```
+
+Key points:
+
+- **`ScopedTimer`**: on scope exit it writes the frame cost into `reporter_`, and `report_*` uses it to compute "processing time" and "link delay". Without `ScopedTimer`, you can inject it manually via `set_last_exec_time_ms(ms)`.
+- **`report_algorithm(fps, create_time)`**: the first argument is the node frame rate (`jdk_node_base::node_fps()`), the second is the current frame's `create_time`; delay = now − frame create_time − frame cost.
+- **Throttling**: `report_*` self-limits by the interval set in the constructor, so calling it every frame won't flood. Pass `force=true` to report immediately.
+- **Mapping**: input nodes use `report_input_rtsp(...)`, OSD uses `report_osd(...)`, output nodes use `report_output_rtsp(...)`; argument semantics match `report_algorithm`.
+
+As long as the node keeps calling `report_*`, the Web UI keeps receiving heartbeats and the connection stays in its normal color; once reporting stops or was never configured, the connection turns red (see the next section).
+
 ## Runtime Troubleshooting: Red Connection
 
 !!! warning "A red connection = abnormal node reporting"
@@ -173,7 +231,7 @@ service aibox restart
 
 Common causes and the order to check them:
 
-- **The node stopped producing output**: `handle_frame_meta()` returns early on an exception, or inference blocks and no longer forwards frames downstream. Make sure inference errors are caught and frames can still pass through.
+- **The node stopped reporting**: `handle_frame_meta()` returns early on an exception so `report_*` is no longer called, or the matching `set_*_config` was never set. Make sure inference errors are caught and every frame reaches `report_algorithm(...)` (see the previous section).
 - **`result_map_` not written or `push_enabled=false`**: the result bus has no valid entry, so downstream has nothing to report. Check that `ResultEntry` is populated correctly.
 - **Reporting cooldown too long**: an overly large `push_interval_ms` makes reporting sparse and may be misjudged as a timeout. Reduce it appropriately.
 - **Upstream/downstream not connected via `attach_to()`**: nodes failed to link and the path was never established. Verify the node `type` matches in all three places (config/registration/frontend).
