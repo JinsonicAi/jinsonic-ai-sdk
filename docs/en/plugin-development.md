@@ -166,6 +166,21 @@ service aibox restart
 ./jdk_node_sample      # Confirm the node registered successfully and the component structure is correct
 ```
 
+## Runtime Troubleshooting: Red Connection
+
+!!! warning "A red connection = abnormal node reporting"
+    While a task is running, the **color of the connection between nodes on the canvas reflects link health**: green/normal means the upstream and downstream nodes keep reporting frames/results, while **red means the link has not received valid node information for a while**. When you see a red line, don't just look at the frontend—start by investigating the reporting path on the node side.
+
+Common causes and the order to check them:
+
+- **The node stopped producing output**: `handle_frame_meta()` returns early on an exception, or inference blocks and no longer forwards frames downstream. Make sure inference errors are caught and frames can still pass through.
+- **`result_map_` not written or `push_enabled=false`**: the result bus has no valid entry, so downstream has nothing to report. Check that `ResultEntry` is populated correctly.
+- **Reporting cooldown too long**: an overly large `push_interval_ms` makes reporting sparse and may be misjudged as a timeout. Reduce it appropriately.
+- **Upstream/downstream not connected via `attach_to()`**: nodes failed to link and the path was never established. Verify the node `type` matches in all three places (config/registration/frontend).
+- **Model or device init failed**: the node was created but inference is not ready, and the log shows loading errors. Confirm the model path, runtime location, and backend selection are correct.
+
+While troubleshooting, use `./jdk_node_sample` to confirm node registration and structure, and check the runtime log for that node's frame handling and reporting records.
+
 ## Input and Output Contract
 
 Algorithm plugins receive video frames and metadata from upstream nodes, and output inference results, OSD drawing callbacks, alarm construction callbacks, and push cooldown times. Output plugins such as alarm, streaming, and recording consume these results without coupling directly to a specific algorithm implementation.

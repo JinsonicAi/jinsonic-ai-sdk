@@ -57,6 +57,7 @@
 - `name`：显示名（必填，支持多语言）
 - `default`：默认值（可选）
 - `enabled`：是否展示，默认 `true`
+- `showWhen`：条件显示，满足条件才渲染（见下文 3.15 条件显示）
 
 多语言写法：
 
@@ -260,6 +261,43 @@
 ## 3.14 `regionDraw`（区域绘制）
 
 用于区域告警场景（多边形区域等）。常见默认值为 `[]`。
+
+---
+
+## 3.15 条件显示：`showWhen`
+
+`showWhen` 可写在普通字段、`divider`、`subdivider` 上，用于根据当前表单值动态显示/隐藏配置项，常用于模式切换、运行时状态门控等场景。
+
+支持的操作符：
+
+- `eq`：等于
+- `ne`：不等于
+- `in`：值在数组内
+- `notIn`：值不在数组内
+
+单条件示例：
+
+```json
+{ "type": "input", "key": "alarmThreshold", "name": "报警阈值",
+  "showWhen": { "key": "mode", "eq": "alarm" } }
+```
+
+多条件示例（数组表示 AND，全部满足才显示）：
+
+```json
+{ "type": "input", "key": "advancedValue", "name": "高级参数", "showWhen": [
+  { "key": "enable", "eq": true },
+  { "key": "mode", "in": ["advanced", "expert"] }
+] }
+```
+
+运行时状态字段（`readOnly` / `status` / `label` / `tag`）会额外叠加任务状态规则：
+
+```text
+最终显示 = 任务已启动/运行中 && showWhen 条件满足
+```
+
+约定：配置项用普通控件；运行时状态用 `readOnly/status/label/tag`；条件参数用 `showWhen`。
 
 ---
 

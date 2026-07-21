@@ -73,6 +73,10 @@ flowchart LR
 | `select` | 枚举选择 | `options[]`（`{label,value}`） |
 | `inputNumber` | 数值输入 | `min`、`max`、`precision` |
 | `divider` | 配置分组分隔线 | `name`（分组标题） |
+| `readOnly` / `status` / `label` / `tag` | 只读展示 / 运行时状态标签 | `default`、`unit` |
+| `button` | 独立操作按钮 | `buttonType`（如 `testConnection`） |
+| `schedule` | 时段布控 | `default`（含 timezone/schedule） |
+| `regionDraw` | 区域绘制 | `default`（通常为 `[]`） |
 
 ### 控件示例
 
@@ -99,6 +103,28 @@ flowchart LR
   }
 }
 ```
+
+## 条件显示：showWhen
+
+任意控件（包括 `divider`）均可设置 `showWhen`，让网页根据当前表单值动态显示/隐藏该项。支持单条件或条件数组（AND 语义）。
+
+支持的操作符：`eq`（等于）、`ne`（不等于）、`in`（在数组内）、`notIn`（不在数组内）。
+
+```json
+{ "type": "slider", "key": "nms_threshold", "name": "NMS 阈值",
+  "showWhen": { "key": "advanced_mode", "eq": true } }
+```
+
+```json
+{ "type": "input", "key": "extra", "name": "扩展参数", "showWhen": [
+  { "key": "enable", "eq": true },
+  { "key": "mode", "in": ["advanced", "expert"] }
+] }
+```
+
+`readOnly` / `status` / `label` / `tag` 类控件会额外叠加任务运行状态：任务未启动时自动隐藏，启动后才显示。
+
+完整字段说明见 [插件配置完整参考](reference/plugin-config-full.md)。
 
 ## 配置设计原则
 

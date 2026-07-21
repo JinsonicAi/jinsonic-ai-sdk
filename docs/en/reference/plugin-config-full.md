@@ -57,6 +57,7 @@ Each `formList` item should generally contain:
 - `name`: display name (required, i18n supported)
 - `default`: default value (optional)
 - `enabled`: visibility flag, default `true`
+- `showWhen`: conditional display; the item renders only when the conditions pass (see 3.15 Conditional Display below)
 
 I18n format:
 
@@ -260,6 +261,43 @@ Used for scheduled enable/disable strategies. Common default:
 ## 3.14 `regionDraw` (region drawing)
 
 Used for region-based alarm scenarios (polygons, etc.). Common default is `[]`.
+
+---
+
+## 3.15 Conditional Display: `showWhen`
+
+`showWhen` can be used on normal fields, `divider`, and `subdivider` to dynamically show or hide items based on current form values. It is useful for mode switches and runtime-state gating.
+
+Supported operators:
+
+- `eq`: equals
+- `ne`: not equal
+- `in`: value is in the array
+- `notIn`: value is not in the array
+
+Single-condition example:
+
+```json
+{ "type": "input", "key": "alarmThreshold", "name": "Alarm Threshold",
+  "showWhen": { "key": "mode", "eq": "alarm" } }
+```
+
+Multi-condition example (an array means AND, all must be satisfied):
+
+```json
+{ "type": "input", "key": "advancedValue", "name": "Advanced Value", "showWhen": [
+  { "key": "enable", "eq": true },
+  { "key": "mode", "in": ["advanced", "expert"] }
+] }
+```
+
+Runtime status fields (`readOnly` / `status` / `label` / `tag`) additionally follow task runtime visibility:
+
+```text
+Final visibility = task is starting/running && showWhen conditions pass
+```
+
+Convention: use normal controls for editable config, `readOnly/status/label/tag` for runtime status, and `showWhen` for conditional parameters.
 
 ---
 

@@ -73,6 +73,10 @@ Each control contains at least three fields: `type` (control type), `key` (param
 | `select` | Enumeration selection | `options[]` (`{label,value}`) |
 | `inputNumber` | Numeric input | `min`, `max`, `precision` |
 | `divider` | Divider for configuration grouping | `name` (group title) |
+| `readOnly` / `status` / `label` / `tag` | Read-only display / runtime status badge | `default`, `unit` |
+| `button` | Standalone action button | `buttonType` (e.g. `testConnection`) |
+| `schedule` | Time-based patrol scheduling | `default` (contains timezone/schedule) |
+| `regionDraw` | Region drawing | `default` (usually `[]`) |
 
 ### Control Example
 
@@ -99,6 +103,28 @@ Delivery-oriented plugins should provide at least Chinese and English labels. Mu
   }
 }
 ```
+
+## Conditional Display: showWhen
+
+Any control (including `divider`) can define `showWhen` so the Web UI shows or hides the item based on current form values. It supports a single condition or an array of conditions (AND semantics).
+
+Supported operators: `eq` (equals), `ne` (not equal), `in` (in array), and `notIn` (not in array).
+
+```json
+{ "type": "slider", "key": "nms_threshold", "name": "NMS Threshold",
+  "showWhen": { "key": "advanced_mode", "eq": true } }
+```
+
+```json
+{ "type": "input", "key": "extra", "name": "Extra Param", "showWhen": [
+  { "key": "enable", "eq": true },
+  { "key": "mode", "in": ["advanced", "expert"] }
+] }
+```
+
+Runtime status fields (`readOnly` / `status` / `label` / `tag`) additionally follow task runtime state: they are hidden before the task starts and shown once it is running.
+
+See the [Plugin Configuration Full Reference](reference/plugin-config-full.md) for the complete field list.
 
 ## Configuration Design Principles
 
