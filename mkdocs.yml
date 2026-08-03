@@ -122,6 +122,7 @@ nav:
       - 配置参考:
           - 配置设计概要: zh/plugin-config.md
           - 插件配置完整参考: zh/reference/plugin-config-full.md
+          - OpenAPI 对接协议: zh/reference/openapi-protocol.md
       - 交付运维: zh/deployment-ops.md
       - 常见问题 FAQ: zh/faq.md
       - 更新记录: zh/changelog.md
@@ -139,6 +140,7 @@ nav:
       - Configuration Reference:
           - Configuration Overview: en/plugin-config.md
           - Full Plugin Configuration Reference: en/reference/plugin-config-full.md
+          - OpenAPI Integration Protocol: en/reference/openapi-protocol.md
       - Deployment and Operations: en/deployment-ops.md
       - FAQ: en/faq.md
       - Changelog: en/changelog.md
