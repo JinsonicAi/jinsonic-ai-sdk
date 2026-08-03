@@ -113,6 +113,7 @@ nav:
       - 快速开始: zh/quickstart.md
       - 设备开箱与快速上手: zh/device-onboarding.md
       - SDK 开发指南: zh/sdk-guide.md
+      - OpenAPI 对接协议: zh/reference/openapi-protocol.md
       - Web 用户使用手册: zh/user-manual/index.md
       - 运行位置与部署: zh/runtime-location.md
       - 插件开发: zh/plugin-development.md
@@ -122,7 +123,6 @@ nav:
       - 配置参考:
           - 配置设计概要: zh/plugin-config.md
           - 插件配置完整参考: zh/reference/plugin-config-full.md
-          - OpenAPI 对接协议: zh/reference/openapi-protocol.md
       - 交付运维: zh/deployment-ops.md
       - 常见问题 FAQ: zh/faq.md
       - 更新记录: zh/changelog.md
@@ -132,6 +132,7 @@ nav:
       - Quick Start: en/quickstart.md
       - Device Onboarding & Quick Start: en/device-onboarding.md
       - SDK Development Guide: en/sdk-guide.md
+      - OpenAPI Integration Protocol: en/reference/openapi-protocol.md
       - Web User Manual: en/user-manual/index.md
       - Runtime Location and Deployment: en/runtime-location.md
       - Plugin Development: en/plugin-development.md
@@ -140,7 +141,6 @@ nav:
       - Configuration Reference:
           - Configuration Overview: en/plugin-config.md
           - Full Plugin Configuration Reference: en/reference/plugin-config-full.md
-          - OpenAPI Integration Protocol: en/reference/openapi-protocol.md
       - Deployment and Operations: en/deployment-ops.md
       - FAQ: en/faq.md
       - Changelog: en/changelog.md

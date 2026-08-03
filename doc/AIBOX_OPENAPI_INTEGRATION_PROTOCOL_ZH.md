@@ -7,7 +7,7 @@
 | 协议版本 | `OpenAPI v1` |
 | 发布日期 | `2026-08-03` |
 | 适用对象 | 第三方平台、客户自研 Web/服务端应用 |
-| English version | [AIBox Third-Party OpenAPI Integration Protocol](../../en/reference/openapi-protocol.md) |
+| English version | [AIBOX_OPENAPI_INTEGRATION_PROTOCOL_EN.md](./AIBOX_OPENAPI_INTEGRATION_PROTOCOL_EN.md) |
 
 ## 修订记录
 

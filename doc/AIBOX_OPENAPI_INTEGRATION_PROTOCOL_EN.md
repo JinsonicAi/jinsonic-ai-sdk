@@ -7,7 +7,7 @@
 | Protocol version | `OpenAPI v1` |
 | Release date | `2026-08-03` |
 | Intended audience | Third-party platforms and customer-developed web/server applications |
-| Chinese version | [AIBox 第三方开放 API 对接协议](../../zh/reference/openapi-protocol.md) |
+| Chinese version | [AIBOX_OPENAPI_INTEGRATION_PROTOCOL_ZH.md](./AIBOX_OPENAPI_INTEGRATION_PROTOCOL_ZH.md) |
 
 ## Revision History
 
