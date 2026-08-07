@@ -2,14 +2,19 @@
 #include <dlfcn.h>
 #include <liburing.h>
 
+#include <algorithm>
+#include <atomic>
 #include <condition_variable>
+#include <cstdint>
 #include <filesystem>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <json.hpp>
 #include <mutex>
 #include <queue>
 #include <string>
+#include <thread>
 #include <unordered_map>
 #include <vector>
 
@@ -23,6 +28,15 @@ enum class PluginState {
 	Loaded,		// loaded and registered to NodeFactory
 	Disabled,	// disabled by user
 	Error,		// load failed
+};
+
+// Whole-directory discovery state. "Ready" means the initial scan has settled;
+// individual plugins can still be Disabled or Error and are reported separately.
+enum class PluginLoadState : uint8_t {
+	NotStarted,
+	Loading,
+	Ready,
+	Failed,
 };
 
 // pending actions (gentle mode: execute after tasks stop)
@@ -40,15 +54,16 @@ struct PendingAction {
 struct PluginInfo {
 	std::string	   name;
 	std::string	   path;
+	std::string	   runtime_so_path;  // disk-backed extracted image kept until dlclose
 	nlohmann::json config;
 	void*		   handle					= nullptr;
 	void (*cleanup_func)(SDKInterface* sdk) = nullptr;
 
-	// --- Lifecycle management fields ---
+	// --- 生命周期管理字段 ---
 	PluginState	  state	  = PluginState::Installed;
 	bool		  enabled = true;
 	std::string	  version;
-	std::string	  previous_version;	 // used for rollback
+	std::string	  previous_version;	 // 回滚用
 	uint64_t	  load_time_ms = 0;
 	uint32_t	  error_count  = 0;
 	std::string	  last_error;
@@ -133,29 +148,28 @@ private:
 
 class PluginLoader {
 public:
-	PluginLoader(size_t threads = std::thread::hardware_concurrency(), unsigned queue_depth = 256)
-		: pool_(threads) {
-		// if (io_uring_queue_init(queue_depth, &ring_, 0) < 0) {
-		// 	std::cerr << "io_uring init failed" << std::endl;
-		// 	std::terminate();
-		// }
-	}
+	// threads=0 selects a memory-aware default; AIBOX_PLUGIN_LOAD_THREADS can
+	// override it for measured deployments.
+	PluginLoader(size_t threads = 0, unsigned queue_depth = 256);
 	~PluginLoader();  // automatic cleanup of plugins
 
 	bool		   load_all_plugins(const std::string& plugin_root, SDKInterface* sdk);
 	void		   loadSingle(const std::string pluginPath);
 	nlohmann::json inspect_package(const std::string& plugin_path, std::string* err = nullptr) const;
 
-	const std::vector<PluginInfo>& get_loaded_plugins() const { return plugins_; }
-	std::vector<PluginInfo>		   get_loaded_plugins_snapshot() const {
-		std::lock_guard<std::mutex> lk(cwd_m_);
-		return plugins_;
-	}
-
-	nlohmann::json get_component_structure() const {
-		std::lock_guard<std::mutex> lk(component_m_);
-		return component_structure_;
-	}
+	const std::vector<PluginInfo>& get_loaded_plugins() const;
+	std::vector<PluginInfo>       get_loaded_plugins_snapshot() const;
+	// Inject the loaded package's authoritative, content-verified resource-file
+	// arrays into a task before the plugin node is constructed.
+	size_t                        bind_task_resource_files(const std::string& type,
+											 nlohmann::json& task_config) const;
+	nlohmann::json                get_component_structure() const;
+	PluginLoadState               get_load_state() const noexcept;
+	bool                          is_initial_load_ready() const noexcept;
+	size_t                        get_discovered_plugin_count() const noexcept;
+	size_t                        get_settled_plugin_count() const noexcept;
+	uint64_t                      get_component_revision() const noexcept;
+	static size_t                 core_object_size() noexcept;
 
 	// --- plugin lifecycle management ---
 	bool unloadSingle(const std::string& type, std::string* err = nullptr);
@@ -178,6 +192,14 @@ public:
 	PluginInfo*		  find_plugin_by_type(const std::string& type);
 	const PluginInfo* find_plugin_by_type(const std::string& type) const;
 
+	// Invoke an explicitly exported C ABI function from one loaded plugin.
+	// The loader lock stays held for the whole call so a concurrent hot-unload
+	// cannot dlclose the DSO between dlsym() and the function invocation.
+	bool with_plugin_symbol(const std::string& type,
+							const char* symbol,
+							const std::function<bool(void*)>& invoke,
+							std::string* err = nullptr) const;
+
 	// version compare: returns -1 (a<b), 0 (a==b), 1 (a>b)
 	static int compare_versions(const std::string& a, const std::string& b);
 
@@ -191,7 +213,7 @@ public:
 	bool save_plugin_state() const;
 
 	// get plugin root directory
-	const std::string& get_plugin_root() const { return plugin_root_; }
+	const std::string& get_plugin_root() const;
 
 private:
 	void remove_component_by_type(const std::string& type);
@@ -209,9 +231,14 @@ private:
 	mutable std::mutex							 cwd_m_;
 	mutable std::mutex							 component_m_;
 	// io_uring									 ring_;
+	size_t		load_threads_ = 1;
 	ThreadPool	pool_;
 	bool		support_local_ = false;
 	std::string target_soc_{};
+	std::atomic<PluginLoadState> load_state_{PluginLoadState::NotStarted};
+	std::atomic<size_t> discovered_plugin_count_{0};
+	std::atomic<size_t> settled_plugin_count_{0};
+	std::atomic<uint64_t> component_revision_{0};
 
 	// enabled/disabled cache preloaded from state file at startup (avoid duplicate disk reads)
 	std::unordered_map<std::string, bool> state_enabled_cache_;

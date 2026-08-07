@@ -5,12 +5,15 @@
 #include <iostream>
 #include <json.hpp>
 #include <memory>
+#include <mutex>
 #include <opencv2/core/core.hpp>
 #include <regex>
 #include <set>
 #include <string>
 #include <unordered_map>
 #include <vector>
+
+#include "DevProtoDef.hpp"
 
 struct FaceRecord {
 	int				   id;
@@ -20,7 +23,9 @@ struct FaceRecord {
 	int				   gender;
 	int				   age;
 	std::string		   phone;
-	bool			   widelist;
+	// 保留旧字段供现有调用方兼容；人员类别判断应使用 person_type。
+	bool			   widelist{false};
+	PersonType		   person_type{PersonType::BLACKLIST};
 	std::string		   pid;
 	std::string		   work_id;
 	std::string		   id_card_no;
@@ -48,7 +53,7 @@ public:
 					stranger(false),
 					empty_db(false),
 					uncertain(false),
-					person_type(0) {}
+						person_type(PersonType::NONE) {}
 	bool  matched;
 	float score;
 	//
@@ -70,7 +75,7 @@ public:
 	bool	 stranger;	 // added whether it s a stranger or not
 	bool	 empty_db;	 // true when face DB is empty (no registered faces)
 	bool	 uncertain;	 // true when score falls in gray zone
-	int		 person_type; // PersonType bitmask value (1=STRANGER,2=WHITELIST,4=BLACKLIST,8=VIP,16=VISITOR)
+	PersonType person_type;
 };
 
 // int loadFacesFromDatabase(int folder_id, std::vector<FaceRecord>& out_faces);
@@ -79,14 +84,20 @@ public:
 	FaceRecognizer(const std::string& folder_id);
 
 	// enter features and return matching results
-	MatchResult recognize(float feature[512], float threshold = 0.95f, float gray_zone = 0.0f) const;
+	MatchResult recognize(float feature[512], float threshold = 0.95f, float gray_zone = 0.0f, float quality = 1.0f) const;
 
 	int						 size();
 	std::vector<FaceRecord>& getFaceDB();
 
 private:
+	void load_faces(bool force);
+	void reload_if_changed() const;
+
 	std::string				folder_id_{};
-	std::vector<FaceRecord> face_db_;
+	mutable std::vector<FaceRecord> face_db_;
+	mutable std::mutex		face_db_mutex_;
+	mutable long long		db_stamp_{-1};
+	mutable long long		wal_stamp_{-1};
 };
 
 #endif

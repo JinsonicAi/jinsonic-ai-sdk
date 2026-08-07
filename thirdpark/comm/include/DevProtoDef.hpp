@@ -14,6 +14,19 @@ enum class PersonType : int {
 };
 
 /**
+ * @brief faces.blacklist 字段的持久化类别
+ *
+ * 字段名为历史遗留，实际保存完整人员类别。数据库/API/前端注册均使用该值，
+ * 不得与 PersonType 位掩码直接混用。
+ */
+enum class FaceCategory : int {
+	WHITELIST = 1,
+	BLACKLIST = 2,
+	VIP       = 3,
+	VISITOR   = 4
+};
+
+/**
  * @brief 报警人员类别枚举
  */
 enum class AlarmCategory : int {
@@ -23,6 +36,61 @@ enum class AlarmCategory : int {
 	VIP		  = 3,	// VIP人员(重要人员)
 	VISITOR	  = 4	// 访客(临时访问人员)
 };
+
+constexpr bool isValidFaceCategoryValue(int value) {
+	return value >= static_cast<int>(FaceCategory::WHITELIST) &&
+		value <= static_cast<int>(FaceCategory::VISITOR);
+}
+
+// 读取历史数据库时允许 0=黑名单；其他非法值也按黑名单安全降级。
+constexpr FaceCategory faceCategoryFromStorage(int value) {
+	switch (value) {
+		case static_cast<int>(FaceCategory::WHITELIST): return FaceCategory::WHITELIST;
+		case static_cast<int>(FaceCategory::VIP): return FaceCategory::VIP;
+		case static_cast<int>(FaceCategory::VISITOR): return FaceCategory::VISITOR;
+		case 0:
+		case static_cast<int>(FaceCategory::BLACKLIST):
+		default: return FaceCategory::BLACKLIST;
+	}
+}
+
+constexpr PersonType personTypeFromFaceCategory(FaceCategory category) {
+	switch (category) {
+		case FaceCategory::WHITELIST: return PersonType::WHITELIST;
+		case FaceCategory::VIP: return PersonType::VIP;
+		case FaceCategory::VISITOR: return PersonType::VISITOR;
+		case FaceCategory::BLACKLIST:
+		default: return PersonType::BLACKLIST;
+	}
+}
+
+constexpr bool isKnownPersonType(PersonType type) {
+	return type == PersonType::WHITELIST || type == PersonType::BLACKLIST ||
+		type == PersonType::VIP || type == PersonType::VISITOR;
+}
+
+constexpr AlarmCategory alarmCategoryFromPersonType(PersonType type) {
+	switch (type) {
+		case PersonType::STRANGER: return AlarmCategory::STRANGER;
+		case PersonType::WHITELIST: return AlarmCategory::WHITELIST;
+		case PersonType::VIP: return AlarmCategory::VIP;
+		case PersonType::VISITOR: return AlarmCategory::VISITOR;
+		case PersonType::BLACKLIST:
+		default: return AlarmCategory::BLACKLIST;
+	}
+}
+
+constexpr const char* personTypeName(PersonType type) {
+	switch (type) {
+		case PersonType::STRANGER: return "STRANGER";
+		case PersonType::WHITELIST: return "WHITELIST";
+		case PersonType::BLACKLIST: return "BLACKLIST";
+		case PersonType::VIP: return "VIP";
+		case PersonType::VISITOR: return "VISITOR";
+		case PersonType::NONE:
+		default: return "UNKNOWN";
+	}
+}
 
 /**
  * @brief 智能分析事件类型枚举
@@ -50,6 +118,19 @@ enum class EventType : int {
 	NON_MOTORIZED_VEHICLE = 20,	 // 非机动车检测
 	STRANGER_DETECTION	  = 21	 // 陌生人检测
 };
+
+constexpr EventType eventTypeFromPersonType(PersonType type) {
+	switch (type) {
+		case PersonType::STRANGER: return EventType::STRANGER_DETECTION;
+		case PersonType::WHITELIST: return EventType::WHITELIST_DETECTION;
+		case PersonType::VIP: return EventType::VIP_DETECTION;
+		// 当前协议没有 VISITOR_DETECTION；访客作为已登记人员兼容白名单事件号，
+		// 精确身份由 AlarmCategory::VISITOR 和 category=VISITOR 表达。
+		case PersonType::VISITOR: return EventType::WHITELIST_DETECTION;
+		case PersonType::BLACKLIST:
+		default: return EventType::BLACKLIST_DETECTION;
+	}
+}
 
 /**
  * @brief 车辆类型枚举
