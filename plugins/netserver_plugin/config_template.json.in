@@ -73,6 +73,7 @@
             "lo": "ຊື່ຜູ້ໃຊ້"
           },
           "key": "user",
+          "showWhen": { "key": "rtsp_push", "eq": true },
           "default": "admin"
         },
         {
@@ -85,6 +86,7 @@
             "lo": "ລະຫັດຜ່ານ"
           },
           "key": "pass",
+          "showWhen": { "key": "rtsp_push", "eq": true },
           "default": "123456"
         }
       ]

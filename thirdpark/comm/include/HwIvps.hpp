@@ -10,6 +10,7 @@
 #include <memory>
 #include <string>
 #include <thread>
+#include <vector>
 
 #include "AxVideoFrame.hpp"
 #include "HwCover.hpp"
@@ -18,6 +19,22 @@
 #include "ax_ivps_type.h"
 #include "ax_pool_type.h"
 #include "sample_ivps_sync_api.h"
+
+struct IvpsPreprocessOptions {
+	std::pair<int, int> size;
+	AX_IMG_FORMAT_E output_format{AX_FORMAT_RGB888};
+	ResizeOptions resize{};
+	IVPS_ENGINE_ID_E resize_engine{IVPS_ENGINE_ID_AUTO};
+	IVPS_ENGINE_ID_E csc_engine{IVPS_ENGINE_ID_AUTO};
+};
+
+struct IvpsPreprocessResult {
+	std::shared_ptr<AXVideoFrame> frame;
+	TransformMatrices transform{};
+	bool resized{false};
+	bool color_converted{false};
+	explicit operator bool() const noexcept { return frame != nullptr; }
+};
 
 class HwIvps {
 public:
@@ -39,6 +56,21 @@ public:
 													 const ResizeOptions &options = ResizeOptions{});
 	std::shared_ptr<AXVideoFrame> HwIvpsCropResize(AX_VIDEO_FRAME_T *ptSrcFrame, std::pair<int, int> Size, AX_IVPS_RECT_T crop, IVPS_ENGINE_ID_E eEngineId = IVPS_ENGINE_ID_VPP,
 												   const ResizeOptions &options = ResizeOptions{});
+	// Batch ROI preprocessing. Results preserve crop order and the exact pixel
+	// contract of repeated HwIvpsCropResize calls. AXCL uses the native V2 API;
+	// AX local and other backends deliberately keep the existing single-ROI path.
+	// Requests larger than the vendor limit are split transparently.
+	std::vector<std::shared_ptr<AXVideoFrame>> HwIvpsCropResizeBatch(
+		AX_VIDEO_FRAME_T *ptSrcFrame, std::pair<int, int> Size,
+		const std::vector<AX_IVPS_RECT_T> &crops,
+		IVPS_ENGINE_ID_E eEngineId = IVPS_ENGINE_ID_AUTO,
+		const ResizeOptions &options = ResizeOptions{});
+	// Common inference preprocessing entry point. It keeps source descriptors
+	// read-only, records geometry per result, selects compatible hardware through
+	// AUTO, and skips resize/CSC stages that are already satisfied.
+	IvpsPreprocessResult PreprocessForInference(
+		const std::shared_ptr<AXVideoFrame>& source,
+		const IvpsPreprocessOptions& options);
 
 private:
 	int					   device_id_;

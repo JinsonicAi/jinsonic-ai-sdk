@@ -1,6 +1,7 @@
 #ifndef __FACE_INFO_HPP__
 #define __FACE_INFO_HPP__
 #include <cstring>
+#include <chrono>
 #include <fstream>
 #include <iostream>
 #include <json.hpp>
@@ -96,8 +97,11 @@ private:
 	std::string				folder_id_{};
 	mutable std::vector<FaceRecord> face_db_;
 	mutable std::mutex		face_db_mutex_;
-	mutable long long		db_stamp_{-1};
-	mutable long long		wal_stamp_{-1};
+	// The main database WAL changes for task/runtime writes that are unrelated
+	// to faces.  Track a faces-table-only revision and rate-limit the lightweight
+	// revision query so many recognition nodes do not form a SQLite poll storm.
+	mutable long long		face_revision_{-1};
+	mutable std::chrono::steady_clock::time_point last_revision_check_{};
 };
 
 #endif

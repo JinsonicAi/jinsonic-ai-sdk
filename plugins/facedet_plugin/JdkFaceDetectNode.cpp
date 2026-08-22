@@ -2,10 +2,12 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cmath>
 #include <ctime>
 #include <iomanip>
 #include <sstream>
 #include <stdexcept>
+#include <unordered_set>
 
 #include "DevProtoDef.hpp"
 #include "DeviceInfo.hpp"
@@ -16,25 +18,46 @@
 #include "post_node_info.h"
 
 namespace jdk_nodes {
+namespace {
+int64_t get_current_timestamp() {
+	auto now = std::chrono::system_clock::now();
+	return std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+}
+}  // namespace
+
 faceDetectV2Node::faceDetectV2Node(std::string		  node_name,
 								   const std::string& filename,
 								   float			  threshold,
 								   PluginRuntime	  runtime,
 								   std::string		  task_id,
-								   int				  label_score_step)
+								   int				  label_score_step,
+								   int				  confirm_frames,
+								   float			  track_iou,
+								   int				  track_max_missed,
+								   int				  alarm_push_interval_ms)
 	: channel_id_(runtime.runtime_device_id),
 	  threshold_(threshold),
 	  runtime_(std::move(runtime)),
 	  device_id_(runtime_.runtime_device_id),
 	  label_score_step_(std::clamp(label_score_step, 0, 100)),
-	  task_id_(task_id) {
+	  task_id_(task_id),
+	  confirm_frames_(std::clamp(confirm_frames, 1, 120)),
+	  track_iou_(std::clamp(track_iou, 0.05f, 0.95f)),
+	  track_max_missed_(std::clamp(track_max_missed, 1, 600)),
+	  alarm_push_interval_ms_(std::clamp(alarm_push_interval_ms, 1000, 600000)) {
 	infer = YOLOV5FACE::create_infer(filename, runtime_.infer_type(), device_id_);
 	if (!infer) {
 		throw std::runtime_error(fmt::format("face detector failed to create {} backend for runtime_location={} device_id={}",
 			runtime_.infer_type(), runtime_.location, device_id_));
 	}
+	YOLOV5FACE::Params infer_params;
+	infer->paramsGet(infer_params);
+	infer_params.confThreshold_ = threshold_;
+	infer->paramsSet(infer_params);
 	fmt::print("[FaceDet] runtime_location={} infer_type={} runtime_device_id={}\n",
 		runtime_.location, runtime_.infer_type(), device_id_);
+	fmt::print("[FaceDet] detection_threshold={} confirm_frames={} track_iou={} track_max_missed={} alarm_push_interval_ms={}\n",
+		threshold_, confirm_frames_, track_iou_, track_max_missed_, alarm_push_interval_ms_);
 	reporter_.set_algorithm_config({task_id_,
 									PLUGIN_NODE_NAME,
 									"-"});
@@ -103,7 +126,7 @@ jdk_osd::Overlay faceDetectV2Node::build_overlay_(const YOLOV5FACE::Objects& det
 		box.w					  = b.rect.width;
 		box.h					  = b.rect.height;
 		box.score				  = b.prob;
-		box.track_id			  = 0;
+		box.track_id			  = b.track_id;
 		box.ghost				  = is_ghost;
 		box.priority			  = is_ghost ? 10 : 100;
 		const AX_U32 color_rgb	  = random_color(box.track_id ? static_cast<int>(box.track_id) : b.label);
@@ -140,6 +163,131 @@ jdk_osd::Overlay faceDetectV2Node::build_overlay_(const YOLOV5FACE::Objects& det
 	return overlay;
 }
 
+namespace {
+float rect_iou(const cv::Rect_<float>& a, const cv::Rect_<float>& b) {
+	const float intersection = (a & b).area();
+	const float union_area = a.area() + b.area() - intersection;
+	return union_area > 0.0f ? intersection / union_area : 0.0f;
+}
+
+float rect_match_score(const cv::Rect_<float>& current, const cv::Rect_<float>& previous,
+					   float min_iou) {
+	const float iou = rect_iou(current, previous);
+	if (iou >= min_iou) return 1.0f + iou;
+	const cv::Point2f a(current.x + current.width * 0.5f,
+						current.y + current.height * 0.5f);
+	const cv::Point2f b(previous.x + previous.width * 0.5f,
+						previous.y + previous.height * 0.5f);
+	const float dx = a.x - b.x;
+	const float dy = a.y - b.y;
+	const float diag = std::sqrt(std::max(1.0f,
+		previous.width * previous.width + previous.height * previous.height));
+	const float distance_ratio = std::sqrt(dx * dx + dy * dy) / diag;
+	const float area_a = std::max(1.0f, current.area());
+	const float area_b = std::max(1.0f, previous.area());
+	const float size_ratio = std::min(area_a, area_b) / std::max(area_a, area_b);
+	if (iou >= 0.08f && distance_ratio <= 0.75f && size_ratio >= 0.35f) {
+		return iou + (1.0f - distance_ratio) * 0.25f + size_ratio * 0.15f;
+	}
+	return 0.0f;
+}
+}  // namespace
+
+void faceDetectV2Node::update_tracks_(YOLOV5FACE::Objects& det) {
+	for (auto& [_, track] : tracks_)
+		++track.missed_frames;
+
+	struct MatchCandidate {
+		float score{0.0f};
+		uint64_t track_id{0};
+		size_t face_index{0};
+	};
+	std::vector<MatchCandidate> candidates;
+	for (const auto& [track_id, track] : tracks_) {
+		if (track.missed_frames > track_max_missed_) continue;
+		const float horizon = static_cast<float>(std::clamp(track.missed_frames, 1, 3));
+		const cv::Rect_<float> predicted(
+			track.bbox.x + track.velocity_x * horizon,
+			track.bbox.y + track.velocity_y * horizon,
+			std::max(1.0f, track.bbox.width + track.velocity_w * horizon),
+			std::max(1.0f, track.bbox.height + track.velocity_h * horizon));
+		for (size_t face_index = 0; face_index < det.size(); ++face_index) {
+			const auto& face = det[face_index];
+			if (face.prob < threshold_ || face.rect.area() <= 200.0f) continue;
+			const float score = std::max(
+				rect_match_score(face.rect, predicted, track_iou_),
+				rect_match_score(face.rect, track.bbox, track_iou_));
+			if (score > 0.30f) candidates.push_back({score, track_id, face_index});
+		}
+	}
+	std::stable_sort(candidates.begin(), candidates.end(),
+		[](const MatchCandidate& lhs, const MatchCandidate& rhs) {
+			return lhs.score > rhs.score;
+		});
+	std::unordered_map<size_t, uint64_t> assignments;
+	std::unordered_set<uint64_t> matched_tracks;
+	std::unordered_set<size_t> matched_faces;
+	for (const auto& candidate : candidates) {
+		if (matched_tracks.count(candidate.track_id) || matched_faces.count(candidate.face_index))
+			continue;
+		matched_tracks.insert(candidate.track_id);
+		matched_faces.insert(candidate.face_index);
+		assignments.emplace(candidate.face_index, candidate.track_id);
+	}
+
+	const int64_t now_ms = get_current_timestamp();
+	for (size_t face_index = 0; face_index < det.size(); ++face_index) {
+		auto& face = det[face_index];
+		if (face.prob < threshold_ || face.rect.area() <= 200.0f)
+			continue;
+
+		const auto assigned = assignments.find(face_index);
+		uint64_t best_id = assigned == assignments.end() ? 0 : assigned->second;
+		if (best_id == 0) {
+			best_id = next_track_id_++;
+			TrackState fresh;
+			fresh.id = best_id;
+			fresh.bbox = face.rect;
+			fresh.first_seen_ms = now_ms;
+			tracks_.emplace(best_id, fresh);
+		}
+		auto& track = tracks_.at(best_id);
+		const auto previous = track.bbox;
+		const float gap = static_cast<float>(std::max(1, track.missed_frames));
+		constexpr float alpha = 0.40f;
+		track.velocity_x = track.velocity_x * (1.0f - alpha) +
+			((face.rect.x - previous.x) / gap) * alpha;
+		track.velocity_y = track.velocity_y * (1.0f - alpha) +
+			((face.rect.y - previous.y) / gap) * alpha;
+		track.velocity_w = track.velocity_w * (1.0f - alpha) +
+			((face.rect.width - previous.width) / gap) * alpha;
+		track.velocity_h = track.velocity_h * (1.0f - alpha) +
+			((face.rect.height - previous.height) / gap) * alpha;
+		track.bbox = face.rect;
+		++track.hits;
+		track.missed_frames = 0;
+		matched_tracks.insert(best_id);
+		face.track_id = best_id;
+
+		if (track.hits >= confirm_frames_ && !track.reported && !pending_alarms_.count(best_id)) {
+			PendingAlarm pending;
+			pending.track_id = best_id;
+			pending.event_id = fmt::format("{}:face_detection:{}:{}", task_id_, best_id, track.first_seen_ms);
+			pending.face = face;
+			pending.created_at_ms = now_ms;
+			pending_alarms_.emplace(best_id, std::move(pending));
+		}
+	}
+
+	for (auto it = tracks_.begin(); it != tracks_.end();) {
+		if (it->second.missed_frames > track_max_missed_) {
+			it = tracks_.erase(it);
+		} else {
+			++it;
+		}
+	}
+}
+
 std::string get_current_iso_time() {
 	using namespace std::chrono;
 
@@ -153,11 +301,6 @@ std::string get_current_iso_time() {
 	return ss.str();
 }
 
-static int64_t getCurrentTimestamp() {
-	auto now = std::chrono::system_clock::now();
-	return std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
-}
-
 static std::string get_guid() {
 	auto& dev = DeviceInfo::instance();
 	return dev.deviceId();
@@ -166,18 +309,23 @@ static std::string get_guid() {
 std::pair<nlohmann::json, std::vector<std::function<std::shared_ptr<AXVideoFrame>()>>>
 faceDetectV2Node::alarm_fn(const std::any& result_any, std::shared_ptr<AXVideoFrame> canvas) {
 	(void)canvas;
-	const auto&			payload_any = jdk_osd::payload_from_any(result_any);
-	YOLOV5FACE::Objects value;
-
-	bool ok = anyx::visit<YOLOV5FACE::Objects>(payload_any, [&](const auto& v) { value = v; });
-	if (!ok || value.empty()) {
-		if (!ok)
-			fmt::print("⚠️ [{} Alarm] unexpected any type: {} \r\n", PLUGIN_NODE_NAME, anyx::type_name(result_any));
-		return {{}, {}};
+	(void)result_any;
+	std::vector<PendingAlarm> pending;
+	{
+		std::lock_guard<std::mutex> lk(mutex_);
+		for (const auto& [track_id, alarm] : pending_alarms_) {
+			pending.push_back(alarm);
+			auto track_it = tracks_.find(track_id);
+			if (track_it != tracks_.end())
+				track_it->second.reported = true;
+		}
+		pending_alarms_.clear();
 	}
+	if (pending.empty())
+		return {{}, {}};
 
 	constexpr const char* kAlarmType = "faceAlarm";
-	const int64_t		  now_ms	 = getCurrentTimestamp();
+	const int64_t		  now_ms	 = get_current_timestamp();
 	const std::string	  now_iso	 = get_current_iso_time();
 
 	auto to_bbox = [](const YOLOV5FACE::FaceBox& box) {
@@ -196,22 +344,20 @@ faceDetectV2Node::alarm_fn(const std::any& result_any, std::shared_ptr<AXVideoFr
 		return arr;
 	};
 
-	auto build_alarm_item = [&](const YOLOV5FACE::FaceBox& box) -> nlohmann::json {
+	auto build_alarm_item = [&](const PendingAlarm& pending_alarm) -> nlohmann::json {
+		const auto& box = pending_alarm.face;
 		const auto bbox		 = to_bbox(box);
 		const auto landmarks = to_landmarks(box);
 
 		nlohmann::json one = {
-			{"local_push_msg", {{"alarm_type", kAlarmType}, {"confidence", box.prob}, {"label", box.label}, {"bbox", bbox}, {"landmarks", landmarks}}},
-			{"alarm_push_msg", {{"did", get_guid()}, {"type", static_cast<int>(EventType::HUMAN_DETECTION)}, {"time", now_ms}, {"state", 0}, {"data", {{"confidence", box.prob}, {"label", box.label}, {"bbox", bbox}, {"landmarks", landmarks}}}}}};
+			{"local_push_msg", {{"alarm_type", kAlarmType}, {"event_id", pending_alarm.event_id}, {"track_id", pending_alarm.track_id}, {"confidence", box.prob}, {"label", box.label}, {"bbox", bbox}, {"landmarks", landmarks}}},
+			{"alarm_push_msg", {{"did", get_guid()}, {"type", static_cast<int>(EventType::HUMAN_DETECTION)}, {"time", now_ms}, {"state", 0}, {"data", {{"event_id", pending_alarm.event_id}, {"event_type", "face_detection"}, {"track_id", pending_alarm.track_id}, {"confidence", box.prob}, {"label", box.label}, {"bbox", bbox}, {"landmarks", landmarks}}}}}};
 		return one;
 	};
 
 	nlohmann::json alarm_arr = nlohmann::json::array();
-	for (const auto& box : value) {
-		if (box.prob < threshold_)
-			continue;
-		alarm_arr.push_back(build_alarm_item(box));
-	}
+	for (const auto& alarm : pending)
+		alarm_arr.push_back(build_alarm_item(alarm));
 	if (alarm_arr.empty()) {
 		return {{}, {}};
 	}
@@ -240,11 +386,14 @@ void faceDetectV2Node::run_infer_combinations(const std::vector<std::shared_ptr<
 	}
 	YOLOV5FACE::Objects det;
 	anyx::visit<YOLOV5FACE::Objects>(*result_sp, [&](const auto& v) { det = v; });
+	update_tracks_(det);
+	const bool has_face_event = !pending_alarms_.empty();
+	auto overlay = build_overlay_(det,
+		static_cast<int>(frame_meta->frame_->width()),
+		static_cast<int>(frame_meta->frame_->height()));
 	auto overlay_result = jdk_osd::make_overlay_result(
-		result_sp,
-		build_overlay_(det,
-			static_cast<int>(frame_meta->frame_->width()),
-			frame_meta->frame_->height()));
+		std::make_shared<std::any>(std::move(det)),
+		std::move(overlay));
 	{
 		std::lock_guard<std::mutex> lk(*frame_meta->mtx_);
 		auto						new_entry = std::make_shared<jdk_objects::ResultEntry>(
@@ -256,7 +405,9 @@ void faceDetectV2Node::run_infer_combinations(const std::vector<std::shared_ptr<
 				-> std::pair<nlohmann::json, std::vector<std::function<std::shared_ptr<AXVideoFrame>()>>> {
 				return this->alarm_fn(input, nullptr);
 			},
-			true, 10000);
+			true, alarm_push_interval_ms_,
+			has_face_event ? jdk_objects::AlarmDeliveryMode::ImmediateEvent
+			               : jdk_objects::AlarmDeliveryMode::PeriodicState);
 		frame_meta->result_map_[jdk_node_base::node_name()].exchange(new_entry);
 	}
 }

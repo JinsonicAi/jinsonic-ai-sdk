@@ -6,10 +6,13 @@
 
 #include <any>
 #include <cstring>
+#include <functional>
 #include <iostream>
+#include <memory>
 #include <opencv2/opencv.hpp>
 #include <optional>
 #include <random>
+#include <vector>
 
 #include "AxVideoFrame.hpp"
 #include "HwCapture.hpp"
@@ -17,6 +20,7 @@
 #include "ax_algorithm_sdk.h"
 #include "ax_engine_api.h"
 #include "axcl.h"
+#include "json.hpp"
 #include "streamInfo.hpp"
 
 #define ALIGN_UP(x, align) (((x) + ((align) - 1)) & ~((align) - 1))
@@ -175,6 +179,57 @@ private:
 inline ax_npu_affinity_e random_npu1_affinity();
 
 std::string frameToBase64(std::shared_ptr<AXVideoFrame> frame /*jpeg*/);
+
+// Internal hand-off between algorithm plugins and alarm_plugin. The marker is
+// removed before the customer-facing payload is serialized.
+namespace jdk_alarm_protocol {
+static constexpr const char* kAttachBgSnapshot = "_aibox_attach_bg_snapshot";
+static constexpr const char* kSnapshotBindings = "_aibox_snapshot_bindings";
+static constexpr const char* kLocalSnapshotBinding = "local";
+static constexpr const char* kMessageSnapshotBindings = "messages";
+
+using SnapshotProvider = std::function<std::shared_ptr<AXVideoFrame>()>;
+
+// Most behavior algorithms use one full-frame image for both the local evidence
+// record and the custom-server background. Keep a single provider when both
+// channels point at the same frame; specialized crops remain separate and keep
+// their local-first/server-last ordering for legacy consumers.
+inline void append_local_server_snapshots(
+	std::vector<SnapshotProvider>& snapshots,
+	bool local_enabled,
+	const std::shared_ptr<AXVideoFrame>& local_snapshot,
+	bool server_enabled,
+	const std::shared_ptr<AXVideoFrame>& server_snapshot) {
+	const bool local_added = local_enabled && static_cast<bool>(local_snapshot);
+	if (local_added) {
+		snapshots.emplace_back([snapshot = local_snapshot]() { return snapshot; });
+	}
+	if (server_enabled && server_snapshot &&
+		(!local_added || server_snapshot.get() != local_snapshot.get())) {
+		snapshots.emplace_back([snapshot = server_snapshot]() { return snapshot; });
+	}
+}
+
+inline size_t append_snapshot(
+	std::vector<SnapshotProvider>& snapshots,
+	const std::shared_ptr<AXVideoFrame>& snapshot) {
+	const size_t index = snapshots.size();
+	snapshots.emplace_back([snapshot]() { return snapshot; });
+	return index;
+}
+
+inline void bind_local_snapshot(nlohmann::json& alarm, size_t snapshot_index) {
+	alarm[kSnapshotBindings][kLocalSnapshotBinding] = snapshot_index;
+}
+
+inline void bind_message_snapshot(
+	nlohmann::json& alarm,
+	const std::string& message_type,
+	const std::string& data_key,
+	size_t snapshot_index) {
+	alarm[kSnapshotBindings][kMessageSnapshotBindings][message_type][data_key] = snapshot_index;
+}
+}
 
 // hsv to bgr
 AX_U32 hsv2bgr(float h, float s, float v);

@@ -37,7 +37,7 @@ struct PluginRuntime {
 		if (location == "rk.local" || infer_type == "rk") {
 			return DeviceInfo::instance().targetSoc();
 		}
-		// AX 本地和 AXCL 计算卡都使用 AX 平台模型；不能按 RK/x86 宿主 SoC 选包内逻辑名。
+		// AX local and AXCL compute cards both use AX platform models; cannot select by RK/x86 host SoC logical name.
 		return "ax650";
 	}
 

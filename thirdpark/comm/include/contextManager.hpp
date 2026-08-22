@@ -13,11 +13,20 @@
 // rmwei add .
 #include "axcl.h"
 
+using AiboxAxclRuntimeOperation = int (*)(void* opaque);
+
+extern "C" EXPORT_VISIBILITY int aibox_axcl_runtime_owner_invoke(
+	int device_id,
+	AiboxAxclRuntimeOperation operation,
+	void* opaque,
+	int* operation_result) noexcept;
+
 class AXCLLifecycle {
 public:
 	static AXCLLifecycle& instance() EXPORT_VISIBILITY;
 
 	bool init_once(int device_id);
+	bool activate_device(int device_id);
 	void finalize_once(int device_id);
 	void finalize_all();
 	bool is_finalized(int device_id) const;

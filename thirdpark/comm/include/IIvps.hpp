@@ -21,6 +21,12 @@
 #include "ax_ivps_type.h"
 #include "sample_ivps_sync_api.h"
 
+// Opt-in marker for callers whose format/stride/ROI has been validated on all
+// candidate engines. Defaults deliberately remain VPP because TDP/VGP are not
+// universally interchangeable for legacy preprocessing inputs.
+inline constexpr IVPS_ENGINE_ID_E IVPS_ENGINE_ID_AUTO =
+	static_cast<IVPS_ENGINE_ID_E>(-1);
+
 class IIvps {
 public:
 	virtual ~IIvps() = default;

@@ -18,9 +18,14 @@ typedef unsigned char *LPBYTE;
 
 int replace_task_decoder_channel(const std::string& runtime_location, int old_channel);
 
+class SharedDecodeHub;
+class SharedDecodeSubscription;
+
 class NetClient {
 public:
 	NetClient(int device_id, int group, int channel, stream_info info, std::string task_name);
+	NetClient(int device_id, int group, int channel, stream_info info, std::string task_name,
+			  bool allow_shared_decode);
 	~NetClient();
 
 	bool						  start(const std::string &rtsp_url);
@@ -37,6 +42,7 @@ private:
 
 	std::string				   task_name_{};
 	std::string                runtime_location_{};
+	bool                       allow_shared_decode_{true};
 	int						   device_id_;
 	int						   group_;
 	int						   channel_id_{};
@@ -55,8 +61,13 @@ private:
 			std::atomic<bool>						  need_keyframe_after_reset_{false};
 			std::atomic<uint32_t>					  decoder_init_failures_{0};
 			std::atomic<uint32_t>                  decoder_rebind_failures_{0};
+			std::atomic<uint64_t>                  synthetic_pts_90k_{0};
 			safe_queue<std::shared_ptr<AXVideoFrame>> queue_;
 			std::mutex								  decoder_mtx_;
+			std::shared_ptr<SharedDecodeHub>             shared_hub_{};
+			std::shared_ptr<SharedDecodeSubscription>    shared_subscription_{};
+			uint64_t                                      shared_subscription_id_{0};
+			std::string                                   shared_registry_key_{};
 		};
 
 #endif	// __AX_NET_CLIENT_H__

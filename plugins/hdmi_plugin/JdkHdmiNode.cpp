@@ -1,5 +1,6 @@
 #include "JdkHdmiNode.hpp"
 
+#include "PluginFrameUtils.hpp"
 #include "hdmi.h"
 #include "post_node_info.h"
 
@@ -49,6 +50,10 @@ std::shared_ptr<jdk_objects::jdk_meta> HdmiNode::handle_frame_meta(std::shared_p
 
 	auto start_time = std::chrono::steady_clock::now();
 	auto hostframe	= canvas->toHost();
+	if (!jdk_plugin::frame_has_host_memory(hostframe)) {
+		fprintf(stderr, "❌ HdmiNode toHost failed, skipping frame\n");
+		return jdk_node_base::handle_frame_meta(meta);
+	}
 	HdmiSendFrame(hdmi_device_id_, task_id_, *hostframe->raw());
 
 	// report node info

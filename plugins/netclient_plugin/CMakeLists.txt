@@ -42,6 +42,10 @@ endif()
 set(PLUGIN_STAGING_DIR "${CMAKE_SOURCE_DIR}/build_out/.${PLUGIN_NAME}")
 set(PLUGIN_PACKAGE_OUTPUT "${CMAKE_SOURCE_DIR}/build_out/${PLUGIN_NAME}.plugin")
 
+# Re-run POST_BUILD packaging when only the plugin UI template changes.
+set_property(TARGET ${PLUGIN_NAME}_lib APPEND PROPERTY LINK_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/config_template.json.in")
+
 add_custom_command(TARGET ${PLUGIN_NAME}_lib POST_BUILD
     COMMAND "${CMAKE_COMMAND}"
             -DPLUGIN_NAME=${PLUGIN_NAME}

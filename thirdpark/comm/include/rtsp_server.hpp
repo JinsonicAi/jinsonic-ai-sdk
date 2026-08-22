@@ -1,9 +1,11 @@
 #ifndef __RTSP_SERVER_HANDLE_H__
 #define __RTSP_SERVER_HANDLE_H__
+#include <atomic>
 #include <cstdio>
 #include <cstring>
 #include <future>
 #include <iostream>
+#include <mutex>
 #include <thread>
 #include <vector>
 
@@ -31,12 +33,17 @@ public:
 	// send h264 h265 streams
 	bool send_nalu(const uint8_t *data, int length, uint64_t timestamp);
 
+	bool is_ready() const noexcept {
+		return running_.load(std::memory_order_acquire);
+	}
 	std::string rtsp_url() const;
+	// Return one client URL for every active non-loopback IPv4 address.
+	// The listening socket itself is bound to 0.0.0.0, so this list may be
+	// refreshed after DHCP, link, or interface changes without restarting RTSP.
+	std::vector<std::string> rtsp_urls() const;
 
 private:
-	// make sure the nalu type matches H264/H265
-	bool						   is_valid_nalu(uint8_t *data, int length);
-	std::atomic<bool>			   running_{true};
+	std::atomic<bool>			   running_{false};
 	void						  *context_{nullptr};
 	std::shared_ptr<ThreadContext> ctx_;
 	VideoCodecType				   codec_;
@@ -48,10 +55,13 @@ private:
 	std::string	 user_;
 	std ::string password_;
 
-	bool				 first_frame_ = true;
+	std::mutex			 state_mutex_;
+	std::thread			 server_thread_;
 	std::vector<uint8_t> sps_data_;
 	std::vector<uint8_t> pps_data_;
 	std::vector<uint8_t> vps_data_;	 // for h 265 only
+	uint32_t			 last_rtp_timestamp_{0};
+	bool				 rtp_timestamp_initialized_{false};
 };
 
 #endif

@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "JdkNetlClientNode.hpp"
+#include "json_utils.hpp"
 #include "sdk_interface.hpp"
 
 #ifndef PLUGIN_NODE_NAME
@@ -29,7 +30,7 @@ extern "C" void plugin_init(SDKInterface* sdk) {
 			name,
 			std::make_shared<jdk_nodes::NetClientNode>(
 				name,
-				jp(config, "rtsp_url", ""),
+				json_utils::jp_trimmed(config, "rtsp_url", ""),
 				runtime,
 				jp(config, "channel_id", 0),
 				jp(config, "channel", 0),

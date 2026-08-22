@@ -11,9 +11,19 @@
 #include <mutex>
 #include <string>
 #include <unordered_map>
+#include <utility>
 
 #include "HwEncoder.hpp"
 #include "TimestampedRingBuffer.hpp"
+
+// A task has one shared hardware encoder but may have several output
+// consumers. Exactly one consumer owns the raw-frame encode path; every
+// consumer receives an independent encoded-packet queue.
+enum TaskEncoderProducerPriority : int {
+	TASK_ENCODER_PRODUCER_FALLBACK = 0,
+	TASK_ENCODER_PRODUCER_RECORD = 100,
+	TASK_ENCODER_PRODUCER_REALTIME = 200,
+};
 
 class Task {
 public:
@@ -23,13 +33,15 @@ public:
 	struct ConsumerConfig {
 		size_t queue_capacity{3};
 		bool prefer_realtime{true};
+		int producer_priority{TASK_ENCODER_PRODUCER_RECORD};
 	};
 	std::string																   task_id;
 	std::unordered_map<std::string, std::shared_ptr<jdk_nodes::jdk_node_base>> nodes;
 
 	std::shared_ptr<HwEncoder> getEncoder(int device_id, int group, int channel, int rtsp_port,
 										  const std::string& plugin_name, size_t buffer_size = 3,
-										  std::string runtime_location = "");
+										  std::string runtime_location = "",
+										  int producer_priority = TASK_ENCODER_PRODUCER_RECORD);
 
 	std::shared_ptr<AXVideoFrame> getFrame(
 		std::shared_ptr<AXVideoFrame> input_frame,
@@ -38,12 +50,13 @@ public:
 	std::shared_ptr<AXVideoFrame> getFrame(
 		std::shared_ptr<AXVideoFrame> input_frame,
 		const std::string&			  plugin_name);
+	bool is_encoder_producer(const std::string& plugin_name);
 	void unsubscribe(const std::string& plugin_name);
 
 	void add_node(const std::shared_ptr<jdk_nodes::jdk_node_base>& node);
 	void start();
 	void pause();
-	void stop();
+	bool stop() noexcept;
 
 private:
 	// stop 幂等/防重入：避免 stop 过程中再次 stop 导致重复 detach/deinit 引发死锁或长时间阻塞
@@ -62,7 +75,15 @@ private:
 	bool						encoding_in_progress_{false};
 	uint64_t					last_encoded_pts_{std::numeric_limits<uint64_t>::max()};
 	uint64_t					last_encoded_seq_{std::numeric_limits<uint64_t>::max()};
+	TimePoint					last_encode_progress_ts_{TimePoint::min()};
 	uint64_t					seq_{0};
+	std::atomic<uint64_t>		encoder_stats_window_ms_{0};
+	std::atomic<uint64_t>		encoder_stats_callbacks_{0};
+	std::atomic<uint64_t>		encoder_stats_owners_{0};
+	std::atomic<uint64_t>		encoder_stats_seen_{0};
+	std::atomic<uint64_t>		encoder_stats_stale_{0};
+	std::atomic<uint64_t>		encoder_stats_encode_failed_{0};
+	std::atomic<uint64_t>		encoder_stats_published_{0};
 
 	struct EncodedPacket {
 		std::shared_ptr<AXVideoFrame> frame;
@@ -79,11 +100,15 @@ private:
 		TimePoint last_consume_ts{TimePoint::min()};
 	};
 	std::unordered_map<std::string, SubscriberSlot> subscribers_;
+	std::string producer_consumer_id_;
 	std::deque<std::shared_ptr<EncodedPacket>> gop_cache_;
 	size_t max_gop_cache_{120};
+	std::deque<std::pair<uint64_t, uint64_t>> recent_encoded_sources_;
+	size_t max_recent_encoded_sources_{2048};
 
 	void ensure_subscriber_locked(const std::string& plugin_name, ConsumerConfig cfg);
 	void ensure_subscriber_locked(const std::string& plugin_name);
+	void reselect_producer_locked();
 	void publish_packet_locked(const std::shared_ptr<EncodedPacket>& pkt);
 	static bool is_idr_from_annexb(const uint8_t* data, size_t len);
 };
@@ -95,14 +120,18 @@ struct TaskEncodeRequest {
 	int	   rtsp_port{8554};
 	size_t queue_capacity{3};
 	std::string runtime_location{};
+	int producer_priority{TASK_ENCODER_PRODUCER_RECORD};
 };
 
 std::shared_ptr<Task> get_task(const std::string& task_id);
+bool subscribe_task_encoder(
+	const std::string& task_id,
+	const std::string& consumer_id,
+	TaskEncodeRequest req = TaskEncodeRequest());
 std::shared_ptr<AXVideoFrame> get_task_encoded_frame(
 	const std::string&			task_id,
 	const std::string&			consumer_id,
 	std::shared_ptr<AXVideoFrame> input_frame,
 	TaskEncodeRequest			req = TaskEncodeRequest());
+bool is_task_encoder_producer(const std::string& task_id, const std::string& consumer_id);
 void unsubscribe_task_encoder(const std::string& task_id, const std::string& consumer_id);
-void p2p_register_legacy_stream(const std::string& task_id, int stream_type);
-void p2p_unregister_legacy_stream(const std::string& task_id);

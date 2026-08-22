@@ -11,7 +11,6 @@
 	"md5": "@PLUGIN_MD5@",
 	"type": "@PLUGIN_NAME@",
 	"description": "@PLUGIN_NAME@ plugin auto-generated, emits OSD overlay packets",
-	"model_path": "./models",
 	"model_files": [
 		"models/yolov5n-face.axmodel",
 		"models/yolov5n-face_rk3588.rknn"
@@ -19,11 +18,11 @@
 	"component": {
 		"parentType": "algorithm-component",
 		"label": {
-			"zh": "人脸检测",
-			"en": "FaceDetection",
-			"vi": "Phát hiện khuôn mặt",
-			"km": "ការរកឃើញមុខ",
-			"lo": "ການກວດຈັບໃບໜ້າ"
+			"zh": "人脸检测(demo)",
+			"en": "FaceDetection(demo)",
+			"vi": "Phát hiện khuôn mặt(demo)",
+			"km": "ការរកឃើញមុខ(demo)",
+			"lo": "ການກວດຈັບໃບໜ້າ(demo)"
 		},
 		"type": "@PLUGIN_NAME@",
 		"component": {
@@ -31,17 +30,65 @@
 				{
 					"type": "input",
 					"name": {
-						"zh": "识别阈值",
+						"zh": "人脸检测阈值",
 						"en": "RecognitionThreshold",
 						"vi": "Ngưỡng nhận diện",
 						"km": "កម្រិតកំណត់ការសម្គាល់",
 						"lo": "ການຮັບຮູ້ ຄ່າກຳນົດ"
 					},
-					"key": "threshold",
+					"key": "face_threshold",
 					"min": 0.05,
 					"max": 0.95,
 					"step": 0.05,
 					"default": 0.45
+				},
+				{
+					"type": "input",
+					"name": {
+						"zh": "连续确认帧数",
+						"en": "Confirmation Frames"
+					},
+					"key": "confirm_frames",
+					"min": 1,
+					"max": 120,
+					"step": 1,
+					"default": 3
+				},
+				{
+					"type": "input",
+					"name": {
+						"zh": "目标关联 IoU",
+						"en": "Track Association IoU"
+					},
+					"key": "track_iou",
+					"min": 0.05,
+					"max": 0.95,
+					"step": 0.05,
+					"default": 0.3
+				},
+				{
+					"type": "input",
+					"name": {
+						"zh": "最大丢失帧数",
+						"en": "Maximum Missing Frames"
+					},
+					"key": "track_max_missed",
+					"min": 1,
+					"max": 600,
+					"step": 1,
+					"default": 30
+				},
+				{
+					"type": "input",
+					"name": {
+						"zh": "报警检查间隔(毫秒)",
+						"en": "Alarm Check Interval (ms)"
+					},
+					"key": "alarm_push_interval_ms",
+					"min": 1000,
+					"max": 600000,
+					"step": 1000,
+					"default": 10000
 				},
 				{
 					"type": "input",

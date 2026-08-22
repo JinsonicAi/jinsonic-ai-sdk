@@ -5,6 +5,11 @@
 #include <string>
 
 namespace authcaps {
+// Install process anti-debug protection before TaskManager creates worker
+// threads. Calling this during single-threaded startup prevents a task worker
+// from entering ptrace-stop while holding an authorization lock.
+void initialize_runtime_protection();
+
 // Time tool (steady_clock)
 uint64_t diag_now_ms();
 

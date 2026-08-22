@@ -1,7 +1,11 @@
 #pragma once
+#include <any>
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 #include <type_traits>
+#include <utility>
+#include <vector>
 
 #include "ITensor.hpp"
 #define DEBUG printf("    DEBUG:  %s:%d,	%s\r\n", __FILE__, __LINE__, __FUNCTION__);
@@ -36,8 +40,9 @@ struct TensorInputSpec {
 	bool valid() const noexcept { return type != DataType::None; }
 };
 
-// Explicit numeric-tensor submission contract. layout is independent from the
-// model native layout; Runtime converts when pass_through is false.
+// Explicit numeric-tensor submission contract. layout/pass_through describe
+// the submitted bytes; conversion support is backend-specific. AX/AXCL inputs
+// must already match the model-native byte contract.
 struct TensorInput {
 	const void* data{nullptr};
 	std::size_t bytes{0};
@@ -71,6 +76,14 @@ struct TensorInput {
 };
 using TensorInputs = std::vector<TensorInput>;
 
+// Per-model-input payloads for heterogeneous multi-input models. Each slot is
+// indexed exactly like IInferencePlugin::inputs and is owned by Job until the
+// synchronous backend run and post-process complete. This is additive only: it
+// does not change Tensor/Job layout or any public virtual interface.
+struct EXPORT_VISIBILITY TensorSlotInputs {
+	std::vector<std::any> slots;
+};
+
 enum {
 	eDataTypeImage,
 	eDataTypeBlobNhwc,	// data_ which already finished preprocess(color conversion, resize, normalize_, etc.)
@@ -82,13 +95,29 @@ enum {
 // plugins continue to pass job.input exactly as before.
 struct TensorExternalMemory {
 	void*					 virtual_addr{nullptr};
-	std::size_t			 bytes{0};
+	// logical_bytes is the compact tensor payload; storage_bytes includes every
+	// producer row/height stride byte covered by the dma-buf import.
+	std::size_t			 logical_bytes{0};
+	std::size_t			 storage_bytes{0};
+	uint32_t			 width{0};
+	uint32_t			 height{0};
+	// stride is the RK producer's pixel stride. row_stride_bytes is explicit so
+	// no consumer needs to guess whether AX's generic descriptor used pixels or
+	// bytes for a packed RGB frame.
+	uint32_t			 stride{0};
+	std::size_t		 row_stride_bytes{0};
+	uint32_t			 vstride{0};
+	int32_t				 pixel_format{-1};
 	int					 dma_fd{-1};
 	int					 offset{0};
 	std::shared_ptr<void> owner;
 
 	bool valid() const noexcept {
-		return virtual_addr != nullptr && bytes > 0 && dma_fd >= 0 && owner != nullptr;
+		return virtual_addr != nullptr && logical_bytes > 0 &&
+			storage_bytes >= logical_bytes && width > 0 && height > 0 &&
+			stride >= width && row_stride_bytes >= width &&
+			vstride >= height && pixel_format >= 0 &&
+			dma_fd >= 0 && owner != nullptr;
 	}
 };
 

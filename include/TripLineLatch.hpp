@@ -1,21 +1,21 @@
 #pragma once
 
-// ─── Common "latch-to-red" logic for tripwire / line crossing ───
-// All plugins that use tripwires/counting lines (tripwire / wrongway / peopleflow / vehicleflow ...)
-// share the same display-latch semantics:
-//   1. The instant a target crosses the line (or triggers an alarm) → set the latch latched = true;
-//   2. As long as the target box still intersects that line, keep the "alarm display state"
-//      (the target box and the line are rendered in red);
-//   3. When the target box leaves the line → the latch is cleared automatically and the color returns to normal.
+// ─── Tripline "latch-to-red" universal logic ───
+// All tripline/counting-line plugins (tripwire / wrongway / peopleflow / vehicleflow ...)
+// share the same display latch semantics:
+//   1. When target crosses line (or triggers alarm) → set latch: latched = true;
+//   2. As long as the target box still intersects the line, maintain "alarm display state"
+//      (target box + tripline rendered red);
+//   3. When target box leaves the line → latch auto-clears, color returns to normal.
 //
 // Pipeline usage (per frame, per line):
-//   if (line crossed) ls.alarm_latched = true;
+//   if (line_crossed) ls.alarm_latched = true;
 //   bool active = tripline::sustain_latch(ls.alarm_latched, line.p1, line.p2, obj_rect);
 //   if (active) { obj.alarm_active = true; obj.line_index = li; }
 //
 // Node rendering usage:
-//   target box: if (obj.alarm_active) color = tripline::kAlarmColor;
-//   line:       any obj.alarm_active && obj.line_index == li → render that line with kAlarmColor.
+//   Target box: if (obj.alarm_active) color = tripline::kAlarmColor;
+//   Tripline:   any obj.alarm_active && obj.line_index == li → that line uses kAlarmColor.
 
 #include <cmath>
 #include <opencv2/core.hpp>
@@ -25,10 +25,10 @@ namespace tripline {
 // Alarm display color (RGB)
 constexpr unsigned int kAlarmColor = 0xFF0000;
 
-// Whether segment ab intersects rectangle rect (Liang-Barsky clipping)
+// Check if segment ab intersects rectangle rect (Liang-Barsky clipping)
 inline bool segment_intersects_rect(const cv::Point2f& a, const cv::Point2f& b,
                                     const cv::Rect_<float>& rect) {
-	// An endpoint inside the rectangle → must intersect (fast path)
+	// Endpoint inside rect → definitely intersects (fast path)
 	if (rect.contains(a) || rect.contains(b)) return true;
 
 	float x0 = a.x, y0 = a.y, x1 = b.x, y1 = b.y;
@@ -41,7 +41,7 @@ inline bool segment_intersects_rect(const cv::Point2f& a, const cv::Point2f& b,
 	const float q[4] = {x0 - xmin, xmax - x0, y0 - ymin, ymax - y0};
 	for (int i = 0; i < 4; ++i) {
 		if (std::fabs(p[i]) < 1e-6f) {
-			if (q[i] < 0) return false;  // parallel and outside the boundary
+			if (q[i] < 0) return false;  // parallel and outside boundary
 		} else {
 			float r = q[i] / p[i];
 			if (p[i] < 0) { if (r > t1) return false; if (r > t0) t0 = r; }
@@ -51,13 +51,13 @@ inline bool segment_intersects_rect(const cv::Point2f& a, const cv::Point2f& b,
 	return t0 <= t1;
 }
 
-// Latch sustain: when latched is set and the box still crosses the line → keep it (return true);
-// when the box leaves the line → clear the latch automatically (return false). Returns false directly when latched is not set.
+// Latch sustain: when latched is set and box still touches line → sustain (return true);
+// Box leaves line → auto-clear latch (return false). If latched is not set, return false directly.
 inline bool sustain_latch(bool& latched, const cv::Point2f& p1, const cv::Point2f& p2,
                           const cv::Rect_<float>& obj_rect) {
 	if (!latched) return false;
 	if (segment_intersects_rect(p1, p2, obj_rect)) return true;
-	latched = false;  // box has left the line → restore normal color
+	latched = false;  // Box left line → restore normal color
 	return false;
 }
 

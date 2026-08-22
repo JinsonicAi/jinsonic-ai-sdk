@@ -1,12 +1,17 @@
 # netclient_plugin/CMakeLists.txt
 
 # extract the plugin name（the last leg of the path）
-get_filename_component(PLUGIN_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-string(REGEX REPLACE "_plugin$" "" PLUGIN_NAME ${PLUGIN_NAME})
+# The source directory predates the package naming convention.  Keep the
+# deployed ABI and node type stable as "facedet" instead of deriving the
+# invalid historical directory suffix "facedet_demo-plugin".
+set(PLUGIN_NAME "facedet")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PLUGIN_OUTPUT_DIR})
 
 # plug in source files
-file(GLOB PLUGIN_SOURCES *.cpp)
+file(GLOB PLUGIN_SOURCES CONFIGURE_DEPENDS *.cpp)
+# macOS external volumes may materialize AppleDouble sidecars as ._*.cpp.
+# They are binary metadata, never translation units.
+list(FILTER PLUGIN_SOURCES EXCLUDE REGEX "/\\._[^/]+\\.cpp$")
 
 # compile to a shared library
 add_library(${PLUGIN_NAME}_lib SHARED ${PLUGIN_SOURCES})
@@ -42,6 +47,10 @@ endif()
 set(PLUGIN_STAGING_DIR "${CMAKE_SOURCE_DIR}/build_out/.${PLUGIN_NAME}")
 set(PLUGIN_PACKAGE_OUTPUT "${CMAKE_SOURCE_DIR}/build_out/${PLUGIN_NAME}.plugin")
 
+# Re-run POST_BUILD packaging when only the plugin UI template changes.
+set_property(TARGET ${PLUGIN_NAME}_lib APPEND PROPERTY LINK_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/config_template.json.in")
+
 add_custom_command(TARGET ${PLUGIN_NAME}_lib POST_BUILD
     COMMAND "${CMAKE_COMMAND}"
             -DPLUGIN_NAME=${PLUGIN_NAME}
@@ -50,6 +59,7 @@ add_custom_command(TARGET ${PLUGIN_NAME}_lib POST_BUILD
             -DPACKAGE_OUTPUT=${PLUGIN_PACKAGE_OUTPUT}
             -DSTAGING_DIR=${PLUGIN_STAGING_DIR}
             -DPLUGIN_RESOURCE_DIRS=${PLUGIN_RESOURCE_DIRS}
+            -DPLUGIN_CONFIG_TEMPLATE=${CMAKE_CURRENT_SOURCE_DIR}/config_template.json.in
             -DGENERATE_CONFIG_SCRIPT=${CMAKE_CURRENT_SOURCE_DIR}/../generate_config.cmake
             -P "${CMAKE_CURRENT_SOURCE_DIR}/../package_plugin.cmake"
     VERBATIM

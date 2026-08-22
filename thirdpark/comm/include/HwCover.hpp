@@ -6,6 +6,8 @@
 #include <type_traits>
 #include <vector>
 
+#include "ResizeOptions.hpp"
+
 // // key points
 // struct YPoint {
 //     float x;
@@ -117,5 +119,11 @@ private:
 	std::pair<double, double> transformPointInverse(double x, double y) const;
 	cv::Rect_<float>		  transformRectInverse(const cv::Rect_<float>& rc) const;
 };
+
+// Shared automatic resize transform used by AX, AXCL and RK preprocessing.
+void CalculateTransformMatrices(
+	int srcWidth, int srcHeight, int dstWidth, int dstHeight,
+	TransformMatrices& tm,
+	const ResizeOptions& options = ResizeOptions{});
 
 #endif

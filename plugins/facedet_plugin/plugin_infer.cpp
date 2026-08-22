@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept>
 #include <string>
 
 #include "JdkFaceDetectNode.hpp"
@@ -12,23 +13,9 @@
 namespace {
 std::string select_model_path(const nlohmann::json& config, const PluginRuntime& runtime) {
 	if (runtime.is_rk_local()) {
-		const auto rk_model = jp(config, "model_path_rk", std::string{});
-		if (!rk_model.empty())
-			return rk_model;
-
-		const auto generic_model = jp(config, "model_path", std::string{});
-		if (generic_model.size() >= 5 && generic_model.compare(generic_model.size() - 5, 5, ".rknn") == 0)
-			return generic_model;
-
-		if (!generic_model.empty()) {
-			std::cerr << "[FaceDet] runtime rk.local ignores non-RKNN model_path=" << generic_model
-					  << "; use model_path_rk for a board-specific .rknn model" << std::endl;
-		}
-		return "./models/yolov5n-face_rk3588.rknn";
+		return PluginRuntime::require_model_file_with_extension(config, ".rknn");
 	}
-
-	const auto ax_model = jp(config, "model_path_ax", std::string{});
-	return ax_model.empty() ? jp(config, "model_path", "./models/yolov5n-face.axmodel") : ax_model;
+	return PluginRuntime::require_model_file_with_extension(config, ".axmodel");
 }
 }  // namespace
 
@@ -42,9 +29,8 @@ extern "C" void plugin_init(SDKInterface* sdk) {
 
 	sdk->register_node(PLUGIN_NODE_NAME, [](const std::string& name, const nlohmann::json& config) {
 		const auto runtime = PluginRuntime::from_task_config(config);
-		// Keep the display threshold consistent with the detector's default
-		// confidence threshold. Missing UI state must not hide post-NMS faces.
-		const float threshold = std::clamp(jp(config, "threshold", 0.45f), 0.05f, 0.95f);
+		// "threshold" remains a compatibility fallback for existing tasks.
+		const float threshold = std::clamp(jp(config, "face_threshold", jp(config, "threshold", 0.45f)), 0.05f, 0.95f);
 		const auto model_path = select_model_path(config, runtime);
 		return jdk_nodes::jdk_node_wrapper::create(
 			name,
@@ -54,7 +40,11 @@ extern "C" void plugin_init(SDKInterface* sdk) {
 				threshold,
 				runtime,
 				jp(config, "task_id", "0"),
-				std::clamp(jp(config, "osd_label_score_step", 5), 0, 100)));
+				std::clamp(jp(config, "osd_label_score_step", 5), 0, 100),
+				std::clamp(jp(config, "confirm_frames", 3), 1, 120),
+				std::clamp(jp(config, "track_iou", 0.30f), 0.05f, 0.95f),
+				std::clamp(jp(config, "track_max_missed", 30), 1, 600),
+				std::clamp(jp(config, "alarm_push_interval_ms", 10000), 1000, 600000)));
 		;
 	});
 }

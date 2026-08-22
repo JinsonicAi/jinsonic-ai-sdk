@@ -28,32 +28,20 @@ NetServerNode::NetServerNode(std::string node_name, PluginRuntime runtime, int c
 	  runtime_(std::move(runtime)) {
 	consumer_id_ = node_name;
 	if (rtsp_enable_) {
-		rtsp_ = std::make_shared<RTSPServer>("ch1", device_id_, rtsp_port_, VideoCodecType::H264, user_, pass_);
-		// rtsp_ready_ = rtsp_ && rtsp_->init();
-		// if (rtsp_ready_) {
-		// 	rtsp_url_ = rtsp_->rtsp_url();
-		// } else {
-		// 	std::cerr << "[NetServerNode] RTSP init failed, disable RTSP push. task=" << task_id_
-		// 			  << " node=" << consumer_id_ << " port=" << rtsp_port_ << std::endl;
-		// 	if (rtsp_) {
-		// 		rtsp_->deinit();
-		// 		rtsp_.reset();
-		// 	}
-		// }
+		rtsp_		= std::make_shared<RTSPServer>("ch1", device_id_, rtsp_port_, VideoCodecType::H264, user_, pass_);
+		rtsp_ready_ = rtsp_ && rtsp_->is_ready();
+		if (!rtsp_ready_) {
+			if (rtsp_) {
+				rtsp_->deinit();
+				rtsp_.reset();
+			}
+			throw std::runtime_error(
+				"RTSP server failed to listen on allocated port " + std::to_string(rtsp_port_));
+		}
 	}
-	// register_task_rtsp_output(task_id_.c_str(), consumer_id_.c_str(), rtsp_url_.c_str(), "H264", rtsp_port_);
-	// reporter_.set_output_rtsp_config({task_id_,
-	// 								  PLUGIN_NODE_NAME,
-	// 								  rtsp_url_.empty() ? "N/A" : rtsp_url_,
-	// 								  "H264"});
-	const std::string rtsp_url = (rtsp_enable_ && rtsp_) ? rtsp_->rtsp_url() : "";
+	refresh_rtsp_urls(true);
 	printf("NetServerNode constructed! task=%s node=%s rtsp_enable=%d rtsp_port=%d rtsp_url=%s BUILD TIME: %s %s\n",
-		   task_id_.c_str(), consumer_id_.c_str(), rtsp_enable_, rtsp_port_, rtsp_url.c_str(), __DATE__, __TIME__);
-	register_task_rtsp_output(task_id_.c_str(), consumer_id_.c_str(), rtsp_url.c_str(), "H264", rtsp_port_);
-	reporter_.set_output_rtsp_config({task_id_,
-									  PLUGIN_NODE_NAME,
-									  rtsp_url.empty() ? "N/A" : rtsp_url,
-									  "H264"});
+		   task_id_.c_str(), consumer_id_.c_str(), rtsp_enable_, rtsp_port_, rtsp_url_.c_str(), __DATE__, __TIME__);
 	fmt::print("✅ NetServerNode constructed! BUILD TIME: {} {}\n", __DATE__, __TIME__);
 }
 
@@ -67,9 +55,10 @@ void NetServerNode::stop() {
 	set_alive(false);
 	unregister_task_rtsp_output(task_id_.c_str(), consumer_id_.c_str());
 	fmt::print("rtsp_ stop ...\n");
-	// rtsp_ready_ = false;
-	// rtsp_send_error_logged_ = false;
+	rtsp_ready_				= false;
+	rtsp_send_error_logged_ = false;
 	rtsp_url_.clear();
+	rtsp_urls_.clear();
 	if (rtsp_) {
 		rtsp_->deinit();
 		rtsp_.reset();
@@ -77,6 +66,34 @@ void NetServerNode::stop() {
 	fmt::print("task encoder unsubscribe ...\n");
 	unsubscribe_task_encoder(task_id_, consumer_id_);
 	fmt::print("✅ NetServerNode stop ok!\n");
+}
+
+void NetServerNode::refresh_rtsp_urls(bool force) {
+	const auto now = std::chrono::steady_clock::now();
+	if (!force && last_rtsp_url_refresh_.time_since_epoch().count() != 0 &&
+		now - last_rtsp_url_refresh_ < std::chrono::seconds(5)) {
+		return;
+	}
+	last_rtsp_url_refresh_ = now;
+
+	std::vector<std::string> urls;
+	if (rtsp_enable_ && rtsp_ready_ && rtsp_ && rtsp_->is_ready())
+		urls = rtsp_->rtsp_urls();
+	const std::string primary = urls.empty() ? std::string() : urls.front();
+	if (!force && urls == rtsp_urls_ && primary == rtsp_url_)
+		return;
+
+	rtsp_urls_ = std::move(urls);
+	rtsp_url_  = primary;
+	register_task_rtsp_output(task_id_.c_str(), consumer_id_.c_str(),
+							  rtsp_url_.c_str(), "H264", rtsp_port_);
+	const std::string urls_json = nlohmann::json(rtsp_urls_).dump();
+	register_task_rtsp_output_urls(task_id_.c_str(), consumer_id_.c_str(),
+								   urls_json.c_str());
+	reporter_.set_output_rtsp_config({task_id_,
+									  PLUGIN_NODE_NAME,
+									  rtsp_url_.empty() ? "N/A" : rtsp_url_,
+									  "H264"});
 }
 static uint32_t getTimestamp() {
 	struct timeval tv = {0};
@@ -108,17 +125,18 @@ std::shared_ptr<jdk_objects::jdk_meta> NetServerNode::handle_frame_meta(std::sha
 		fmt::print("NetServerNode is not alive, skipping frame_meta handling.\n");
 		return nullptr;
 	}
+	refresh_rtsp_urls(false);
 
 	////////////////////////
 	TaskEncodeRequest req;
 	req.device_id = device_id_;
 	// Use task-assigned channel as encoder group to avoid cross-topology mismatch.
-	req.group		   = channel_id_;
-	req.channel		   = channel_id_;
-	req.rtsp_port	   = rtsp_port_;
-	req.queue_capacity = encode_queue_capacity_;
+	req.group			 = channel_id_;
+	req.channel			 = channel_id_;
+	req.rtsp_port		 = rtsp_port_;
+	req.queue_capacity	 = encode_queue_capacity_;
 	req.runtime_location = runtime_.location;
-	auto encoded_frame = get_task_encoded_frame(task_id_, consumer_id_, frame, req);
+	auto encoded_frame	 = get_task_encoded_frame(task_id_, consumer_id_, frame, req);
 	if (!encoded_frame) {
 		fmt::print("get_task_encoded_frame failed, skipping frame_meta handling.\n");
 		return jdk_node_base::handle_frame_meta(meta);
@@ -130,10 +148,10 @@ std::shared_ptr<jdk_objects::jdk_meta> NetServerNode::handle_frame_meta(std::sha
 		fprintf(stderr, "❌ dump_frame is nullptr or getPviraddr() failed!");
 		return jdk_node_base::handle_frame_meta(meta);
 	}
-	size_t		   sz	= dump_frame->size();
-	uint8_t*	   data = reinterpret_cast<uint8_t*>(dump_frame->getPviraddr());
+	size_t	 sz	  = dump_frame->size();
+	uint8_t* data = reinterpret_cast<uint8_t*>(dump_frame->getPviraddr());
 	if (sz > 0 && sz < MAX_FRAME_SIZE) {
-		if (rtsp_enable_ && /*rtsp_ready_ &&*/ rtsp_) {
+		if (rtsp_enable_ && rtsp_ready_ && rtsp_ && rtsp_->is_ready()) {
 			AX_U64 pts = frame->pts;
 			rtsp_->send_nalu(data, static_cast<int>(sz), pts);
 			// if (int ret = rtsp_->send_nalu(data, static_cast<int>(sz), pts);0 != ret) {
@@ -157,7 +175,11 @@ std::shared_ptr<jdk_objects::jdk_meta> NetServerNode::handle_frame_meta(std::sha
 		Frame.size			 = sz;
 		Frame.frameData		 = data;
 		Frame.presentationTs = getTimestamp();
-		SdkWriteVideoFrame(task_id_.data(), &Frame);
+		// Each preview session is named after its task ID. Broadcasting here makes
+		// every task's encoded frame enter every active preview channel.
+		SdkWriteVideoFrame(task_id_.c_str(), &Frame);
+
+		// SdkWriteVideoFrame(task_id_.c_str(), &Frame);
 	} else {
 		fprintf(stderr, "❌ Encoded frame size %zu exceeds MAX_FRAME_SIZE %d, dropping frame!\n", sz, MAX_FRAME_SIZE);
 	}

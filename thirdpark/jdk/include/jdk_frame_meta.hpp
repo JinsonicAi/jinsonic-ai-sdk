@@ -31,6 +31,11 @@
  * ##########################################
  */
 namespace jdk_objects {
+enum class AlarmDeliveryMode {
+	PeriodicState,
+	ImmediateEvent,
+};
+
 enum class MetaType {
 	CamFrame,
 	ImageFrame,
@@ -50,17 +55,28 @@ struct ResultEntry {
 	AlarmFn					  alarm_fn;
 	bool					  push_enabled{false};
 	int						  push_interval_ms{0};
+	AlarmDeliveryMode		  alarm_delivery_mode{AlarmDeliveryMode::PeriodicState};
+
+	// Multiple output nodes may inspect the same entry. Cache the callback result
+	// so a consuming AlarmFn is evaluated once for this frame entry.
+	std::pair<nlohmann::json, std::vector<std::function<std::shared_ptr<AXVideoFrame>()>>>
+	evaluate_alarm_once(const std::any& value) {
+		std::call_once(alarm_cache_->once, [&] { alarm_cache_->value = alarm_fn(value); });
+		return alarm_cache_->value;
+	}
 
 	ResultEntry(std::shared_ptr<std::any> r,
 				RenderFn				  render,
 				AlarmFn					  alarm,
 				bool					  push,
-				int						  interval) noexcept
+				int						  interval,
+				AlarmDeliveryMode		  delivery_mode = AlarmDeliveryMode::PeriodicState) noexcept
 		: result(std::move(r)),
 		  render_fn(std::move(render)),
 		  alarm_fn(std::move(alarm)),
 		  push_enabled(push),
-		  push_interval_ms(interval) {}
+		  push_interval_ms(interval),
+		  alarm_delivery_mode(delivery_mode) {}
 
 	/* values are forbidden to copy to prevent destruction errors after shallow copying */
 	ResultEntry(const ResultEntry&)			   = delete;
@@ -68,6 +84,13 @@ struct ResultEntry {
 	/*movement is allowed */
 	ResultEntry(ResultEntry&&)			  = default;
 	ResultEntry& operator=(ResultEntry&&) = default;
+
+private:
+	struct AlarmCache {
+		std::once_flag once;
+		std::pair<nlohmann::json, std::vector<std::function<std::shared_ptr<AXVideoFrame>()>>> value{};
+	};
+	std::shared_ptr<AlarmCache> alarm_cache_{std::make_shared<AlarmCache>()};
 };
 
 template <class T>
@@ -118,9 +141,6 @@ private:
 public:
 	jdk_frame_meta(/*cv::Mat frame*/ std::shared_ptr<AXVideoFrame> frame, int frame_index = -1, int channel_index = -1, int original_width = 0, int original_height = 0, int fps = 0, uint64_t pts = 0, MetaType type = MetaType::FileFrame);
 	~jdk_frame_meta();
-
-	// define copy constructor since we need deep copy operation.
-	// jdk_frame_meta(const jdk_frame_meta& meta);
 
 	// frame the meta belongs to, filled by src nodes.
 	int frame_index;

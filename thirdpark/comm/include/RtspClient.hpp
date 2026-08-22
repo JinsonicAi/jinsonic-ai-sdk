@@ -44,6 +44,7 @@ struct EncodedAU {
 	int			   height	= 0;
 	int64_t		   pts		= AV_NOPTS_VALUE;
 	AVRational	   time_base{1, 1000};
+	int			   fps = 0;
 };
 
 /** streaming type only outputs complete au encoded frames does not decode */

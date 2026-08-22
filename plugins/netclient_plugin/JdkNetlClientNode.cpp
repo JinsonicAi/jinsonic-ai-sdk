@@ -6,6 +6,7 @@
 #include <ctime>
 
 #include "jdk_control_meta.hpp"
+#include "json_utils.hpp"
 #include "post_node_info.h"
 
 namespace jdk_nodes {
@@ -17,7 +18,7 @@ NetClientNode::NetClientNode(std::string node_name, std::string rtsp_url, Plugin
 							 int group, int channel, stream_info info,
 							 std::string task_id, std::string task_name,
 							 nlohmann::json schedule_config)
-	: rtsp_url_(rtsp_url),
+	: rtsp_url_(json_utils::trim_ascii_copy(rtsp_url)),
 	  device_id_(runtime.runtime_device_id),
 	  group_(group),
 	  channel_id_(channel),

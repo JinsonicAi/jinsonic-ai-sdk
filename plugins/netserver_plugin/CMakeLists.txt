@@ -1,4 +1,4 @@
-# netclient_plugin/CMakeLists.txt
+# netserver_plugin/CMakeLists.txt
 
 # extract the plugin name（the last leg of the path）
 get_filename_component(PLUGIN_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
@@ -7,7 +7,10 @@ string(REGEX REPLACE "_plugin$" "" PLUGIN_NAME ${PLUGIN_NAME})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PLUGIN_OUTPUT_DIR})
 
 # plug in source files
-file(GLOB PLUGIN_SOURCES *.cpp)
+file(GLOB PLUGIN_SOURCES CONFIGURE_DEPENDS *.cpp)
+# macOS resource-fork sidecars can appear on the Linux build share.  They are
+# metadata, not C++ translation units, and must never enter a release plugin.
+list(FILTER PLUGIN_SOURCES EXCLUDE REGEX "/\\._[^/]*\\.cpp$")
 
 # compile to a shared library
 add_library(${PLUGIN_NAME}_lib SHARED ${PLUGIN_SOURCES})
@@ -22,9 +25,24 @@ if(DEFINED ENV{ENABLE_ASAN})
 endif()
 
 # links to public libraries defined by the parent directory
+set(NET_SERVER_DIR "${CMAKE_SOURCE_DIR}/../../net_server")
+find_library(NET_SERVER_LIBRARY
+    NAMES net_server
+    PATHS "${NET_SERVER_DIR}"
+    NO_DEFAULT_PATH
+)
+if(NOT NET_SERVER_LIBRARY)
+    message(FATAL_ERROR
+        "libnet_server.so was not found. Build ${NET_SERVER_DIR} first.")
+endif()
+
 target_link_libraries(${PLUGIN_NAME}_lib PRIVATE 
-${PLUGIN_COMMON_LIBS} 
-# NetClient
+${PLUGIN_COMMON_LIBS}
+${NET_SERVER_LIBRARY}
+)
+set_target_properties(${PLUGIN_NAME}_lib PROPERTIES
+    BUILD_RPATH "$ORIGIN;${NET_SERVER_DIR}"
+    INSTALL_RPATH "$ORIGIN"
 )
 # define the plug in name macro for plugin_infer.cpp use
 target_compile_definitions(${PLUGIN_NAME}_lib PRIVATE PLUGIN_NODE_NAME="${PLUGIN_NAME}")
@@ -41,6 +59,10 @@ endif()
 
 set(PLUGIN_STAGING_DIR "${CMAKE_SOURCE_DIR}/build_out/.${PLUGIN_NAME}")
 set(PLUGIN_PACKAGE_OUTPUT "${CMAKE_SOURCE_DIR}/build_out/${PLUGIN_NAME}.plugin")
+
+# Re-run POST_BUILD packaging when only the plugin UI template changes.
+set_property(TARGET ${PLUGIN_NAME}_lib APPEND PROPERTY LINK_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/config_template.json.in")
 
 add_custom_command(TARGET ${PLUGIN_NAME}_lib POST_BUILD
     COMMAND "${CMAKE_COMMAND}"

@@ -98,6 +98,26 @@ typedef struct __SdkCallback {
     void (*OnSignalingMessage)(const char* session_id, const uint8_t* buffer, const uint32_t size, void* context);
 } SdkCallback, *PSdkCallback;
 
+// Per-message DataChannel send feedback. The fixed-size C ABI lets callers
+// implement adaptive application framing without depending on KVS/usrsctp
+// implementation details.
+typedef enum {
+    SDK_DATA_SEND_OK = 0,
+    SDK_DATA_SEND_INVALID_ARGUMENT = 1,
+    SDK_DATA_SEND_SESSION_UNAVAILABLE = 2,
+    SDK_DATA_SEND_CHANNEL_UNAVAILABLE = 3,
+    SDK_DATA_SEND_TRANSPORT_ERROR = 4
+} SDK_DATA_SEND_STATUS;
+
+typedef struct __SdkDataChannelSendResult {
+    uint32_t structSize;
+    uint32_t status;
+    uint32_t attempts;
+    uint32_t waitedMs;
+    uint32_t transportStatus;
+    uint32_t reserved[3];
+} SdkDataChannelSendResult, *PSdkDataChannelSendResult;
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 LOONG_RTC_SDK_API bool SdkInit(PSdkConfig config, PSdkCallback call_back, void* context);
@@ -117,6 +137,11 @@ LOONG_RTC_SDK_API bool SdkSessionCreate(const char* target_id, SDK_SESSION_TYPE 
                                         char* out_session_id, uint32_t* inout_len);
 LOONG_RTC_SDK_API void SdkSessionClose(const char* session_id);
 LOONG_RTC_SDK_API void SdkSessionSend(const char* session_id, const char* channel, const uint8_t* buffer, const uint32_t size);
+// Sends one DataChannel message and reports native SCTP backpressure. The
+// legacy SdkSessionSend API remains available and ABI-compatible.
+LOONG_RTC_SDK_API bool SdkSessionSendWithResult(const char* session_id, const char* channel,
+                                                const uint8_t* buffer, const uint32_t size,
+                                                PSdkDataChannelSendResult result);
 
 LOONG_RTC_SDK_API void SdkWriteVideoFrame(const char* session_id, PSdkFrame frame);
 LOONG_RTC_SDK_API void SdkWriteVideoFrameToAll(PSdkFrame frame);  // 向所有活跃的视频通道发送视频帧
@@ -130,6 +155,10 @@ LOONG_RTC_SDK_API void SdkGetOnlineCount(uint32_t* count);
 LOONG_RTC_SDK_API void SdkGetVersionTag(char* out_tag, uint32_t max_len);
 LOONG_RTC_SDK_API void SdkSetFrameSize(const char* session_id, uint32_t width, uint32_t height);
 LOONG_RTC_SDK_API void SdkGetConnectionType(const char* session_id, char* out_type, uint32_t max_len);
+// 只读：查询指定 session 当前是否仍可达（任一信令实例持有其控制/媒体通道）。
+// 返回 true 表示可安全向其发送；false 表示已断开/被 ICE 清理，不应再发送。
+// 纯只读，不改变任何连接状态。session_id 为空返回 false。
+LOONG_RTC_SDK_API bool SdkIsSessionAvailable(const char* session_id);
 LOONG_RTC_SDK_API void SdkSetH265Sprop(const char* vps_b64, const char* sps_b64, const char* pps_b64);
 
 LOONG_RTC_SDK_API void SdkSendCustomMessage(const char* session_id, const uint8_t* buffer, const uint32_t size);

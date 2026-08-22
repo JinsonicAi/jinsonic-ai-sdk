@@ -7,10 +7,27 @@
 #include <optional>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <type_traits>
 
 // rmwei add .
 namespace json_utils {
+
+inline bool is_ascii_whitespace(unsigned char c) noexcept {
+	return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f' || c == '\v';
+}
+
+inline std::string trim_ascii_copy(std::string_view raw) {
+	size_t begin = 0;
+	size_t end = raw.size();
+	while (begin < end && is_ascii_whitespace(static_cast<unsigned char>(raw[begin]))) {
+		++begin;
+	}
+	while (end > begin && is_ascii_whitespace(static_cast<unsigned char>(raw[end - 1]))) {
+		--end;
+	}
+	return std::string(raw.substr(begin, end - begin));
+}
 /*
 // bool
 bool enabled = jp(j, "/params/enabled", false);     // true
@@ -204,6 +221,10 @@ inline std::string jp(const nlohmann::json& j, const char* path, const char (&de
 }
 inline std::string jp(const nlohmann::json& j, const char* path, std::string_view def) {
 	return jp<std::string>(j, path, std::string(def));
+}
+
+inline std::string jp_trimmed(const nlohmann::json& j, const char* path, std::string_view def = {}) {
+	return trim_ascii_copy(jp<std::string>(j, path, std::string(def)));
 }
 
 // abbreviation optional

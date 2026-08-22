@@ -25,14 +25,6 @@ std::vector<std::vector<cv::Point>> getRegions(const std::string task_id);
 std::vector<std::vector<cv::Point>> getRegionShapes(const std::string task_id);
 std::string							get_protocol_runtime_config_json(const std::string& key);
 
-// P2P transport APIs — called by p2p_plugin to send video frames.
-// P2PManager (in TaskManager) handles session management, subscription, and PPCS SDK.
-// The plugin node only needs to call p2p_send_video_frame() per encoded frame.
-void p2p_send_video_frame(const std::string& task_id, bool is_keyframe, const uint8_t* data, size_t size, uint32_t timestamp);
-void p2p_send_audio_frame(const uint8_t* data, size_t size, uint32_t timestamp);
-bool p2p_is_initialized();
-int	 p2p_get_active_session_count();
-
 int insert_device_message_item(const char* did,
 							   const char* name,
 							   const char* type,
@@ -83,6 +75,10 @@ int publish_media_event(const MediaEventC* event);
 // Consumers can query by task_id; return value is the bytes required including trailing '\0'.
 // If buf is null or buf_size is too small, the required size is still returned and buf is untouched/truncated safely.
 void register_task_rtsp_output(const char* task_id, const char* node_id, const char* url, const char* codec, int rtsp_port);
+// Update all client-facing URLs for a wildcard-bound RTSP output.
+// urls_json must be a JSON string array. The legacy single URL remains the
+// primary address for older plugins and web clients.
+void register_task_rtsp_output_urls(const char* task_id, const char* node_id, const char* urls_json);
 void unregister_task_rtsp_output(const char* task_id, const char* node_id);
 int get_task_media_context_json(const char* task_id, char* buf, int buf_size);
 

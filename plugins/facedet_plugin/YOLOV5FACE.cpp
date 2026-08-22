@@ -1,4 +1,6 @@
 // #include <opencv2/opencv.hpp>
+#include <array>
+#include <atomic>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
@@ -31,7 +33,15 @@ public:
 						 const std::string type, const std::string& model_name, int device_id) {
 		device_id_ = device_id;
 		infer_type_ = type;
-		return InferenceEngine::startup(make_tuple(file, type), device_id, model_name);
+		if (!InferenceEngine::startup(make_tuple(file, type), device_id, model_name)) {
+			return false;
+		}
+		// startup() completes before the Infer is published. Constructing HwIvps
+		// here avoids racing lazy initialization when several tasks submit to the
+		// same Infer concurrently.
+		ivps_ = std::make_shared<HwIvps>(
+			device_id_, 0, 0, infer_type_ == "rk" ? "rk.local" : "");
+		return true;
 	}
 	virtual bool	 pre_process(Job& job, const std::any& input) override;
 	virtual std::any post_process(const Job& job) override;
@@ -54,8 +64,7 @@ public:
 
 private:
 	// AffineMatrix<FaceBox>	affine;
-	std::shared_ptr<HwIvps> ipvs	   = nullptr;
-	TransformMatrices		tm_		   = {0};
+	std::shared_ptr<HwIvps> ivps_   = nullptr;
 	int						device_id_ = -1;
 	std::string					infer_type_{};
 
@@ -68,10 +77,15 @@ private:
 /*-----------------------------------------------------------------*/
 
 bool OjbInfer::pre_process(Job& job, const std::any& input) {
-	if (ipvs == nullptr) {
-		ipvs = std::make_shared<HwIvps>(device_id_, 0, 0, infer_type_ == "rk" ? "rk.local" : "");
-	}
 	auto tensor = engine->inputs[0];
+	auto attach_identity_transform = [&job, &tensor]() {
+		TransformMatrices transform{};
+		const int width = tensor->GetWidth();
+		const int height = tensor->GetHeight();
+		CalculateTransformMatrices(width, height, width, height, transform,
+			ResizeOptions{ResizeMode::Stretch});
+		job.output = transform;
+	};
 
 	// STG/时序等非图像模型直接提交连续 FP32 特征。input_attr.type 来自
 	// .rknn 模型本身且只读；vector<float> 则声明本次 rknn_input.type 为
@@ -84,6 +98,7 @@ bool OjbInfer::pre_process(Job& job, const std::any& input) {
 			return false;
 		}
 		job.input = std::move(tensor_input);
+		attach_identity_transform();
 		return true;
 	}
 	if (input.type() == typeid(std::vector<float>)) {
@@ -93,6 +108,7 @@ bool OjbInfer::pre_process(Job& job, const std::any& input) {
 			return false;
 		}
 		job.input = TensorInput::fromVector(std::move(values), TensorLayout::Model, false);
+		attach_identity_transform();
 		return true;
 	}
 	int width = tensor->GetWidth();
@@ -103,21 +119,22 @@ bool OjbInfer::pre_process(Job& job, const std::any& input) {
 		return false;
 	}
 
-	auto dstDewarpFrame = ipvs->HwIvpsDewarp(frame->raw(), {width, height}, tm_);
-	if (!dstDewarpFrame) {
-		std::cerr << "[FaceDet] resize/letterbox failed\n";
+	const auto prepared = ivps_->PreprocessForInference(frame, {
+		{width, height},
+		AX_FORMAT_RGB888,
+		ResizeOptions{},
+		IVPS_ENGINE_ID_AUTO,
+		IVPS_ENGINE_ID_AUTO,
+	});
+	if (!prepared) {
+		std::cerr << "[FaceDet] common IVPS preprocessing failed\n";
 		return false;
 	}
-	// Keep the same RGB frame contract as AX/AXCL; RkPlugin owns backend packing.
-	auto RgbFrame = ipvs->HwIvpsCsc(dstDewarpFrame->raw(), AX_FORMAT_RGB888);
-	if (!RgbFrame) {
-		std::cerr << "[FaceDet] NV12 color conversion failed\n";
-		return false;
-	}
+	const auto& RgbFrame = prepared.frame;
+	const auto& transform = prepared.transform;
 	if (std::getenv("AIBOX_DUMP_PREPROCESS")) {
-		static int dump_count = 0;
-		if(dump_count == 0){
-			dstDewarpFrame->save_data("frame_416x416_nv12_Dewarp.yuv");
+		static std::atomic_flag dumped = ATOMIC_FLAG_INIT;
+		if (!dumped.test_and_set(std::memory_order_relaxed)) {
 			RgbFrame->save_data("frame_416x416_rgb.rgb");
 			if (infer_type_ == "rk") {
 				auto host_rgb = RgbFrame->toHost();
@@ -128,7 +145,6 @@ bool OjbInfer::pre_process(Job& job, const std::any& input) {
 					cv::imwrite("frame_416x416_rgb.jpg", bgr);
 				}
 			}
-			dump_count++;
 		}
 	}
 	if (infer_type_ == "rk" && std::getenv("AIBOX_YOLO_FP32_INPUT")) {
@@ -149,6 +165,7 @@ bool OjbInfer::pre_process(Job& job, const std::any& input) {
 		cv::Mat fp32(height, width, CV_32FC3, input_data);
 		rgb.convertTo(fp32, CV_32FC3);  // values remain 0..255
 		job.input.reset();
+		job.output = transform;
 		return true;
 	}
 	if (infer_type_ == "rk") {
@@ -159,14 +176,17 @@ bool OjbInfer::pre_process(Job& job, const std::any& input) {
 			return false;
 		}
 		job.input = RgbFrame;
+		job.output = transform;
 		return true;
 	}
 
-	auto inputFrame = std::make_shared<AXVideoFrame>(
-		width, height, -1, width * height * 3 * static_cast<int>(sizeof(float)));
-	if (!jdk_plugin::frame_has_host_memory(inputFrame, tensor->bytes()) || inputFrame->size() != tensor->bytes()) {
-		std::cerr << "Invalid input frame buffer, data=" << inputFrame->getPviraddr()
-				  << ", frame_bytes=" << inputFrame->size()
+	// This is a numeric CPU staging tensor, not a video frame. Keep it in
+	// job-owned host memory so its lifetime is independent of AX media pools
+	// across task stop/start. TensorInput remains valid until CopyToDevice has
+	// consumed the job and works identically for AX, AXCL and RK backends.
+	std::vector<float> input_values(static_cast<size_t>(tensor->GetElementNum()));
+	if (input_values.size() * sizeof(float) != static_cast<size_t>(tensor->bytes())) {
+		std::cerr << "Invalid input tensor buffer, elements=" << input_values.size()
 				  << ", tensor_bytes=" << tensor->bytes() << std::endl;
 		return false;
 	}
@@ -182,10 +202,11 @@ bool OjbInfer::pre_process(Job& job, const std::any& input) {
 	for (int i = 0; i < Fp32Image.channels(); ++i) {
 		auto index = 2 - i;
 		channels[i] = cv::Mat(height, width, CV_32F,
-			static_cast<float*>(inputFrame->getPviraddr()) + index * Fp32Image.total());
+			input_values.data() + index * Fp32Image.total());
 	}
 	cv::split(Fp32Image, channels);
-	job.input = inputFrame;
+	job.input = TensorInput::fromVector(std::move(input_values), TensorLayout::NCHW, false);
+	job.output = transform;
 	return true;
 }
 
@@ -215,7 +236,8 @@ void calculate_landmarks(float** ptrs, int index, int stride, int j, int i, floa
 	}
 }
 
-void decode(float* ptr, int fea_w, int fea_h, int stride, std::vector<int> anchor, Objects& prebox, float threshold) {
+void decode(float* ptr, int fea_w, int fea_h, int stride,
+			const std::array<int, 6>& anchor, Objects& prebox, float threshold) {
 	float dthreshold   = desigmoid(threshold);
 	int	  spacial_size = fea_w * fea_h;
 	for (int c = 0; c < anchor.size() / 2; c++) {
@@ -244,16 +266,15 @@ void decode(float* ptr, int fea_w, int fea_h, int stride, std::vector<int> ancho
 }
 
 std::any OjbInfer::post_process(const Job& job) {
-	// DEBUG
-	// without grid
-	std::vector<int> anchor0 = {4, 5, 8, 10, 13, 16};
-	std::vector<int> anchor1 = {23, 29, 43, 55, 73, 105};
-	std::vector<int> anchor2 = {146, 217, 231, 300, 335, 433};
-
-	std::vector<std::vector<int>> anchor;
-	anchor.push_back(anchor0);
-	anchor.push_back(anchor1);
-	anchor.push_back(anchor2);
+	static constexpr std::array<std::array<int, 6>, 3> anchors{{
+		{{4, 5, 8, 10, 13, 16}},
+		{{23, 29, 43, 55, 73, 105}},
+		{{146, 217, 231, 300, 335, 433}},
+	}};
+	const auto* transform = std::any_cast<TransformMatrices>(&job.output);
+	if (!transform) {
+		throw std::runtime_error("[FaceDet] missing per-job transform metadata");
+	}
 
 	Objects bboxes;
 	for (auto& tensor : engine->outputs) {
@@ -264,7 +285,12 @@ std::any OjbInfer::post_process(const Job& job) {
 		int width		 = tensor->GetWidth();
 		int stride		 = input_height / height;
 		// printf("[%d,%d,%d,%d],stride:%d\r\n", batch, channel, height, width, stride);
-		decode(tensor->host<float>(), width, height, stride, anchor[&tensor - &engine->outputs[0]], bboxes, confThreshold_);
+		const size_t output_index = static_cast<size_t>(&tensor - &engine->outputs[0]);
+		if (output_index >= anchors.size()) {
+			throw std::runtime_error("[FaceDet] unexpected number of output heads");
+		}
+		decode(tensor->host<float>(), width, height, stride,
+			anchors[output_index], bboxes, confThreshold_);
 	}
 	const bool dump_boxes = std::getenv("AIBOX_FACEDET_DUMP_BOXES") != nullptr;
 	if (dump_boxes) {
@@ -301,7 +327,7 @@ std::any OjbInfer::post_process(const Job& job) {
 					continue;
 				auto& ibox = src_box[i];
 				// box_result.emplace_back(affine.inv(ibox));
-				box_result.emplace_back(tm_.inv(ibox));
+				box_result.emplace_back(transform->inv(ibox));
 				for (int j = i + 1; j < src_box.size(); ++j) {
 					if (remove_flags[j])
 						continue;
