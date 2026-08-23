@@ -176,8 +176,6 @@ private:
 	std::shared_ptr<HwCapture> hostCapture_;
 };
 
-inline ax_npu_affinity_e random_npu1_affinity();
-
 std::string frameToBase64(std::shared_ptr<AXVideoFrame> frame /*jpeg*/);
 
 // Internal hand-off between algorithm plugins and alarm_plugin. The marker is
@@ -242,6 +240,5 @@ bool isRectInAnyRegion(const cv::Rect &rect, const std::vector<std::vector<cv::P
 
 // int		   alg_init(ax_algorithm_handle_t &handle, ax_model_type_e model_type, std::string model_path, int device_id);
 // int		   alg_deinit(ax_algorithm_handle_t &handle);
-ax_image_t frame2image(std::shared_ptr<AXVideoFrame> frame, ax_color_space_e type = ax_color_space_nv12);
 // int		   alg_track(std::shared_ptr<AXVideoFrame> frame, ax_algorithm_handle_t &handle, ax_result_t &result, int device_id);
 // int		   alg_detect(std::shared_ptr<AXVideoFrame> frame, ax_algorithm_handle_t &handle, ax_result_t &result, float feature[512], int device_id);
