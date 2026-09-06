@@ -4,6 +4,7 @@
 
 | 资料 | 用途 |
 |---|---|
+| [OpenAPI 客户示例 1.4.9（Python / Node.js / curl）](../../assets/downloads/aibox-openapi-examples-1.4.9.zip) | 自助领取 Client 凭据、连接、任务、事件与录像；[上手步骤](openapi-examples.md)、[SHA-256](../../assets/downloads/aibox-openapi-examples-1.4.9.zip.sha256)、[验证范围](openapi-validation.md) |
 | [中文用户使用手册 PDF](../../assets/downloads/USER_MANUAL_ZH.pdf) | 面向终端用户和运维人员的离线操作手册 |
 | [英文用户使用手册 PDF](../../assets/downloads/USER_MANUAL_EN.pdf) | 英文离线操作手册 |
 | [平台设备对接协议规范 V1.0.2](../../assets/downloads/platform-device-integration-protocol-v1.0.2.docx) | 设备与平台对接、事件上报、抓拍上报协议 |

@@ -3,17 +3,22 @@
 | Document property | Value |
 |---|---|
 | Document title | AIBox Third-Party OpenAPI Integration Protocol |
-| Document version | `1.4.5` |
+| Document version | `1.4.9` |
 | Protocol version | `OpenAPI v1` |
-| Release date | `2026-08-03` |
+| Release date | `2026-09-06` |
 | Intended audience | Third-party platforms and customer-developed web/server applications |
-| Chinese version | [AIBox 第三方开放 API 对接协议](../../zh/reference/openapi-protocol.md) |
+| Chinese version | [AIBOX_OPENAPI_INTEGRATION_PROTOCOL_ZH.md](../../zh/reference/openapi-protocol.md) |
 
 ## Revision History
 
 | Version | Date | Summary |
 |---|---|---|
+| `1.4.9` | `2026-09-06` | Document bounded WSS error handling/retries and legacy certificate compatibility; business APIs unchanged |
+| `1.4.8` | `2026-09-06` | Add only self-service Client provisioning and password-change invalidation; existing Client Credentials/business APIs unchanged |
+| `1.4.6` | `2026-09-06` | Added runnable Python/Node.js/curl customer examples; corrected the input field to rtsp_url; preserved the graph in the task-update example; documented validation and delivery boundaries. No business protocol changes. |
 | `1.4.5` | `2026-08-03` | Completed all 18 realtime event contracts, token/WSS renewal, event recovery and subscription renewal, capability boundaries, idempotency/operation retention, and the customer acceptance checklist. |
+
+> **Run before referencing the tables:** the [customer onboarding kit](openapi-examples.md) (runnable Python/Node.js/curl code) covers authentication, WSS, task lifecycle, events, recording downloads and parameter recipes for all 65 URIs. See the [delivery checklist](openapi-examples.md#acceptance). Isolated test results do not certify the customer's device or video pipeline.
 
 > **Public boundary:** This document only defines how a customer connects to a device, sends requests, and processes responses. AIBox internal web APIs, databases, and plugin files are not part of the public contract.
 
@@ -67,12 +72,30 @@ A customer-developed browser must not store `client_secret`. The browser should 
 
 Device-direct HTTPS does not promise arbitrary browser CORS access. A customer web application should call its own BFF, which calls the device OpenAPI. If a browser must establish a device WSS directly, its `Origin` must be same-origin with the device or included in an exact `scheme://host:port` allowlist configured by the delivery team. `*` is prohibited. The certificate must be trusted by the browser and cover the actual hostname or IP used to connect.
 
-The delivery team provisions separate credentials for every third-party system:
+Each third-party system uses separate credentials:
 
 ```text
 client_id     Public identifier, for example aibc_xxx
 client_secret Confidential secret, for example aibsk_xxx; displayed once
 ```
+
+**Customers can obtain the pair using the device web-login username and password.** Send the new `/openapi/v1/clients/bootstrap` command to HTTPS `POST /openapi/v1/command` and read `result.client_id` and `result.client_secret`. The existing `auth/token` exchange and business APIs are unchanged; there is no separate account-token mode. Administrator `clients/create` remains available; `clients/get/list` never returns an original secret.
+
+#### 1.1.1 Self-service credentials (first use or after a password change)
+
+API index: `POST /openapi/v1/clients/bootstrap`. This is a Command URI; the actual HTTP endpoint remains `/openapi/v1/command`.
+
+Do not send `X-Access-Token`:
+
+```json
+{"uri":"/openapi/v1/clients/bootstrap","request_id":"bootstrap-unique-001","param":{"username":"<web account>","password":"<actual password>","display_name":"customer-platform","scopes":["device.read","task.read"]}}
+```
+
+Success has `code=0` and Client metadata plus `client_id`, `client_secret`, and `secret_returned_once:true`; it does not issue an access token. `display_name` is optional. Omitted `scopes` uses the account's allowed business scopes; explicit least privilege is recommended. Scope escalation and credential-management authority are not permitted. Runnable Python/Node.js/curl programs are in the [onboarding guide](openapi-examples.md).
+
+A committed web-password change, account deletion/recreation, or scope change invalidates all self-service credentials derived from that account and their tokens. **Changing back to the old password does not reactivate them.** Obtain a new pair with the current password. Subsequent WSS messages, heartbeats and event delivery reject the old identity; reconnect with a new Token/Ticket and resume the persisted cursor. Already accepted operations are not automatically canceled. Independently administrator-provisioned clients are unaffected by unrelated account changes.
+
+The same account and `request_id` issues a secret once only; duplicates return `40901 / CLIENT_SECRET_ALREADY_ISSUED`, never the secret. Reconcile a lost response by request ID rather than creating clients in a retry loop. Limits: 16 enabled self-service clients per current account generation and 4096 self-service records per device; exceeding either returns `40901 / ACCOUNT_CLIENT_LIMIT`. Invalid password: `40101`; scope denied: `40301`; rate limit: `42901`; temporarily unreadable store: `50301` (fail closed, without permanent revocation). Credentials belong only in the HTTPS POST JSON body, never URLs or logs.
 
 `client_secret` is used only to obtain a short-lived access token. It must not appear in a URL, browser bundle, or ordinary log.
 
@@ -419,7 +442,7 @@ The returned `schema` describes what the current device software actually suppor
           "node_type": "netclient",
           "category": "custom-input",
           "node_schema_version": 1,
-          "config": {"url": "rtsp://192.168.1.20/live"}
+          "config": {"rtsp_url": "rtsp://192.168.1.20/live"}
         }
       ],
       "edges": []
@@ -446,7 +469,7 @@ The successful response contains the complete task with `revision=1`:
         "node_type": "netclient",
         "category": "custom-input",
         "node_schema_version": 1,
-        "config": {"url": "rtsp://192.168.1.20/live"}
+        "config": {"rtsp_url": "rtsp://192.168.1.20/live"}
       }
     ],
     "edges": []
@@ -470,14 +493,22 @@ Read the latest task and `revision` with `tasks/get`, modify the complete object
       "task_name": "Entrance Detection - Updated",
       "schema_version": 1,
       "runtime_location": "local",
-      "nodes": [],
+      "nodes": [
+        {
+          "node_id": "input-1",
+          "node_type": "netclient",
+          "category": "custom-input",
+          "node_schema_version": 1,
+          "config": {"rtsp_url": "rtsp://192.168.1.20/live"}
+        }
+      ],
       "edges": []
     }
   }
 }
 ```
 
-`tasks/save` replaces the complete task; it is not a partial Patch. A revision conflict returns:
+`tasks/save` replaces the complete task; it is not a partial Patch. This example preserves the node from Section 5.2. In real integrations, copy all nodes, edges and configurations returned by `tasks/get` before editing; empty arrays do not mean "unchanged". A revision conflict returns:
 
 ```json
 {
@@ -846,7 +877,7 @@ The Ticket is valid for at most five minutes. Request a new one after expiry; ne
 
 ## 8. API Reference
 
-The current implementation exposes `64` Command URIs. Sections 8.1–8.7 are quick indexes; Sections 8.8–8.17 define the shared models and every individual API.
+The current implementation exposes `65` Command URIs. Sections 8.1–8.7 are quick indexes; Sections 8.8–8.17 define the shared models and every individual API.
 
 In the index tables, `param` means request parameters, `result` lists the principal success fields, and `?` means optional. In each API card, `POST /openapi/v1/...` is shorthand for the Command URI. The actual HTTPS path is always `/openapi/v1/command`; WSS places the same URI in a `type=request` message.
 
@@ -959,12 +990,15 @@ For `retrieval/query`, `top_k` is 1–200 and `media_scope` is `all`, `image`, o
 
 ### 8.7 Client Credential Administration (Delivery Team Only)
 
-Third-party customers normally do not call these APIs. A delivery administrator uses a management token with `openapi.clients.manage` to create, rotate, or disable customer credentials.
+Exception: `clients/bootstrap` lets customers provision their own credentials with their device web username and password, without a management Token; see 1.1.1. Existing administration APIs and permission boundaries remain unchanged.
 
-`openapi.clients.manage` and wildcard `*` are reserved for trusted local administrators and cannot be stored in third-party Client `scopes[]`. The server also rejects every `token_use=openapi_client` token on these APIs, even if an older database contains a mistaken Scope assignment.
+Apart from self-service provisioning, third-party customers normally do not call these administration APIs. A delivery administrator uses a management token with `openapi.clients.manage` to create, rotate, or disable customer credentials.
+
+`openapi.clients.manage` and wildcard `*` are reserved for trusted local administrators and cannot be stored in third-party Client `scopes[]`. The server also rejects every `token_use=openapi_client` token on the existing administration APIs below, even if an older database contains a mistaken Scope assignment. Bootstrap authenticates the web credentials; a Token cannot replace the password.
 
 | URI | param | result |
 |---|---|---|
+| `/openapi/v1/clients/bootstrap` | `username`, `password`, `display_name?`, `scopes?`; HTTPS POST, no management Token | Client and one-time `client_secret`; see 1.1.1 |
 | `/openapi/v1/clients/create` | `display_name`, `scopes[]` | Client and one-time `client_secret` |
 | `/openapi/v1/clients/list` | `{}` | `items`, `total`; no secret |
 | `/openapi/v1/clients/get` | `client_id` | Client; no secret |

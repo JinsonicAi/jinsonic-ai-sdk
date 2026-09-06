@@ -3,17 +3,22 @@
 | 文档属性 | 内容 |
 |---|---|
 | 文档名称 | AIBox 第三方开放 API 对接协议 |
-| 文档版本 | `1.4.5` |
+| 文档版本 | `1.4.9` |
 | 协议版本 | `OpenAPI v1` |
-| 发布日期 | `2026-08-03` |
+| 发布日期 | `2026-09-06` |
 | 适用对象 | 第三方平台、客户自研 Web/服务端应用 |
-| English version | [AIBox Third-Party OpenAPI Integration Protocol](../../en/reference/openapi-protocol.md) |
+| English version | [AIBOX_OPENAPI_INTEGRATION_PROTOCOL_EN.md](../../en/reference/openapi-protocol.md) |
 
 ## 修订记录
 
 | 版本 | 日期 | 变更摘要 |
 |---|---|---|
+| `1.4.9` | `2026-09-06` | 补充客户 WSS 错误帧处理、有限退避及历史证书兼容说明；业务接口不变 |
+| `1.4.8` | `2026-09-06` | 仅补用户名密码自助领取 Client 凭据和改密失效；保留原 Client Credentials 与业务协议 |
+| `1.4.6` | `2026-09-06` | 增加 Python/Node.js/curl 客户可运行示例；修正拉流参数为 rtsp_url；修改任务示例保留原图，补充测试与交付边界；业务协议未改变 |
 | `1.4.5` | `2026-08-03` | 补全 18 个实时事件契约、Token/WSS 续期、事件补偿与订阅续期、能力边界、幂等/Operation 保留期及客户验收清单 |
+
+> **先运行再查表**：[客户示例入门手册](openapi-examples.md) 提供 Python、Node.js 和 curl 调用代码，覆盖首次鉴权、WSS、任务闭环、事件、录像及 65 个接口参数模板。另见 [交付验收清单](openapi-examples.md#acceptance)。隔离测试通过不等于客户设备和视频链路已验收。
 
 > **开放边界**：本文只说明客户如何连接设备、发送请求和处理响应。AIBox 内部网页接口、数据库和插件文件不属于开放协议。
 
@@ -67,12 +72,30 @@ X-Access-Token: <access_token>
 
 设备直连 HTTPS 不承诺支持任意浏览器跨域调用。客户网页应请求自己的 BFF，再由 BFF 调用设备 OpenAPI。确需浏览器直接建立设备 WSS 时，浏览器 `Origin` 必须与设备同源，或由交付方在设备配置中加入精确的 `scheme://host:port` 白名单；禁止配置 `*`。设备证书必须被浏览器信任，并覆盖实际访问域名或 IP。
 
-交付方会为每个第三方系统单独提供：
+每个第三方系统使用独立的凭据：
 
 ```text
 client_id     公开标识，例如 aibc_xxx
 client_secret 私密密钥，例如 aibsk_xxx，仅展示一次
 ```
+
+**可直接用设备网页登录用户名和密码自助领取。** 通过 HTTPS `POST /openapi/v1/command` 调用新增的 `/openapi/v1/clients/bootstrap`，从 `result.client_id`、`result.client_secret` 获取凭据。原有 `auth/token` 换 Token 和后续业务接口不变；不增加另一套账号 Token 模式。原管理员 `clients/create` 入口继续保留，`clients/get/list` 不返回原密钥。
+
+#### 1.1.1 自助领取（仅首次或改密后）
+
+接口索引：`POST /openapi/v1/clients/bootstrap`。这是 Command URI；实际 HTTP 请求仍发到 `/openapi/v1/command`。
+
+不带 `X-Access-Token`，请求示例：
+
+```json
+{"uri":"/openapi/v1/clients/bootstrap","request_id":"bootstrap-unique-001","param":{"username":"<网页账号>","password":"<原始密码>","display_name":"客户平台","scopes":["device.read","task.read"]}}
+```
+
+成功 `code=0`，`result` 包含 `client_id`、`client_secret`、`secret_returned_once:true` 和 Client 元数据，不包含 Access Token。`display_name` 可省略；`scopes` 可省略（使用该账号允许的业务 Scope），建议明确申请最小权限，不能申请超出账号授权或密钥管理权限。完整 Python/Node.js/curl 程序见[领取示例](openapi-examples.md#credentials)。
+
+修改网页密码、账号删除/重建或权限变化，会使该账号自助领取的旧 Client 凭据及派生 Token 失效，**改回旧密码也不能复活**。必须用新密码重新领取；WSS 后续收发/心跳不再接受旧身份，重连时按持久化游标补偿。已经接受的业务操作不因此自动取消。原独立管理员 Client 不受无关账号改密影响。
+
+同账号同 `request_id` 仅签发一次；重复返回 `40901 / CLIENT_SECRET_ALREADY_ISSUED`，不会重发 Secret。响应丢失应凭请求 ID 核查，不要自动循环新建。每账号当前版本最多 16 个启用自助 Client、设备最多 4096 条自助记录，超限 `40901 / ACCOUNT_CLIENT_LIMIT`。错误密码 `40101`，越权 `40301`，限流 `42901`，存储暂不可读 `50301`（拒绝访问但不误撤销凭据）。用户名/密码只放 HTTPS POST JSON，不放 URL 或日志。
 
 `client_secret` 只用于换取短期 Access Token，不得放入 URL、网页前端代码或普通日志。
 
@@ -435,7 +458,7 @@ WSS 约束与关闭语义：
           "node_type": "netclient",
           "category": "custom-input",
           "node_schema_version": 1,
-          "config": {"url": "rtsp://192.168.1.20/live"}
+          "config": {"rtsp_url": "rtsp://192.168.1.20/live"}
         }
       ],
       "edges": []
@@ -462,7 +485,7 @@ WSS 约束与关闭语义：
         "node_type": "netclient",
         "category": "custom-input",
         "node_schema_version": 1,
-        "config": {"url": "rtsp://192.168.1.20/live"}
+        "config": {"rtsp_url": "rtsp://192.168.1.20/live"}
       }
     ],
     "edges": []
@@ -486,14 +509,22 @@ WSS 约束与关闭语义：
       "task_name": "入口检测-更新",
       "schema_version": 1,
       "runtime_location": "local",
-      "nodes": [],
+      "nodes": [
+        {
+          "node_id": "input-1",
+          "node_type": "netclient",
+          "category": "custom-input",
+          "node_schema_version": 1,
+          "config": {"rtsp_url": "rtsp://192.168.1.20/live"}
+        }
+      ],
       "edges": []
     }
   }
 }
 ```
 
-`tasks/save` 是完整替换，不是局部 Patch。版本冲突返回：
+`tasks/save` 是完整替换，不是局部 Patch。上例保留第 5.2 节的原节点；实际调用必须复制 `tasks/get` 返回的完整节点、连线和配置后修改，不能用空数组表示“没有修改节点”。版本冲突返回：
 
 ```json
 {
@@ -884,7 +915,7 @@ Ticket 最长有效 5 分钟。过期后重新申请，不得长期缓存。
 
 ## 8. API 参考
 
-当前实现共开放 `64` 个 URI（其中任务启动、停止由同一注册器动态生成）。8.1～8.7 提供快速索引，8.8～8.17 给出数据模型和逐接口说明。
+当前实现共开放 `65` 个 URI（其中任务启动、停止由同一注册器动态生成）。8.1～8.7 提供快速索引，8.8～8.17 给出数据模型和逐接口说明。
 
 表中 `param` 是请求参数，`result` 是成功响应的主要字段。`?` 表示可选。
 
@@ -999,12 +1030,15 @@ Face 请求对象：
 
 ### 8.7 客户端密钥管理（交付方使用）
 
-第三方客户通常不调用本组接口。交付方使用具有 `openapi.clients.manage` Scope 的管理 Token 创建、轮换或禁用客户凭证。
+例外：新增 `clients/bootstrap` 是客户凭网页账号密码调用的自助领取入口，不需要管理 Token，详见 1.1.1。以下原有管理接口和权限边界保持不变。
 
-`openapi.clients.manage` 和通配符 `*` 是本地交付管理员的保留权限，不能写入第三方客户端的 `scopes[]`。服务端同时禁止任何 `token_use=openapi_client` 的 Token 调用本组接口；即使旧版本数据库中存在误配 Scope，也不会放行。
+除自助领取外，第三方客户通常不调用本组管理接口。交付方使用具有 `openapi.clients.manage` Scope 的管理 Token 创建、轮换或禁用客户凭证。
+
+`openapi.clients.manage` 和通配符 `*` 是本地交付管理员的保留权限，不能写入第三方客户端的 `scopes[]`。服务端同时禁止任何 `token_use=openapi_client` 的 Token 调用以下原有管理接口；即使旧版本数据库中存在误配 Scope，也不会放行。自助领取只验证网页账号密码，不接受此 Token 代替密码。
 
 | URI | param | result |
 |---|---|---|
+| `/openapi/v1/clients/bootstrap` | `username`、`password`、`display_name?`、`scopes?`；HTTPS POST、无需管理 Token | Client 和仅返回一次的 `client_secret`，详见 1.1.1 |
 | `/openapi/v1/clients/create` | `display_name`、`scopes[]` | Client 和只返回一次的 `client_secret` |
 | `/openapi/v1/clients/list` | `{}` | `items`、`total`，不返回密钥 |
 | `/openapi/v1/clients/get` | `client_id` | Client，不返回密钥 |

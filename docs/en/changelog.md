@@ -7,6 +7,12 @@ This page records the main changes of the documentation site and the SDK.
 
 ## Documentation Site
 
+### 2026-09-06 (OpenAPI documentation and examples 1.4.9)
+
+- Updated the [protocol](reference/openapi-protocol.md) with web-account Client provisioning, preserving existing Client Credentials / Token / business APIs.
+- Added [bilingual onboarding](reference/openapi-examples.md), Python / Node.js / curl ZIP downloads and SHA-256.
+- Documented password revocation, one-time Secrets, bounded WSS retries, certificate requirements and [validation limits](reference/openapi-validation.md).
+
 ### 2026-07 (content optimization)
 
 - Homepage redesign: role-based card navigation, architecture diagram, and doc map.

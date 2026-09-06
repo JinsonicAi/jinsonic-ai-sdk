@@ -114,6 +114,8 @@ nav:
       - 设备开箱与快速上手: zh/device-onboarding.md
       - SDK 开发指南: zh/sdk-guide.md
       - OpenAPI 对接协议: zh/reference/openapi-protocol.md
+      - OpenAPI 调用示例: zh/reference/openapi-examples.md
+      - OpenAPI 验证记录: zh/reference/openapi-validation.md
       - Web 用户使用手册: zh/user-manual/index.md
       - 运行位置与部署: zh/runtime-location.md
       - 插件开发: zh/plugin-development.md
@@ -133,6 +135,8 @@ nav:
       - Device Onboarding & Quick Start: en/device-onboarding.md
       - SDK Development Guide: en/sdk-guide.md
       - OpenAPI Integration Protocol: en/reference/openapi-protocol.md
+      - OpenAPI Customer Examples: en/reference/openapi-examples.md
+      - OpenAPI Validation: en/reference/openapi-validation.md
       - Web User Manual: en/user-manual/index.md
       - Runtime Location and Deployment: en/runtime-location.md
       - Plugin Development: en/plugin-development.md
