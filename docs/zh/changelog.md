@@ -10,8 +10,8 @@
 ### 2026-09-06（OpenAPI 文档与示例 1.4.9）
 
 - [协议](reference/openapi-protocol.md)同步用户名密码自助领取 Client 凭据，后续仍使用原 Client Credentials / Token / 业务接口。
-- 增加[中英文调用步骤](reference/openapi-examples.md)和 Python / Node.js / curl 示例 ZIP 下载及 SHA-256。
-- 明确改密失效、Secret 只返回一次、WSS 有限退避、证书要求及[已验证/未覆盖边界](reference/openapi-validation.md)。
+- 在协议正文提供 Python / Node.js / curl 示例 ZIP 下载及 SHA-256，逐步调用说明随包提供。
+- 明确改密失效、Secret 只返回一次、WSS 有限退避及证书要求；OpenAPI 导航统一保留对接协议。
 
 ### 2026-07（内容优化）
 

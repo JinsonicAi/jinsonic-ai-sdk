@@ -18,7 +18,7 @@
 | `1.4.6` | `2026-09-06` | Added runnable Python/Node.js/curl customer examples; corrected the input field to rtsp_url; preserved the graph in the task-update example; documented validation and delivery boundaries. No business protocol changes. |
 | `1.4.5` | `2026-08-03` | Completed all 18 realtime event contracts, token/WSS renewal, event recovery and subscription renewal, capability boundaries, idempotency/operation retention, and the customer acceptance checklist. |
 
-> **Run before referencing the tables:** the [customer onboarding kit](openapi-examples.md) (runnable Python/Node.js/curl code) covers authentication, WSS, task lifecycle, events, recording downloads and parameter recipes for all 65 URIs. See the [delivery checklist](openapi-examples.md#acceptance). Isolated test results do not certify the customer's device or video pipeline.
+> **Download the examples:** [Python / Node.js / curl example package 1.4.9](../../assets/downloads/aibox-openapi-examples-1.4.9.zip) ([SHA-256 checksum](../../assets/downloads/aibox-openapi-examples-1.4.9.zip.sha256)). The included `TaskManager/examples/openapi/README.md` provides step-by-step instructions for obtaining credentials, connecting, creating/updating/starting/stopping tasks, processing events and downloading recordings.
 
 > **Public boundary:** This document only defines how a customer connects to a device, sends requests, and processes responses. AIBox internal web APIs, databases, and plugin files are not part of the public contract.
 
@@ -91,7 +91,7 @@ Do not send `X-Access-Token`:
 {"uri":"/openapi/v1/clients/bootstrap","request_id":"bootstrap-unique-001","param":{"username":"<web account>","password":"<actual password>","display_name":"customer-platform","scopes":["device.read","task.read"]}}
 ```
 
-Success has `code=0` and Client metadata plus `client_id`, `client_secret`, and `secret_returned_once:true`; it does not issue an access token. `display_name` is optional. Omitted `scopes` uses the account's allowed business scopes; explicit least privilege is recommended. Scope escalation and credential-management authority are not permitted. Runnable Python/Node.js/curl programs are in the [onboarding guide](openapi-examples.md).
+Success has `code=0` and Client metadata plus `client_id`, `client_secret`, and `secret_returned_once:true`; it does not issue an access token. `display_name` is optional. Omitted `scopes` uses the account's allowed business scopes; explicit least privilege is recommended. Scope escalation and credential-management authority are not permitted. Runnable Python/Node.js/curl provisioning programs and instructions are in the README included in the [example package](../../assets/downloads/aibox-openapi-examples-1.4.9.zip).
 
 A committed web-password change, account deletion/recreation, or scope change invalidates all self-service credentials derived from that account and their tokens. **Changing back to the old password does not reactivate them.** Obtain a new pair with the current password. Subsequent WSS messages, heartbeats and event delivery reject the old identity; reconnect with a new Token/Ticket and resume the persisted cursor. Already accepted operations are not automatically canceled. Independently administrator-provisioned clients are unaffected by unrelated account changes.
 

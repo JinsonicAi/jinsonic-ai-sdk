@@ -18,7 +18,7 @@
 | `1.4.6` | `2026-09-06` | 增加 Python/Node.js/curl 客户可运行示例；修正拉流参数为 rtsp_url；修改任务示例保留原图，补充测试与交付边界；业务协议未改变 |
 | `1.4.5` | `2026-08-03` | 补全 18 个实时事件契约、Token/WSS 续期、事件补偿与订阅续期、能力边界、幂等/Operation 保留期及客户验收清单 |
 
-> **先运行再查表**：[客户示例入门手册](openapi-examples.md) 提供 Python、Node.js 和 curl 调用代码，覆盖首次鉴权、WSS、任务闭环、事件、录像及 65 个接口参数模板。另见 [交付验收清单](openapi-examples.md#acceptance)。隔离测试通过不等于客户设备和视频链路已验收。
+> **调用示例下载**：[Python / Node.js / curl 示例包 1.4.9](../../assets/downloads/aibox-openapi-examples-1.4.9.zip)（[SHA-256 校验文件](../../assets/downloads/aibox-openapi-examples-1.4.9.zip.sha256)）。包内 `TaskManager/examples/openapi/README.md` 提供逐步操作说明，覆盖凭据领取、首次连接、任务创建/修改/启停、事件和录像下载。
 
 > **开放边界**：本文只说明客户如何连接设备、发送请求和处理响应。AIBox 内部网页接口、数据库和插件文件不属于开放协议。
 
@@ -91,7 +91,7 @@ client_secret 私密密钥，例如 aibsk_xxx，仅展示一次
 {"uri":"/openapi/v1/clients/bootstrap","request_id":"bootstrap-unique-001","param":{"username":"<网页账号>","password":"<原始密码>","display_name":"客户平台","scopes":["device.read","task.read"]}}
 ```
 
-成功 `code=0`，`result` 包含 `client_id`、`client_secret`、`secret_returned_once:true` 和 Client 元数据，不包含 Access Token。`display_name` 可省略；`scopes` 可省略（使用该账号允许的业务 Scope），建议明确申请最小权限，不能申请超出账号授权或密钥管理权限。完整 Python/Node.js/curl 程序见[领取示例](openapi-examples.md#credentials)。
+成功 `code=0`，`result` 包含 `client_id`、`client_secret`、`secret_returned_once:true` 和 Client 元数据，不包含 Access Token。`display_name` 可省略；`scopes` 可省略（使用该账号允许的业务 Scope），建议明确申请最小权限，不能申请超出账号授权或密钥管理权限。完整 Python/Node.js/curl 领取程序及使用步骤见[示例包](../../assets/downloads/aibox-openapi-examples-1.4.9.zip)内的 README。
 
 修改网页密码、账号删除/重建或权限变化，会使该账号自助领取的旧 Client 凭据及派生 Token 失效，**改回旧密码也不能复活**。必须用新密码重新领取；WSS 后续收发/心跳不再接受旧身份，重连时按持久化游标补偿。已经接受的业务操作不因此自动取消。原独立管理员 Client 不受无关账号改密影响。
 
