@@ -18,6 +18,8 @@ It is not a single-algorithm demo, but a deliverable, extensible, and maintainab
 [:material-book-open-variant: SDK Development Guide](sdk-guide.md){ .md-button }
 [:material-translate: 中文](../index.md){ .md-button }
 
+[:material-robot: Illustrated AI Assistant Guide](ai-assistant/index.md){ .md-button }
+
 </div>
 
 ## Choose an Entry Point by Role

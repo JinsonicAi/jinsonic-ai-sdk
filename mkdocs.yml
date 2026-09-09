@@ -112,6 +112,7 @@ nav:
   - 中文文档:
       - 快速开始: zh/quickstart.md
       - 设备开箱与快速上手: zh/device-onboarding.md
+      - AI 助手使用说明: zh/ai-assistant/index.md
       - SDK 开发指南: zh/sdk-guide.md
       - OpenAPI 对接协议: zh/reference/openapi-protocol.md
       - Web 用户使用手册: zh/user-manual/index.md
@@ -132,6 +133,7 @@ nav:
       - Home: en/index.md
       - Quick Start: en/quickstart.md
       - Device Onboarding & Quick Start: en/device-onboarding.md
+      - AI Assistant User Guide: en/ai-assistant/index.md
       - SDK Development Guide: en/sdk-guide.md
       - OpenAPI Integration Protocol: en/reference/openapi-protocol.md
       - Web User Manual: en/user-manual/index.md

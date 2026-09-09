@@ -1,5 +1,8 @@
 # AI-BOX Edge Box Management Platform — User Manual (English)
 
+!!! tip "Illustrated AI assistant guide"
+    For conversational task creation and management, alarm, log and recording queries, see the [AI Assistant User Guide](../ai-assistant/index.md), including step-by-step screenshots and model-service settings.
+
 !!! tip "Manage devices through the cloud"
     For cloud configuration, one-time device claiming, remote tasks, live monitoring, and alarm handling, see the [Cloud Management Platform Guide](../cloud-platform/index.md).
 
@@ -983,7 +986,6 @@ Best for evaluating a scene directly from a natural-language description. The fl
 
 ---
 
-
 ## 16. Intelligent Retrieval Usage
 
 This chapter only explains how customers can use Intelligent Retrieval in the web UI.
@@ -1033,7 +1035,6 @@ Intelligent Retrieval supports:
 | Video results look similar | Open the original video and check by time point |
 
 ---
-
 
 ## 17. Settings & System Management
 

@@ -18,6 +18,8 @@ AIBox SDK 面向园区、工厂、社区、门店、交通、仓储和安防等�
 [:material-book-open-variant: SDK 开发指南](zh/sdk-guide.md){ .md-button }
 [:material-translate: English](en/index.md){ .md-button }
 
+[:material-robot: AI 助手图文使用说明](zh/ai-assistant/index.md){ .md-button }
+
 </div>
 
 ## 按角色选择入口
