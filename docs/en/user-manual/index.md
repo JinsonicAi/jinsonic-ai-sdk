@@ -1,5 +1,8 @@
 # AI-BOX Edge Box Management Platform — User Manual (English)
 
+!!! tip "Manage devices through the cloud"
+    For cloud configuration, one-time device claiming, remote tasks, live monitoring, and alarm handling, see the [Cloud Management Platform Guide](../cloud-platform/index.md).
+
 > Version: 1.2 | Document Type: User Guide | Audience: End Users, Operations Staff
 
 !!! tip "First time unboxing?"
