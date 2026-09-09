@@ -4,6 +4,9 @@
 
 #include <chrono>
 #include <ctime>
+#include <algorithm>
+#include <mutex>
+#include <vector>
 
 #include "jdk_control_meta.hpp"
 #include "json_utils.hpp"
@@ -11,34 +14,55 @@
 
 namespace jdk_nodes {
 
+namespace {
+std::mutex g_netclient_instances_mu;
+std::vector<NetClientNode*> g_netclient_instances;
+}
+
 // ---------------------------------------------------------------------------
 // Constructor / Destructor
 // ---------------------------------------------------------------------------
 NetClientNode::NetClientNode(std::string node_name, std::string rtsp_url, PluginRuntime runtime,
 							 int group, int channel, stream_info info,
 							 std::string task_id, std::string task_name,
-							 nlohmann::json schedule_config)
-	: rtsp_url_(json_utils::trim_ascii_copy(rtsp_url)),
-	  device_id_(runtime.runtime_device_id),
+							 nlohmann::json schedule_config,
+							 bool allow_shared_decode)
+	: task_id_(std::move(task_id)),
+	  task_name_(std::move(task_name)),
+	  runtime_(std::move(runtime)),
+	  device_id_(runtime_.runtime_device_id),
 	  group_(group),
 	  channel_id_(channel),
+	  rtsp_url_(json_utils::trim_ascii_copy(rtsp_url)),
 	  info_(info),
-	  task_id_(task_id),
-	  task_name_(task_name),
-	  runtime_(std::move(runtime)),
+	  allow_shared_decode_(allow_shared_decode),
 	  schedule_config_(std::move(schedule_config)) {
 	fmt::print("NetClientNode::NetClientNode:device_id_:{}, group_:{}, channel_id_:{} runtime:{}\n",
 			   device_id_, group_, channel_id_, runtime_.location);
+	if (runtime_.is_rk_local() && !allow_shared_decode_) {
+		fmt::print("[SharedDecodeHub] disabled for mutable inplace task={} source={}\n",
+			task_id_, rtsp_url_);
+	}
 	reporter_.set_input_rtsp_config({task_id_, PLUGIN_NODE_NAME, rtsp_url_});
 
 	if (!schedule_config_.empty()) {
 		fmt::print("[Schedule] config loaded: {}\n", schedule_config_.dump());
+	}
+	{
+		std::lock_guard<std::mutex> lk(g_netclient_instances_mu);
+		g_netclient_instances.push_back(this);
 	}
 
 	fmt::print("✅ NetClientNode constructed! BUILD TIME: {} {}\n", __DATE__, __TIME__);
 }
 
 NetClientNode::~NetClientNode() {
+	{
+		std::lock_guard<std::mutex> lk(g_netclient_instances_mu);
+		g_netclient_instances.erase(
+			std::remove(g_netclient_instances.begin(), g_netclient_instances.end(), this),
+			g_netclient_instances.end());
+	}
 	stop_schedule_checker();
 	gate_open();
 	stop();
@@ -53,6 +77,8 @@ void NetClientNode::stop() {
 	set_alive(false);
 	// wake up main loop if it's in schedule pause
 	schedule_paused_.store(false);
+	maintenance_paused_.store(false, std::memory_order_release);
+	maintenance_quiesced_.store(false, std::memory_order_release);
 	stop_schedule_checker();
 	// important: do not call net_client->stop() while holding mutex_ (may block), else deadlock
 	std::shared_ptr<NetClient> local;
@@ -65,6 +91,44 @@ void NetClientNode::stop() {
 		local->stop();
 	}
 	fmt::print("✅ NetClientNode stop ok!\n");
+}
+
+bool NetClientNode::is_effectively_paused() const noexcept {
+	return schedule_paused_.load(std::memory_order_acquire) ||
+		maintenance_paused_.load(std::memory_order_acquire);
+}
+
+int NetClientNode::set_upgrade_maintenance_paused(bool paused, int timeout_ms) {
+	std::unique_lock<std::mutex> instances_lock(g_netclient_instances_mu);
+	const int instance_count = static_cast<int>(g_netclient_instances.size());
+	for (auto* instance : g_netclient_instances) {
+		if (!instance) continue;
+		instance->maintenance_quiesced_.store(false, std::memory_order_release);
+		instance->maintenance_paused_.store(paused, std::memory_order_release);
+	}
+	if (!paused || instance_count == 0) return instance_count;
+
+	const auto deadline = std::chrono::steady_clock::now() +
+		std::chrono::milliseconds(std::max(1000, timeout_ms));
+	while (std::chrono::steady_clock::now() < deadline) {
+		bool all_quiesced = true;
+		for (auto* instance : g_netclient_instances) {
+			if (instance && !instance->maintenance_quiesced_.load(std::memory_order_acquire)) {
+				all_quiesced = false;
+				break;
+			}
+		}
+		if (all_quiesced) {
+			fmt::print("[OTA][NetClient] maintenance pause acknowledged instances={}\n",
+				instance_count);
+			return instance_count;
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+	}
+	fmt::print(stderr,
+		"[OTA][NetClient] maintenance pause timed out instances={} timeout_ms={}\n",
+		instance_count, timeout_ms);
+	return -1;
 }
 
 // ---------------------------------------------------------------------------
@@ -331,14 +395,15 @@ void NetClientNode::handle_run(std::stop_token stoken) {
 
 	{
 		std::lock_guard<std::mutex> lk(mutex_);
-		net_client = std::make_shared<NetClient>(device_id_, group_, channel_id_, info_, task_name_);
+		net_client = std::make_shared<NetClient>(
+			device_id_, group_, channel_id_, info_, task_name_, allow_shared_decode_);
 		net_client->set_runtime_location(runtime_.location);
 	}
 
 	while (!stoken.stop_requested() && is_alive()) {
 		gate_knock();
 		// ---- time-based control pause check ----
-		if (schedule_paused_.load()) {
+		if (is_effectively_paused()) {
 			if (!pause_drain_sent) {
 				pend_meta(std::make_shared<jdk_objects::jdk_control_meta>(
 					jdk_objects::jdk_control_type::PIPELINE_DRAIN, channel_id_));
@@ -357,14 +422,23 @@ void NetClientNode::handle_run(std::stop_token stoken) {
 				rtsp_init_ = false;
 				fmt::print("[Schedule] ⏸ RTSP disconnected for schedule pause\n");
 			}
+			maintenance_quiesced_.store(
+				maintenance_paused_.load(std::memory_order_acquire),
+				std::memory_order_release);
 
 			// sleep and wait for resume: poll with 1s granularity to ensure fast exit on stop
 			// report PAUSED status every 5s to maintain heartbeat and prevent timeout
 			int pausedTick = 0;
-			while (schedule_paused_.load() && !stoken.stop_requested() && is_alive()) {
+			while (is_effectively_paused() && !stoken.stop_requested() && is_alive()) {
+				maintenance_quiesced_.store(
+					maintenance_paused_.load(std::memory_order_acquire),
+					std::memory_order_release);
 				if ((pausedTick % 5) == 0) {
 					set_input_rtsp_info(task_id_.c_str(), rtsp_url_.c_str(),
-										"PAUSED", "schedule", 0);
+										"PAUSED",
+										maintenance_paused_.load(std::memory_order_acquire)
+											? "upgrade-maintenance" : "schedule",
+										0);
 				}
 				pausedTick++;
 				std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -374,10 +448,12 @@ void NetClientNode::handle_run(std::stop_token stoken) {
 
 			// resume: rebuild NetClient instance
 			fmt::print("[Schedule] ▶ RTSP resuming from schedule pause\n");
+			maintenance_quiesced_.store(false, std::memory_order_release);
 			pause_drain_sent = false;
 			{
 				std::lock_guard<std::mutex> lk(mutex_);
-				net_client = std::make_shared<NetClient>(device_id_, group_, channel_id_, info_, task_name_);
+				net_client = std::make_shared<NetClient>(
+					device_id_, group_, channel_id_, info_, task_name_, allow_shared_decode_);
 				net_client->set_runtime_location(runtime_.location);
 			}
 			continue;  // go back to loop top, re-initialize RTSP lazily

@@ -18,6 +18,21 @@
 #include "PluginFrameUtils.hpp"
 #include "YOLOV5FACE.hpp"
 
+namespace {
+// AX/RK RGB stride is in pixels. Validate the actual accessed span before
+// passing it to OpenCV; row padding must never be interpreted as image pixels.
+size_t host_rgb_step(const std::shared_ptr<AXVideoFrame>& frame, int width, int height) {
+	if (!frame || !frame->raw() || width <= 0 || height <= 0 ||
+		width > 8192 || height > 8192 || frame->raw()->enImgFormat != AX_FORMAT_RGB888 ||
+		frame->width() != static_cast<uint32_t>(width) || frame->height() != height) return 0;
+	const size_t stride = frame->raw()->u32PicStride[0];
+	if (stride < static_cast<size_t>(width) || stride > 32768) return 0;
+	const size_t step = stride * 3;
+	const size_t span = step * static_cast<size_t>(height - 1) + static_cast<size_t>(width) * 3;
+	return jdk_plugin::frame_has_host_memory(frame, span) ? step : 0;
+}
+}  // namespace
+
 using namespace std;
 using namespace YOLOV5FACE;
 #define OjbName YOLOV5FACE
@@ -138,8 +153,8 @@ bool OjbInfer::pre_process(Job& job, const std::any& input) {
 			RgbFrame->save_data("frame_416x416_rgb.rgb");
 			if (infer_type_ == "rk") {
 				auto host_rgb = RgbFrame->toHost();
-				if (jdk_plugin::frame_has_host_memory(host_rgb, static_cast<size_t>(width) * height * 3)) {
-					cv::Mat rgb(height, width, CV_8UC3, host_rgb->getPviraddr());
+				if (const size_t step = host_rgb_step(host_rgb, width, height)) {
+					cv::Mat rgb(height, width, CV_8UC3, host_rgb->getPviraddr(), step);
 					cv::Mat bgr;
 					cv::cvtColor(rgb, bgr, cv::COLOR_RGB2BGR);
 					cv::imwrite("frame_416x416_rgb.jpg", bgr);
@@ -157,11 +172,12 @@ bool OjbInfer::pre_process(Job& job, const std::any& input) {
 		auto* input_data = tensor->host<float>();
 		if (!input_data) return false;
 		auto host_rgb = RgbFrame->toHost();
-		if (!jdk_plugin::frame_has_host_memory(host_rgb, static_cast<size_t>(width) * height * 3)) {
+		const size_t step = host_rgb_step(host_rgb, width, height);
+		if (step == 0) {
 			std::cerr << "[FP32] unable to map RKNN RGB input to host memory" << std::endl;
 			return false;
 		}
-		cv::Mat rgb(height, width, CV_8UC3, host_rgb->getPviraddr());
+		cv::Mat rgb(height, width, CV_8UC3, host_rgb->getPviraddr(), step);
 		cv::Mat fp32(height, width, CV_32FC3, input_data);
 		rgb.convertTo(fp32, CV_32FC3);  // values remain 0..255
 		job.input.reset();
@@ -192,11 +208,12 @@ bool OjbInfer::pre_process(Job& job, const std::any& input) {
 	}
 	cv::Mat Fp32Image;
 	auto host_rgb = RgbFrame->toHost();
-	if (!jdk_plugin::frame_has_host_memory(host_rgb, static_cast<size_t>(width) * height * 3)) {
+	const size_t step = host_rgb_step(host_rgb, width, height);
+	if (step == 0) {
 		std::cerr << "[FaceDet] unable to map RGB input to host memory" << std::endl;
 		return false;
 	}
-	cv::Mat(height, width, CV_8UC3, host_rgb->getPviraddr()).convertTo(Fp32Image, CV_32FC3, 1.0 / 255.0);
+	cv::Mat(height, width, CV_8UC3, host_rgb->getPviraddr(), step).convertTo(Fp32Image, CV_32FC3, 1.0 / 255.0);
 
 	std::vector<cv::Mat> channels(Fp32Image.channels());
 	for (int i = 0; i < Fp32Image.channels(); ++i) {

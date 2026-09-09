@@ -15,6 +15,15 @@
 #include <vector>
 
 #include "DevProtoDef.hpp"
+#include "FaceEmbeddingPipeline.hpp"
+
+struct sqlite3;
+
+namespace face_embedding {
+bool ensure_feature_storage(sqlite3* db, std::string* error = nullptr);
+bool store_feature_set(sqlite3* db, long long face_id, const FeatureSet& features,
+					   std::string* error = nullptr, bool mirror_legacy = true);
+}
 
 struct FaceRecord {
 	int				   id;
@@ -83,6 +92,7 @@ public:
 class FaceRecognizer {
 public:
 	FaceRecognizer(const std::string& folder_id);
+	FaceRecognizer(const std::string& folder_id, const std::string& feature_contract);
 
 	// enter features and return matching results
 	MatchResult recognize(float feature[512], float threshold = 0.95f, float gray_zone = 0.0f, float quality = 1.0f) const;
@@ -95,6 +105,7 @@ private:
 	void reload_if_changed() const;
 
 	std::string				folder_id_{};
+	std::string				feature_contract_{};
 	mutable std::vector<FaceRecord> face_db_;
 	mutable std::mutex		face_db_mutex_;
 	// The main database WAL changes for task/runtime writes that are unrelated

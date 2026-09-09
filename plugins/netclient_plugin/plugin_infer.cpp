@@ -37,7 +37,8 @@ extern "C" void plugin_init(SDKInterface* sdk) {
 				info,
 				jp(config, "task_id", "0"),
 				jp(config, "task_name", "netclient"),
-				schedule_config));
+				schedule_config,
+				jp(config, "_runtime_allow_shared_decode", true)));
 	});
 }
 
@@ -47,4 +48,13 @@ extern "C" void plugin_cleanup(SDKInterface* sdk) {
 	} else {
 		std::cerr << "[plugin] unregister node unbound skip logout\n";
 	}
+}
+
+// Stable C ABI used by TaskManager during an application upgrade.  Keeping
+// this out of the C++ plugin object ABI allows older third-party nodes to
+// remain loadable while the built-in NetClient gains maintenance pause.
+extern "C" __attribute__((visibility("default")))
+int netclient_set_upgrade_maintenance_pause(int paused, int timeout_ms) {
+	return jdk_nodes::NetClientNode::set_upgrade_maintenance_paused(
+		paused != 0, timeout_ms);
 }

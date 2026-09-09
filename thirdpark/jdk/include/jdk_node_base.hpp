@@ -59,6 +59,9 @@ public:
 	void stop();
 	void attach_to(std::vector<std::shared_ptr<jdk_node_base>> pre_nodes);
 	void detach_recursively();
+	// True only after the bridge has synchronously stopped/joined its workers
+	// and released the internal node binding.  Additive, non-virtual ABI.
+	bool is_detached() const noexcept;
 	// void netclient_stop();	// optional some nodes are private
 	std::string node_name();
 	int			node_type() const;

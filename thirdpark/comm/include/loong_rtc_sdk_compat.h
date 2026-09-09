@@ -26,6 +26,29 @@ void SdkGetDeviceIds(const char*** uids, int32_t* count);
 // Set the current active RTC session id (for replying via DataChannel).
 // Usually called from SDK callbacks when receiving a message.
 void LoongRtcCompatSetActiveSessionId(const char* session_id);
+// Copy/clear the thread-local request session. Background work must capture the
+// originating session explicitly and restore it only for the duration of its
+// reply; never fall back to a process-global "last viewer" identity.
+bool LoongRtcCompatGetActiveSessionId(char* session_id_out, size_t capacity);
+void LoongRtcCompatClearActiveSessionId(void);
+// Authentication is scoped to the RTC session currently bound to this
+// callback thread.  A LOGOUT from one browser must never invalidate another
+// browser's independently authenticated DataChannel.
+bool LoongRtcCompatSetActiveSessionAuthenticated(bool authenticated);
+bool LoongRtcCompatIsActiveSessionAuthenticated(void);
+bool LoongRtcCompatIsSessionAuthenticated(const char* session_id);
+// Transfer an existing authenticated lease to a replacement RTC session only
+// when a higher-level protocol has proved continuity (for example, an opaque
+// resumable-upload id). The source lease remains valid for its reconnect grace.
+bool LoongRtcCompatTransferSessionAuthentication(const char* source_session_id,
+											  const char* target_session_id);
+bool LoongRtcCompatHasAuthenticatedSession(void);
+bool LoongRtcCompatHasLiveAuthenticatedSession(void);
+// Keep abnormal network/ICE reconnects authenticated for a bounded grace
+// period while still removing stale sessions eventually. Returns the number
+// of authentication records expired by this call.
+size_t LoongRtcCompatExpireUnavailableAuthenticatedSessions(uint32_t grace_seconds);
+void LoongRtcCompatClearAuthenticatedSessions(void);
 bool LoongRtcCompatSendRawCustomMessage(const char* payload);
 // Targeted, asynchronous custom-message delivery. This is used by event
 // subscriptions so one viewer never receives another viewer's events.

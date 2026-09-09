@@ -16,6 +16,7 @@ target_include_directories(jdk_alg_sample PRIVATE
 
 target_link_libraries(jdk_alg_sample PRIVATE
 	core_sdk
+	aibox_algorithm
 	ax_frame
 	axcl_ivps_
 	axcl_capture_

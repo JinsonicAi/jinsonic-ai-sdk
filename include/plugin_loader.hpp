@@ -22,12 +22,12 @@
 
 const std::vector<int>& ax_device_ids();
 
-// plugin lifecycle states
+// Plugin lifecycle states
 enum class PluginState {
-	Installed,	// installed but not loaded (e.g. disabled)
-	Loaded,		// loaded and registered to NodeFactory
-	Disabled,	// disabled by user
-	Error,		// load failed
+	Installed,	// Installed but not loaded (e.g. disabled)
+	Loaded,		// Loaded and registered to NodeFactory
+	Disabled,	// Disabled by user
+	Error,		// Load failed
 };
 
 // Whole-directory discovery state. "Ready" means the initial scan has settled;
@@ -39,14 +39,14 @@ enum class PluginLoadState : uint8_t {
 	Failed,
 };
 
-// pending actions (gentle mode: execute after tasks stop)
+// Pending actions (gentle mode: execute after tasks stop)
 struct PendingAction {
 	enum class Type { None,
 					  Update,
 					  Disable,
 					  Uninstall };
 	Type		type = Type::None;
-	std::string package_path;  // used by Update only
+	std::string package_path;  // Used by Update only
 	std::string scheduled_at;  // ISO 8601
 	std::string reason;		   // e.g. "in-use-by-tasks"
 };
@@ -63,7 +63,7 @@ struct PluginInfo {
 	PluginState	  state	  = PluginState::Installed;
 	bool		  enabled = true;
 	std::string	  version;
-	std::string	  previous_version;	 // for rollback
+	std::string	  previous_version;	 // For rollback
 	uint64_t	  load_time_ms = 0;
 	uint32_t	  error_count  = 0;
 	std::string	  last_error;
@@ -72,15 +72,15 @@ struct PluginInfo {
 	PendingAction pending_action;
 };
 
-// plugin removal cleanup result
+// Plugin removal cleanup result
 struct PluginRemoveResult {
 	bool					 success = false;
 	std::string				 error;
 	std::string				 plugin_type;
 	std::string				 version;
-	bool					 was_loaded = false;   // whether .so was hot-unloaded
-	std::vector<std::string> deleted_model_files;  // model file paths pending deletion
-	uint64_t				 freed_bytes = 0;	   // freed disk space
+	bool					 was_loaded = false;   // Whether .so was hot-unloaded
+	std::vector<std::string> deleted_model_files;  // Model file paths pending deletion
+	uint64_t				 freed_bytes = 0;	   // Freed disk space
 };
 
 class ThreadPool {
@@ -151,7 +151,7 @@ public:
 	// threads=0 selects a memory-aware default; AIBOX_PLUGIN_LOAD_THREADS can
 	// override it for measured deployments.
 	PluginLoader(size_t threads = 0, unsigned queue_depth = 256);
-	~PluginLoader();  // automatic cleanup of plugins
+	~PluginLoader();  // Automatic cleanup of plugins
 
 	bool		   load_all_plugins(const std::string& plugin_root, SDKInterface* sdk);
 	void		   loadSingle(const std::string pluginPath);
@@ -171,7 +171,7 @@ public:
 	uint64_t                      get_component_revision() const noexcept;
 	static size_t                 core_object_size() noexcept;
 
-	// --- plugin lifecycle management ---
+	// --- Plugin lifecycle management ---
 	bool unloadSingle(const std::string& type, std::string* err = nullptr);
 
 	// Reload a single plugin (unload then load)
@@ -184,11 +184,11 @@ public:
 	void registerInstalled(const std::string& type, const std::string& path,
 						   const nlohmann::json& config, const std::string& version);
 
-	// enable/disable
+	// Enable/disable
 	bool set_plugin_enabled(const std::string& type, bool enabled, std::string* err = nullptr);
 	bool is_plugin_enabled(const std::string& type) const;
 
-	// find plugin
+	// Find plugin
 	PluginInfo*		  find_plugin_by_type(const std::string& type);
 	const PluginInfo* find_plugin_by_type(const std::string& type) const;
 

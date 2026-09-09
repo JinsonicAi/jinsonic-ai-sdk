@@ -82,6 +82,29 @@ inline float fallback_match_score(const cv::Rect& current, const cv::Rect& previ
 // business-specific ReID/identity evidence instead of extending this window.
 class StableTrackIdResolver {
 public:
+    struct Statistics {
+        std::uint64_t frames{0};
+        std::uint64_t detections{0};
+        std::uint64_t raw_id_missing{0};
+        std::uint64_t duplicate_raw_id{0};
+        std::uint64_t alias_hits{0};
+        std::uint64_t alias_rejected{0};
+        std::uint64_t reconnected{0};
+        std::uint64_t reconnect_gap_1{0};
+        std::uint64_t reconnect_gap_2_to_6{0};
+        std::uint64_t reconnect_gap_over_6{0};
+        std::uint64_t ambiguous_rejected{0};
+        std::uint64_t allocated{0};
+        std::uint64_t allocated_no_candidate{0};
+        std::uint64_t allocated_ambiguous{0};
+        std::uint64_t allocated_conflict{0};
+        std::uint64_t expired{0};
+        std::uint64_t expired_single_observation{0};
+        std::uint64_t expired_short_lifecycle{0};
+        std::size_t live_states{0};
+        std::size_t live_aliases{0};
+    };
+
     std::vector<int> resolve(const std::vector<int>& raw_ids,
                              const std::vector<cv::Rect>& rects,
                              const std::vector<int>& class_ids,
@@ -100,10 +123,27 @@ public:
         }
         const int ttl = std::max(0, max_missing_frames);
 
+        ++statistics_.frames;
+        statistics_.detections += count;
+        for (size_t i = 0; i < count; ++i) {
+            if (raw_ids[i] < 0) ++statistics_.raw_id_missing;
+            else if (raw_id_counts[raw_ids[i]] != 1) ++statistics_.duplicate_raw_id;
+        }
+
         cleanup(frame_index, ttl);
 
         // Pass 1: preserve established aliases before doing any spatial match.
-        // This prevents a new nearby target from stealing a live stable ID.
+        // Multiple historic raw IDs may point at the same stable lifecycle after
+        // a tracker fracture/recovery. Select the geometrically best live owner
+        // instead of letting detector iteration order decide who gets the ID.
+        struct AliasCandidate {
+            float score{0.0f};
+            size_t detection_index{0};
+            int raw_id{-1};
+            int stable_id{-1};
+        };
+        std::vector<AliasCandidate> alias_candidates;
+        std::vector<int> rejected_aliases;
         for (size_t i = 0; i < count; ++i) {
 			// A duplicated raw ID is malformed tracker output. Treat all of its
 			// detections as untrusted geometry fallback and never mutate aliases.
@@ -115,8 +155,35 @@ public:
                 frame_index - state->second.last_seen_frame > ttl) {
                 continue;
             }
-            stable_ids[i] = alias->second;
-            claimed.insert(alias->second);
+            const int gap = std::max(1, frame_index - state->second.last_seen_frame);
+            const cv::Rect predicted = predict(state->second, gap);
+            if (!alias_motion_is_plausible(rects[i], predicted, state->second, gap)) {
+                // Trackers can recycle or accidentally resurrect a raw ID. A
+                // teleport must start/reconnect by geometry rather than silently
+                // binding a different person to the previous business identity.
+                rejected_aliases.push_back(raw_ids[i]);
+                ++statistics_.alias_rejected;
+                continue;
+            }
+            alias_candidates.push_back(AliasCandidate{
+                alias_match_score(rects[i], predicted, state->second),
+                i, raw_ids[i], alias->second});
+        }
+        for (const int raw_id : rejected_aliases) aliases_.erase(raw_id);
+        std::sort(alias_candidates.begin(), alias_candidates.end(),
+            [](const AliasCandidate& lhs, const AliasCandidate& rhs) {
+                if (lhs.score != rhs.score) return lhs.score > rhs.score;
+                if (lhs.stable_id != rhs.stable_id) return lhs.stable_id < rhs.stable_id;
+                return lhs.detection_index < rhs.detection_index;
+            });
+        std::unordered_set<size_t> alias_assigned_detections;
+        for (const auto& candidate : alias_candidates) {
+            if (alias_assigned_detections.contains(candidate.detection_index) ||
+                claimed.contains(candidate.stable_id)) continue;
+            stable_ids[candidate.detection_index] = candidate.stable_id;
+            alias_assigned_detections.insert(candidate.detection_index);
+            claimed.insert(candidate.stable_id);
+            ++statistics_.alias_hits;
         }
 
         // Pass 2: build all viable reconnect candidates first, then assign the
@@ -143,11 +210,32 @@ public:
                 }
                 const int gap = std::max(1, frame_index - state.last_seen_frame);
                 const cv::Rect predicted = predict(state, gap);
-                const float score = std::max(
-                    fallback_match_score(rects[i], predicted),
-                    fallback_match_score(rects[i], state.rect));
+                const float score = reconnect_match_score(rects[i], predicted, state, gap);
                 if (score > 0.30f && motion_is_plausible(rects[i], predicted, state, gap))
                     candidates.push_back(Candidate{score, i, stable_id});
+            }
+        }
+
+        // When two old lifecycles are equally plausible for a newly allocated
+        // raw tracker ID, guessing creates a silent identity swap. Prefer a new
+        // lifecycle (and a visible diagnostic counter) over suppressing the
+        // wrong person's future alarms.
+        std::unordered_map<size_t, std::pair<float, float>> best_two_scores;
+        for (const auto& candidate : candidates) {
+            auto& [best, second] = best_two_scores[candidate.detection_index];
+            if (candidate.score > best) {
+                second = best;
+                best = candidate.score;
+            } else if (candidate.score > second) {
+                second = candidate.score;
+            }
+        }
+        std::unordered_set<size_t> ambiguous_detections;
+        for (const auto& [detection_index, scores] : best_two_scores) {
+            const auto [best, second] = scores;
+            if (second > 0.0f && best - second < std::max(0.06f, best * 0.08f)) {
+                ambiguous_detections.insert(detection_index);
+                ++statistics_.ambiguous_rejected;
             }
         }
 
@@ -158,17 +246,39 @@ public:
         });
         std::unordered_set<size_t> assigned_detections;
         for (const auto& candidate : candidates) {
-            if (assigned_detections.contains(candidate.detection_index) ||
+            if (ambiguous_detections.contains(candidate.detection_index) ||
+                assigned_detections.contains(candidate.detection_index) ||
                 claimed.contains(candidate.stable_id)) continue;
             stable_ids[candidate.detection_index] = candidate.stable_id;
             assigned_detections.insert(candidate.detection_index);
             claimed.insert(candidate.stable_id);
+            ++statistics_.reconnected;
+            const auto state = states_.find(candidate.stable_id);
+            const int gap = state == states_.end()
+                ? 1
+                : std::max(1, frame_index - state->second.last_seen_frame);
+            if (gap == 1) ++statistics_.reconnect_gap_1;
+            else if (gap <= 6) ++statistics_.reconnect_gap_2_to_6;
+            else ++statistics_.reconnect_gap_over_6;
         }
 
         // New raw IDs with no conservative reconnect candidate start a new
         // lifecycle. Record aliases only after global assignment is complete.
         for (size_t i = 0; i < count; ++i) {
-            if (stable_ids[i] < 0) stable_ids[i] = allocate_stable_id(claimed);
+            if (stable_ids[i] < 0) {
+                if (ambiguous_detections.contains(i)) {
+                    ++statistics_.allocated_ambiguous;
+                } else if (best_two_scores.find(i) == best_two_scores.end()) {
+                    ++statistics_.allocated_no_candidate;
+                } else {
+                    // A viable edge existed but its old lifecycle was already
+                    // claimed by a stronger detection in this frame. Treating
+                    // both detections as the same person would be an ID switch.
+                    ++statistics_.allocated_conflict;
+                }
+                stable_ids[i] = allocate_stable_id(claimed);
+                if (stable_ids[i] >= 0) ++statistics_.allocated;
+            }
 			if (stable_ids[i] < 0) continue;
             if (raw_ids[i] >= 0 && raw_id_counts[raw_ids[i]] == 1)
                 aliases_[raw_ids[i]] = stable_ids[i];
@@ -180,9 +290,12 @@ public:
             if (stable_ids[i] < 0) continue;
             const int class_id = class_at(class_ids, i);
             auto [it, inserted] = states_.try_emplace(
-                stable_ids[i], State{stable_ids[i], rects[i], class_id, frame_index});
+                stable_ids[i], State{stable_ids[i], rects[i], class_id,
+                    frame_index, frame_index, 1});
             if (!inserted) update(it->second, rects[i], class_id, frame_index);
         }
+        statistics_.live_states = states_.size();
+        statistics_.live_aliases = aliases_.size();
         return stable_ids;
     }
 
@@ -198,6 +311,15 @@ public:
         aliases_.clear();
         states_.clear();
 		next_stable_id_ = 1;
+        statistics_ = Statistics{};
+    }
+
+    Statistics statistics() const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        Statistics snapshot = statistics_;
+        snapshot.live_states = states_.size();
+        snapshot.live_aliases = aliases_.size();
+        return snapshot;
     }
 
 private:
@@ -206,6 +328,8 @@ private:
         cv::Rect rect{};
         int class_id{-1};
         int last_seen_frame{0};
+        int first_seen_frame{0};
+        std::uint64_t observations{0};
         float velocity_x{0.0f};
         float velocity_y{0.0f};
         float velocity_w{0.0f};
@@ -230,6 +354,59 @@ private:
         // large scale jumps that commonly bind a new nearby target to an old ID.
         const float max_center_ratio = 0.90f + 0.20f * static_cast<float>(std::min(gap, 3));
         return center_ratio <= max_center_ratio && size_ratio >= 0.30f;
+    }
+
+    static bool alias_motion_is_plausible(const cv::Rect& current,
+                                           const cv::Rect& predicted,
+                                           const State& state,
+                                           int gap) {
+        const float center_ratio = std::min(
+            rect_center_distance_ratio(current, predicted),
+            rect_center_distance_ratio(current, state.rect));
+        const float size_ratio = rect_size_ratio(current, state.rect);
+        // Existing tracker IDs are stronger evidence than a geometry-only
+        // reconnect. The gate is intentionally lenient, but still rejects raw-ID
+        // reuse across unrelated regions or catastrophic scale changes.
+        const float max_center_ratio = 2.50f + 0.25f * static_cast<float>(std::min(gap, 6));
+        return center_ratio <= max_center_ratio && size_ratio >= 0.15f;
+    }
+
+    static float alias_match_score(const cv::Rect& current,
+                                   const cv::Rect& predicted,
+                                   const State& state) {
+        const float center_ratio = std::min(
+            rect_center_distance_ratio(current, predicted),
+            rect_center_distance_ratio(current, state.rect));
+        const float size_ratio = rect_size_ratio(current, state.rect);
+        const float iou = std::max(rect_iou(current, predicted), rect_iou(current, state.rect));
+        return 4.0f + iou + size_ratio * 0.25f - std::min(center_ratio, 3.0f) * 0.10f;
+    }
+
+    static float reconnect_match_score(const cv::Rect& current,
+                                       const cv::Rect& predicted,
+                                       const State& state,
+                                       int gap) {
+        float score = std::max(
+            fallback_match_score(current, predicted),
+            fallback_match_score(current, state.rect));
+        if (score > 0.30f) return score;
+
+        // A small/far target can move by more than one box width between two
+        // processed frames, yielding zero IoU even though the motion is
+        // continuous. Bridge only a bounded sub-second gap and require strong
+        // scale agreement. Six processed frames covers decoder jitter and a
+        // brief pedestrian occlusion at 25/30fps, while the global one-to-one
+        // assignment and ambiguity gate below still prefer a fresh lifecycle
+        // whenever two people are plausible.
+		if (gap > 6) return 0.0f;
+        const float center_ratio = std::min(
+            rect_center_distance_ratio(current, predicted),
+            rect_center_distance_ratio(current, state.rect));
+        const float size_ratio = rect_size_ratio(current, state.rect);
+        constexpr float max_center_ratio = 1.35f;
+        if (center_ratio > max_center_ratio || size_ratio < 0.45f) return 0.0f;
+        const float center_score = 1.0f - center_ratio / max_center_ratio;
+        return 0.31f + center_score * 0.24f + size_ratio * 0.20f;
     }
 
     static cv::Rect predict(const State& state, int gap) {
@@ -258,13 +435,22 @@ private:
         // change is accepted only through a new lifecycle association.
         if (state.class_id < 0 && class_id >= 0) state.class_id = class_id;
         state.last_seen_frame = frame_index;
+        ++state.observations;
     }
 
     void cleanup(int frame_index, int ttl) {
         // mutex_ is held by resolve().
-        std::erase_if(states_, [&](const auto& item) {
-            return frame_index - item.second.last_seen_frame > ttl;
-        });
+        for (auto it = states_.begin(); it != states_.end();) {
+            const State& state = it->second;
+            if (frame_index - state.last_seen_frame <= ttl) {
+                ++it;
+                continue;
+            }
+            ++statistics_.expired;
+            if (state.observations <= 1) ++statistics_.expired_single_observation;
+            if (state.observations <= 3) ++statistics_.expired_short_lifecycle;
+            it = states_.erase(it);
+        }
         std::erase_if(aliases_, [&](const auto& item) {
             return !states_.contains(item.second);
         });
@@ -285,19 +471,21 @@ private:
         return -1;
     }
 
-    std::mutex mutex_;
+    mutable std::mutex mutex_;
     std::unordered_map<int, int> aliases_;
     std::unordered_map<int, State> states_;
     int next_stable_id_{1};
+    Statistics statistics_{};
 };
 
 inline int stable_id_stitch_frames(int configured_frame_rate, int lifecycle_ttl_frames) {
-    // Half a nominal second is enough to bridge detector/tracker fractures but
-    // remains short enough to avoid merging a replacement target at the same
-    // position. Keep an absolute cap for misconfigured frame rates.
+    // Keep one nominal second of lifecycle history. Geometry-only reconnects
+    // become stricter as the gap grows, while this longer retention lets a raw
+    // tracker ID recover after brief occlusion without allocating a new business
+    // ID. Keep an absolute cap for misconfigured frame rates.
     return std::max(1, std::min({lifecycle_ttl_frames,
-                                std::max(2, configured_frame_rate / 2),
-                                15}));
+                                std::max(4, configured_frame_rate),
+                                30}));
 }
 
 template <typename TrackList>

@@ -163,6 +163,30 @@ struct Box {
 	int			priority{0};
 };
 
+// Shared by bitmap rendering and persistent IVPS labels, which are converted
+// to standalone Text before rendering. Keep the same contrast rule on both paths.
+inline TextStyle resolve_box_label_style(const Box& box) {
+	TextStyle style = box.label_style;
+	if (box.style.color.a > 0) {
+		style.bg = box.style.color;
+		style.bg_alpha = box.style.color.a;
+	}
+	const int hi = std::max({style.fg.r, style.fg.g, style.fg.b});
+	const int lo = std::min({style.fg.r, style.fg.g, style.fg.b});
+	if (hi - lo <= 8 && (hi <= 48 || lo >= 208)) {
+		const auto linear = [](uint8_t v) {
+			const double c = static_cast<double>(v) / 255.0;
+			return c <= 0.04045 ? c / 12.92 : std::pow((c + 0.055) / 1.055, 2.4);
+		};
+		const double luminance = 0.2126 * linear(style.bg.r) +
+			0.7152 * linear(style.bg.g) + 0.0722 * linear(style.bg.b);
+		style.fg = luminance > 0.50
+			? Color{12, 12, 12, style.fg.a}
+			: Color{255, 255, 255, style.fg.a};
+	}
+	return style;
+}
+
 struct Text {
 	float		x{0};
 	float		y{0};
@@ -563,6 +587,11 @@ public:
 	OsdComposer& operator=(OsdComposer&&) noexcept;
 
 	OsdComposer& clear();
+	// Bound the CPU-side rendered text cache owned by this composer.  The
+	// default remains unchanged for existing callers; persistent Region slots
+	// use a much smaller working set because each slot only displays one label
+	// at a time.
+	OsdComposer& set_text_cache_limits(size_t max_entries, size_t max_bytes);
 	OsdComposer& text(float		  x,
 					  float		  y,
 					  std::string value,
@@ -602,6 +631,12 @@ public:
 					  const Overlay&	overlay,
 					  PreparedBitmap&	out,
 					  bool				reuse_scratch = true);
+	// RK-only low-latency composer.  It publishes a bounded pooled dma-buf that
+	// RKIvps can consume directly, while prepare_attr() and every AX/AXCL caller
+	// retain the established host/physical-address path unchanged.
+	bool prepare_attr_rk(AX_VIDEO_FRAME_T* frame,
+						 const Overlay& overlay,
+						 PreparedBitmap& out);
 
 	// Generate a compact ARGB bitmap for each bitmap_mask covering only its own bbox.
 	// This way masks are no longer composited with boxes/text into one large bitmap
@@ -663,6 +698,16 @@ public:
 					   const Overlay&						static_overlay,
 					   const Overlay&						dynamic_overlay,
 					   bool									static_dirty = false);
+	// RK-only copy-on-write fast path.  The existing render_layers entry point
+	// remains byte-for-byte available to AX/AXCL callers.  On RK shared decode,
+	// this method lets the backend copy source into an independent destination
+	// while applying OSD in the same RGA job.
+	bool render_layers_from_rk_source(
+		const std::shared_ptr<AXVideoFrame>& source,
+		const std::shared_ptr<AXVideoFrame>& destination,
+		const Overlay& static_overlay,
+		const Overlay& dynamic_overlay,
+		bool static_dirty = false);
 
 private:
 	struct Impl;

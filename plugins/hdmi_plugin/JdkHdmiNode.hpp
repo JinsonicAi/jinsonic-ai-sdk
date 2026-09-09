@@ -28,6 +28,8 @@ protected:
 	// bool has_custom_handle_frame() const override { return true; }
 
 private:
+	std::shared_ptr<AXVideoFrame> hdmi_staging_;
+	uint64_t hdmi_failures_{0};
 	std::shared_ptr<HwIvps> ivps_	   = nullptr;
 	int						device_id_ = -1;
 	std::string				task_id_{};

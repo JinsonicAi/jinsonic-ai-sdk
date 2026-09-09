@@ -25,6 +25,10 @@ public:
 	enum class MemoryPolicy {
 		Default,
 		Reusable,
+		// CPU-only byte storage.  Unlike device_id=-1 with Default, this never
+		// selects AX_SYS CMM on a local AX SoC.  Use it for encoded artifacts such
+		// as JPEG/JSON that are consumed only by CPU, disk or network code.
+		CpuOnly,
 	};
 
 	// MemCopy source memory domain tags:
@@ -106,6 +110,10 @@ public:
 	bool			   isAXFrame() const;
 	bool			   isRKFrame() const;
 	int				   dmaFd() const;
+	// Compatibility API used by prebuilt algorithm archives before they read a
+	// CPU-mapped frame. RK dma-bufs perform the required MPP cache transition;
+	// AX/Host frames report whether their address is CPU-accessible.
+	bool			   syncForCpuRead();
 	void*			   nativeHandle(VFrameNativeHandleType type);
 	const void*		   nativeHandle(VFrameNativeHandleType type) const;
 

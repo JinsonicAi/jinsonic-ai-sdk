@@ -36,6 +36,9 @@ public:
 	void                          reset_decoder_after_stall(uint64_t now_ms);
 
 private:
+	// start/stop are serialized separately from decoder callbacks. A stopped
+	// instance is terminal: its queue and decoder ownership cannot be reopened.
+	std::mutex lifecycle_mtx_;
 	std::string rtsp_url_;
 
 	bool hwcode_init_ = false;
@@ -62,7 +65,11 @@ private:
 			std::atomic<uint32_t>					  decoder_init_failures_{0};
 			std::atomic<uint32_t>                  decoder_rebind_failures_{0};
 			std::atomic<uint64_t>                  synthetic_pts_90k_{0};
-			safe_queue<std::shared_ptr<AXVideoFrame>> queue_;
+				// Live analysis consumes the newest decoded image. Keeping more than one
+				// zero-copy frame here only pins scarce VDEC output buffers and increases
+				// latency; it cannot improve inference throughput. A one-frame,
+				// drop-oldest slot is also the contract used by SharedDecodeSubscription.
+				safe_queue<std::shared_ptr<AXVideoFrame>> queue_{1, QueueMode::DropOldest};
 			std::mutex								  decoder_mtx_;
 			std::shared_ptr<SharedDecodeHub>             shared_hub_{};
 			std::shared_ptr<SharedDecodeSubscription>    shared_subscription_{};

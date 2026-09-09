@@ -38,8 +38,12 @@ string(TIMESTAMP PLUGIN_BUILD_TIME "%Y-%m-%dT%H:%M:%SZ" UTC)
 file(MD5 "${PLUGIN_OUTPUT_PATH}/lib${PLUGIN_NAME}.so" PLUGIN_MD5)
 
 # 2 read the template
+if(NOT DEFINED PLUGIN_CONFIG_TEMPLATE OR PLUGIN_CONFIG_TEMPLATE STREQUAL "")
+  set(PLUGIN_CONFIG_TEMPLATE
+    "${CMAKE_CURRENT_LIST_DIR}/${PLUGIN_NAME}_plugin/config_template.json.in")
+endif()
 file(READ
-  "${CMAKE_CURRENT_LIST_DIR}/${PLUGIN_NAME}_plugin/config_template.json.in"
+  "${PLUGIN_CONFIG_TEMPLATE}"
   _json_in
 )
 
@@ -49,6 +53,20 @@ string(CONFIGURE
   _json_out
   @ONLY
 )
+
+# Packaging must never silently turn an unresolved identifier into an empty
+# runtime key. Empty type values previously produced loaded-but-unmanageable
+# plugins and forced the loader to guess from the package filename.
+foreach(_required_key IN ITEMS name type entry)
+  string(JSON _required_value ERROR_VARIABLE _required_error GET "${_json_out}" "${_required_key}")
+  if(_required_error OR "${_required_value}" STREQUAL "")
+    message(FATAL_ERROR "generated config.json requires non-empty '${_required_key}'")
+  endif()
+endforeach()
+string(REGEX MATCH "@[A-Za-z_][A-Za-z0-9_]*@" _unresolved_placeholder "${_json_out}")
+if(_unresolved_placeholder)
+  message(FATAL_ERROR "generated config.json contains unresolved placeholder: ${_unresolved_placeholder}")
+endif()
 
 # 4)write out the end config.json
 file(WRITE

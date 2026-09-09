@@ -21,9 +21,15 @@ class NetClientNode : public jdk_node_base, public CustomHandleRun, public Custo
 public:
 	NetClientNode(std::string node_name, std::string rtsp_url, PluginRuntime runtime, int group, int channel,
 				  stream_info info, std::string task_id = "", std::string task_name = "",
-				  nlohmann::json schedule_config = nlohmann::json{});
+				  nlohmann::json schedule_config = nlohmann::json{},
+				  bool allow_shared_decode = true);
 	~NetClientNode();
 	void stop();
+	// OTA maintenance reuses the same safe pause path as scheduled control:
+	// drain downstream queues, disconnect RTSP, keep the node/task object alive,
+	// then reconnect on resume. Returns the number of live NetClient instances,
+	// or -1 when one did not acknowledge the pause before the timeout.
+	static int set_upgrade_maintenance_paused(bool paused, int timeout_ms);
 
 protected:
 	virtual void handle_run(std::stop_token stoken) override;
@@ -53,6 +59,7 @@ private:
 	std::shared_ptr<NetClient> net_client	 = {nullptr};
 	int						   skip_interval = 0;
 	stream_info				   info_{};
+	bool                       allow_shared_decode_{true};
 	//
 	std::mutex		mutex_;
 	MetricsReporter reporter_{5};
@@ -60,6 +67,8 @@ private:
 	// ---- time-based control (schedule-based pause/resume) ----
 	nlohmann::json		schedule_config_;		 // schedule config JSON
 	std::atomic<bool>	schedule_paused_{false};		 // whether currently paused by schedule
+	std::atomic<bool>	maintenance_paused_{false};	 // transient OTA maintenance gate
+	std::atomic<bool>	maintenance_quiesced_{false}; // RTSP disconnect acknowledged
 	std::atomic<bool>	schedule_running_{false};	 // checker thread running flag
 	std::atomic<bool>	schedule_joined_{false};		 // ensure join only executes once
 	std::thread			schedule_thread_;		 // periodic check thread
@@ -67,6 +76,7 @@ private:
 	void start_schedule_checker();					 // start periodic schedule check thread
 	void stop_schedule_checker();					 // stop periodic schedule check thread
 	bool is_in_schedule_now() const;				 // check if current time is in scheduled period
+	bool is_effectively_paused() const noexcept;
 };
 }  // namespace jdk_nodes
 

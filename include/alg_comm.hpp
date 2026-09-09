@@ -41,7 +41,7 @@ public:
 		cv::resize(image, image, cv::Size(ALIGN_UP(image.cols, 128), ALIGN_UP(image.rows, 128)));
 		cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
 	}
-	// copying is prohibited movement is allowed
+	// Copying is prohibited, movement is allowed
 	AxImage(const AxImage &)			= delete;
 	AxImage &operator=(const AxImage &) = delete;
 
@@ -88,22 +88,22 @@ public:
 		std::string		model_path;
 		int				device_id{-1};
 
-		// NPU configuration（if not filled in it will default AX_ENGINE_VIRTUAL_NPU_STD）
+		// NPU configuration (if not filled in, defaults to AX_ENGINE_VIRTUAL_NPU_STD)
 		AX_ENGINE_NPU_ATTR_T npu_attr{};
 		bool				 use_default_npu{true};
 
-		// initialize retry strategy
+		// Initialize retry strategy
 		int						  max_retries{5};
 		std::chrono::milliseconds retry_delay{1000};
 	};
 
-	// not void：return optional<R>
+	// Non-void: return optional<R>
 	template <class F>
 	auto call_algo(F &&f)
 		-> std::optional<std::invoke_result_t<F &>>
 		requires(!std::is_void_v<std::invoke_result_t<F &>>);
 
-	// void：return whether to execute
+	// Void: return whether to execute
 	template <class F>
 	bool call_algo(F &&f)
 		requires(std::is_void_v<std::invoke_result_t<F &>>);
@@ -129,29 +129,30 @@ public:
 
 	bool ok() const noexcept;
 	void close();
-	// thread safety for the same instance of detect/track can be serialized multiple instances can be parallelized
-	// opt
+	// Thread safety: detect/track on the same instance is serialized, multiple instances can be parallelized
+	// Operations
 	ax_algorithm_handle_t getHandle() const noexcept;
 	int					  set_affinity(bool random = true);
 	int					  set_affinity(ax_npu_affinity_e affinity);
 	ax_algorithm_param_t  get_param();
 	void				  set_param(ax_algorithm_param_t *param);
-	//
+	
+	// Deprecated interfaces:
 	// int detect(std::shared_ptr<AXVideoFrame> frame, ax_result_t &result, ax_color_space_e type = ax_color_space_nv12);
 	// int track(std::shared_ptr<AXVideoFrame> frame, ax_result_t &result, ax_color_space_e type = ax_color_space_nv12);
 
 	int detect(std::shared_ptr<AXVideoFrame> frame, ax_result_t &result, std::shared_ptr<HwCapture> Capture, ax_color_space_e type = ax_color_space_nv12);
 	int track(std::shared_ptr<AXVideoFrame> frame, ax_result_t &result, std::shared_ptr<HwCapture> Capture, ax_color_space_e type = ax_color_space_nv12);
-	// face
+	// Face operations
 	int	  get_face_feature(std::shared_ptr<AXVideoFrame> frame, ax_result_t *result, int idx, float feature[AX_ALGORITHM_FACE_FEATURE_LEN], std::shared_ptr<HwCapture> Capture, ax_color_space_e type = ax_color_space_nv12);
 	int	  get_face_feature_2(std::shared_ptr<AXVideoFrame> frame, ax_object_t *obj, float feature[AX_ALGORITHM_FACE_FEATURE_LEN], std::shared_ptr<HwCapture> Capture, ax_color_space_e type = ax_color_space_nv12);
 	int	  get_face_feature_2(ax_image_t *image, ax_object_t *obj, float feature[AX_ALGORITHM_FACE_FEATURE_LEN]);
 	float face_compare(float a[AX_ALGORITHM_FACE_FEATURE_LEN], float b[AX_ALGORITHM_FACE_FEATURE_LEN]);
-	// person
+	// Person operations
 	int get_body_attr(std::shared_ptr<AXVideoFrame> frame, ax_bbox_t *bbox, ax_body_attr_t *body_attr, std::shared_ptr<HwCapture> Capture, ax_color_space_e type = ax_color_space_nv12);
-	// vehicle
+	// Vehicle operations
 	int get_car_attr(std::shared_ptr<AXVideoFrame> frame, ax_bbox_t *bbox, ax_car_attr_t *car_attr, std::shared_ptr<HwCapture> Capture, ax_color_space_e type = ax_color_space_nv12);
-	// plate
+	// License plate operations
 	std::string get_plate(ax_image_t *image);
 
 private:
@@ -169,14 +170,14 @@ private:
 	ax_algorithm_handle_t handle_{};
 	std::atomic<bool>	  alive_{false};
 	std::atomic<int>	  inflight_{0};
-	std::mutex			  call_mu_;	 // serialization of underlying library calls
+	std::mutex			  call_mu_;	 // Serialization of underlying library calls
 	Options				  opt_{};
-	// host tools
+	// Host tools
 	std::shared_ptr<HwIvps>	   hostIvps_;
 	std::shared_ptr<HwCapture> hostCapture_;
 };
 
-std::string frameToBase64(std::shared_ptr<AXVideoFrame> frame /*jpeg*/);
+std::string frameToBase64(std::shared_ptr<AXVideoFrame> frame /* jpeg */);
 
 // Internal hand-off between algorithm plugins and alarm_plugin. The marker is
 // removed before the customer-facing payload is serialized.
@@ -229,7 +230,7 @@ inline void bind_message_snapshot(
 }
 }
 
-// hsv to bgr
+// HSV to BGR conversion
 AX_U32 hsv2bgr(float h, float s, float v);
 AX_U32 random_color(int id);
 

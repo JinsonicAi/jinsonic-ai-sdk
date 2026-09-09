@@ -32,6 +32,14 @@ struct CustomHandleSidebandFrame {
 	virtual ~CustomHandleSidebandFrame() = default;
 };
 
+// Optional metadata-only consumer for discrete alarms. A join node may keep
+// only the latest display result, but must deliver each event to these sinks
+// before it is replaced. No frame is rendered or emitted on this path.
+struct CustomHandleAlarmEvents {
+	virtual void handle_alarm_events(const jdk_objects::result_map_t& events) = 0;
+	virtual ~CustomHandleAlarmEvents() = default;
+};
+
 struct CustomHandleControl {
 	virtual std::shared_ptr<jdk_objects::jdk_meta> handle_control_meta(
 		std::shared_ptr<jdk_objects::jdk_control_meta> meta) = 0;

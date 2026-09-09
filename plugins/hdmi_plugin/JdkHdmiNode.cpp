@@ -1,6 +1,7 @@
 #include "JdkHdmiNode.hpp"
 
 #include "PluginFrameUtils.hpp"
+#include "HdmiFrame.hpp"
 #include "hdmi.h"
 #include "post_node_info.h"
 
@@ -21,6 +22,7 @@ HdmiNode::~HdmiNode() {
 void HdmiNode::stop() {
 	set_alive(false);
 	std::lock_guard<std::mutex> lk(mutex_);
+	hdmi_staging_.reset();
 
 	fmt::print("✅ HdmiNode stop ok!\n");
 }
@@ -48,13 +50,17 @@ std::shared_ptr<jdk_objects::jdk_meta> HdmiNode::handle_frame_meta(std::shared_p
 	}
 	auto last_time = std::chrono::system_clock::now();
 
-	auto start_time = std::chrono::steady_clock::now();
-	auto hostframe	= canvas->toHost();
-	if (!jdk_plugin::frame_has_host_memory(hostframe)) {
-		fprintf(stderr, "❌ HdmiNode toHost failed, skipping frame\n");
+	try {
+		auto hdmi_frame = prepare_hdmi_frame(canvas, hdmi_staging_);
+		if (!HdmiSendFrame(hdmi_device_id_, task_id_, *hdmi_frame->raw()))
+			throw std::runtime_error("HDMI submission failed");
+	} catch (const std::exception& e) {
+		if (++hdmi_failures_ == 1 || hdmi_failures_ % 250 == 0)
+			fprintf(stderr, "[HdmiNode] task=%s backend=%s device=%d failures=%llu: %s\n",
+				task_id_.c_str(), canvas->backendName(), canvas->device_id(),
+				static_cast<unsigned long long>(hdmi_failures_), e.what());
 		return jdk_node_base::handle_frame_meta(meta);
 	}
-	HdmiSendFrame(hdmi_device_id_, task_id_, *hostframe->raw());
 
 	// report node info
 	reporter_.report_algorithm(jdk_node_base::node_fps(), meta->create_time);
