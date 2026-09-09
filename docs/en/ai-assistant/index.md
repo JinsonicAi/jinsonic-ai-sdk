@@ -9,7 +9,7 @@ This guide is intended for device administrators, deployment engineers, and oper
 !!! note "Scope and illustrations"
     This guide reflects the matching frontend and backend implementation reviewed on September 9, 2026. Availability depends on the application, Web assets, algorithm plugins, independent model extension, and hardware combination. Older releases may not have every form or query described here. Always use the algorithms and runtime locations returned by your device.
 
-    Figure 1 is an English entry-point diagram based on the device header. Other screenshots use actual application components with illustrative data to explain controls and workflows; they do not show a connected device or prove successful execution. Chinese and English illustrations are maintained separately. Camera addresses, task names, counts, and timestamps are examples.
+    Figure 1 shows the English device interface in a supplied screenshot. Other screenshots use actual application components with illustrative data to explain controls and workflows; they do not show a connected device or prove successful execution. Chinese and English illustrations are maintained separately. Data in the illustrative figures are examples; the task name in Figure 1 is retained as displayed on the device.
 
 Click an illustration to open the original image and inspect its controls and text at full size.
 
@@ -19,12 +19,12 @@ Click an illustration to open the original image and inspect its controls and te
 
 1. Open your device's Web management address and sign in.
 2. Wait for the device connection in the header to become available.
-3. Click **AI assistant**, to the left of the search icon, to open the **AI assistant · video tasks** floating window.
+3. Click **AI**, to the left of the search icon, to open the **AI assistant · video tasks** floating window.
 4. If the Web interface was just upgraded and the entry is missing, refresh to load the matching assets. If it remains unavailable, check the application and Web versions.
 
-[![Figure 1: English diagram of the AI assistant entry in the AI-BOX header](../../assets/ai-assistant/en-01-entry.svg)](../../assets/ai-assistant/en-01-entry.svg)
+[![Figure 1: AI assistant entry in the English AI-BOX device interface](../../assets/ai-assistant/en-01-entry.png)](../../assets/ai-assistant/en-01-entry.png)
 
-*Figure 1: English entry-point diagram. Select the AI button immediately to the left of Search. This diagram illustrates navigation and is not a live screenshot.*
+*Figure 1: AI-BOX device interface in English. The red arrow points to the AI button immediately to the left of the search icon. Click it to open the assistant; use your own device address.*
 
 ### 1.2 Floating window controls
 
