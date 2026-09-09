@@ -348,7 +348,7 @@ rtsp://192.168.1.100:554/live
 
 从助手的 **模型服务** 图标或设置菜单进入。先读顶部实际状态，再查看下方策略，二者不要混淆。
 
-[![图 11：模型实际状态、运行策略、空闲释放与诊断](../../assets/ai-assistant/zh-11-model.png)](../../assets/ai-assistant/zh-11-model.png)
+[![图 11：模型实际状态、运行策略、空闲释放与诊断](../../assets/ai-assistant/zh-11-model-clear.png)](../../assets/ai-assistant/zh-11-model-clear.png)
 
 *图 11：模型服务示例。上方表示实际实例状态，下方表示保存的运行策略。“自动选择”并不代表模型已经启动。*
 

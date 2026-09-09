@@ -348,7 +348,7 @@ The download contains returned excerpts, not a complete device diagnostics archi
 
 Open **Model service** from the assistant icon or settings menu. Read actual runtime state at the top before inspecting preferences below.
 
-[![Figure 11: Actual model state, preferences, idle release, and diagnostics](../../assets/ai-assistant/en-11-model.png)](../../assets/ai-assistant/en-11-model.png)
+[![Figure 11: Actual model state, preferences, idle release, and diagnostics](../../assets/ai-assistant/en-11-model-clear.png)](../../assets/ai-assistant/en-11-model-clear.png)
 
 *Figure 11: Model-service example. The overview describes the actual instance; preferences describe saved policy. “Automatic” does not mean the model has started.*
 
