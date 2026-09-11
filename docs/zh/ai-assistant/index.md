@@ -90,230 +90,7 @@ RC3 完整交付组合如下。先安装匹配的主包，再安装扩展；主�
 
 检测本身不会启动模型，也不需要先创建一个 LLM 视频任务。模型“已安装”“支持文本”“正在运行”是三个独立事实。
 
-### 2.3 DEB 安装位置与模型存储配置 {#installation-storage}
-
-#### 2.3.1 先分清三种“路径”
-
-| 路径 | 当前 rc3 能否指定 | 说明 |
-|---|---|---|
-| DEB 文件存放目录 | 可以 | 可从本地、移动盘等可访问位置安装；不决定解包后的安装位置 |
-| 主程序、运行库、签名插件目录 | 不提供任意路径选项 | 仍使用包内固定系统路径，如 `/usr/local/aibox` |
-| LLM 模型实际存储盘 | 可以预先指定已挂载的外部盘 | 通过 `/etc/aibox/llm-storage.json` 配置；仅模型权重外置 |
-
-**在外部盘目录执行 `dpkg -i`，不会把整个 AIBox 安装到该目录。** 打包时的 `--output-dir` 也只是构建产物目录，不是设备安装路径。不要用 `dpkg --root` 或手工移动整个 `/usr/local/aibox` 来代替正常安装。
-
-内部模式是默认值，不是任意内部目录选择器。模型默认路径为：
-
-- AX/AXCL：`/usr/local/aibox-plugin-llm-ax/server/<模型目录>`。
-- RK 本机：`/usr/local/aibox-plugin-llm-rk/models`。
-
-#### 2.3.2 先判断是不是“首次配置”
-
-先执行以下只读命令，查看是否已经有配置或绑定：
-
-```bash
-for p in /etc/aibox/llm-storage.json \
-  /usr/local/aibox-plugin-llm-ax/external-model.json \
-  /usr/local/aibox-plugin-llm-rk/external-model.json \
-  /usr/local/aibox-plugin-llm/external-model.json; do
-  if [ -f "$p" ]; then
-    printf '\n%s\n' "$p"
-    cat "$p"
-  fi
-done
-```
-
-实际选择优先级是：
-
-1. 对应私有扩展目录内已有的 `external-model.json` 绑定。
-2. `/etc/aibox/llm-storage.json` 中对应的 `ax` 或 `rk` 配置。
-3. 对 AX，若未指定配置，还可能继承兼容旧包的外置绑定。
-4. 都没有有效外置选择时，使用内部默认路径；空间不足就停止，不自动挑盘。
-
-!!! warning "以下配置示例主要用于首次安装扩展"
-    已有模型目录、绑定或未完成安装事务时，不能直接照着新装步骤切换存储。不要删除 `external-model.json`、事务文件或软链接来强行绕过保护。先看本节末尾的迁移与恢复说明。
-
-#### 2.3.3 选择内部存储
-
-在没有私有外置绑定、没有旧 AX 外置绑定的新设备上，不创建 `/etc/aibox/llm-storage.json` 即可使用内部默认路径。也可以将配置设为空对象：
-
-```json
-{}
-```
-
-如果该文件已给另一个扩展配置了外置盘，只省略本次要使用内部存储的键，保留另一个键。例如，仅有 `rk` 配置时，首次安装且无历史绑定的 AX 扩展仍走内部默认路径。
-
-`internal`、`install_path`、`model_path`、`mode` 都不是这里支持的内部路径开关。把已有配置改成 `{}` 或 `null`，**不会**把已经绑定到外部盘的模型迁回系统盘。
-
-#### 2.3.4 准备外部存储
-
-以下命令由管理员在设备上执行。示例使用 `sudo`；已经是 root 时可以省略。升级或迁移应安排维护窗口，先确认没有任务、复核或助手请求正在使用模型。
-
-**第一步：确认目标分区，不按盘符猜测。**
-
-```bash
-lsblk -o NAME,SIZE,FSTYPE,UUID,MOUNTPOINT
-```
-
-选择实际计划用于模型的 TF/U 盘/SSD 分区，记下文件系统 UUID。若分区未格式化、含有需保护的数据，或无法确定用途，先停止操作。本说明不执行也不要求格式化。
-
-**第二步：使用稳定的实际挂载点。** 如果设备已经将目标盘挂载在稳定路径（例如 `/mnt/storage/...`），直接使用那个实际挂载点，不需要再挂载一次。
-
-下面仅演示“已有文件系统，但尚未挂载”的情况。确认 `/mnt/aibox-models` 尚未挂载且目录为空，再执行挂载，不能盖住已有目录内容：
-
-```bash
-sudo mkdir -p /mnt/aibox-models
-ls -A /mnt/aibox-models
-# 将 YOUR-ACTUAL-UUID 替换为上一步确认的真实 UUID。
-sudo mount UUID=YOUR-ACTUAL-UUID /mnt/aibox-models
-findmnt -rn --mountpoint /mnt/aibox-models -o TARGET,UUID,FSTYPE,OPTIONS
-df -h /mnt/aibox-models /usr/local
-```
-
-`findmnt` 必须显示这个挂载点、正确 UUID、实际文件系统类型，且安装时包含 `rw`。只创建一个目录并不等于已经挂载外部盘。配置中的 `mountpoint` 必须是实际挂载点，不能随意填它下面的子目录。
-
-如需开机自动挂载，由管理员备份并编辑 `/etc/fstab`。以下只适用于 **ext4** 示例；不能把其他文件系统类型照抄成 ext4：
-
-```text
-UUID=YOUR-ACTUAL-UUID /mnt/aibox-models ext4 defaults,nofail,x-systemd.device-timeout=10s 0 2
-```
-
-保持同一分区、同一挂载点和正确文件系统类型，避免重复 fstab 条目。对已卸载且未被使用的目标，可用 `sudo mount /mnt/aibox-models` 验证该条目，再用 `findmnt` 核对。`nofail` 允许缺盘时系统继续启动，**不代表模型可在缺盘时运行**。
-
-不要把 `/`、普通目录、`/dev/shm` 或没有文件系统 UUID 的网络挂载当作外置模型盘。安装器不会自动挂载、格式化或替你选一块盘。
-
-#### 2.3.5 写入外置配置
-
-```bash
-sudo mkdir -p /etc/aibox
-sudoedit /etc/aibox/llm-storage.json
-# 如果设备没有 sudoedit，以 root 使用 vi 编辑同一个文件。
-```
-
-保存 UTF-8 JSON，不写注释。`uuid` 和 `fstype` 必须填写 `findmnt` 的实际输出。
-
-**AX650N 的 AX/AXCL 模型放外部盘：**
-
-```json
-{
-  "ax": {
-    "mountpoint": "/mnt/aibox-models",
-    "uuid": "YOUR-ACTUAL-UUID",
-    "fstype": "ext4"
-  }
-}
-```
-
-**RK3588 的 RK 本机模型和 AXCL 模型都放同一块外部盘：**
-
-```json
-{
-  "ax": {
-    "mountpoint": "/mnt/aibox-models",
-    "uuid": "YOUR-ACTUAL-UUID",
-    "fstype": "ext4"
-  },
-  "rk": {
-    "mountpoint": "/mnt/aibox-models",
-    "uuid": "YOUR-ACTUAL-UUID",
-    "fstype": "ext4"
-  }
-}
-```
-
-只想将 RK 本机模型外置时，仅配置 `rk`；只想将 AX/AXCL 模型外置时，仅配置 `ax`。它们也可以指向不同的盘，分别填写各自真实信息。**省略的键只有在没有历史绑定时才代表内部默认。** 编辑已有文件时保留其他所需配置，不要整份覆盖。
-
-安装器在挂载点下创建自己的管理目录，例如：
-
-```text
-/mnt/aibox-models/.aibox/llm-models/aibox-plugin-llm-ax/generations/model-<自动生成ID>/
-/mnt/aibox-models/.aibox/llm-models/aibox-plugin-llm-rk/generations/model-<自动生成ID>/
-```
-
-这里不支持任意指定生成目录名。系统模型路径通过目录软链接指向它，主程序和插件仍在系统盘。
-
-#### 2.3.6 按平台安装配套包
-
-完成存储配置后，进入交付包的对应平台目录，只执行适合当前硬件的一组命令。先主包、后扩展，设备不需另装系统 Python。
-
-**AX650N：**
-
-```bash
-( # 在子 shell 中执行，任何一步失败即停止本组安装。
-set -e
-AIBOX_INSTALL_VERSION=2.1.1-202609110020-ai-assistant-rc3
-sudo dpkg -i "./aibox-ax650n_${AIBOX_INSTALL_VERSION}_arm64.deb"
-# 仅当你创建了存储配置文件时，检查 JSON 语法：
-if [ -f /etc/aibox/llm-storage.json ]; then
-  sudo /usr/local/aibox/bin/aibox-python3 -m json.tool /etc/aibox/llm-storage.json
-fi
-sudo dpkg -i "./aibox-plugin-llm_${AIBOX_INSTALL_VERSION}_arm64.deb"
-)
-```
-
-**RK3588：**
-
-```bash
-( # 只执行 RK3588 这一组，不要混装另一个平台的主包。
-set -e
-AIBOX_INSTALL_VERSION=2.1.1-202609110020-ai-assistant-rc3
-sudo dpkg -i "./aibox-rk3588_${AIBOX_INSTALL_VERSION}_arm64.deb"
-if [ -f /etc/aibox/llm-storage.json ]; then
-  sudo /usr/local/aibox/bin/aibox-python3 -m json.tool /etc/aibox/llm-storage.json
-fi
-sudo dpkg -i "./aibox-plugin-llm_${AIBOX_INSTALL_VERSION}_arm64.deb"
-sudo dpkg -i "./aibox-plugin-llm-rk-vlm_${AIBOX_INSTALL_VERSION}_arm64.deb"
-)
-```
-
-**每条命令成功后再执行下一条；发生错误立即停止。** JSON 语法检查不等于挂载、空间和版本校验通过；这些由扩展安装前检查完成。不要使用 `--force-overwrite`、忽略依赖或伪造 UUID 来强行通过。
-
-空间按解包体积计算，不按 `.deb` 压缩大小计算：
-
-- 主包升级需要系统盘容纳安装载荷与安全余量，不受外置模型配置替代。
-- 外置模型安装分别检查系统盘上的运行程序、外部盘上的模型，并各保留 128 MiB 余量。
-- 外置升级会先保留旧一代模型，再解包新一代，不能只留版本差额的空间。
-- 如果两个路径实际仍在同一文件系统，换目录不会增加空间。
-
-#### 2.3.7 安装后确认实际位置
-
-外置安装成功后，查看对应绑定文件的 `mountpoint`、`uuid`、`fstype`、`model_path`：
-
-```bash
-# AX/AXCL：
-sudo cat /usr/local/aibox-plugin-llm-ax/external-model.json
-# RK 本机：
-sudo cat /usr/local/aibox-plugin-llm-rk/external-model.json
-```
-
-只执行已安装的扩展对应命令；纯内部新装没有这个外置绑定文件是正常的。
-
-可以运行包自带的只读存储检查，不会因此启动模型：
-
-```bash
-# AX/AXCL：
-sudo /usr/local/aibox/bin/aibox-python3 /usr/local/aibox-plugin-llm-ax/bin/check_model_storage.py
-# RK 本机：
-sudo /usr/local/aibox/bin/aibox-python3 /usr/local/aibox-plugin-llm-rk/bin/check_model_storage.py
-```
-
-再用 `findmnt --mountpoint <实际挂载点>` 核对磁盘身份，用 `df -h <实际挂载点>` 查看容量。安装阶段会验证模型 SHA-256；启动前的快速存储检查主要核对挂载绑定、路径和文件大小，不是每次全量重算权重哈希。最后在助手中核对扩展状态和一次正常推理，存储检查成功不等于推理或算法效果验收通过。
-
-#### 2.3.8 已有安装迁移、换盘与恢复
-
-| 当前情况 | 能否只改配置完成 |
-|---|---|
-| 首次安装扩展，目标无历史模型目录/绑定 | 可以按上述步骤选择默认内部或配置外部盘 |
-| 已绑定外部盘，升级仍使用同一块盘 | 自动沿用已有绑定，并检查盘的身份和空间 |
-| 内部模型已经存在，想改外部盘 | 不支持直接改 JSON 自动迁移；可能因已有模型目录而拒绝 |
-| 已外置，想换盘或迁回内部 | 已有绑定优先，新配置不会直接覆盖；需要单独迁移方案 |
-| 旧 AX 官方外置配置 | 兼容时会继承旧盘身份，不代表任意旧软链接都可迁移 |
-
-当前 rc3 没有通用的无损一键迁移命令。迁移应由管理员先确认版本和绑定、停用相关模型使用者、备份并校验，再安排切换；不要手动 `mv`/`ln -s`、删除所有权记录或以卸载重装来假定数据一定保留。
-
-安装中断时先恢复原来的盘和挂载，核对 UUID、读写状态和空间。若仅配置阶段失败且文件完整，可对具体扩展重试 `sudo dpkg --configure aibox-plugin-llm` 或 `sudo dpkg --configure aibox-plugin-llm-rk-vlm`；解包未完成时，应重新安装同一份完整可信 DEB。安装器会依据事务记录处理未提交版本，不能承诺绕过磁盘故障自动恢复。
-
-升级提交后只清理清单中仍匹配的旧模型文件；用户新增、修改或不归它管理的文件可能保留。因此外部盘也需要容量管理。安装器不会为了完成安装而自动格式化磁盘或删除客户录像。
+需要安装 DEB 或配置内外部模型存储时，请参阅文末[附录 A：DEB 安装位置与模型存储配置](#installation-storage)。
 
 ## 3. 五分钟完成第一次使用
 
@@ -816,3 +593,228 @@ LLM 复核是对检测结果的后续处理阶段，与“选择一个检测算�
 - [报警联动](../alarm-linkage.md)：报警输出与外部联动配置。
 - [交付运维](../deployment-ops.md)：上线、升级和现场维护。
 - [常见问题 FAQ](../faq.md)：其他设备与 SDK 问题。
+
+## 附录 A. DEB 安装位置与模型存储配置 {#installation-storage}
+
+### A.1 先分清三种“路径”
+
+| 路径 | 当前 rc3 能否指定 | 说明 |
+|---|---|---|
+| DEB 文件存放目录 | 可以 | 可从本地、移动盘等可访问位置安装；不决定解包后的安装位置 |
+| 主程序、运行库、签名插件目录 | 不提供任意路径选项 | 仍使用包内固定系统路径，如 `/usr/local/aibox` |
+| LLM 模型实际存储盘 | 可以预先指定已挂载的外部盘 | 通过 `/etc/aibox/llm-storage.json` 配置；仅模型权重外置 |
+
+**在外部盘目录执行 `dpkg -i`，不会把整个 AIBox 安装到该目录。** 打包时的 `--output-dir` 也只是构建产物目录，不是设备安装路径。不要用 `dpkg --root` 或手工移动整个 `/usr/local/aibox` 来代替正常安装。
+
+内部模式是默认值，不是任意内部目录选择器。模型默认路径为：
+
+- AX/AXCL：`/usr/local/aibox-plugin-llm-ax/server/<模型目录>`。
+- RK 本机：`/usr/local/aibox-plugin-llm-rk/models`。
+
+### A.2 先判断是不是“首次配置”
+
+先执行以下只读命令，查看是否已经有配置或绑定：
+
+```bash
+for p in /etc/aibox/llm-storage.json \
+  /usr/local/aibox-plugin-llm-ax/external-model.json \
+  /usr/local/aibox-plugin-llm-rk/external-model.json \
+  /usr/local/aibox-plugin-llm/external-model.json; do
+  if [ -f "$p" ]; then
+    printf '\n%s\n' "$p"
+    cat "$p"
+  fi
+done
+```
+
+实际选择优先级是：
+
+1. 对应私有扩展目录内已有的 `external-model.json` 绑定。
+2. `/etc/aibox/llm-storage.json` 中对应的 `ax` 或 `rk` 配置。
+3. 对 AX，若未指定配置，还可能继承兼容旧包的外置绑定。
+4. 都没有有效外置选择时，使用内部默认路径；空间不足就停止，不自动挑盘。
+
+!!! warning "以下配置示例主要用于首次安装扩展"
+    已有模型目录、绑定或未完成安装事务时，不能直接照着新装步骤切换存储。不要删除 `external-model.json`、事务文件或软链接来强行绕过保护。先看本节末尾的迁移与恢复说明。
+
+### A.3 选择内部存储
+
+在没有私有外置绑定、没有旧 AX 外置绑定的新设备上，不创建 `/etc/aibox/llm-storage.json` 即可使用内部默认路径。也可以将配置设为空对象：
+
+```json
+{}
+```
+
+如果该文件已给另一个扩展配置了外置盘，只省略本次要使用内部存储的键，保留另一个键。例如，仅有 `rk` 配置时，首次安装且无历史绑定的 AX 扩展仍走内部默认路径。
+
+`internal`、`install_path`、`model_path`、`mode` 都不是这里支持的内部路径开关。把已有配置改成 `{}` 或 `null`，**不会**把已经绑定到外部盘的模型迁回系统盘。
+
+### A.4 准备外部存储
+
+以下命令由管理员在设备上执行。示例使用 `sudo`；已经是 root 时可以省略。升级或迁移应安排维护窗口，先确认没有任务、复核或助手请求正在使用模型。
+
+**第一步：确认目标分区，不按盘符猜测。**
+
+```bash
+lsblk -o NAME,SIZE,FSTYPE,UUID,MOUNTPOINT
+```
+
+选择实际计划用于模型的 TF/U 盘/SSD 分区，记下文件系统 UUID。若分区未格式化、含有需保护的数据，或无法确定用途，先停止操作。本说明不执行也不要求格式化。
+
+**第二步：使用稳定的实际挂载点。** 如果设备已经将目标盘挂载在稳定路径（例如 `/mnt/storage/...`），直接使用那个实际挂载点，不需要再挂载一次。
+
+下面仅演示“已有文件系统，但尚未挂载”的情况。确认 `/mnt/aibox-models` 尚未挂载且目录为空，再执行挂载，不能盖住已有目录内容：
+
+```bash
+sudo mkdir -p /mnt/aibox-models
+ls -A /mnt/aibox-models
+# 将 YOUR-ACTUAL-UUID 替换为上一步确认的真实 UUID。
+sudo mount UUID=YOUR-ACTUAL-UUID /mnt/aibox-models
+findmnt -rn --mountpoint /mnt/aibox-models -o TARGET,UUID,FSTYPE,OPTIONS
+df -h /mnt/aibox-models /usr/local
+```
+
+`findmnt` 必须显示这个挂载点、正确 UUID、实际文件系统类型，且安装时包含 `rw`。只创建一个目录并不等于已经挂载外部盘。配置中的 `mountpoint` 必须是实际挂载点，不能随意填它下面的子目录。
+
+如需开机自动挂载，由管理员备份并编辑 `/etc/fstab`。以下只适用于 **ext4** 示例；不能把其他文件系统类型照抄成 ext4：
+
+```text
+UUID=YOUR-ACTUAL-UUID /mnt/aibox-models ext4 defaults,nofail,x-systemd.device-timeout=10s 0 2
+```
+
+保持同一分区、同一挂载点和正确文件系统类型，避免重复 fstab 条目。对已卸载且未被使用的目标，可用 `sudo mount /mnt/aibox-models` 验证该条目，再用 `findmnt` 核对。`nofail` 允许缺盘时系统继续启动，**不代表模型可在缺盘时运行**。
+
+不要把 `/`、普通目录、`/dev/shm` 或没有文件系统 UUID 的网络挂载当作外置模型盘。安装器不会自动挂载、格式化或替你选一块盘。
+
+### A.5 写入外置配置
+
+```bash
+sudo mkdir -p /etc/aibox
+sudoedit /etc/aibox/llm-storage.json
+# 如果设备没有 sudoedit，以 root 使用 vi 编辑同一个文件。
+```
+
+保存 UTF-8 JSON，不写注释。`uuid` 和 `fstype` 必须填写 `findmnt` 的实际输出。
+
+**AX650N 的 AX/AXCL 模型放外部盘：**
+
+```json
+{
+  "ax": {
+    "mountpoint": "/mnt/aibox-models",
+    "uuid": "YOUR-ACTUAL-UUID",
+    "fstype": "ext4"
+  }
+}
+```
+
+**RK3588 的 RK 本机模型和 AXCL 模型都放同一块外部盘：**
+
+```json
+{
+  "ax": {
+    "mountpoint": "/mnt/aibox-models",
+    "uuid": "YOUR-ACTUAL-UUID",
+    "fstype": "ext4"
+  },
+  "rk": {
+    "mountpoint": "/mnt/aibox-models",
+    "uuid": "YOUR-ACTUAL-UUID",
+    "fstype": "ext4"
+  }
+}
+```
+
+只想将 RK 本机模型外置时，仅配置 `rk`；只想将 AX/AXCL 模型外置时，仅配置 `ax`。它们也可以指向不同的盘，分别填写各自真实信息。**省略的键只有在没有历史绑定时才代表内部默认。** 编辑已有文件时保留其他所需配置，不要整份覆盖。
+
+安装器在挂载点下创建自己的管理目录，例如：
+
+```text
+/mnt/aibox-models/.aibox/llm-models/aibox-plugin-llm-ax/generations/model-<自动生成ID>/
+/mnt/aibox-models/.aibox/llm-models/aibox-plugin-llm-rk/generations/model-<自动生成ID>/
+```
+
+这里不支持任意指定生成目录名。系统模型路径通过目录软链接指向它，主程序和插件仍在系统盘。
+
+### A.6 按平台安装配套包
+
+完成存储配置后，进入交付包的对应平台目录，只执行适合当前硬件的一组命令。先主包、后扩展，设备不需另装系统 Python。
+
+**AX650N：**
+
+```bash
+( # 在子 shell 中执行，任何一步失败即停止本组安装。
+set -e
+AIBOX_INSTALL_VERSION=2.1.1-202609110020-ai-assistant-rc3
+sudo dpkg -i "./aibox-ax650n_${AIBOX_INSTALL_VERSION}_arm64.deb"
+# 仅当你创建了存储配置文件时，检查 JSON 语法：
+if [ -f /etc/aibox/llm-storage.json ]; then
+  sudo /usr/local/aibox/bin/aibox-python3 -m json.tool /etc/aibox/llm-storage.json
+fi
+sudo dpkg -i "./aibox-plugin-llm_${AIBOX_INSTALL_VERSION}_arm64.deb"
+)
+```
+
+**RK3588：**
+
+```bash
+( # 只执行 RK3588 这一组，不要混装另一个平台的主包。
+set -e
+AIBOX_INSTALL_VERSION=2.1.1-202609110020-ai-assistant-rc3
+sudo dpkg -i "./aibox-rk3588_${AIBOX_INSTALL_VERSION}_arm64.deb"
+if [ -f /etc/aibox/llm-storage.json ]; then
+  sudo /usr/local/aibox/bin/aibox-python3 -m json.tool /etc/aibox/llm-storage.json
+fi
+sudo dpkg -i "./aibox-plugin-llm_${AIBOX_INSTALL_VERSION}_arm64.deb"
+sudo dpkg -i "./aibox-plugin-llm-rk-vlm_${AIBOX_INSTALL_VERSION}_arm64.deb"
+)
+```
+
+**每条命令成功后再执行下一条；发生错误立即停止。** JSON 语法检查不等于挂载、空间和版本校验通过；这些由扩展安装前检查完成。不要使用 `--force-overwrite`、忽略依赖或伪造 UUID 来强行通过。
+
+空间按解包体积计算，不按 `.deb` 压缩大小计算：
+
+- 主包升级需要系统盘容纳安装载荷与安全余量，不受外置模型配置替代。
+- 外置模型安装分别检查系统盘上的运行程序、外部盘上的模型，并各保留 128 MiB 余量。
+- 外置升级会先保留旧一代模型，再解包新一代，不能只留版本差额的空间。
+- 如果两个路径实际仍在同一文件系统，换目录不会增加空间。
+
+### A.7 安装后确认实际位置
+
+外置安装成功后，查看对应绑定文件的 `mountpoint`、`uuid`、`fstype`、`model_path`：
+
+```bash
+# AX/AXCL：
+sudo cat /usr/local/aibox-plugin-llm-ax/external-model.json
+# RK 本机：
+sudo cat /usr/local/aibox-plugin-llm-rk/external-model.json
+```
+
+只执行已安装的扩展对应命令；纯内部新装没有这个外置绑定文件是正常的。
+
+可以运行包自带的只读存储检查，不会因此启动模型：
+
+```bash
+# AX/AXCL：
+sudo /usr/local/aibox/bin/aibox-python3 /usr/local/aibox-plugin-llm-ax/bin/check_model_storage.py
+# RK 本机：
+sudo /usr/local/aibox/bin/aibox-python3 /usr/local/aibox-plugin-llm-rk/bin/check_model_storage.py
+```
+
+再用 `findmnt --mountpoint <实际挂载点>` 核对磁盘身份，用 `df -h <实际挂载点>` 查看容量。安装阶段会验证模型 SHA-256；启动前的快速存储检查主要核对挂载绑定、路径和文件大小，不是每次全量重算权重哈希。最后在助手中核对扩展状态和一次正常推理，存储检查成功不等于推理或算法效果验收通过。
+
+### A.8 已有安装迁移、换盘与恢复
+
+| 当前情况 | 能否只改配置完成 |
+|---|---|
+| 首次安装扩展，目标无历史模型目录/绑定 | 可以按上述步骤选择默认内部或配置外部盘 |
+| 已绑定外部盘，升级仍使用同一块盘 | 自动沿用已有绑定，并检查盘的身份和空间 |
+| 内部模型已经存在，想改外部盘 | 不支持直接改 JSON 自动迁移；可能因已有模型目录而拒绝 |
+| 已外置，想换盘或迁回内部 | 已有绑定优先，新配置不会直接覆盖；需要单独迁移方案 |
+| 旧 AX 官方外置配置 | 兼容时会继承旧盘身份，不代表任意旧软链接都可迁移 |
+
+当前 rc3 没有通用的无损一键迁移命令。迁移应由管理员先确认版本和绑定、停用相关模型使用者、备份并校验，再安排切换；不要手动 `mv`/`ln -s`、删除所有权记录或以卸载重装来假定数据一定保留。
+
+安装中断时先恢复原来的盘和挂载，核对 UUID、读写状态和空间。若仅配置阶段失败且文件完整，可对具体扩展重试 `sudo dpkg --configure aibox-plugin-llm` 或 `sudo dpkg --configure aibox-plugin-llm-rk-vlm`；解包未完成时，应重新安装同一份完整可信 DEB。安装器会依据事务记录处理未提交版本，不能承诺绕过磁盘故障自动恢复。
+
+升级提交后只清理清单中仍匹配的旧模型文件；用户新增、修改或不归它管理的文件可能保留。因此外部盘也需要容量管理。安装器不会为了完成安装而自动格式化磁盘或删除客户录像。

@@ -90,224 +90,7 @@ The assistant checks dependencies when opened and checks again after reconnectio
 
 Checking does not start the model. You do not need to create an LLM video task first. “Installed,” “supports text,” and “running” are separate facts.
 
-### 2.3 DEB paths and model-storage configuration {#installation-storage}
-
-#### 2.3.1 Three different paths
-
-| Path | Configurable in current rc3? | Meaning |
-|---|---|---|
-| Location of the DEB archive | Yes | An accessible source for installation, not the destination of installed files |
-| Application, libraries, signed plugins | No arbitrary destination option | Package-defined system paths such as `/usr/local/aibox` remain in use |
-| Actual LLM model storage | A mounted external volume can be selected in advance | Configure `/etc/aibox/llm-storage.json`; only model weights move outside the system partition |
-
-Running `dpkg -i` from an external drive does not install the whole application there. A builder's `--output-dir` selects where package artifacts are written, not where a device installs them. Do not use `dpkg --root` or move all of `/usr/local/aibox` as a substitute for normal installation.
-
-Internal storage is the default, not an arbitrary internal-directory selector. AX/AXCL models use `/usr/local/aibox-plugin-llm-ax/server/<model-directory>`; RK-native models use `/usr/local/aibox-plugin-llm-rk/models`.
-
-#### 2.3.2 Check existing configuration first
-
-These commands only read existing settings/bindings:
-
-```bash
-for p in /etc/aibox/llm-storage.json \
-  /usr/local/aibox-plugin-llm-ax/external-model.json \
-  /usr/local/aibox-plugin-llm-rk/external-model.json \
-  /usr/local/aibox-plugin-llm/external-model.json; do
-  if [ -f "$p" ]; then
-    printf '\n%s\n' "$p"
-    cat "$p"
-  fi
-done
-```
-
-Selection priority is:
-
-1. An existing `external-model.json` binding in the corresponding private extension root.
-2. Its `ax` or `rk` entry in `/etc/aibox/llm-storage.json`.
-3. For AX, a compatible legacy external binding may be inherited when no configuration selects a volume.
-4. Without an effective external selection, use internal defaults. Insufficient space aborts installation; no arbitrary drive is selected.
-
-!!! warning "Examples below primarily describe first-time extension installation"
-    Existing model directories, bindings, or interrupted transactions require separate handling. Do not delete binding/transaction files or links to bypass protection. Read migration and recovery below before changing an installed system.
-
-#### 2.3.3 Select internal defaults
-
-On a fresh device without private or legacy AX external bindings, leave `/etc/aibox/llm-storage.json` absent, or use:
-
-```json
-{}
-```
-
-If another extension needs external storage, preserve its entry and omit only the relevant key. For example, an `rk` entry alone leaves a first-time, unbound AX installation on internal defaults.
-
-`internal`, `install_path`, `model_path`, and `mode` are not supported internal-path switches here. Replacing an existing configuration with `{}` or `null` does **not** migrate externally bound models back to the system partition.
-
-#### 2.3.4 Prepare an external volume
-
-An administrator runs these commands on the device. Examples use `sudo`; omit it when already root. Schedule maintenance for upgrades/migration and ensure no task, review, or assistant request is using the affected model.
-
-**Identify the partition instead of guessing from a device name:**
-
-```bash
-lsblk -o NAME,SIZE,FSTYPE,UUID,MOUNTPOINT
-```
-
-Choose the intended TF/USB/SSD partition and record its filesystem UUID. Stop if it is unformatted, contains data requiring protection, or its purpose is unclear. These instructions do not format storage.
-
-If the volume already has a stable mountpoint such as `/mnt/storage/...`, use that actual mountpoint. Do not mount it again elsewhere. The following example is only for an existing filesystem that is not yet mounted. Confirm the example directory is unmounted and empty before mounting over it:
-
-```bash
-sudo mkdir -p /mnt/aibox-models
-ls -A /mnt/aibox-models
-# Replace YOUR-ACTUAL-UUID with the UUID you verified above.
-sudo mount UUID=YOUR-ACTUAL-UUID /mnt/aibox-models
-findmnt -rn --mountpoint /mnt/aibox-models -o TARGET,UUID,FSTYPE,OPTIONS
-df -h /mnt/aibox-models /usr/local
-```
-
-Verify the exact mountpoint, UUID, filesystem type, and `rw` option for installation. An ordinary directory is not an external mount. The configured `mountpoint` must be an actual mountpoint, not an arbitrary child directory.
-
-For automatic mounting at boot, an administrator should back up and edit `/etc/fstab`. This example is for **ext4 only**; do not label another filesystem as ext4:
-
-```text
-UUID=YOUR-ACTUAL-UUID /mnt/aibox-models ext4 defaults,nofail,x-systemd.device-timeout=10s 0 2
-```
-
-Keep the same partition, stable mountpoint, and correct filesystem type; avoid duplicate entries. If the target is unmounted and unused, `sudo mount /mnt/aibox-models` tests the fstab entry; verify again with `findmnt`. `nofail` allows system boot without the drive, not model operation without its drive.
-
-Do not configure `/`, a plain directory, `/dev/shm`, or a network mount without a filesystem UUID as an external model volume. The installer neither mounts nor formats storage nor chooses a drive for you.
-
-#### 2.3.5 Write external-storage settings
-
-```bash
-sudo mkdir -p /etc/aibox
-sudoedit /etc/aibox/llm-storage.json
-# If sudoedit is unavailable, use vi as root to edit the same file.
-```
-
-Save UTF-8 JSON without comments. Copy the actual `uuid` and `fstype` reported by `findmnt`.
-
-**AX650N AX/AXCL models on an external volume:**
-
-```json
-{
-  "ax": {
-    "mountpoint": "/mnt/aibox-models",
-    "uuid": "YOUR-ACTUAL-UUID",
-    "fstype": "ext4"
-  }
-}
-```
-
-**Both RK-native and AXCL models on the same external volume for RK3588:**
-
-```json
-{
-  "ax": {
-    "mountpoint": "/mnt/aibox-models",
-    "uuid": "YOUR-ACTUAL-UUID",
-    "fstype": "ext4"
-  },
-  "rk": {
-    "mountpoint": "/mnt/aibox-models",
-    "uuid": "YOUR-ACTUAL-UUID",
-    "fstype": "ext4"
-  }
-}
-```
-
-For RK-native weights only, configure `rk`; for AX/AXCL only, configure `ax`. Different entries may select different verified volumes. An omitted key means internal defaults **only when no existing binding overrides it**. Preserve other required entries when editing an existing file.
-
-The installer creates its own paths beneath the selected mountpoint:
-
-```text
-/mnt/aibox-models/.aibox/llm-models/aibox-plugin-llm-ax/generations/model-<generated-ID>/
-/mnt/aibox-models/.aibox/llm-models/aibox-plugin-llm-rk/generations/model-<generated-ID>/
-```
-
-Arbitrary generation directory names are not configurable. Fixed system model paths link to these directories; application binaries and plugins remain on the system partition.
-
-#### 2.3.6 Install the matching platform packages
-
-After configuring storage, enter the delivery's platform directory and run only the matching command group. Install the main package first; separate system Python installation is unnecessary.
-
-**AX650N:**
-
-```bash
-( # A subshell stops this installation group if any command fails.
-set -e
-AIBOX_INSTALL_VERSION=2.1.1-202609110020-ai-assistant-rc3
-sudo dpkg -i "./aibox-ax650n_${AIBOX_INSTALL_VERSION}_arm64.deb"
-if [ -f /etc/aibox/llm-storage.json ]; then
-  sudo /usr/local/aibox/bin/aibox-python3 -m json.tool /etc/aibox/llm-storage.json
-fi
-sudo dpkg -i "./aibox-plugin-llm_${AIBOX_INSTALL_VERSION}_arm64.deb"
-)
-```
-
-**RK3588:**
-
-```bash
-( # Run only the RK3588 group; do not mix main-package platforms.
-set -e
-AIBOX_INSTALL_VERSION=2.1.1-202609110020-ai-assistant-rc3
-sudo dpkg -i "./aibox-rk3588_${AIBOX_INSTALL_VERSION}_arm64.deb"
-if [ -f /etc/aibox/llm-storage.json ]; then
-  sudo /usr/local/aibox/bin/aibox-python3 -m json.tool /etc/aibox/llm-storage.json
-fi
-sudo dpkg -i "./aibox-plugin-llm_${AIBOX_INSTALL_VERSION}_arm64.deb"
-sudo dpkg -i "./aibox-plugin-llm-rk-vlm_${AIBOX_INSTALL_VERSION}_arm64.deb"
-)
-```
-
-Run the next command only after the preceding one succeeds; stop on errors. JSON syntax validation does not validate mounts, space, or version compatibility; extension pre-install checks do that. Do not force overwrites, ignore dependencies, or falsify UUIDs.
-
-Space requirements use unpacked payload size, not compressed DEB size:
-
-- Main-package upgrades still need system-partition payload space and reserve; external model settings do not replace that requirement.
-- External-model installation checks system runtime space and external model space separately, with 128 MiB reserve on each.
-- External upgrades preserve the old generation while unpacking a new one. Free space must not be limited to the size difference between versions.
-- Two paths on the same filesystem do not provide additional capacity.
-
-#### 2.3.7 Verify the effective location
-
-After external installation, inspect `mountpoint`, `uuid`, `fstype`, and `model_path` in the corresponding binding:
-
-```bash
-# AX/AXCL:
-sudo cat /usr/local/aibox-plugin-llm-ax/external-model.json
-# RK native:
-sudo cat /usr/local/aibox-plugin-llm-rk/external-model.json
-```
-
-Run only commands for installed extensions. A fresh internal installation normally has no external binding file.
-
-The packaged read-only storage check does not start a model:
-
-```bash
-# AX/AXCL:
-sudo /usr/local/aibox/bin/aibox-python3 /usr/local/aibox-plugin-llm-ax/bin/check_model_storage.py
-# RK native:
-sudo /usr/local/aibox/bin/aibox-python3 /usr/local/aibox-plugin-llm-rk/bin/check_model_storage.py
-```
-
-Use `findmnt --mountpoint <actual-mountpoint>` to verify volume identity and `df -h <actual-mountpoint>` for capacity. Installation verifies model SHA-256. Fast startup checks primarily validate bindings, paths, and file sizes, not a full rehash of all weights. Finally verify extension state and an actual inference; storage validation alone is not inference or algorithm acceptance.
-
-#### 2.3.8 Migration, replacement drives, and recovery
-
-| Current state | Is editing the configuration sufficient? |
-|---|---|
-| First-time extension with no historical model directory/binding | Yes: use internal defaults or preconfigure an external volume |
-| Existing external binding, upgrade on the same volume | The existing binding is reused and identity/space checked |
-| Internal models already exist, change to external | No automatic migration; the existing directory may cause refusal |
-| Existing external models, change drive or return to internal | Existing bindings take precedence; a separate migration plan is required |
-| Legacy official AX external configuration | Compatible volume identity may be inherited; arbitrary legacy links are not automatically migrated |
-
-Current rc3 has no universal, lossless one-command migration. An administrator must first confirm versions and bindings, stop affected model consumers, back up and verify assets, and plan the switch. Do not manually move/link directories, delete ownership metadata, or assume uninstall/reinstall preserves all data.
-
-After an interrupted installation, restore the original drive/mount and verify UUID, read/write state, and capacity. If only configuration failed and files are complete, retry the specific package with `sudo dpkg --configure aibox-plugin-llm` or `sudo dpkg --configure aibox-plugin-llm-rk-vlm`. Incomplete unpacking requires reinstalling the same complete trusted DEB. Transaction records support recovery; they cannot bypass storage faults.
-
-After commit, cleanup removes only unchanged old model files owned by the recorded inventory. Added, modified, or unmanaged files may remain, so external storage still needs capacity management. The installer does not automatically format drives or delete customer recordings to finish installation.
+For DEB installation or internal/external model-storage setup, see [Appendix A: DEB paths and model-storage configuration](#installation-storage) at the end of this guide.
 
 ## 3. Your first five minutes
 
@@ -810,3 +593,222 @@ For support, provide event time, actual task ID, request description, interface 
 - [Alarm Linkage](../alarm-linkage.md): alarm outputs and integrations.
 - [Deployment and Operations](../deployment-ops.md): rollout, upgrades, and maintenance.
 - [FAQ](../faq.md): other device and SDK questions.
+
+## Appendix A. DEB paths and model-storage configuration {#installation-storage}
+
+### A.1 Three different paths
+
+| Path | Configurable in current rc3? | Meaning |
+|---|---|---|
+| Location of the DEB archive | Yes | An accessible source for installation, not the destination of installed files |
+| Application, libraries, signed plugins | No arbitrary destination option | Package-defined system paths such as `/usr/local/aibox` remain in use |
+| Actual LLM model storage | A mounted external volume can be selected in advance | Configure `/etc/aibox/llm-storage.json`; only model weights move outside the system partition |
+
+Running `dpkg -i` from an external drive does not install the whole application there. A builder's `--output-dir` selects where package artifacts are written, not where a device installs them. Do not use `dpkg --root` or move all of `/usr/local/aibox` as a substitute for normal installation.
+
+Internal storage is the default, not an arbitrary internal-directory selector. AX/AXCL models use `/usr/local/aibox-plugin-llm-ax/server/<model-directory>`; RK-native models use `/usr/local/aibox-plugin-llm-rk/models`.
+
+### A.2 Check existing configuration first
+
+These commands only read existing settings/bindings:
+
+```bash
+for p in /etc/aibox/llm-storage.json \
+  /usr/local/aibox-plugin-llm-ax/external-model.json \
+  /usr/local/aibox-plugin-llm-rk/external-model.json \
+  /usr/local/aibox-plugin-llm/external-model.json; do
+  if [ -f "$p" ]; then
+    printf '\n%s\n' "$p"
+    cat "$p"
+  fi
+done
+```
+
+Selection priority is:
+
+1. An existing `external-model.json` binding in the corresponding private extension root.
+2. Its `ax` or `rk` entry in `/etc/aibox/llm-storage.json`.
+3. For AX, a compatible legacy external binding may be inherited when no configuration selects a volume.
+4. Without an effective external selection, use internal defaults. Insufficient space aborts installation; no arbitrary drive is selected.
+
+!!! warning "Examples below primarily describe first-time extension installation"
+    Existing model directories, bindings, or interrupted transactions require separate handling. Do not delete binding/transaction files or links to bypass protection. Read migration and recovery below before changing an installed system.
+
+### A.3 Select internal defaults
+
+On a fresh device without private or legacy AX external bindings, leave `/etc/aibox/llm-storage.json` absent, or use:
+
+```json
+{}
+```
+
+If another extension needs external storage, preserve its entry and omit only the relevant key. For example, an `rk` entry alone leaves a first-time, unbound AX installation on internal defaults.
+
+`internal`, `install_path`, `model_path`, and `mode` are not supported internal-path switches here. Replacing an existing configuration with `{}` or `null` does **not** migrate externally bound models back to the system partition.
+
+### A.4 Prepare an external volume
+
+An administrator runs these commands on the device. Examples use `sudo`; omit it when already root. Schedule maintenance for upgrades/migration and ensure no task, review, or assistant request is using the affected model.
+
+**Identify the partition instead of guessing from a device name:**
+
+```bash
+lsblk -o NAME,SIZE,FSTYPE,UUID,MOUNTPOINT
+```
+
+Choose the intended TF/USB/SSD partition and record its filesystem UUID. Stop if it is unformatted, contains data requiring protection, or its purpose is unclear. These instructions do not format storage.
+
+If the volume already has a stable mountpoint such as `/mnt/storage/...`, use that actual mountpoint. Do not mount it again elsewhere. The following example is only for an existing filesystem that is not yet mounted. Confirm the example directory is unmounted and empty before mounting over it:
+
+```bash
+sudo mkdir -p /mnt/aibox-models
+ls -A /mnt/aibox-models
+# Replace YOUR-ACTUAL-UUID with the UUID you verified above.
+sudo mount UUID=YOUR-ACTUAL-UUID /mnt/aibox-models
+findmnt -rn --mountpoint /mnt/aibox-models -o TARGET,UUID,FSTYPE,OPTIONS
+df -h /mnt/aibox-models /usr/local
+```
+
+Verify the exact mountpoint, UUID, filesystem type, and `rw` option for installation. An ordinary directory is not an external mount. The configured `mountpoint` must be an actual mountpoint, not an arbitrary child directory.
+
+For automatic mounting at boot, an administrator should back up and edit `/etc/fstab`. This example is for **ext4 only**; do not label another filesystem as ext4:
+
+```text
+UUID=YOUR-ACTUAL-UUID /mnt/aibox-models ext4 defaults,nofail,x-systemd.device-timeout=10s 0 2
+```
+
+Keep the same partition, stable mountpoint, and correct filesystem type; avoid duplicate entries. If the target is unmounted and unused, `sudo mount /mnt/aibox-models` tests the fstab entry; verify again with `findmnt`. `nofail` allows system boot without the drive, not model operation without its drive.
+
+Do not configure `/`, a plain directory, `/dev/shm`, or a network mount without a filesystem UUID as an external model volume. The installer neither mounts nor formats storage nor chooses a drive for you.
+
+### A.5 Write external-storage settings
+
+```bash
+sudo mkdir -p /etc/aibox
+sudoedit /etc/aibox/llm-storage.json
+# If sudoedit is unavailable, use vi as root to edit the same file.
+```
+
+Save UTF-8 JSON without comments. Copy the actual `uuid` and `fstype` reported by `findmnt`.
+
+**AX650N AX/AXCL models on an external volume:**
+
+```json
+{
+  "ax": {
+    "mountpoint": "/mnt/aibox-models",
+    "uuid": "YOUR-ACTUAL-UUID",
+    "fstype": "ext4"
+  }
+}
+```
+
+**Both RK-native and AXCL models on the same external volume for RK3588:**
+
+```json
+{
+  "ax": {
+    "mountpoint": "/mnt/aibox-models",
+    "uuid": "YOUR-ACTUAL-UUID",
+    "fstype": "ext4"
+  },
+  "rk": {
+    "mountpoint": "/mnt/aibox-models",
+    "uuid": "YOUR-ACTUAL-UUID",
+    "fstype": "ext4"
+  }
+}
+```
+
+For RK-native weights only, configure `rk`; for AX/AXCL only, configure `ax`. Different entries may select different verified volumes. An omitted key means internal defaults **only when no existing binding overrides it**. Preserve other required entries when editing an existing file.
+
+The installer creates its own paths beneath the selected mountpoint:
+
+```text
+/mnt/aibox-models/.aibox/llm-models/aibox-plugin-llm-ax/generations/model-<generated-ID>/
+/mnt/aibox-models/.aibox/llm-models/aibox-plugin-llm-rk/generations/model-<generated-ID>/
+```
+
+Arbitrary generation directory names are not configurable. Fixed system model paths link to these directories; application binaries and plugins remain on the system partition.
+
+### A.6 Install the matching platform packages
+
+After configuring storage, enter the delivery's platform directory and run only the matching command group. Install the main package first; separate system Python installation is unnecessary.
+
+**AX650N:**
+
+```bash
+( # A subshell stops this installation group if any command fails.
+set -e
+AIBOX_INSTALL_VERSION=2.1.1-202609110020-ai-assistant-rc3
+sudo dpkg -i "./aibox-ax650n_${AIBOX_INSTALL_VERSION}_arm64.deb"
+if [ -f /etc/aibox/llm-storage.json ]; then
+  sudo /usr/local/aibox/bin/aibox-python3 -m json.tool /etc/aibox/llm-storage.json
+fi
+sudo dpkg -i "./aibox-plugin-llm_${AIBOX_INSTALL_VERSION}_arm64.deb"
+)
+```
+
+**RK3588:**
+
+```bash
+( # Run only the RK3588 group; do not mix main-package platforms.
+set -e
+AIBOX_INSTALL_VERSION=2.1.1-202609110020-ai-assistant-rc3
+sudo dpkg -i "./aibox-rk3588_${AIBOX_INSTALL_VERSION}_arm64.deb"
+if [ -f /etc/aibox/llm-storage.json ]; then
+  sudo /usr/local/aibox/bin/aibox-python3 -m json.tool /etc/aibox/llm-storage.json
+fi
+sudo dpkg -i "./aibox-plugin-llm_${AIBOX_INSTALL_VERSION}_arm64.deb"
+sudo dpkg -i "./aibox-plugin-llm-rk-vlm_${AIBOX_INSTALL_VERSION}_arm64.deb"
+)
+```
+
+Run the next command only after the preceding one succeeds; stop on errors. JSON syntax validation does not validate mounts, space, or version compatibility; extension pre-install checks do that. Do not force overwrites, ignore dependencies, or falsify UUIDs.
+
+Space requirements use unpacked payload size, not compressed DEB size:
+
+- Main-package upgrades still need system-partition payload space and reserve; external model settings do not replace that requirement.
+- External-model installation checks system runtime space and external model space separately, with 128 MiB reserve on each.
+- External upgrades preserve the old generation while unpacking a new one. Free space must not be limited to the size difference between versions.
+- Two paths on the same filesystem do not provide additional capacity.
+
+### A.7 Verify the effective location
+
+After external installation, inspect `mountpoint`, `uuid`, `fstype`, and `model_path` in the corresponding binding:
+
+```bash
+# AX/AXCL:
+sudo cat /usr/local/aibox-plugin-llm-ax/external-model.json
+# RK native:
+sudo cat /usr/local/aibox-plugin-llm-rk/external-model.json
+```
+
+Run only commands for installed extensions. A fresh internal installation normally has no external binding file.
+
+The packaged read-only storage check does not start a model:
+
+```bash
+# AX/AXCL:
+sudo /usr/local/aibox/bin/aibox-python3 /usr/local/aibox-plugin-llm-ax/bin/check_model_storage.py
+# RK native:
+sudo /usr/local/aibox/bin/aibox-python3 /usr/local/aibox-plugin-llm-rk/bin/check_model_storage.py
+```
+
+Use `findmnt --mountpoint <actual-mountpoint>` to verify volume identity and `df -h <actual-mountpoint>` for capacity. Installation verifies model SHA-256. Fast startup checks primarily validate bindings, paths, and file sizes, not a full rehash of all weights. Finally verify extension state and an actual inference; storage validation alone is not inference or algorithm acceptance.
+
+### A.8 Migration, replacement drives, and recovery
+
+| Current state | Is editing the configuration sufficient? |
+|---|---|
+| First-time extension with no historical model directory/binding | Yes: use internal defaults or preconfigure an external volume |
+| Existing external binding, upgrade on the same volume | The existing binding is reused and identity/space checked |
+| Internal models already exist, change to external | No automatic migration; the existing directory may cause refusal |
+| Existing external models, change drive or return to internal | Existing bindings take precedence; a separate migration plan is required |
+| Legacy official AX external configuration | Compatible volume identity may be inherited; arbitrary legacy links are not automatically migrated |
+
+Current rc3 has no universal, lossless one-command migration. An administrator must first confirm versions and bindings, stop affected model consumers, back up and verify assets, and plan the switch. Do not manually move/link directories, delete ownership metadata, or assume uninstall/reinstall preserves all data.
+
+After an interrupted installation, restore the original drive/mount and verify UUID, read/write state, and capacity. If only configuration failed and files are complete, retry the specific package with `sudo dpkg --configure aibox-plugin-llm` or `sudo dpkg --configure aibox-plugin-llm-rk-vlm`. Incomplete unpacking requires reinstalling the same complete trusted DEB. Transaction records support recovery; they cannot bypass storage faults.
+
+After commit, cleanup removes only unchanged old model files owned by the recorded inventory. Added, modified, or unmanaged files may remain, so external storage still needs capacity management. The installer does not automatically format drives or delete customer recordings to finish installation.
