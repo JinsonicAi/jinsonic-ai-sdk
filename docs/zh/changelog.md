@@ -9,6 +9,7 @@
 
 ### 2026-09-11（AI 助手 RC3）
 
+- 在同一份 [AI 助手使用说明](ai-assistant/index.md#installation-storage)补充内部/外部模型存储配置、UUID/挂载核对、AX/RK 安装命令、有效绑定检查及迁移限制；保持单一导航入口。
 - [AI 助手使用说明](ai-assistant/index.md)同步中英文咨询、方案追问、会话内表单和任务/模型运行位置的区别。
 - 在使用说明内补充[设备信息查询](ai-assistant/index.md#device-information)：软件/固件版本、设备标识、平台、时间、CPU/NPU/CMM/内存/温度，以及单项、多项和计算卡追问。
 - 补充缺失值、有效零值、采样时间未知和过期数据的解释，避免把旧值说成实时值。

@@ -9,6 +9,7 @@ This page records the main changes of the documentation site and the SDK.
 
 ### 2026-09-11 (AI assistant RC3)
 
+- Added internal/external model-storage settings, mount/UUID checks, AX/RK installation commands, effective-binding checks, and migration limits within the same [user guide](ai-assistant/index.md#installation-storage), preserving one navigation entry.
 - Updated the [AI Assistant User Guide](ai-assistant/index.md) for bilingual consultation, plan refinements, inline forms, and separate task/model placement.
 - Added [device information queries](ai-assistant/index.md#device-information) to the user guide: software/firmware versions, identifier, platform, time, CPU/NPU/CMM/memory/temperature, single/multiple fields, and compute-card follow-ups.
 - Explained unavailable values, valid zeros, unknown sample times, and stale data rather than presenting old readings as real-time samples.
