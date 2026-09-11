@@ -2,12 +2,14 @@
 
 [简体中文](../../zh/ai-assistant/index.md)
 
-The AI assistant is a conversational entry point for video tasks in the AI-BOX Web interface. Use it to inspect device capabilities, choose algorithms, create detection tasks, manage existing tasks, and find alarms, logs, and related recordings. It translates a request into a concrete business operation and presents algorithm, camera, task-selection, and confirmation forms when needed.
+The AI assistant is a conversational entry point for video tasks in the AI-BOX Web interface. Use it to discuss detection plans, inspect capabilities and [device versions and resource metrics](device-info.md), choose algorithms, create detection tasks, manage existing tasks, and find alarms, logs, and related recordings. It translates a request into a concrete business operation and presents algorithm, camera, task-selection, and confirmation forms when needed.
 
 This guide is intended for device administrators, deployment engineers, and operators. It follows the workflow: open the assistant, check readiness, create a task, manage tasks, review evidence, and troubleshoot.
 
 !!! note "Scope and illustrations"
-    This guide reflects the matching frontend and backend implementation reviewed on September 9, 2026. Availability depends on the application, Web assets, algorithm plugins, independent model extension, and hardware combination. Older releases may not have every form or query described here. Always use the algorithms and runtime locations returned by your device.
+    Updated September 11, 2026. New features use the matching `2.1.1-202609110020-ai-assistant-rc3` implementation as their baseline. Availability depends on the application, Web assets, algorithm plugins, independent model extension, and hardware combination. Older releases may not have every form or query described here. Always use the algorithms and runtime locations returned by your device.
+
+    RC3 is a release candidate. Updated documentation and generated packages do not mean every device or cloud page has been upgraded or every deployment has passed acceptance. Existing illustrations show earlier interfaces and do not include the new device-information cards; they are not RC3 device-acceptance evidence.
 
     Figure 1 shows the English device interface in a supplied screenshot. Other screenshots use actual application components with illustrative data to explain controls and workflows; they do not show a connected device or prove successful execution. Chinese and English illustrations are maintained separately. Data in the illustrative figures are examples; the task name in Figure 1 is retained as displayed on the device.
 
@@ -70,6 +72,15 @@ Window geometry is stored in the current browser; another browser may use a diff
 
 ### 2.2 Dependency checks and retry
 
+The complete RC3 delivery combinations are listed below. Install the matching main package before extensions. The main package supplies a private Python runtime; customers do not need to install system Python separately.
+
+| Platform | Main package | Extensions in the complete delivery |
+|---|---|---|
+| AX650N | `aibox-ax650n` | `aibox-plugin-llm` |
+| RK3588 | `aibox-rk3588` | `aibox-plugin-llm`, `aibox-plugin-llm-rk-vlm` |
+
+The shared AX/AXCL extension contains separately built and signed host-platform plugins. The RK VLM extension supplies the RK-native model. Do not mix main-package platforms or upgrade only the Web assets while leaving incompatible backend components. Installing device DEBs does not deploy the cloud Web application.
+
 The assistant checks dependencies when opened and checks again after reconnection. Missing extensions, incomplete files, unavailable components, or failed checks can disable input and display guidance.
 
 1. Open **Assistant help** and read the specific state and reason.
@@ -102,7 +113,7 @@ Begin with queries to understand the returned information before creating a task
 
 ### 4.1 Recommended structure
 
-Use **action + object + scope + required conditions**. For example:
+Ask in everyday language; algorithm IDs and a fixed command syntax are not required. Including **action + object + scope + required conditions** helps reduce follow-up questions. For example:
 
 ```text
 List tasks
@@ -113,7 +124,7 @@ Show error logs for this week
 Show recordings related to license plate alarms
 ```
 
-A fixed command syntax is not required. Recognized explicit commands use the device's business services. Requests needing language understanding use an available text model to produce a controlled proposal, which the device validates. When a proposal card appears, check the proposed action before clicking **Confirm**.
+Natural-language requests use an available text model to extract intent and constraints, followed by validation against installed capabilities, task state, and allowed business interfaces. Shortcuts and some explicit commands can use controlled business paths directly. When a proposal card appears, check the action before clicking **Confirm**. Unreliable interpretations, unsupported conditions, and missing information require clarification; natural-language support is not a guarantee of correct interpretation of every possible message.
 
 ### 4.2 Follow-ups and corrections
 
@@ -132,6 +143,20 @@ When changing topics or cancelling a pending form, state the new target. A later
 | Task selection or deletion | Actual names, IDs, states, and count | Applies to selected targets; deletion has a separate confirmation |
 
 Cancel ends the pending step. If task configuration or state changes while a confirmation is open, the device may require a fresh selection. Review the current list and continue.
+
+### 4.4 Discuss a plan before creating it
+
+For example: `I only need advice: how could I reduce nuisance smoke alerts in a loading bay?` The assistant can propose installed capabilities and explain limitations. `Why this recommendation?` is a consultation, not permission to create a task.
+
+To prepare a proposal, continue with `Prepare that setup on compute card 1 and keep video recordings`, then `Change it to the host; keep everything else`. Verify the algorithms, location, and recording requirement in the updated form. Changing placement should not replace the detection goal with another algorithm.
+
+Use the conversation's algorithm and RTSP forms directly, then click **Confirm/Cancel**; there is no need to rewrite form selections as a chat message. Advice is not evidence of field performance, and an unsubmitted draft is not a running task.
+
+### 4.5 Query device information
+
+Ask `Which software and firmware versions are installed?`, `Show the host CPU usage`, or `What is the temperature of compute card 1?`, then follow with `And its memory usage?`. Replies should identify hardware scope, units, and freshness.
+
+See [Device Information Queries](device-info.md) for supported fields, bilingual examples, and interpretation of missing values and sample times.
 
 ## 5. Inspect and select algorithms
 
@@ -357,7 +382,7 @@ Open **Model service** from the assistant icon or settings menu. Read actual run
 | Currently running on | Actual model instance location; may be unavailable before startup |
 | Automatic | Selects using available capabilities and reuses a compatible instance |
 | Local / compute card | Explicit placement; unavailable choices report an error instead of silently moving |
-| Release after idle | Integer from 30 to 3,600 seconds; use the device's saved value as the reference |
+| Release after idle | New configurations default to 1,800 seconds (30 minutes); accepts 30–3,600 integer seconds. 3,600 seconds is one hour. Existing devices retain their saved setting |
 | Available locations | Extension availability and declared text support |
 | Diagnostics | PID, state, consumers, queued work, and in-flight work |
 | Save | Persists preferences without immediately starting the model |
@@ -387,10 +412,12 @@ If saving fails or status is stale, refresh before assuming a value in an input 
 
 ## 12. Understand LLM review
 
-LLM review is a processing stage after detection, separate from selecting a detector. Current newly created fire templates can include default review; other algorithms can request it explicitly. Inspect the generated proposal and node settings.
+LLM review is a processing stage after detection, separate from selecting a detector. RC3 assistant-created fire/smoke tasks include review by default; other algorithms can request it explicitly. Existing tasks are not automatically rewritten. Inspect the generated proposal and node settings.
 
 - Check for **LLM review requirement retained** in the creation form.
 - Verify the LLM stage exists and upstream algorithms request review.
+- Check **Enable LLM review** on upstream algorithms. Review Prompt must be readable, nonempty text appropriate to the algorithm, never `[object Object]`. Verify the acceptance keyword (normally `YES`) and timeout.
+- A single detector feeds LLM review, then OSD and outputs. Parallel detectors feed the shared review stage before OSD. Preserve the direct video-source-to-OSD frame path; parallel wiring does not imply an AND condition.
 - Review uses the shared service rather than implying another independent instance.
 - If a required LLM component is missing, a task without review does not satisfy the original requirement.
 - Under new strict templates, failed, timed-out, or indeterminate review can preserve the original alarm. Receiving an alarm does not prove successful model review.
@@ -421,6 +448,10 @@ Chinese pages use the Chinese assistant; English pages use English. Interface gu
 | 查看算法列表 | List algorithms |
 | 查看任务列表 | List tasks |
 | 查看最近报警 | Recent alarms |
+| 软件和固件分别是什么版本？ | Which software and firmware versions are installed? |
+| 主板CPU占用多少？ | Show the host CPU usage. |
+| 一号计算卡有多烫？ | What is the temperature of compute card 1? |
+| 那内存呢？ | And its memory usage? |
 | 创建吸烟检测任务 | Create a smoking detection task |
 | 暂停任务“Warehouse entrance” | Pause task “Warehouse entrance” |
 | 查询今天的火灾报警 | Show today's fire alarms |
@@ -441,6 +472,9 @@ Keep the actual stored task name when referring to a task. Switching interface l
 | Extension installation prompt | Platform and matching extension | Follow installation guidance, then Check again |
 | Files installed but free-form requests fail | Actual text-only backend | Use explicit commands and verify compatible versions |
 | Queries work while model is not started | Direct business-service routing | Normal on-demand behavior; do not start a model just for queries |
+| Metrics missing or sample time unknown | Fields and timestamps supplied by the device | Never interpret missing data as zero; see Device Information Queries |
+| Input too long or incomplete answer | Request size, model capacity, output budget | Split the request and inspect its form/receipt; do not repeatedly submit writes |
+| Model busy or shutting down | Active inference, release, or loading | Wait for recovery; interruption is not a success receipt |
 | Camera check fails | Device-side network, credentials, path | Fix the cause; check whether a task was saved before retrying |
 | Algorithm absent | Installation, loading, visibility | Inspect plugin management; do not guess component names |
 | Creation returns a draft | Required site settings | Complete and save the draft in the editor |
@@ -461,6 +495,7 @@ Record acceptance against the actual deployment. At minimum, verify:
 
 - [ ] Both language pages expose the entry and readable forms and guidance.
 - [ ] Connection, catalog, extension, and runtime choices match the deployment.
+- [ ] Versions and metrics match device data; single-field/card follow-ups retain scope and missing/stale values are labelled.
 - [ ] Camera address corresponds to the correct scene; handover screenshots contain no credentials.
 - [ ] Automatic and draft creation meet requirements; task IDs are recorded.
 - [ ] Start, pause, resume, stop, and deletion scopes and results are checked.
@@ -474,6 +509,7 @@ For support, provide event time, actual task ID, request description, interface 
 
 ## 17. Further reading
 
+- [Device Information Queries](device-info.md): versions, CPU/NPU, CMM, memory, temperature, and freshness.
 - [Device Onboarding & Quick Start](../device-onboarding.md): first connection, access, and deployment.
 - [Web User Manual](../user-manual/index.md): editor, node settings, and preview.
 - [Runtime Location and Deployment](../runtime-location.md): hardware and execution placement.

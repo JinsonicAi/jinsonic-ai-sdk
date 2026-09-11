@@ -7,6 +7,14 @@ This page records the main changes of the documentation site and the SDK.
 
 ## Documentation Site
 
+### 2026-09-11 (AI assistant RC3)
+
+- Updated the [AI Assistant User Guide](ai-assistant/index.md) for bilingual consultation, plan refinements, inline forms, and separate task/model placement.
+- Added [Device Information Queries](ai-assistant/device-info.md): software/firmware versions, identifier, platform, time, CPU/NPU/CMM/memory/temperature, single/multiple fields, and compute-card follow-ups.
+- Explained unavailable values, valid zeros, unknown sample times, and stale data rather than presenting old readings as real-time samples.
+- Documented the 1,800-second idle default, delivery-package combinations, private Python runtime, and default fire review with upstream prompt/switch checks.
+- New content uses `2.1.1-202609110020-ai-assistant-rc3` as its baseline. Release candidates require site acceptance; updated docs do not upgrade device or cloud applications.
+
 ### 2026-09-06 (OpenAPI documentation and examples 1.4.9)
 
 - Updated the [protocol](reference/openapi-protocol.md) with web-account Client provisioning, preserving existing Client Credentials / Token / business APIs.
