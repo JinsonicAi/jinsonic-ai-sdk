@@ -986,9 +986,11 @@ Best for evaluating a scene directly from a natural-language description. The fl
 
 ---
 
+<span id="intelligent-retrieval"></span>
+
 ## 16. Intelligent Retrieval Usage
 
-This chapter only explains how customers can use Intelligent Retrieval in the web UI.
+This chapter covers the standalone Smart Search window opened from the magnifying-glass icon in the device page header. To describe a scene and view results in a conversation instead, see [AI Assistant: intelligent index search](../ai-assistant/index.md#intelligent-retrieval).
 
 ### 16.1 Function Overview
 
@@ -1000,16 +1002,18 @@ Intelligent Retrieval supports:
 
 ### 16.2 Before Use
 
-- [ ] The related task is running normally.
-- [ ] Alert snapshots or recordings already exist.
-- [ ] Intelligent Retrieval is enabled in system settings.
+- [ ] The alarm images or saved recordings you want to search exist and remain accessible.
+- [ ] Under the header gear menu, open **Retrieval Settings**, turn on **Enable retrieval**, select a run location, and save.
+- [ ] The search service is ready and existing media has been indexed. If media exists but the index is empty, click **Sync now** and wait for indexing.
 - [ ] The intended scope is selected: image, video, or all.
+
+Searching an existing index does not require the original task to be running now. The assistant's LLM service and intelligent retrieval have separate settings; opening the assistant does not enable retrieval.
 
 ### 16.3 Steps
 
 #### 16.3.1 Text Search
 
-1. Open the Intelligent Retrieval page.
+1. Click the **Smart Search magnifying-glass icon** in the device page header to open the standalone search window.
 2. Enter the search text.
 3. Select the search scope.
 4. Click search and review the results.
@@ -1030,7 +1034,7 @@ Intelligent Retrieval supports:
 
 | Symptom | Action |
 |---------|--------|
-| No search results | Confirm the task is running and data has already been generated |
+| No search results | Distinguish disabled search, an unready service, an empty index, and no matches. Check that media remains available and indexed; use Sync now in Retrieval Settings when needed |
 | Too few results | Change the keywords or switch to `all` scope |
 | Video results look similar | Open the original video and check by time point |
 

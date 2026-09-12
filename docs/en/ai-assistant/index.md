@@ -2,16 +2,23 @@
 
 [简体中文](../../zh/ai-assistant/index.md)
 
-The AI assistant is a conversational entry point for video tasks in the AI-BOX Web interface. Use it to discuss detection plans, inspect capabilities and [device versions and resource metrics](#device-information), choose algorithms, create detection tasks, manage existing tasks, and find alarms, logs, related recordings, and [intelligent-search image/video candidates](#intelligent-retrieval). It interprets a request, validates a proposal against integrated capabilities, and presents algorithm, camera, task-selection, and confirmation forms when needed.
+Use the AI assistant to find saved images and videos, check device status, discuss detection plans, and create or manage video tasks. You do not need to remember algorithm IDs or command syntax. Describe what you want to do, then follow the prompts, complete any forms, and check the result. Before creating, starting, stopping, or deleting tasks, verify the targets and requirements.
 
-This guide is intended for device administrators, deployment engineers, and operators. It follows the workflow: open the assistant, check readiness, create a task, manage tasks, review evidence, and troubleshoot.
+What would you like to do?
 
-!!! note "Scope and illustrations"
-    Updated September 12, 2026. New features use the matching `2.1.1-202609121751-ai-assistant-rc5` implementation as their baseline. Availability depends on the application, Web assets, algorithm plugins, independent model extension, and hardware combination. Older releases may not have every form or query described here. Always use the algorithms and runtime locations returned by your device.
+| Your goal | Example | Where to start |
+|---|---|---|
+| Find existing scenes | `Find images and videos of a woman wearing red.` | [Search indexed media in the conversation](#intelligent-retrieval) |
+| Set up future detection and alarms | `Alert me when someone is smoking.` | [Create detection tasks](#6-create-detection-tasks) |
+| Check device status | `Show the host CPU and memory usage.` | [Query device information](#device-information) |
+| Review recorded alarms | `Show today's fire alarms.` | [Find alarms and image evidence](#8-find-alarms-and-image-evidence) |
 
-    RC5 is a release candidate, not a completed commercial acceptance. Real-model interpretation still fails in some scenarios; see Section 16. Updated documentation does not establish package download availability or deployment to devices or the cloud. Use the actual delivery manifest and verification results for package status. Existing illustrations show earlier interfaces, not all new features, and are not RC5 device-acceptance evidence.
+This guide follows the workflow: open the assistant, describe a request, complete the operation, review results, and resolve common problems. For your first indexed-media search, go directly to Section 8.3.
 
-    Figure 1 shows the English device interface in a supplied screenshot. Other screenshots use actual application components with illustrative data to explain controls and workflows; they do not show a connected device or prove successful execution. Chinese and English illustrations are maintained separately. Data in the illustrative figures are examples; the task name in Figure 1 is retained as displayed on the device.
+!!! note "Applicable version and interface examples"
+    This guide applies to the matching `2.1.1-202609121751-ai-assistant-rc5` release components. Available features, algorithms, and runtime locations depend on your device. If a feature is missing, ask your administrator to check that the application, Web interface, and plugins are compatible. Refer to the delivery notes for release status and known issues.
+
+    Screenshots illustrate control locations; the interface may differ slightly by version. Camera addresses, task names, counts, and times are examples. Use your own device information when following the steps.
 
 Click an illustration to open the original image and inspect its controls and text at full size.
 
@@ -47,7 +54,7 @@ The task page remains interactive while the assistant is open. You can inspect a
 
 [![Figure 2: Assistant window, status row, and bottom input](../../assets/ai-assistant/en-02-overview.png)](../../assets/ai-assistant/en-02-overview.png)
 
-*Figure 2: Actual application components with example state. The top row contains model status, help, and settings; the bottom contains shortcuts and the input. No device is connected.*
+*Figure 2: Assistant window example. The top row contains model status, help, and settings; the bottom contains shortcuts and the message input. Use your device's displayed state when following the guide.*
 
 Window geometry is stored in the current browser; another browser may use a different position. With the title bar focused, use arrow keys to move the window. The lower-right resize control also supports arrow keys; Shift increases the step. Compact windows may hide shortcuts without disabling text input.
 
@@ -70,8 +77,6 @@ Window geometry is stored in the current browser; another browser may use a diff
 !!! warning "Model extensions and algorithm packages are different"
     Do not upload an independent `.deb` model extension as a `.plugin` algorithm package. The application-side LLM component is separate from the model program and weights. Install a matching release combination using its package instructions. File presence alone does not establish successful inference.
 
-### 2.2 Dependency checks and retry
-
 The matching RC5 installation combinations are listed below. Install the matching main package before extensions. The main package supplies a private Python runtime; customers do not need to install system Python separately.
 
 | Platform | Main package | Extensions in the complete delivery |
@@ -82,6 +87,8 @@ The matching RC5 installation combinations are listed below. Install the matchin
 The shared AX/AXCL extension contains separately built and signed host-platform plugins. The RK VLM extension supplies the RK-native model. Do not mix main-package platforms or upgrade only the Web assets while leaving incompatible backend components. Installing device DEBs does not deploy the cloud Web application.
 
 The delivery layout has two DEB files in the AX directory and three in the RK directory. The shared `aibox-plugin-llm` appears as the same package in both directories, giving five delivered files but four distinct packages. Do not install the shared package twice or confuse its host-platform plugins with model execution placement.
+
+### 2.2 Dependency checks and retry
 
 The assistant checks dependencies when opened and checks again after reconnection. Missing extensions, incomplete files, unavailable components, or failed checks can disable input and display guidance.
 
@@ -128,7 +135,7 @@ Show error logs for this week
 Show recordings related to license plate alarms
 ```
 
-Natural-language text sent to the conversation first uses an available LLM to extract intent and constraints, including short requests such as “List tasks.” If no model is resident, the message itself requests on-demand startup; creating an LLM video task first is not required. The device then validates installed capabilities, task state, and permitted business interfaces. Opening the window, inspecting model status, and submitting a previously validated structured form are different from sending a new natural-language message and do not require extra inference.
+Simply send your message. The assistant interprets the request and responds using your device's available features and data. If the model is not started, it loads automatically, so the first reply may take longer. You do not need to create an LLM video task first. Complete algorithm-selection and camera-address forms directly and confirm them; there is no need to rewrite their contents as a chat message.
 
 When a proposal card appears, check the action before clicking **Confirm**. Unreliable interpretations, unsupported conditions, and missing information require clarification; natural-language support does not guarantee correct interpretation of every possible message. A model failure or timeout is not a completed business operation. Do not repeatedly resend creation requests to obtain a response.
 
@@ -140,9 +147,9 @@ After an alarm query, ask for related recordings. After a task list, identify th
 
 When changing topics or cancelling a pending form, state the new target. A later correction does not automatically roll back an already submitted creation or state change.
 
-RC5 stores bounded short-term conversation state in the device service process, separating pending drafts, saved-task references, and operation receipts. After a successful save, “Stop it” should refer to the saved task ID, not create a duplicate. “Other tasks” does not automatically mean the current task or every task; identify the intended targets.
+When continuing an operation, use the task's name whenever possible. If you say “Stop it” after saving a task, check that the reply identifies that same task. For “Other tasks,” supply the names or select the intended targets from the list.
 
-A new correction invalidates old unsubmitted confirmation cards. If output or condition validation fails, resolve the issue rather than confirming an old card. This is not complete long-term memory: context expires 20 minutes after a successful write, is lost on service restart, and does not yet resume automatically across connections or browsers. Capacity or size limits produce an explicit rejection. After reconnecting, query actual tasks and check IDs; visible chat history does not establish that the server retains every condition. Inspect new proposals after complex withdrawals or replacements instead of assuming every correction was merged correctly.
+After changing a request, use the latest confirmation card; old unsubmitted cards expire. Conversation context lasts 20 minutes after its latest successful update, is not retained after a service restart, and does not resume automatically in another browser. After a long pause or reconnection, query actual tasks and check their IDs. To continue searching, send the full scene description again. Even if chat history remains visible, check that the new reply retains all your requirements.
 
 ### 4.3 Understand the different confirmations
 
@@ -305,12 +312,12 @@ Combined algorithms normally detect independently on the same video source and a
 
 The default output template includes network output and alarms. Additional recording, HDMI, or other outputs depend on the actual catalog and request. Storage or destination settings may require a draft. An alarm output node does not establish that relays, TTS, or external reporting are enabled; inspect their configuration separately.
 
-RC5 adds two validation paths, not support for arbitrary combinations:
+For requests with specific conditions or outputs, check the following carefully:
 
-- **Conditions on the same subject:** “Alert when the same person is both male and wearing a hat” requires the person-attribute adapter to produce the corresponding rules with an all-conditions relationship. Selecting an algorithm and leaving its default “no hat” rule is not sufficient. The current production adapter focuses on person attributes. Unsupported color, cross-subject, sequence, duration, or other-component conditions must not be silently discarded. Attribute categories are algorithm predictions, not verified identity or ground truth.
-- **Explicit output requirements:** Creating a task or adopting advice uses separate extraction and validation for explicit recording, HDMI, or output restrictions. A pending draft uses its own change-validation path without processing the same change twice. Affirmative alarms and network preview are default outputs, not additional duplicate nodes. Disabling default alarms/network output or requesting “HDMI only” is rejected when the current template cannot guarantee it. After extraction fails, correct the request and inspect the next complete proposal; changing placement alone does not authorize dropping earlier output requirements.
+- **Conditions on the same subject:** For “Alert when a person is both male and wearing a hat,” check that the proposal and algorithm settings include both conditions and require all of them, rather than leaving the default “no hat” rule. This type of condition is primarily available for person-attribute detection. Cross-subject relationships, sequences, durations, and color-based alarms cannot be treated as ordinary algorithm combinations. If a condition is unsupported, revise the proposal or contact support. A task missing a required condition does not fulfill the original request. Check attribute results against actual images.
+- **Recording, HDMI, and other outputs:** State them when creating the task and check that they remain in the confirmation. If the assistant reports that disabling default alarms, disabling network output, or keeping “HDMI only” is unsupported, adjust the proposal as prompted; the message does not mean the setting succeeded. Recheck these output requirements after changing the task's runtime location.
 
-“Notify me” prepares a detection and alarm proposal. It does not establish a persistent cross-conversation notification subscription or prove delivery. Complete the camera, confirmation, actual task startup, and alarm-destination configuration, then validate positive/negative examples and real notification receipts.
+“Notify me” starts a detection-and-alarm setup workflow; that sentence alone does not start monitoring. Complete the camera, task confirmation, and startup, then configure the destination under [Alarm Linkage](../alarm-linkage.md). Trigger a real test to confirm that the notification is received.
 
 ### 6.3 Task runtime versus model location
 
@@ -346,7 +353,7 @@ An unsaved draft is not a saved or running task. After a refresh, the camera add
 | Saved but startup failed / verification incomplete | A task may exist without a fully working pipeline | Inspect the original task before creating another |
 | Result unknown | Web interface cannot establish the outcome | Recheck the original request and task list |
 
-Automatic frame observation is bounded, currently approximately 30 seconds. It does not promise full algorithm validation within 30 seconds or establish that every algorithm branch passed acceptance.
+After startup, the assistant checks for output frames for up to approximately 30 seconds. If it reports that verification is incomplete, inspect the original task and open its preview before trying again. Even when frames are detected, check the actual image, detection results, and alarms.
 
 ## 7. Manage existing tasks
 
@@ -432,24 +439,98 @@ The total is not the number currently displayed. The conversation normally prese
 
 ### 8.3 Search indexed media using a scene description {#intelligent-retrieval}
 
+Use intelligent search to find **existing saved images and video scenes** by describing their content. It is different from setting up future detection or looking up alarm records:
+
+| Your goal | Example | Next step |
+|---|---|---|
+| Find saved scenes | `Find images and videos of a man wearing a hat.` | Follow this section to search and inspect candidates |
+| Receive future alerts | `Notify me when a man wearing a hat is detected.` | [Create a detection task](#6-create-detection-tasks) and complete conditions, camera, and notification settings |
+| Review a recorded alarm type | `Show today's fire alarms.` | Use [alarm queries](#81-time-range-and-type) and check type, time, and records |
+
+#### 8.3.1 Enable intelligent search first
+
+Before your first search, prepare the search service and index:
+
+1. Sign in to the device Web page. Through the cloud, first open the device you want to search and check that its connection is working.
+2. Click the **gear icon at the top of the device page**, then choose **Retrieval Settings**.
+3. Turn on **Enable retrieval**, select an available **Run location**, and click **Save**.
+4. Wait for **Service ready**. First startup may need time to prepare the model and scan saved files.
+5. If alarm images or saved recordings exist but the index is empty, click **Sync now** and wait for indexing. If no historical media exists, first capture and save the relevant data so there is content to search.
+6. Return to **AI assistant** and send your search request.
+
+The original video task does not have to be running to search its saved media. The files must still exist, be indexed, and be accessible to an available search service.
+
+!!! tip "Search and the assistant model have separate settings"
+    The assistant's **Model service** understands conversation; **Retrieval Settings** controls searching images and videos. Being able to chat does not mean intelligent search is enabled. If the conversation reports that search is disabled, complete the steps above. Sending “Enable it for me” does not replace changing the settings or automatically enable recording.
+
+#### 8.3.2 Describe the scene in the conversation
+
+Enter **the scene content + images or videos** in the bottom input and click Send. For example:
+
+| 中文示例 | English |
+|---|---|
+| `找穿红色衣服的女性图片` | `Find images of a woman wearing red.` |
+| `找戴帽子的男性图片和视频` | `Find images and videos of a man wearing a hat.` |
+| `找白色汽车的视频` | `Find video clips of white cars.` |
+
+You can describe appearance, clothing, vehicles, colors, and actions without knowing an algorithm name. These describe the scenes you want to find; you still need to inspect the returned candidates.
+
+The assistant first checks search availability. If search is disabled or starting, follow the guidance and resend the query when ready. When available, candidates appear directly in the conversation. **You do not need to copy a returned list into the chat input or create a new task to search.**
+
+#### 8.3.3 View images and play videos
+
+1. Check **Scene** in the result card and confirm that it matches your request.
+2. Review the **Candidates** count. A conversation shows at most **20 items** per query; this is not a count of all historical records.
+3. Click **View image** and inspect the subject, clothing, and scene in the preview.
+4. Click **View video** to play from the returned **Match offset (within clip)**. Check the surrounding footage before drawing a conclusion.
+5. Close the preview and open other candidates without re-entering the search text.
+
+The list also shows **Similarity score (not probability)** to indicate relevance to your description. A high score does not confirm identity, gender, or an event, and does not guarantee that every described condition is satisfied.
+
+The video offset is measured from the beginning of that clip, not the event's calendar date and time. Current conversation cards do not provide camera names or task-source details. Local and cloud playback controls may differ; inspect the actual scene before making a business decision.
+
+#### 8.3.4 Refine or change a search
+
+Within the same active conversation, continue with a refinement:
+
 ```text
-Find images and videos of a woman wearing red clothes.
-Only show videos.
+Find images and videos of a woman wearing red.
+Only show videos; keep the description unchanged.
+Change only the clothing color to green; still looking for a woman.
 ```
 
-This searches existing indexed content; it does not create a detector. The assistant checks actual search-service status, calls the existing text-search interface, and displays up to 20 candidates in the conversation. Media loads when you click a candidate. Video opens at the returned in-clip offset; an offset is not an absolute event date.
+Check **Scene** and the result type after each reply. The second request should retain “woman wearing red” and return videos only. The third searches for videos matching “woman wearing green”; **it does not track the same individual across videos**.
 
-| Returned state | What to do |
-|---|---|
-| Intelligent search is not enabled | Enable and save it under **Retrieval Settings** in the device menu, wait for service and index readiness, then retry |
-| Service stopped, warming up, or applying settings | Inspect the reported model, configuration, or resource issue and wait for readiness; this is not “no results” |
-| Empty or building index | Check that alarm images or recordings are available for indexing and wait for completion |
-| Searchable index without a match | Adjust the scene description; do not conclude the subject never appeared |
-| Media failed to load or disconnected | Restore connectivity, use the media retry control, and check that files remain available |
+You can also replace the request with a full description, such as `Instead, find images of a man wearing blue.` If the assistant asks for clarification, state the complete request rather than adding more follow-ups to an unclear search.
 
-A query does not enable intelligent search or change recording settings. Saying “I enabled it” does not replace the device-state check. Search covers indexed alarm images and frames from saved recordings, not complete history from every camera. Similarity is a ranking score, not a probability that gender, color, or identity is correct. Inspect candidate images manually.
+After enabling search, you can say `Intelligent search is enabled now. Retry the previous video search.` The assistant still checks actual device readiness. After a disconnect, long pause, or expired conversation, resend the complete description.
 
-Stable pagination, exact whole-index counts, and cross-camera identity correlation are not currently available. Arbitrary dates and specific camera/channel filters unsupported by the search interface require an explicit limitation response, not a silent whole-index search. To remove such restrictions, explicitly start a new query without them. Check retained descriptions and filters after follow-ups such as “Only show videos.” Intelligent search is separate from Section 8.1 alarm statistics; the alarm interface's time-range features do not automatically apply to scene search.
+If a query was not run because filters such as “yesterday” or “camera 2” are unsupported, saying “Images only” does not remove those restrictions. To broaden the search, send a complete new query without dates or camera restrictions. If exact times are essential, use alarm queries or recording management as appropriate for the records you need.
+
+#### 8.3.5 No results or media cannot open
+
+| Conversation or settings message | Meaning | What to do |
+|---|---|---|
+| Intelligent search is not enabled | The search switch is off | Enable and save **Retrieval Settings**, wait for readiness, then resend the query |
+| Service starting or warming up | The model is not ready; this is not a no-match result | Wait for **Service ready**, then query again |
+| Startup failed or model not ready | Search model, placement, or resources need attention | Inspect Retrieval Settings; ask an administrator to check the installation if model files are missing. Changing the assistant's LLM settings is not a substitute |
+| Applying settings | New search settings are being applied | Wait for completion, then query again |
+| Index empty | No indexed content is currently searchable | Confirm that alarm images or saved recordings exist, click **Sync now**, and wait |
+| No matching results | The current index returned no candidates for this query | Reword the description or explicitly search both images and videos; this does not prove the subject never appeared |
+| Index updating or some items unavailable | The displayed list may be incomplete | Wait for indexing, then query again |
+| Intelligent search temporarily unavailable | Connection or search service failed | Restore the connection, check service readiness, and resend the query; a failure is not a zero count |
+| Media unavailable | A file may have been removed or the connection interrupted | Check the connection and click **Retry in the preview**. Retry cannot restore a deleted file |
+
+**Query again** means sending the description or a retry request as another message. The **Retry** button reloads an already selected image/video after a media-loading failure. These are different actions.
+
+#### 8.3.6 Search coverage and other entry points
+
+- Conversation search covers **indexed alarm images and sampled frames from saved recordings on the current device**. It is not the complete history of every camera and does not automatically search other devices. Check the selected device when using the cloud.
+- Conversation filters are the scene description and images, videos, or both. Exact dates, time ranges, camera/channel/task selection, and minimum-similarity filters cannot be set directly through conversation. Alarm-statistics time ranges do not automatically apply to indexed-media search.
+- The conversation shows up to 20 candidates, without a next-page control, exact whole-index count, or media-download button. To change the result count or upload a reference image for **image-to-image search**, manually open the separate **Smart Search** window using the magnifying glass at the top of the device page. The chat input does not currently support uploaded-image search.
+- The separate window does not automatically inherit conversation filters. Enter your description or upload the reference image there. See [Web User Manual: Intelligent Retrieval](../user-manual/index.md#intelligent-retrieval).
+
+Searching reviews existing material. It does not create detection tasks, enable recording, or subscribe to notifications. For “Alert me when this happens in the future,” complete the task and alarm setup in Section 6.
 
 ## 9. Find related recordings
 
@@ -503,7 +584,7 @@ Open **Model service** from the assistant icon or settings menu. Read actual run
 
 ### 11.2 When on-demand startup happens
 
-“On demand” means the model need not remain resident without consumers; it does not mean skipping conversation understanding. A natural-language message requests LLM parsing, starting the model if needed or reusing a loaded instance. This includes short task, algorithm, and device-information queries. A keyword match that bypasses model understanding is not the RC5 conversation workflow.
+You do not need to create an LLM video task first or start the model manually. Simply send a message: the model loads automatically if needed, or the loaded model is reused. The first reply is usually slower than later replies. Wait for the current request instead of sending it repeatedly.
 
 | Displayed state | Interpretation | Action |
 |---|---|---|
@@ -513,7 +594,7 @@ Open **Model service** from the assistant icon or settings menu. Read actual run
 | Inference / queued | Shared service is processing demand | Wait and inspect consumers or queue if needed |
 | Error / unconfirmed state | Available evidence does not establish healthy operation | Refresh and inspect diagnostics, extension, and storage |
 
-The assistant and video LLM nodes share one model service. Opening the window, reading service status, or saving preferences does not proactively load it. Confirming/cancelling a validated form and rechecking a result are not another natural-language parse. First loading can be much slower than a warm request; duration depends on model, storage, hardware, and resource load. Conversation itself is demand even without video tasks. Closing the assistant should not interrupt other video LLM consumers.
+The assistant and video LLM tasks share the model service. Opening the window, viewing status, or saving preferences does not proactively load the model; sending a message or running a task that needs LLM processing uses it. First-load time depends on the model, storage, hardware, and current workload. Closing the assistant does not stop video tasks. To stop detection, find and stop the intended task in the task list.
 
 ### 11.3 Change preferences
 
@@ -585,9 +666,9 @@ Keep the actual stored task name when referring to a task. Switching interface l
 | Input disabled | Connection, dependencies, pending request | Restore connection or resolve/recheck the pending operation |
 | Extension installation prompt | Platform and matching extension | Follow installation guidance, then Check again |
 | Files installed but free-form requests fail | Text backend, model placement, and startup errors | Verify compatible versions and diagnostics; rewording is not a repair for model-service failure |
-| Model remains “Not started” after sending text | Whether the request started/reused the model and versions match | Refresh status and inspect errors; RC5 chat parses first, unlike the old direct-query behavior |
+| Model remains “Not started” after sending text | Startup errors and compatible extensions/versions | Refresh model-service status and follow errors to check extensions, storage, and resources |
 | Intelligent search reports disabled | Actual device search status | Enable/save search settings, wait for readiness, then retry |
-| Metrics missing or sample time unknown | Fields and timestamps supplied by the device | Never interpret missing data as zero; see Device Information Queries |
+| Metrics missing or sample time unknown | Supported device fields and available sample timestamps | Never interpret missing data as zero; see [Device information](#device-information) |
 | Input too long or incomplete answer | Request size, model capacity, output budget | Split the request and inspect its form/receipt; do not repeatedly submit writes |
 | Model busy or shutting down | Active inference, release, or loading | Wait for recovery; interruption is not a success receipt |
 | Camera check fails | Device-side network, credentials, path | Fix the cause; check whether a task was saved before retrying |
@@ -604,36 +685,30 @@ Keep the actual stored task name when referring to a task. Switching interface l
 | Old form cannot be confirmed | Expiry, connection or target changes | Submit a fresh request and review its new form |
 | Window obscures content | Position or size | Move, resize, collapse, or reset position |
 
-## 16. Site acceptance and handover
+## 16. Before use and getting help
 
-### 16.1 Current RC5 verification scope and known limitations
+### 16.1 Important usage limits
 
-As of September 12, 2026, 3,244 native regression checks passed, including ASan/UBSan. Controlled model and business-interface responses were used; this is not a model-accuracy score. The latest Chinese/English condition-specific suite used real board models and ARM planning code: AX passed 24/26 turns and RK passed 25/26. Task, retrieval, and other business interfaces remained isolated fixtures, not evidence of real task persistence, camera detections, notification delivery, or long-running stability.
+Start with a few familiar scenes and tasks to check your setup before using it for daily operations:
 
-An earlier, different source build's broader 66-turn business suite passed 43/66 on AX and 37/66 on RK, with composite-output and multi-turn phase failures not fully rerun by the later 26-turn suite. The latest suite also retained invalid attribute names, an unrequested age constraint, and a placement-only correction entering the wrong phase as failures. A safe rejection still counts as an interpretation failure. Do not combine totals from different builds and test scopes.
+- The assistant may ask you to clarify or reword a request. Before creating, editing, starting, stopping, or deleting, inspect the latest proposal, task targets, and all conditions.
+- Running multiple detectors in parallel does not establish that the same subject meets every condition. Check support before using special relationships, sequences, or duration requirements.
+- Intelligent search returns candidates for visual inspection. No match does not mean the subject never appeared. See [Section 8.3](#intelligent-retrieval) for search coverage and limits.
+- Conversation context is not a long-term operational record. After reconnecting, changing browsers, or a long pause, query actual task state or resend the complete description.
+- “Task saved,” “Started,” and “Notification received” are different outcomes. Use real examples to verify images, trigger conditions, and notification destinations.
 
-RC5 therefore does not claim reliable interpretation of arbitrary conversation or completed commercial acceptance. A complete active/unresolved/withdrawn constraint ledger, cross-connection conversation recovery, general condition adapters for every algorithm, and end-to-end notification verification remain incomplete. Outstanding checks such as full AXCL hardware startup do not become passed because the version number increases.
+### 16.2 Site checklist and contacting support
 
-### 16.2 Validate the actual deployment
+On first use or after changing settings, check the following for your actual workflow:
 
-Record acceptance against the actual deployment. At minimum, verify:
+- [ ] You are using the intended device, its connection is working, and the required algorithms and runtime locations are available.
+- [ ] The camera preview shows the intended site, and the final task retains all detection conditions, outputs, and runtime requirements.
+- [ ] A trial with familiar scenes triggers the expected alarms without triggering on negative examples. If notifications are required, a test message has reached the destination.
+- [ ] When using search or recordings, the search service is ready and existing files can be found, opened, and played.
+- [ ] Device-information replies use the correct host/card, units, and sample times; missing values are not mistaken for zero.
+- [ ] Start, stop, delete, and interrupted-operation results have been checked against the original task to avoid duplicates. Task IDs and interface messages are available if support is needed.
 
-- [ ] Both language pages expose the entry and readable forms and guidance.
-- [ ] Connection, catalog, extension, and runtime choices match the deployment.
-- [ ] Versions and metrics match device data; single-field/card follow-ups retain scope and missing/stale values are labelled.
-- [ ] Camera address corresponds to the correct scene; handover screenshots contain no credentials.
-- [ ] Automatic and draft creation meet requirements; task IDs are recorded.
-- [ ] Advice adoption, corrections, output additions/removals, and placement changes preserve the complete requirements in actual task configuration.
-- [ ] Intelligent-search disabled/warming/empty/no-match states are distinguished, and candidate images/video offsets open locally and through the cloud.
-- [ ] Same-subject conditions are not confused with parallel detectors; unsupported conditions are reported, and actual alarms and destinations are verified.
-- [ ] Start, pause, resume, stop, and deletion scopes and results are checked.
-- [ ] Preview, positive and negative detections, and alarm images meet site criteria.
-- [ ] Recording storage, accessibility, and alarm correlation work when used.
-- [ ] LLM cold start, placement, reuse, release, and failure behavior are verified when used.
-- [ ] Original-request checks resolve disconnections without duplicate creation.
-- [ ] Application, Web, plugin, and extension versions and unresolved issues are recorded.
-
-For support, provide event time, actual task ID, request description, interface state, and necessary redacted logs. A report saying only “the assistant did not respond” is insufficient. Do not include camera passwords or complete authentication information.
+For support, provide the application version, event time, complete request, interface state, and necessary redacted logs. Include the task ID for task operations, or the search-service state for media queries. These details help support locate the problem. Do not include camera passwords or complete authentication information.
 
 ## 17. Further reading
 
