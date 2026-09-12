@@ -2,14 +2,14 @@
 
 [简体中文](../../zh/ai-assistant/index.md)
 
-The AI assistant is a conversational entry point for video tasks in the AI-BOX Web interface. Use it to discuss detection plans, inspect capabilities and [device versions and resource metrics](#device-information), choose algorithms, create detection tasks, manage existing tasks, and find alarms, logs, and related recordings. It translates a request into a concrete business operation and presents algorithm, camera, task-selection, and confirmation forms when needed.
+The AI assistant is a conversational entry point for video tasks in the AI-BOX Web interface. Use it to discuss detection plans, inspect capabilities and [device versions and resource metrics](#device-information), choose algorithms, create detection tasks, manage existing tasks, and find alarms, logs, related recordings, and [intelligent-search image/video candidates](#intelligent-retrieval). It interprets a request, validates a proposal against integrated capabilities, and presents algorithm, camera, task-selection, and confirmation forms when needed.
 
 This guide is intended for device administrators, deployment engineers, and operators. It follows the workflow: open the assistant, check readiness, create a task, manage tasks, review evidence, and troubleshoot.
 
 !!! note "Scope and illustrations"
-    Updated September 11, 2026. New features use the matching `2.1.1-202609110020-ai-assistant-rc3` implementation as their baseline. Availability depends on the application, Web assets, algorithm plugins, independent model extension, and hardware combination. Older releases may not have every form or query described here. Always use the algorithms and runtime locations returned by your device.
+    Updated September 12, 2026. New features use the matching `2.1.1-202609121751-ai-assistant-rc5` implementation as their baseline. Availability depends on the application, Web assets, algorithm plugins, independent model extension, and hardware combination. Older releases may not have every form or query described here. Always use the algorithms and runtime locations returned by your device.
 
-    RC3 is a release candidate. Updated documentation and generated packages do not mean every device or cloud page has been upgraded or every deployment has passed acceptance. Existing illustrations show earlier interfaces and do not include the new device-information cards; they are not RC3 device-acceptance evidence.
+    RC5 is a release candidate, not a completed commercial acceptance. Real-model interpretation still fails in some scenarios; see Section 16. Updated documentation does not establish package download availability or deployment to devices or the cloud. Use the actual delivery manifest and verification results for package status. Existing illustrations show earlier interfaces, not all new features, and are not RC5 device-acceptance evidence.
 
     Figure 1 shows the English device interface in a supplied screenshot. Other screenshots use actual application components with illustrative data to explain controls and workflows; they do not show a connected device or prove successful execution. Chinese and English illustrations are maintained separately. Data in the illustrative figures are examples; the task name in Figure 1 is retained as displayed on the device.
 
@@ -62,7 +62,7 @@ Window geometry is stored in the current browser; another browser may use a diff
 | Algorithm plugins | Required algorithms installed, loaded, and visible | Check plugin management, then query the catalog again |
 | LLM bridge component | Application-side component available | Follow the Check LLM component prompt |
 | Independent model extension | Correct AX/AXCL or RK extension | Have an administrator install the matching package |
-| Text capability | A working text-only backend | Use supported explicit commands when semantic understanding is unavailable |
+| Text capability | A working text-only backend | Verify extension compatibility and model state; use existing device-management pages until restored, not fixed phrases to bypass parsing |
 | Storage | External model storage remains mounted and readable | Check TF storage and mounts rather than repeatedly removing media |
 | Camera | Device can access a valid RTSP stream | Verify network, port, authentication, and stream path |
 | Site settings | Regions, directions, face libraries, and other required details | Complete them in the draft editor when requested |
@@ -72,7 +72,7 @@ Window geometry is stored in the current browser; another browser may use a diff
 
 ### 2.2 Dependency checks and retry
 
-The complete RC3 delivery combinations are listed below. Install the matching main package before extensions. The main package supplies a private Python runtime; customers do not need to install system Python separately.
+The matching RC5 installation combinations are listed below. Install the matching main package before extensions. The main package supplies a private Python runtime; customers do not need to install system Python separately.
 
 | Platform | Main package | Extensions in the complete delivery |
 |---|---|---|
@@ -80,6 +80,8 @@ The complete RC3 delivery combinations are listed below. Install the matching ma
 | RK3588 | `aibox-rk3588` | `aibox-plugin-llm`, `aibox-plugin-llm-rk-vlm` |
 
 The shared AX/AXCL extension contains separately built and signed host-platform plugins. The RK VLM extension supplies the RK-native model. Do not mix main-package platforms or upgrade only the Web assets while leaving incompatible backend components. Installing device DEBs does not deploy the cloud Web application.
+
+The delivery layout has two DEB files in the AX directory and three in the RK directory. The shared `aibox-plugin-llm` appears as the same package in both directories, giving five delivered files but four distinct packages. Do not install the shared package twice or confuse its host-platform plugins with model execution placement.
 
 The assistant checks dependencies when opened and checks again after reconnection. Missing extensions, incomplete files, unavailable components, or failed checks can disable input and display guidance.
 
@@ -126,7 +128,9 @@ Show error logs for this week
 Show recordings related to license plate alarms
 ```
 
-Natural-language requests use an available text model to extract intent and constraints, followed by validation against installed capabilities, task state, and allowed business interfaces. Shortcuts and some explicit commands can use controlled business paths directly. When a proposal card appears, check the action before clicking **Confirm**. Unreliable interpretations, unsupported conditions, and missing information require clarification; natural-language support is not a guarantee of correct interpretation of every possible message.
+Natural-language text sent to the conversation first uses an available LLM to extract intent and constraints, including short requests such as “List tasks.” If no model is resident, the message itself requests on-demand startup; creating an LLM video task first is not required. The device then validates installed capabilities, task state, and permitted business interfaces. Opening the window, inspecting model status, and submitting a previously validated structured form are different from sending a new natural-language message and do not require extra inference.
+
+When a proposal card appears, check the action before clicking **Confirm**. Unreliable interpretations, unsupported conditions, and missing information require clarification; natural-language support does not guarantee correct interpretation of every possible message. A model failure or timeout is not a completed business operation. Do not repeatedly resend creation requests to obtain a response.
 
 ### 4.2 Follow-ups and corrections
 
@@ -135,6 +139,10 @@ During an unsubmitted creation flow, you can add algorithms, placement, review, 
 After an alarm query, ask for related recordings. After a task list, identify the tasks to manage. References such as “them” or “these” rely on available context. If the previous scope was incomplete or expired, query again and select explicit targets instead of relying on a guess.
 
 When changing topics or cancelling a pending form, state the new target. A later correction does not automatically roll back an already submitted creation or state change.
+
+RC5 stores bounded short-term conversation state in the device service process, separating pending drafts, saved-task references, and operation receipts. After a successful save, “Stop it” should refer to the saved task ID, not create a duplicate. “Other tasks” does not automatically mean the current task or every task; identify the intended targets.
+
+A new correction invalidates old unsubmitted confirmation cards. If output or condition validation fails, resolve the issue rather than confirming an old card. This is not complete long-term memory: context expires 20 minutes after a successful write, is lost on service restart, and does not yet resume automatically across connections or browsers. Capacity or size limits produce an explicit rejection. After reconnecting, query actual tasks and check IDs; visible chat history does not establish that the server retains every condition. Inspect new proposals after complex withdrawals or replacements instead of assuming every correction was merged correctly.
 
 ### 4.3 Understand the different confirmations
 
@@ -185,7 +193,7 @@ And its memory usage?
 Now show the host CPU usage instead.
 ```
 
-The first two queries should retain the same compute-card scope; the third explicitly switches to the host. Expressions such as `compute card 1`, `the first compute card`, `计算卡1`, and `第一张计算卡` refer to hardware returned by the actual device.
+The first two queries should retain the same compute-card scope; the third explicitly switches to the host. Expressions such as `compute card 1`, `the first compute card`, `计算卡1`, and `第一张计算卡` identify a card. `host`, `mainboard`, `onboard`, `本机`, and `主板` identify the local board. An explicit host request must not retain the previous card scope; a metric follow-up without a new location retains the confirmed hardware scope. Always verify hardware returned by the device.
 
 Check the hardware label, not just the number. A missing, offline, or unsupported card must not be replaced with host values. If card-specific version information is unavailable, the host's software/firmware version must not be presented as the card's version. Split requests if several hardware scopes cannot be distinguished reliably.
 
@@ -296,6 +304,13 @@ Create a smoking detection task with recording
 Combined algorithms normally detect independently on the same video source and aggregate their results for display. Smoking + missing safety helmet does not mean “alarm only when the same person is smoking AND missing a helmet.” Same-object correlation, sequence, time windows, and AND conditions require appropriate business rules. A normal combination does not establish those rules.
 
 The default output template includes network output and alarms. Additional recording, HDMI, or other outputs depend on the actual catalog and request. Storage or destination settings may require a draft. An alarm output node does not establish that relays, TTS, or external reporting are enabled; inspect their configuration separately.
+
+RC5 adds two validation paths, not support for arbitrary combinations:
+
+- **Conditions on the same subject:** “Alert when the same person is both male and wearing a hat” requires the person-attribute adapter to produce the corresponding rules with an all-conditions relationship. Selecting an algorithm and leaving its default “no hat” rule is not sufficient. The current production adapter focuses on person attributes. Unsupported color, cross-subject, sequence, duration, or other-component conditions must not be silently discarded. Attribute categories are algorithm predictions, not verified identity or ground truth.
+- **Explicit output requirements:** Creating a task or adopting advice uses separate extraction and validation for explicit recording, HDMI, or output restrictions. A pending draft uses its own change-validation path without processing the same change twice. Affirmative alarms and network preview are default outputs, not additional duplicate nodes. Disabling default alarms/network output or requesting “HDMI only” is rejected when the current template cannot guarantee it. After extraction fails, correct the request and inspect the next complete proposal; changing placement alone does not authorize dropping earlier output requirements.
+
+“Notify me” prepares a detection and alarm proposal. It does not establish a persistent cross-conversation notification subscription or prove delivery. Complete the camera, confirmation, actual task startup, and alarm-destination configuration, then validate positive/negative examples and real notification receipts.
 
 ### 6.3 Task runtime versus model location
 
@@ -415,6 +430,27 @@ Types depend on recognized categories and actual records. If ambiguous, choose a
 
 The total is not the number currently displayed. The conversation normally presents up to 20 recent records; the panel continues through the same query. A database error is not a zero count. Retention policies may remove older records. No records do not prove no event occurred, and record counts are not counts of independent incidents. Assess the evidence accordingly.
 
+### 8.3 Search indexed media using a scene description {#intelligent-retrieval}
+
+```text
+Find images and videos of a woman wearing red clothes.
+Only show videos.
+```
+
+This searches existing indexed content; it does not create a detector. The assistant checks actual search-service status, calls the existing text-search interface, and displays up to 20 candidates in the conversation. Media loads when you click a candidate. Video opens at the returned in-clip offset; an offset is not an absolute event date.
+
+| Returned state | What to do |
+|---|---|
+| Intelligent search is not enabled | Enable and save it under **Retrieval Settings** in the device menu, wait for service and index readiness, then retry |
+| Service stopped, warming up, or applying settings | Inspect the reported model, configuration, or resource issue and wait for readiness; this is not “no results” |
+| Empty or building index | Check that alarm images or recordings are available for indexing and wait for completion |
+| Searchable index without a match | Adjust the scene description; do not conclude the subject never appeared |
+| Media failed to load or disconnected | Restore connectivity, use the media retry control, and check that files remain available |
+
+A query does not enable intelligent search or change recording settings. Saying “I enabled it” does not replace the device-state check. Search covers indexed alarm images and frames from saved recordings, not complete history from every camera. Similarity is a ranking score, not a probability that gender, color, or identity is correct. Inspect candidate images manually.
+
+Stable pagination, exact whole-index counts, and cross-camera identity correlation are not currently available. Arbitrary dates and specific camera/channel filters unsupported by the search interface require an explicit limitation response, not a silent whole-index search. To remove such restrictions, explicitly start a new query without them. Check retained descriptions and filters after follow-ups such as “Only show videos.” Intelligent search is separate from Section 8.1 alarm statistics; the alarm interface's time-range features do not automatically apply to scene search.
+
 ## 9. Find related recordings
 
 After an alarm query, ask for related recordings, or enter `Show recordings related to this week's license plate alarms`.
@@ -465,19 +501,19 @@ Open **Model service** from the assistant icon or settings menu. Read actual run
 | Diagnostics | PID, state, consumers, queued work, and in-flight work |
 | Save | Persists preferences without immediately starting the model |
 
-### 11.2 Why replies may not start the model
+### 11.2 When on-demand startup happens
 
-Task queries, algorithm queries, and explicit business commands can be handled directly by device services. A model is not loaded for every reply. Language understanding or video LLM inference creates actual model demand.
+“On demand” means the model need not remain resident without consumers; it does not mean skipping conversation understanding. A natural-language message requests LLM parsing, starting the model if needed or reusing a loaded instance. This includes short task, algorithm, and device-information queries. A keyword match that bypasses model understanding is not the RC5 conversation workflow.
 
 | Displayed state | Interpretation | Action |
 |---|---|---|
-| Not started / on demand | No resident model | Continue supported queries; actual inference will request loading |
+| Not started / on demand | No resident model | Send a message; that message should request loading and wait for parsing |
 | Starting / loading | Model is being prepared | Wait for the current request rather than resubmitting |
 | Resident and idle | Loaded without active inference | Reuse on later requests; idle policy may release it |
 | Inference / queued | Shared service is processing demand | Wait and inspect consumers or queue if needed |
 | Error / unconfirmed state | Available evidence does not establish healthy operation | Refresh and inspect diagnostics, extension, and storage |
 
-The assistant and video LLM nodes share one model service. Opening the window and querying status do not create extra instances. First loading can be much slower than a warm request; duration depends on model, storage, hardware, and resource load.
+The assistant and video LLM nodes share one model service. Opening the window, reading service status, or saving preferences does not proactively load it. Confirming/cancelling a validated form and rechecking a result are not another natural-language parse. First loading can be much slower than a warm request; duration depends on model, storage, hardware, and resource load. Conversation itself is demand even without video tasks. Closing the assistant should not interrupt other video LLM consumers.
 
 ### 11.3 Change preferences
 
@@ -490,7 +526,7 @@ If saving fails or status is stale, refresh before assuming a value in an input 
 
 ## 12. Understand LLM review
 
-LLM review is a processing stage after detection, separate from selecting a detector. RC3 assistant-created fire/smoke tasks include review by default; other algorithms can request it explicitly. Existing tasks are not automatically rewritten. Inspect the generated proposal and node settings.
+LLM review is a processing stage after detection, separate from selecting a detector. RC5 assistant-created fire/smoke tasks include review by default; other algorithms can request it explicitly. Existing tasks are not automatically rewritten. Inspect the generated proposal and node settings.
 
 - Check for **LLM review requirement retained** in the creation form.
 - Verify the LLM stage exists and upstream algorithms request review.
@@ -548,8 +584,9 @@ Keep the actual stored task name when referring to a task. Switching interface l
 | Assistant entry missing | Application and Web version match | Refresh and verify the delivered release |
 | Input disabled | Connection, dependencies, pending request | Restore connection or resolve/recheck the pending operation |
 | Extension installation prompt | Platform and matching extension | Follow installation guidance, then Check again |
-| Files installed but free-form requests fail | Actual text-only backend | Use explicit commands and verify compatible versions |
-| Queries work while model is not started | Direct business-service routing | Normal on-demand behavior; do not start a model just for queries |
+| Files installed but free-form requests fail | Text backend, model placement, and startup errors | Verify compatible versions and diagnostics; rewording is not a repair for model-service failure |
+| Model remains “Not started” after sending text | Whether the request started/reused the model and versions match | Refresh status and inspect errors; RC5 chat parses first, unlike the old direct-query behavior |
+| Intelligent search reports disabled | Actual device search status | Enable/save search settings, wait for readiness, then retry |
 | Metrics missing or sample time unknown | Fields and timestamps supplied by the device | Never interpret missing data as zero; see Device Information Queries |
 | Input too long or incomplete answer | Request size, model capacity, output budget | Split the request and inspect its form/receipt; do not repeatedly submit writes |
 | Model busy or shutting down | Active inference, release, or loading | Wait for recovery; interruption is not a success receipt |
@@ -569,6 +606,16 @@ Keep the actual stored task name when referring to a task. Switching interface l
 
 ## 16. Site acceptance and handover
 
+### 16.1 Current RC5 verification scope and known limitations
+
+As of September 12, 2026, 3,244 native regression checks passed, including ASan/UBSan. Controlled model and business-interface responses were used; this is not a model-accuracy score. The latest Chinese/English condition-specific suite used real board models and ARM planning code: AX passed 24/26 turns and RK passed 25/26. Task, retrieval, and other business interfaces remained isolated fixtures, not evidence of real task persistence, camera detections, notification delivery, or long-running stability.
+
+An earlier, different source build's broader 66-turn business suite passed 43/66 on AX and 37/66 on RK, with composite-output and multi-turn phase failures not fully rerun by the later 26-turn suite. The latest suite also retained invalid attribute names, an unrequested age constraint, and a placement-only correction entering the wrong phase as failures. A safe rejection still counts as an interpretation failure. Do not combine totals from different builds and test scopes.
+
+RC5 therefore does not claim reliable interpretation of arbitrary conversation or completed commercial acceptance. A complete active/unresolved/withdrawn constraint ledger, cross-connection conversation recovery, general condition adapters for every algorithm, and end-to-end notification verification remain incomplete. Outstanding checks such as full AXCL hardware startup do not become passed because the version number increases.
+
+### 16.2 Validate the actual deployment
+
 Record acceptance against the actual deployment. At minimum, verify:
 
 - [ ] Both language pages expose the entry and readable forms and guidance.
@@ -576,6 +623,9 @@ Record acceptance against the actual deployment. At minimum, verify:
 - [ ] Versions and metrics match device data; single-field/card follow-ups retain scope and missing/stale values are labelled.
 - [ ] Camera address corresponds to the correct scene; handover screenshots contain no credentials.
 - [ ] Automatic and draft creation meet requirements; task IDs are recorded.
+- [ ] Advice adoption, corrections, output additions/removals, and placement changes preserve the complete requirements in actual task configuration.
+- [ ] Intelligent-search disabled/warming/empty/no-match states are distinguished, and candidate images/video offsets open locally and through the cloud.
+- [ ] Same-subject conditions are not confused with parallel detectors; unsupported conditions are reported, and actual alarms and destinations are verified.
 - [ ] Start, pause, resume, stop, and deletion scopes and results are checked.
 - [ ] Preview, positive and negative detections, and alarm images meet site criteria.
 - [ ] Recording storage, accessibility, and alarm correlation work when used.
@@ -598,7 +648,7 @@ For support, provide event time, actual task ID, request description, interface 
 
 ### A.1 Three different paths
 
-| Path | Configurable in current rc3? | Meaning |
+| Path | Configurable in current RC5? | Meaning |
 |---|---|---|
 | Location of the DEB archive | Yes | An accessible source for installation, not the destination of installed files |
 | Application, libraries, signed plugins | No arbitrary destination option | Package-defined system paths such as `/usr/local/aibox` remain in use |
@@ -740,7 +790,7 @@ After configuring storage, enter the delivery's platform directory and run only 
 ```bash
 ( # A subshell stops this installation group if any command fails.
 set -e
-AIBOX_INSTALL_VERSION=2.1.1-202609110020-ai-assistant-rc3
+AIBOX_INSTALL_VERSION=2.1.1-202609121751-ai-assistant-rc5
 sudo dpkg -i "./aibox-ax650n_${AIBOX_INSTALL_VERSION}_arm64.deb"
 if [ -f /etc/aibox/llm-storage.json ]; then
   sudo /usr/local/aibox/bin/aibox-python3 -m json.tool /etc/aibox/llm-storage.json
@@ -754,7 +804,7 @@ sudo dpkg -i "./aibox-plugin-llm_${AIBOX_INSTALL_VERSION}_arm64.deb"
 ```bash
 ( # Run only the RK3588 group; do not mix main-package platforms.
 set -e
-AIBOX_INSTALL_VERSION=2.1.1-202609110020-ai-assistant-rc3
+AIBOX_INSTALL_VERSION=2.1.1-202609121751-ai-assistant-rc5
 sudo dpkg -i "./aibox-rk3588_${AIBOX_INSTALL_VERSION}_arm64.deb"
 if [ -f /etc/aibox/llm-storage.json ]; then
   sudo /usr/local/aibox/bin/aibox-python3 -m json.tool /etc/aibox/llm-storage.json
@@ -807,7 +857,7 @@ Use `findmnt --mountpoint <actual-mountpoint>` to verify volume identity and `df
 | Existing external models, change drive or return to internal | Existing bindings take precedence; a separate migration plan is required |
 | Legacy official AX external configuration | Compatible volume identity may be inherited; arbitrary legacy links are not automatically migrated |
 
-Current rc3 has no universal, lossless one-command migration. An administrator must first confirm versions and bindings, stop affected model consumers, back up and verify assets, and plan the switch. Do not manually move/link directories, delete ownership metadata, or assume uninstall/reinstall preserves all data.
+Current RC5 has no universal, lossless one-command migration. An administrator must first confirm versions and bindings, stop affected model consumers, back up and verify assets, and plan the switch. Do not manually move/link directories, delete ownership metadata, or assume uninstall/reinstall preserves all data.
 
 After an interrupted installation, restore the original drive/mount and verify UUID, read/write state, and capacity. If only configuration failed and files are complete, retry the specific package with `sudo dpkg --configure aibox-plugin-llm` or `sudo dpkg --configure aibox-plugin-llm-rk-vlm`. Incomplete unpacking requires reinstalling the same complete trusted DEB. Transaction records support recovery; they cannot bypass storage faults.
 
