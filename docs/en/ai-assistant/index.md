@@ -10,13 +10,16 @@ What would you like to do?
 |---|---|---|
 | Find existing scenes | `Find images and videos of a woman wearing red.` | [Search indexed media in the conversation](#intelligent-retrieval) |
 | Set up future detection and alarms | `Alert me when someone is smoking.` | [Create detection tasks](#6-create-detection-tasks) |
+| Prepare a task without running it | `Create a smoking detection task. Save only; do not start.` | [Save without starting](#save-without-starting) |
+| Change an existing task's placement | `Edit task "Warehouse entrance"` | [Change only the runtime location](#change-task-location) |
 | Check device status | `Show the host CPU and memory usage.` | [Query device information](#device-information) |
+| Investigate a task with no picture | `Check why task "Warehouse entrance" has no video.` | [Read-only diagnosis and startup proposals](#75-diagnose-first-then-decide-whether-to-start) |
 | Review recorded alarms | `Show today's fire alarms.` | [Find alarms and image evidence](#8-find-alarms-and-image-evidence) |
 
 This guide follows the workflow: open the assistant, describe a request, complete the operation, review results, and resolve common problems. For your first indexed-media search, go directly to Section 8.3.
 
 !!! note "Applicable version and interface examples"
-    This guide applies to the matching `2.1.1-202609121751-ai-assistant-rc5` release components. Available features, algorithms, and runtime locations depend on your device. If a feature is missing, ask your administrator to check that the application, Web interface, and plugins are compatible. Refer to the delivery notes for release status and known issues.
+    Available features, algorithms, and runtime locations depend on your device. Camera reuse, site configuration, weekly schedules, precise-time search, temporary bookmarks, and diagnostic proposals require matching device application, Web interface, and plugin support. If an entry is missing, ask your administrator to verify versions; do not apply new-feature steps to an older form. Cloud access also requires a matching cloud Web interface, which is not updated automatically by a device upgrade.
 
     Screenshots illustrate control locations; the interface may differ slightly by version. Camera addresses, task names, counts, and times are examples. Use your own device information when following the steps.
 
@@ -58,6 +61,8 @@ The task page remains interactive while the assistant is open. You can inspect a
 
 Window geometry is stored in the current browser; another browser may use a different position. With the title bar focused, use arrow keys to move the window. The lower-right resize control also supports arrow keys; Shift increases the step. Compact windows may hide shortcuts without disabling text input.
 
+When you open site configuration or an image/video preview, the assistant temporarily makes room so it does not cover the controls. Closing those windows returns to the existing conversation; you do not need to repeat the request.
+
 ## 2. Check prerequisites
 
 ### 2.1 Preparation checklist
@@ -70,14 +75,15 @@ Window geometry is stored in the current browser; another browser may use a diff
 | LLM bridge component | Application-side component available | Follow the Check LLM component prompt |
 | Independent model extension | Correct AX/AXCL or RK extension | Have an administrator install the matching package |
 | Text capability | A working text-only backend | Verify extension compatibility and model state; use existing device-management pages until restored, not fixed phrases to bypass parsing |
+| AI operation authorization | The device administrator permits AI business changes and your account has the required permissions | Queries and plan previews do not authorize execution; see “AI operation permissions” below |
 | Storage | External model storage remains mounted and readable | Check TF storage and mounts rather than repeatedly removing media |
 | Camera | Device can access a valid RTSP stream | Verify network, port, authentication, and stream path |
-| Site settings | Regions, directions, face libraries, and other required details | Complete them in the draft editor when requested |
+| Site settings | Regions, directions, operating hours, and other required details | Complete only supported fields made available by the device; follow guidance for other administrator-managed settings |
 
 !!! warning "Model extensions and algorithm packages are different"
     Do not upload an independent `.deb` model extension as a `.plugin` algorithm package. The application-side LLM component is separate from the model program and weights. Install a matching release combination using its package instructions. File presence alone does not establish successful inference.
 
-The matching RC5 installation combinations are listed below. Install the matching main package before extensions. The main package supplies a private Python runtime; customers do not need to install system Python separately.
+The matching installation combinations are listed below. Install the matching main package before extensions. The main package supplies a private Python runtime; customers do not need to install system Python separately.
 
 | Platform | Main package | Extensions in the complete delivery |
 |---|---|---|
@@ -99,7 +105,19 @@ The assistant checks dependencies when opened and checks again after reconnectio
 
 Checking does not start the model. You do not need to create an LLM video task first. “Installed,” “supports text,” and “running” are separate facts.
 
+Once the matching components are ready, clear supported requests such as “List tasks,” “List algorithms,” and “What is the local CPU usage?” can be handled directly by the device without loading the language model first. Free-form interpretation, unclear references, and complex combinations still need an available assistant model; not every expression remains usable during a model failure.
+
+If the model is temporarily unavailable but the device is connected and no other operation is awaiting its result, existing query, paging, bookmark, diagnostic, cancellation, or diagnostic-start confirmation buttons can still be used as indicated. You do not need to copy a card into the chat input. Check connectivity and pending operations when a button is unavailable.
+
 For DEB installation or internal/external model-storage setup, see [Appendix A: DEB paths and model-storage configuration](#installation-storage) at the end of this guide.
+
+### 2.3 AI operation permissions
+
+Versions using scene-agent authorization allow queries and plan preparation by default, but do not automatically permit AI task changes or retrieval-service control. **Logging in as an administrator does not automatically enable the device's AI operation authorization.**
+
+If a confirmation button asks you to contact an administrator or reports insufficient permissions, have your deployment administrator check both device authorization and your account permissions. This is not a model-loading failure. Device authorization currently requires administrator-managed configuration and a main-service restart; there is no Web toggle. Enabling it does not grant account permissions or bypass target checks and necessary confirmations.
+
+Administrators should follow the delivery's configuration guide to maintain `/etc/aibox/aibox.env` and enable only `AIBOX_AGENT_V4_WRITES_ENABLED=1`. Preserve any existing settings instead of overwriting the file. Verify the effective service state and complete one “prepare plan → confirm → inspect actual result” check. A “Model loaded” indicator alone does not prove execution permission.
 
 ## 3. Your first five minutes
 
@@ -156,7 +174,9 @@ After changing a request, use the latest confirmation card; old unsubmitted card
 | Confirmation | What to inspect | Meaning |
 |---|---|---|
 | Operation proposal | Action, target, time, and conditions | Accepts the interpretation; task selection may still follow |
-| Algorithm or camera form | Algorithms, runtime, camera address, review, and outputs | Continues creation; complete configurations may be saved and started |
+| Algorithm or camera form | Algorithms, runtime, camera, review, outputs, and any request not to start yet | Continues creation; a complete configuration with startup authorized may be saved and started |
+| Save site configuration | Camera snapshot, region or tripwire, direction, weekly schedule, and locked original plan | Saves a stopped task; startup is separate |
+| Startup proposal after diagnosis | Actual task ID, every existing output, and operational impact | Starts that existing task and checks the result; no automatic rollback |
 | Task selection or deletion | Actual names, IDs, states, and count | Applies to selected targets; deletion has a separate confirmation |
 
 Cancel ends the pending step. If task configuration or state changes while a confirmation is open, the device may require a fresh selection. Review the current list and continue.
@@ -169,9 +189,19 @@ To prepare a proposal, continue with `Prepare that setup on compute card 1 and k
 
 Use the conversation's algorithm and RTSP forms directly, then click **Confirm/Cancel**; there is no need to rewrite form selections as a chat message. Advice is not evidence of field performance, and an unsubmitted draft is not a running task.
 
+**A recommended candidate does not establish that every requirement is covered.** For “Alert on smoking at the warehouse entrance on weekdays and keep recordings,” check detection, operating hours, and recording separately rather than confirming as soon as you see a smoking detector:
+
+1. Read the recommendation and its limitations. Check that it addresses your site goal, not just a matching word.
+2. Verify every required condition, runtime location, and output. Continue through any required region, schedule, or other site form.
+3. If a requirement is unsupported, unclear, or missing, pause creation and clarify it, or ask an administrator to configure it through the original management controls. Asking `Why this recommendation, and what are its limits?` does not authorize execution.
+
+Recommendations use capabilities integrated with the current device. They do not mean every combination has been benchmarked, a globally optimal plan was found, or false-alarm rates, missed detections, and notification delivery were verified. Review the final plan and test with site examples.
+
 ### 4.5 Query device information {#device-information}
 
 Ask `Which software and firmware versions are installed?`, `Show the host CPU usage`, or `What is the temperature of compute card 1?`, then follow with `And its memory usage?`. Replies should identify hardware scope, units, and freshness.
+
+For a first walkthrough, send `Which software and firmware versions are installed?`, then `Show only the host CPU usage`, then `And its memory usage?`. Check the device-reported versions, the host CPU reading, and finally memory for that same host. Querying a version does not upgrade the device; metric follow-ups do not move tasks or models. If the reply uses the wrong hardware scope, restate `Just the onboard RAM usage, please` instead of continuing from that scope.
 
 #### 4.5.1 Supported information
 
@@ -260,7 +290,7 @@ Click **List algorithms**, or ask `Which algorithms are available?` The catalog 
 Algorithms are marked as:
 
 - **Defaults available**: eligible for a default-configuration creation attempt. Camera, resources, outputs, and field performance still need checking.
-- **Site settings required**: typically needs regions, tripwires, directions, a face library, or prompts. Expect a draft workflow.
+- **Site settings required**: typically needs regions, tripwires, directions, or a schedule. Only supported site forms are opened. Other requirements, such as face libraries or prompts, are reported if unsupported; a proposal missing required settings is not complete.
 
 ### 5.2 Select one or more algorithms
 
@@ -299,6 +329,17 @@ This demonstrates the format. It does not imply every camera uses `/live`. Obtai
 
 The camera field accepts up to 2,048 characters; the main request input accepts up to 4,096. Prefer concise requests instead of pasting large logs or task JSON as instructions.
 
+#### 6.1.1 Reuse an existing camera
+
+When an existing-source list is available, you can request `Use the camera from task "Warehouse entrance" for a local line-crossing task. Save it without starting.` Then select the source in the camera form:
+
+1. Under **Camera source**, choose **Use an existing camera**.
+2. Under **Choose an existing camera**, check the actual name and explicitly select it. A name match is only a hint, not automatic confirmation.
+3. Review the new task's algorithms, runtime, and conditions, then click **Confirm**.
+4. If the list is unavailable, the source changed, or a target is ambiguous, select again as prompted. Alternatively, choose **Enter a new address** and supply a current RTSP address.
+
+Only the camera source is reused. The original task's detection, regions, outputs, and running state are not copied, and that task is not modified. Similar names do not establish that the picture is correct; inspect the actual snapshot when configuring regions. The device uses source credentials without requiring you to copy them into normal chat text.
+
 ### 6.2 Single and combined algorithms
 
 ```text
@@ -329,31 +370,73 @@ For requests with specific conditions or outputs, check the following carefully:
 
 A local video task does not necessarily require a local LLM. Selecting a compute card does not establish hardware, plugin, or model validation. Choose a location returned as available by the device and resolve resource or compatibility errors as reported.
 
-### 6.4 Drafts requiring site configuration
+### 6.4 Complete site settings and save a stopped task
 
-When site-specific information is missing, the assistant lists requirements and offers **Open draft to complete settings**.
+Regions, tripwires, and directions need site confirmation; a sentence alone cannot define them reliably. The assistant lists missing settings and offers **Open settings** and **Cancel proposal**. Until saved, the proposal is not a created or running task.
 
-1. Read the missing items: region, station boundary, tripwire, direction, face library, prompt, or other fields.
-2. Open the draft and inspect generated nodes and connections.
-3. Complete required fields using actual site conditions. Also check video inputs and outputs.
-4. Save the task, then start it and open the preview.
-5. Validate trigger conditions and false alarms against site acceptance criteria.
+1. Read the complete request and review the algorithm, camera source, runtime, and every detection condition.
+2. Click **Open settings** and open the algorithm node requiring configuration in the task editor.
+3. Fill only editable site fields. Camera, runtime, original detection conditions, node connections, and outputs remain locked so that drawing a region does not change the plan.
+4. For a region or tripwire, open the region editor and click **Refresh snapshot**. Verify the camera image, then follow the instructions to draw a line or polygon. Check any available direction control against actual movement at the site.
+5. Confirm the region, return through the node settings to the task editor, and click **Save**. Wait for **Saved · not running** and note the actual task ID.
+6. When ready, click **Start the saved task**, or explicitly request startup of that task. Inspect its preview, detection conditions, recording, and alarms.
 
-An unsaved draft is not a saved or running task. After a refresh, the camera address may need to be entered again so it is not restored from a sensitive persisted receipt. See the [Web User Manual](../user-manual/index.md) for editor details.
+**Saving through this configuration flow keeps the task stopped. It does not start detection, recording, or notifications.** To change the camera, runtime, or original conditions, cancel the unsubmitted proposal and describe the change. Do not use editable region fields to alter unrelated settings. Parameters not made available, such as face libraries, external notification destinations, or output paths, require the appropriate management entry as indicated; do not skip required settings.
+
+**Do not draw without a camera snapshot.** Check the camera and connection, then refresh successfully before continuing. Snapshot confirmation lasts approximately 2 minutes; after expiry, refresh and review the region. The entire configuration proposal lasts approximately 5 minutes from issuance. Opening the editor or refreshing its snapshot does not extend the proposal lifetime. Prepare site requirements before opening it; cancel and generate a new proposal if it expires or its source changes.
+
+To leave an unsaved proposal, click **Cancel proposal** or cancel in the editor. You can close the unsaved local editor during a network error, but the receipt determines whether device-side cancellation was confirmed. Cancellation does not undo an accepted save or delete existing tasks. If saving was accepted but not fully verified, inspect the actual task ID before creating anything else. General editor instructions are in the [Web User Manual](../user-manual/index.md).
+
+#### 6.4.1 Weekly schedules: confirm what the schedule controls
+
+With matching weekly-schedule support, request `Detect from 09:00 to 17:00 on weekdays, not weekends. Save without starting.` Or request `Keep detection running all day; record only from 09:00 to 17:00 on weekdays.` Check the complete requirement in the card first. **Complete and confirm** means the hours have not been configured yet; it is not confirmation that a schedule is active.
+
+After **Open settings**, use **Weekly schedule**:
+
+1. Choose **Schedule scope** and read its impact. Only options supported by the task's actual components are offered.
+2. Explicitly enter a **Fixed UTC offset**, such as `+08:00`. This is a format example; use your site's intended offset, not a guess based on the browser.
+3. Review Monday through Sunday individually. Enable the required days and use **Add period** to enter start/end times such as `09:00`—`17:00`. Disabled means closed, not all-day operation.
+4. For a whole day, explicitly choose **All day** (`00:00`—`24:00`). Each day supports up to 16 periods, ordered by start time, without overlaps or identical start/end times. Use **Remove** for unwanted periods.
+5. For an overnight `23:00`—`02:00` period, click **Split into next day**. Review `23:00`—`24:00` on the first day and `00:00`—`02:00` on the next. Sunday wraps to Monday; resolve conflicts with existing periods before saving.
+6. Verify all seven days, scope, and UTC offset, then save. The task remains stopped and needs explicit startup. Cancelling does not save the schedule.
+
+| Scope | Outside scheduled hours |
+|---|---|
+| Input and the entire analysis pipeline | Gates the entire input and downstream detection, preview, and recording, not just alarms. Input checks the schedule approximately every 30 seconds; transitions are not second-accurate switches |
+| Recording only | Gates the recording input; detection continues under the original task and alarm rules. Accepted tail frames finish writing, and alarm pre-roll may include footage outside the window. Files are not guaranteed to be clipped exactly to its boundaries |
+
+Recording-only scope requires an existing supported recording node. The form does not add recording output when that node is absent. A schedule does not enable recording, change its mode, or configure a storage drive, directory, capacity, or retention policy. Check those in the relevant recording and storage settings. Complete any required regions as well; a schedule-only proposal does not need an extra camera snapshot just to save.
+
+The form uses fixed UTC offsets from `-14:00` to `+14:00`. Named time zones, automatic daylight-saving changes, holidays, and date-specific exceptions are unsupported. A weekday plan does not recognize local holidays. Ask an administrator about an appropriate alternative instead of substituting an inequivalent weekly plan.
 
 ### 6.5 Interpret creation results
 
 | Stage | What it establishes | Next step |
 |---|---|---|
 | Selection or input required | Request is still being completed | Complete the active form |
-| Draft requires settings | An editable draft exists | Configure, save, and start |
-| Saved | Device has the task configuration | Verify successful startup |
+| Site configuration required | Site fields are incomplete; the task is not saved | Complete and save, then explicitly start when needed |
+| Saved · not running | Configuration is saved; the site-settings flow checks its saved stopped state | Explicitly start that task ID, then verify field performance |
 | Started | Startup was accepted or task is running | Check frames and preview |
 | Frame verification passed | Fresh output metrics met the checks | Validate playback, image, algorithms, and alarms |
 | Saved but startup failed / verification incomplete | A task may exist without a fully working pipeline | Inspect the original task before creating another |
+| Save accepted but not fully verified | Saving may have occurred; the final state is unconfirmed | Check the original task ID and list; do not create a duplicate |
 | Result unknown | Web interface cannot establish the outcome | Recheck the original request and task list |
 
 After startup, the assistant checks for output frames for up to approximately 30 seconds. If it reports that verification is incomplete, inspect the original task and open its preview before trying again. Even when frames are detected, check the actual image, detection results, and alarms.
+
+#### 6.5.1 Save without starting {#save-without-starting}
+
+To prepare configuration now and put it into operation later, use these steps in a matching version that supports save-only creation:
+
+1. Explicitly request `Create a smoking detection task on the local device. Save only; do not start.` This prepares a new task; it does not stop or edit an existing one.
+2. Check that the algorithm-selection and camera-confirmation replies retain the no-start requirement. Choosing an algorithm, changing placement, or supplying a camera should not remove it.
+3. Complete the camera and required site forms, then confirm saving. **Save-only does not bypass required regions, directions, or schedules**; an incomplete proposal still needs those settings.
+4. After **Saved · not running**, note the actual task ID and confirm its stopped state in the task list. If the save receipt is missing or verification is incomplete, check that task rather than creating it again.
+5. When ready, explicitly request `Start task "Actual task name"`. Check that the reply identifies the same task ID, then verify its picture, detection, and outputs.
+
+Saving a stopped task does not begin its streaming, detection, recording, or alarms. The assistant model may still load on demand to understand the message. Default outputs and requested additional outputs remain in the configuration and will be used on later startup. “Do not start” does not permanently disable the configured alarm or recording switches.
+
+Follow any unsupported-flow guidance on older versions; do not confirm by ignoring the no-start requirement. Save/readback checks do not establish detection accuracy or notification delivery, and closing the window cannot undo an accepted save.
 
 ## 7. Manage existing tasks
 
@@ -395,6 +478,28 @@ Restoring earlier state requires a supported version and stored state records. I
 
 Enter `Edit task "Warehouse entrance"`, then click **Open task editor**. The existing editor opens for the original task ID. Edit parameters in its forms; arbitrary natural-language parameter changes are not guaranteed.
 
+#### 7.4.1 Change only the runtime location {#change-task-location}
+
+In a matching version that provides this feature, an edit-task reply also offers **Change location only**. Use this separate form, for example, to move a stopped task to a compatible compute card without creating another task.
+
+1. Check the task name, ID, and state in the reply, then click **Change location only**. The task must be stopped. This form does not automatically stop a running task or resume a paused one. If downtime is intended, explicitly stop the task separately, check the result, and reopen the form.
+2. Read the current location and select **I confirm this edit changes only the runtime location and preserves all other settings**. Camera, algorithm, condition, schedule, or output changes mentioned in your original request are not performed by this form; use the original task editor to handle them separately.
+3. Explicitly choose a compatible location returned by the device under **New runtime location**, then click **Review changes**. The form does not choose another compute card for you.
+4. Under **Confirm configuration difference**, check the original task ID, configuration revision, and “previous location → new location.” Click **Confirm location change** only when correct, or **Cancel** to abandon the proposal.
+5. Read the save receipt and query the original task. A successful save changes only the location and preserves its ID, camera, algorithm settings, rules, and outputs. **The task remains stopped**; no task is copied, started, or stopped automatically. When ready to run it, make a separate start request and check preview, detection, and outputs.
+
+Only other locations currently checked as available and compatible are listed. This does not verify detection performance at the new location or imply that arbitrary platforms are interchangeable. If **No other available, compatible runtime location was returned** appears, the change cannot be submitted. Cancel and check compute-card status and component support.
+
+Confirmation rechecks login permissions, configuration revision, hardware, and stopped state. If another person changes the task, it starts running, the location becomes unavailable, or the form expires, read the task again and open a fresh form. An old proposal will not overwrite a newer configuration.
+
+**Unsent text in the chat input is not added to a location-form submission.** If you type “Also change the camera” without sending it, then confirm the location form, only the reviewed location change is submitted. To change the scope, first cancel the unsubmitted proposal, then send the complete requirement or use the original task editor.
+
+**A disconnected session or unknown outcome does not establish that saving failed.** After reconnecting, click **Check original request/result** to query the original operation receipt and inspect the original task's runtime location. If the old receipt cannot be recovered, check the original task before following the prompt to release the wait; do not immediately resubmit or create a copy. Canceling an unsubmitted form saves nothing. Closing a window or canceling does not undo an already submitted operation, and there is no automatic rollback.
+
+Signing in again, changing accounts, or a permission change can make the original receipt inaccessible. This still means the original outcome is unknown, not that nothing was saved. After inspecting the task and explicitly releasing the wait, the old location card will not execute again. Read the task and open a fresh form if a further change is needed.
+
+#### 7.4.2 Delete a task
+
 For deletion, state the target explicitly, for example `Delete task "Warehouse entrance"`. Select the target when required and inspect the separate deletion confirmation.
 
 [![Figure 7: Separate task-deletion confirmation](../../assets/ai-assistant/en-07-delete.png)](../../assets/ai-assistant/en-07-delete.png)
@@ -402,6 +507,39 @@ For deletion, state the target explicitly, for example `Delete task "Warehouse e
 *Figure 7: Recheck names, IDs, and count before confirming. “Cancel; keep tasks” abandons an unsubmitted deletion.*
 
 Execution stops a running task and releases resources before deleting configuration. Stop or release failure should retain configuration and report failure. This operation does not erase historical alarms or recordings. Retained history does not imply that deleted task configuration has one-click recovery.
+
+### 7.5 Diagnose first, then decide whether to start
+
+If a task has no picture or is not producing expected alarms, request `Check why task "Warehouse entrance" has no video.` If multiple tasks match, check their names and IDs before choosing one.
+
+1. Read observations marked **Evidence collected**, **Abnormal observation**, and **Unknown / not inspected**. Expand **View evidence details** when needed and check query time, sample time, and source.
+2. If the device confirms that the stopped task is suitable for startup, it may offer **Start the stopped task**.
+3. Review its task ID, impact, and warning about irreversible outputs. Click **Confirm start and check** only when you want it running; otherwise choose **Cancel proposal**.
+4. Read the result, inspect the original task state, and open its preview. Successful startup or continuous output frames do not establish correct detection, alarm triggering, or notification delivery; test these at the site.
+
+Diagnostics read state only. They do not automatically change rules, stop other tasks, restart services, or delete data. The current proposal handles eligible stopped tasks, not arbitrary one-click repairs. Follow the diagnostic guidance and existing management controls for other states, including paused tasks.
+
+To inspect without actionable proposals, explicitly say `Diagnose this task read-only; do not repair or change it.` This request shows diagnostic evidence only, without executable start or repair confirmations. Earlier repair proposals in the same conversation that have not been accepted for execution are revoked; already accepted operations are not rolled back. An ordinary diagnostic request may still offer a start proposal that requires separate confirmation.
+
+**Confirmation resumes that task's existing detection and every configured output**, potentially including alarms, recording, and external integrations, and consumes runtime resources. It does not automatically roll back. To stop it, make a separate explicit stop request; previously produced recordings, events, and notifications cannot be withdrawn by stopping. Diagnose again if the proposal expires or configuration/runtime changes. For unknown outcomes, check the original task rather than confirming repeatedly or creating a duplicate.
+
+#### 7.5.1 Inspect schedule evidence and unknown states {#schedule-diagnostics}
+
+If a task has operating hours but its current picture or recording is unexpected, use the diagnostic request above and expand the weekly-schedule findings under **Task configuration**. First check **Node ID** and **Weekly schedule scope** to distinguish input and recording nodes. One node's observation does not describe the whole device.
+
+| Diagnostic field or result | How to interpret it |
+|---|---|
+| Query time allowed by saved schedule | Evaluates the saved configuration at this query's time. “Allows” does not prove it is running; “disallows” does not prove a live instance has stopped |
+| Weekly schedule scope: entire input and downstream detection, preview and recording | Gates the whole input pipeline, not just alarms. Checks occur approximately every 30 seconds; near a boundary, inspect actual runtime state as well |
+| Weekly schedule scope: recording gate only | Does not enable recording or change its mode. Accepted tail frames and alarm pre-roll can cross the boundary |
+| Timezone used for evaluation / schedule timezone source | Uses the configured fixed UTC offset. Legacy settings may default to fixed `+08:00`, without following the browser or switching for daylight saving |
+| Window boundary rule | Start included, end excluded: `17:00` is outside a `09:00`—`17:00` period |
+| Live pause or recording gate verified: not verified | This is a configuration decision, not proof that streaming stopped, detection resumed, or recording is active |
+| Unavailable / unknown, invalid format, or remaining nodes not inspected | Evidence is insufficient. Do not substitute all-day running, all-day stopped, or zero. Inspect the original task configuration and runtime controls |
+
+**Older tasks may use a different schedule format.** Omitted weekdays can be unrestricted in that format, and empty periods on an enabled day can mean all day. An entirely empty schedule does not mean closed. Do not interpret those legacy fields as disabled days in the new form described in Section 6.4.1. Diagnostics evaluate the actual saved format and report default offsets or uninspected fields without silently rewriting it. If an input uses a diagnostic cycle and its current phase has not been read, that phase remains unknown.
+
+Diagnosis does not start/stop tasks, create recordings, or change the device clock to test a schedule. To establish actual behavior, check task state, preview, and recent files in recording management; diagnose again after configuration changes. The **schedule's fixed offset** is separate from the [device-local time range used for indexed search](#8341-specify-time-and-an-existing-source).
 
 ## 8. Find alarms and image evidence
 
@@ -461,7 +599,13 @@ Before your first search, prepare the search service and index:
 The original video task does not have to be running to search its saved media. The files must still exist, be indexed, and be accessible to an available search service.
 
 !!! tip "Search and the assistant model have separate settings"
-    The assistant's **Model service** understands conversation; **Retrieval Settings** controls searching images and videos. Being able to chat does not mean intelligent search is enabled. If the conversation reports that search is disabled, complete the steps above. Sending “Enable it for me” does not replace changing the settings or automatically enable recording.
+    The assistant's **Model service** understands conversation; **Retrieval Settings** controls searching images and videos. Being able to chat does not mean intelligent search is enabled. Use the settings above, or follow the conversation workflow below on matching versions that support retrieval-service control. Neither method automatically enables recording.
+
+**You can also enable or stop retrieval through the conversation.** On a supported device with administrator-authorized AI operations, send `Enable intelligent retrieval` or `Stop intelligent retrieval`. Review the current device, action, and impact in the operation card, confirm, and inspect the device receipt. Send `Show intelligent retrieval status` for a read-only status query. If permission is missing, follow Section 2.3; an authorized administrator can also use the original settings page.
+
+A successful enable receipt establishes the checked service configuration and start/stop state, **not model readiness, complete indexing, or a guaranteed match**. Check service readiness and indexing in Retrieval Settings before searching. Stopping retrieval makes new searches unavailable; it does not delete existing images, recordings, or detection tasks. An incomplete or unknown receipt is not proof that the service has stopped.
+
+“Not enabled” means the search was not run, not that a completed search found no matches. Enable and save the setting, wait for readiness, then resend a complete request such as `Find images and videos of a woman wearing red.` There is no need to recreate the original detection task.
 
 #### 8.3.2 Describe the scene in the conversation
 
@@ -480,14 +624,17 @@ The assistant first checks search availability. If search is disabled or startin
 #### 8.3.3 View images and play videos
 
 1. Check **Scene** in the result card and confirm that it matches your request.
-2. Review the **Candidates** count. A conversation shows at most **20 items** per query; this is not a count of all historical records.
+2. Review the **Candidates** count, displayed item range, and number **cached for this query**. Each page shows at most **20 items**, not the whole-index total.
 3. Click **View image** and inspect the subject, clothing, and scene in the preview.
 4. Click **View video** to play from the returned **Match offset (within clip)**. Check the surrounding footage before drawing a conclusion.
 5. Close the preview and open other candidates without re-entering the search text.
+6. If more cached candidates are available, use **Previous / Next**. Paging does not run another search, add new media, or change the original time range.
 
 The list also shows **Similarity score (not probability)** to indicate relevance to your description. A high score does not confirm identity, gender, or an event, and does not guarantee that every described condition is satisfied.
 
 The video offset is measured from the beginning of that clip, not the event's calendar date and time. Current conversation cards do not provide camera names or task-source details. Local and cloud playback controls may differ; inspect the actual scene before making a business decision.
+
+Search caches last approximately 5 minutes from creation; paging does not renew them. A new search replaces the previous paging scope. Resend the complete request if an old page expires or you need newly indexed material. The cached count is what this search returned, not every match in the whole index. Keep partial-coverage, indexing, and truncation notices in mind when reviewing results.
 
 #### 8.3.4 Refine or change a search
 
@@ -505,7 +652,30 @@ You can also replace the request with a full description, such as `Instead, find
 
 After enabling search, you can say `Intelligent search is enabled now. Retry the previous video search.` The assistant still checks actual device readiness. After a disconnect, long pause, or expired conversation, resend the complete description.
 
-If a query was not run because filters such as “yesterday” or “camera 2” are unsupported, saying “Images only” does not remove those restrictions. To broaden the search, send a complete new query without dates or camera restrictions. If exact times are essential, use alarm queries or recording management as appropriate for the records you need.
+If a query was not run because a condition such as “yesterday morning” or “camera 2” cannot be resolved unambiguously, saying “Images only” does not remove that restriction. Complete the date, time range, or actual task name using the supported scope below. To broaden the search, explicitly remove the restriction in a complete new request. An interpretation failure is not a no-match result.
+
+#### 8.3.4.1 Specify time and an existing source
+
+Matching versions with precise-time search support accept the following forms. Replace example dates with the actual date you need and verify device time settings first.
+
+| Scope | Example |
+|---|---|
+| Today or yesterday | `Find videos of a woman wearing red from yesterday.` |
+| This week or the last seven days | `Find videos of white cars from this week.` |
+| Complete date | `Find images of a woman wearing red on 2026-09-12.` Chinese `2026年9月12日` is also supported |
+| Time range on one day | `Find videos of a woman wearing red on 2026-09-12 from 09:00 to 10:00.` |
+| Continuous range across dates | `Find white-car videos from 2026-09-12 23:00 to 2026-09-13 02:00.` |
+| An existing task's source | `Find white-car videos from task "Warehouse entrance".` The name must resolve to a definite device source |
+
+Use `HH:mm`, optionally `HH:mm:ss`. A complete date, today, or yesterday covers that calendar day from midnight to the next midnight. This week begins Monday at midnight; the last seven days include today and the previous six calendar days. Those latter two ranges end at the frozen query reference time. If no time is specified, do not assume a today-only default; inspect the reply.
+
+The result card shows actual boundaries in **device local time**, with **start included and end excluded**: `09:00`—`10:00` excludes `10:00` itself. This is not necessarily the time where your computer is located; VPN access or opening the page abroad does not switch it to the browser's timezone. **Query reference time** identifies when the range was determined. If that reference is labelled UTC, read it as UTC rather than device local time.
+
+Dates without a year, relative sub-day wording such as `yesterday morning` or `nine last night`, multiple separate ranges, exclusions, another timezone, and ambiguous or nonexistent daylight-saving times are unsupported. Rewrite as one explicit continuous full-date/time range when prompted; unsupported conditions are not silently expanded to a whole day. An overnight range needs the second full date; `23:00 to 02:00` is not automatically assumed to end the next day.
+
+Sources are resolved from existing device tasks, not guessed from arbitrary camera numbers. If names are ambiguous, sources are missing, or multiple sources cannot be distinguished, choose or supply an actual name as prompted. A source-filtered search does not start or modify the original task and does not imply searching every source or other devices.
+
+**Time filtering covers currently indexed candidates with usable time information, not a complete inspection of every recording in that window.** Missing timestamps, unindexed files, or removed media mean no results cannot prove that no event occurred throughout the interval. Indexed search, alarm statistics, and related recordings are separate entry points; their filter capabilities are not interchangeable.
 
 #### 8.3.5 No results or media cannot open
 
@@ -526,11 +696,41 @@ If a query was not run because filters such as “yesterday” or “camera 2”
 #### 8.3.6 Search coverage and other entry points
 
 - Conversation search covers **indexed alarm images and sampled frames from saved recordings on the current device**. It is not the complete history of every camera and does not automatically search other devices. Check the selected device when using the cloud.
-- Conversation filters are the scene description and images, videos, or both. Exact dates, time ranges, camera/channel/task selection, and minimum-similarity filters cannot be set directly through conversation. Alarm-statistics time ranges do not automatically apply to indexed-media search.
-- The conversation shows up to 20 candidates, without a next-page control, exact whole-index count, or media-download button. To change the result count or upload a reference image for **image-to-image search**, manually open the separate **Smart Search** window using the magnifying glass at the top of the device page. The chat input does not currently support uploaded-image search.
+- Conversation filters include a scene description and images, videos, or both. Matching versions also support the explicit time ranges and existing-task sources described above. Do not infer support for minimum-similarity filters, arbitrary camera numbering, or cross-device queries.
+- Each page shows up to 20 candidates, with paging for cached results, not an exact whole-index count or packaged media download. To change the result count or upload a reference image for **image-to-image search**, manually open the separate **Smart Search** window using the magnifying glass at the top of the device page. The chat input does not currently support uploaded-image search.
 - The separate window does not automatically inherit conversation filters. Enter your description or upload the reference image there. See [Web User Manual: Intelligent Retrieval](../user-manual/index.md#intelligent-retrieval).
 
 Searching reviews existing material. It does not create detection tasks, enable recording, or subscribe to notifications. For “Alert me when this happens in the future,” complete the task and alarm setup in Section 6.
+
+#### 8.3.7 Bookmark candidates temporarily and download a JSON manifest
+
+When several returned scenes seem relevant, bookmark candidates for further inspection and review them together:
+
+1. Open each image or video to check its content, then click the corresponding **Bookmark candidate 1 / 2 / …** below the result card. The number identifies a candidate in that card.
+2. Click **List / refresh bookmarks** and review the count, media state, and remaining lifetime. Use **Remove bookmark** when no longer needed; this does not delete the original media.
+3. To prepare a review record, click **Generate current redacted manifest** and wait for the device to check media state again.
+4. When **Download JSON manifest (no media)** appears, click it to download `aibox-evidence-manifest.json`. The browser controls its destination; generation does not automatically download it.
+
+In matching versions that support conversational bookmark actions, you can also use these requests. Check the currently displayed list first and perform one action at a time:
+
+| Goal | Example request | What to check |
+| --- | --- | --- |
+| Bookmark a search candidate | `Please bookmark the second candidate` | Candidate 2 on the current search page, not item 2 across all search results |
+| View bookmarks | `Show my saved items` | The current session's bookmark list and remaining lifetime |
+| Remove one bookmark | `Remove the first bookmark` | View bookmarks first, then remove item 1 in that list; this does not delete the source image, video, or task |
+| Generate a bookmark manifest | `Export current bookmarks` | A redacted JSON manifest is generated; downloading still requires its button. This is not a media archive or an email |
+
+**Search-candidate numbers and bookmark-list numbers refer to different lists.** After paging search results, “the second candidate” means item 2 on the new page. Before removing a bookmark, use `Show my saved items` and check its number in the latest bookmark list. After switching topics, viewing another list, or letting candidates expire, query or refresh the relevant list before using numbers again. The assistant should not guess an old or ambiguous reference. Multi-item collection and combined actions such as removing and exporting are not executed as a batch; perform them separately and inspect each receipt. If interpretation is uncertain, use the corresponding card buttons.
+
+For example, search and inspect the results, then send `Please bookmark the second candidate`. After its receipt, send `Show my saved items`, then use that new list to decide whether to `Remove the first bookmark` or `Export current bookmarks`. A bookmark receipt switches the current list to bookmarks. Before bookmarking another search candidate by number, use an available **Previous / Next** button to retrieve a search page again, or run a new search. Scrolling back to an old card does not change the conversation's numbering scope. Natural-language actions still need model interpretation; if the model is unavailable but the connection works, use existing card buttons as described in Section 2.2.
+
+Search candidates and bookmarks have separate lifetimes. Search candidates are cached for about **5 minutes**; after expiry, search again before bookmarking by candidate number. Existing bookmarks follow the lifetime below. A new search does not renew an existing bookmark collection.
+
+Bookmarks exist only in device memory for the current web session: up to **20 minutes from creation of the collection, with at most 64 items**, subject to the card's displayed limit. Viewing, paging, and exporting do not renew that lifetime. Ordinary reconnection with the same session identifier can retain unexpired bookmarks; changing the identifier or restarting the service makes them unavailable. This is not a permanent folder shared across devices or browsers.
+
+**The JSON manifest contains no image or video files.** It records candidate type, similarity, available times or clip positions, media state, and search-coverage information, without camera passwords or direct media-access links. It helps organize review notes; it is not a media backup or confirmation of identity or events. Review it against site information-handling rules before sharing.
+
+Bookmarking, generating, and downloading a manifest do not copy or lock source media or extend retention. For **Media no longer exists**, **Media changed**, or **Media inaccessible**, inspect the original media entry. Bookmarks and manifests cannot restore removed files. If validation fails, no manifest is downloaded; generate a fresh one. After a connection error, reconnect and refresh bookmarks first.
 
 ## 9. Find related recordings
 
@@ -607,7 +807,7 @@ If saving fails or status is stale, refresh before assuming a value in an input 
 
 ## 12. Understand LLM review
 
-LLM review is a processing stage after detection, separate from selecting a detector. RC5 assistant-created fire/smoke tasks include review by default; other algorithms can request it explicitly. Existing tasks are not automatically rewritten. Inspect the generated proposal and node settings.
+LLM review is a processing stage after detection, separate from selecting a detector. With a matching template, assistant-created fire/smoke tasks include review by default; other algorithms can request it explicitly. Existing tasks are not automatically rewritten. Inspect the generated proposal and node settings.
 
 - Check for **LLM review requirement retained** in the creation form.
 - Verify the LLM stage exists and upstream algorithms request review.
@@ -633,6 +833,8 @@ Use this workflow to avoid duplicates and incorrect state assumptions.
 Rechecking uses the original request; it does not mean executing again. Rewording and resending a creation request can create a new request. Repeated clicks and refreshes are not substitutes for receipt checks.
 
 Closing the window, leaving the page, or cancelling an unsubmitted form does not guarantee cancellation of accepted background work. Chat text is not a reliable long-term operational ledger. Use task state and operation receipts to establish outcomes.
+
+Unsaved site configuration can be cancelled to return to the conversation. Follow Section 6.4 for expired proposals or snapshots instead of repeatedly submitting an old form. Once saving is accepted or its outcome is unknown, check the task list first. Search caches, temporary bookmarks, and creation proposals have separate lifetimes; visible chat text does not keep them valid indefinitely.
 
 ## 14. Chinese and English usage
 
@@ -672,8 +874,19 @@ Keep the actual stored task name when referring to a task. Switching interface l
 | Input too long or incomplete answer | Request size, model capacity, output budget | Split the request and inspect its form/receipt; do not repeatedly submit writes |
 | Model busy or shutting down | Active inference, release, or loading | Wait for recovery; interruption is not a success receipt |
 | Camera check fails | Device-side network, credentials, path | Fix the cause; check whether a task was saved before retrying |
+| Existing camera cannot be selected | Source changed, list expired, or ambiguous name | Request a fresh selection or enter a current address; name hints are never automatically selected |
 | Algorithm absent | Installation, loading, visibility | Inspect plugin management; do not guess component names |
-| Creation returns a draft | Required site settings | Complete and save the draft in the editor |
+| Site configuration is still required | Missing supported fields | Complete regions, directions, or weekly schedule, save, then explicitly start |
+| Camera or runtime is locked in the editor | Confirmed-plan fields | Cancel the unsubmitted proposal and describe the change; do not bypass locking through another parameter |
+| Region editor has no image or an expired snapshot | Camera, connection, and snapshot lifetime | Refresh and review the region; regenerate expired proposals. Do not draw without an image |
+| Weekly schedule cannot be saved | Seven days, scope, UTC offset, overlapping periods | Complete valid fields and Split into next day for overnight periods. Holidays and daylight saving are unsupported |
+| Schedule allows the time, but no picture or recording appears | Actual task state, schedule scope, recording switch | A schedule decision is not a runtime receipt; compare configuration and live evidence using [schedule diagnostics](#schedule-diagnostics) |
+| Original location-change receipt is inaccessible | Login session, permissions, original task location and state | Inspect the original task before releasing the wait; an unavailable receipt does not mean no save, and old cards must not be resubmitted |
+| Save accepted but not fully verified | Original task ID and actual state | Check that task and its receipt; do not create a duplicate |
+| No diagnostic startup proposal | Task state and supported actions | Read-only diagnosis does not mean every fault can be automatically fixed; follow the guidance |
+| Search Next no longer works | Cache expired or replaced by a new query | Send the complete request again; paging does not rerun search |
+| Bookmarks empty or media unavailable | Session, lifetime, original retention | Search and inspect again; bookmarks neither back up nor restore media |
+| Download contains only JSON | Manifest type | JSON contains candidate metadata, not packaged images or videos |
 | Started task has no picture | Input stream, output, playback | Inspect the original task and preview |
 | Previous state cannot be restored | Saved pre-pause state | Review tasks and manually choose the intended scope |
 | Deletion incomplete | Version change, stop or release failure | Read per-item errors and refresh targets |
@@ -723,7 +936,7 @@ For support, provide the application version, event time, complete request, inte
 
 ### A.1 Three different paths
 
-| Path | Configurable in current RC5? | Meaning |
+| Path | Configurable? | Meaning |
 |---|---|---|
 | Location of the DEB archive | Yes | An accessible source for installation, not the destination of installed files |
 | Application, libraries, signed plugins | No arbitrary destination option | Package-defined system paths such as `/usr/local/aibox` remain in use |
@@ -860,6 +1073,8 @@ Arbitrary generation directory names are not configurable. Fixed system model pa
 
 After configuring storage, enter the delivery's platform directory and run only the matching command group. Install the main package first; separate system Python installation is unnecessary.
 
+The version below only illustrates the filename format. Before running it, set `AIBOX_INSTALL_VERSION` to the matching batch you actually received. The example does not mean that your device was upgraded or new packages were downloaded.
+
 **AX650N:**
 
 ```bash
@@ -932,7 +1147,7 @@ Use `findmnt --mountpoint <actual-mountpoint>` to verify volume identity and `df
 | Existing external models, change drive or return to internal | Existing bindings take precedence; a separate migration plan is required |
 | Legacy official AX external configuration | Compatible volume identity may be inherited; arbitrary legacy links are not automatically migrated |
 
-Current RC5 has no universal, lossless one-command migration. An administrator must first confirm versions and bindings, stop affected model consumers, back up and verify assets, and plan the switch. Do not manually move/link directories, delete ownership metadata, or assume uninstall/reinstall preserves all data.
+There is no universal, lossless one-command migration. An administrator must first confirm versions and bindings, stop affected model consumers, back up and verify assets, and plan the switch. Do not manually move/link directories, delete ownership metadata, or assume uninstall/reinstall preserves all data.
 
 After an interrupted installation, restore the original drive/mount and verify UUID, read/write state, and capacity. If only configuration failed and files are complete, retry the specific package with `sudo dpkg --configure aibox-plugin-llm` or `sudo dpkg --configure aibox-plugin-llm-rk-vlm`. Incomplete unpacking requires reinstalling the same complete trusted DEB. Transaction records support recovery; they cannot bypass storage faults.
 
