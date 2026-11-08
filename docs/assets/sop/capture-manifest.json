@@ -1,0 +1,365 @@
+{
+  "captured": "2026-11-08",
+  "images": [
+    {
+      "file": "en-02-create-task.jpg",
+      "language": "en",
+      "caption": "Create an SOP workflow with Check objects only.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "612e865852698d62e134fd2d6dab70d31c488fbbec5def1f03bf559c65848199"
+    },
+    {
+      "file": "en-04-editor-overview.jpg",
+      "language": "en",
+      "caption": "English SOP editor with target references, picture controls and overall range.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "20f87111557eeda1084a7374722c6652832641e6dde85ba40bc5dc8e315ae925"
+    },
+    {
+      "file": "en-05-camera.jpg",
+      "language": "en",
+      "caption": "Choose the station camera; credentials are empty.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "e2aa879da299a62645592877147017caa4f6e1a96ba0f593fdd33996958a9ef8"
+    },
+    {
+      "file": "en-06-teaching-video.jpg",
+      "language": "en",
+      "caption": "Loaded workbench recording and seekable timeline in English.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "2aa9ed8131f12c7187e69b7e14e11d34ddb58e62433c3151f5cdf0e9fbcd7dbe"
+    },
+    {
+      "file": "en-07-record-warning.jpg",
+      "language": "en",
+      "caption": "English replacement confirmation; recording has not been started.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "2ccd93b04367df4fc3e0b4d8c8b6b8bb24736414f06244ce5233b94bb90e5475"
+    },
+    {
+      "file": "en-08-plan-range.jpg",
+      "language": "en",
+      "caption": "Overall range with direct endpoint editing.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "92ca9c84c2cc68a3dfd919ea12e1660afd2648fb69715ab1eee598deb3b17ffd"
+    },
+    {
+      "file": "en-10-target-reference.jpg",
+      "language": "en",
+      "caption": "One logical mallet target with its reference and Add view control.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "20f87111557eeda1084a7374722c6652832641e6dde85ba40bc5dc8e315ae925"
+    },
+    {
+      "file": "en-11-object-condition.jpg",
+      "language": "en",
+      "caption": "English condition editor: detected object, full-frame region, replacement and extra controls.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "f419a3d9c3ac3d5dd8170d7ffed7ecd407d6ff5ca7f01e385b6ba104a6977117"
+    },
+    {
+      "file": "en-12-auto-completion.jpg",
+      "language": "en",
+      "caption": "English automatic-completion selection with confirmation-hold slider and 0.8-second input visible.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "c7b7b9563d82540e85d5fae9610e51c6bdd6524cbbda346d69148f7291f0c02f"
+    },
+    {
+      "file": "en-13-manual-completion.jpg",
+      "language": "en",
+      "caption": "Operator-confirmation step with plain English instructions for the operator.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "ea6226ea80551b76792069c1e84d8ec35d29f5d1e24d3574268ff62ba3427278"
+    },
+    {
+      "file": "en-14-stage-range.jpg",
+      "language": "en",
+      "caption": "Stage 2 has its own 16–20 second range.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "c438a93d00505631c0b713cd297f4f98f9cecdc1642d0d6f72b5c5bf2a43db95"
+    },
+    {
+      "file": "en-15-demo-player.jpg",
+      "language": "en",
+      "caption": "Playing the 16–20 second operator-confirmation demonstration with English instructions.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "efb5c9457a39f211f99deda4bda6e0750a8ad0d46964b78d0d4a335d24700927"
+    },
+    {
+      "file": "en-16-detection-settings.jpg",
+      "language": "en",
+      "caption": "Shared station detection settings in English.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "946a2bf0f6881a77789e51aa4863860d741703840995a1653fb97e99a7ccb2ad"
+    },
+    {
+      "file": "en-17-ordering.jpg",
+      "language": "en",
+      "caption": "English stage ordering controls, including Group with next step.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "292906fc43700e331afe400d84afbc671716a22a2f204721dd4d45289d20deed"
+    },
+    {
+      "file": "en-18-draw-region.jpg",
+      "language": "en",
+      "caption": "English region drawing with Tool work area polygon and localized notice.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "34f65b17f35ba34a0bc6132e265b2e1ca7817fb1548b49f962487bdfb21b98ef"
+    },
+    {
+      "file": "en-19-hand-actions.jpg",
+      "language": "en",
+      "caption": "English hand-action choices with localized hand-recognition notice.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "3e29e2b40d73e4f84cba8bf942a18763e9137a912903e6c38877002ddb0afd5c"
+    },
+    {
+      "file": "en-20-hand-direction.jpg",
+      "language": "en",
+      "caption": "Handedness options in English; calibrate against the operator before using left or right.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "2773f81afb4920800949944813e322ae8fa39c23e07f0ca1e2567ca52a60b4c1"
+    },
+    {
+      "file": "en-23-save-task.jpg",
+      "language": "en",
+      "caption": "Save and Run are separate in the outer task editor; neither is clicked here.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "c8dcfe3ebfc4d87bff01b5d8009c92524a47f27066bfa61cd5206a1203576613"
+    },
+    {
+      "file": "en-25-target-picker.jpg",
+      "language": "en",
+      "caption": "English target-selection dialog with existing mallet requirement disabled.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "bfd52ad1facdbd7fcd721c8a5e882d54057419978ab351be2dbc016dc2589cd4"
+    },
+    {
+      "file": "en-26-object-region.jpg",
+      "language": "en",
+      "caption": "English preview with the mallet explicitly bound to Tool work area.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "10c3b54a3beececf4031f376402c7c13e1852d34d6bc86d8110f97fb9640dc1c"
+    },
+    {
+      "file": "en-29-combination.jpg",
+      "language": "en",
+      "caption": "English All simultaneously / Any one requirement options.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "4177477e7eedb86ac0ecf50a8cbd351be7b4a7d11cec702e45c0be41e7d9c1a3"
+    },
+    {
+      "file": "en-31-hand-visit.jpg",
+      "language": "en",
+      "caption": "English approach-then-move-away template and View conditions entry; not added or validated.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "ff65d792719438c837833541b8741e21978bf15ddc7716b418470f5c7ec7eb69"
+    },
+    {
+      "file": "zh-02-create-task.jpg",
+      "language": "zh",
+      "caption": "新建 SOP 工序：只检查物件，随后填写任务名称。",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "6fafe8d5ffc90971e35310e861acc5d633a99c3e90211cc7c0691fbaa6b77359"
+    },
+    {
+      "file": "zh-04-editor-overview.jpg",
+      "language": "zh",
+      "caption": "橡胶锤就绪与人工确认的工序编辑器",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "c5f6da2b13511b189a74884f426c5355e8ef149c499864bc072ea7be3f824f55"
+    },
+    {
+      "file": "zh-05-camera.jpg",
+      "language": "zh",
+      "caption": "选择工位摄像头；已有摄像头地址和搜索入口",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "5b96cbc48840c19f8319c71d5fe26dff7ee138272a0610004ce59e54e99810f9"
+    },
+    {
+      "file": "zh-06-teaching-video.jpg",
+      "language": "zh",
+      "caption": "完整示教视频加载完成，可播放、暂停和选段",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "ea66ef1f38b570fcb0beed1a06fb75f4fbf4b1699361b0881158e262d9341142"
+    },
+    {
+      "file": "zh-07-record-warning.jpg",
+      "language": "zh",
+      "caption": "重新录制完整流程的真实确认提示",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "7e3006184207819b9f5a79abf1a8795f5ec94ae53d95b8cb031923e9d5ed1306"
+    },
+    {
+      "file": "zh-08-plan-range.jpg",
+      "language": "zh",
+      "caption": "直接编辑总体范围的起点，支持秒和分:秒",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "7f1328a183aac26ae6473906d74c813bc86cb77a2ef317612aa65ea2ef727982"
+    },
+    {
+      "file": "zh-10-target-reference.jpg",
+      "language": "zh",
+      "caption": "目标参考图和补充角度；与编辑器概览使用同一原始截图。",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "c5f6da2b13511b189a74884f426c5355e8ef149c499864bc072ea7be3f824f55"
+    },
+    {
+      "file": "zh-11-object-condition.jpg",
+      "language": "zh",
+      "caption": "第一步：检测到橡胶锤，组合与范围设置",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "4126557cb6c72920b83052524aeb0209cd9f49142f2e5a136991d32d9c0bb064"
+    },
+    {
+      "file": "zh-12-auto-completion.jpg",
+      "language": "zh",
+      "caption": "目标持续满足0.8秒后自动完成，输入短暂中断为高级设置",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "b563ff59f462e113944376c988c268a16b9e89be1c9d71c462a2f74be6d42765"
+    },
+    {
+      "file": "zh-13-manual-completion.jpg",
+      "language": "zh",
+      "caption": "面向操作员的人工确认工序，说明已去除测试备注。",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "45f16a6811e556af139efac7bc3d3f1b4dbd2ef08ba01a40277f45c26d118d23"
+    },
+    {
+      "file": "zh-14-stage-range.jpg",
+      "language": "zh",
+      "caption": "每个阶段有独立验证与示范选段，此处第二阶段16至20秒",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "6721db9c3446d07c126b4c826694b8c48c8a7956f4246eace03881dc67ffe2bc"
+    },
+    {
+      "file": "zh-15-demo-player.jpg",
+      "language": "zh",
+      "caption": "本步示范正在播放所选16–20秒片段，操作要点为面向操作员的说明。",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "f223cc0dd5fb59b7dd71f5fef753c2aa92b74d29ca5d9a008acde493cfec5890"
+    },
+    {
+      "file": "zh-16-detection-settings.jpg",
+      "language": "zh",
+      "caption": "工位共用的物件检测与手部识别入口",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "a4638c15a18fddab9d8f7121885166c68149cd835cacf2fc067001914ce79023"
+    },
+    {
+      "file": "zh-17-ordering.jpg",
+      "language": "zh",
+      "caption": "侧栏调整顺序和与下一步组成一组入口；有依赖的两步保持顺序",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "1089c7a0a74824ba86580259f255e3a5d989257b53e3af0f2b0f2e93bc0f20f9"
+    },
+    {
+      "file": "zh-18-draw-region.jpg",
+      "language": "zh",
+      "caption": "多边形全局工具工作区，可拖动顶点微调",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "51811414b83f619eaa7860a422cc3a7c7f655af2596835ade7a6314aaa79f336"
+    },
+    {
+      "file": "zh-19-hand-actions.jpg",
+      "language": "zh",
+      "caption": "手部与物件的操作方式菜单，先选手，再选物件",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "ae8805839f1923bb45a1950f4073fb289549613d93301e37689ce1e3e27d32f2"
+    },
+    {
+      "file": "zh-20-hand-direction.jpg",
+      "language": "zh",
+      "caption": "左右手按操作者本人校对：不区分左右、区分左右或左右对调",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "f9428913ea0d7ba6bf8a729038c6c39ce93018a279aca464a33ab94855633091"
+    },
+    {
+      "file": "zh-23-save-task.jpg",
+      "language": "zh",
+      "caption": "外层任务编辑器的保存与运行是两个独立动作；此图尚未点击保存或运行。",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "efac0ee41b42fd5100d34bcfbb26c501b02528f9f9f9dbc50e5a6f15ee7de51e"
+    },
+    {
+      "file": "zh-25-target-picker.jpg",
+      "language": "zh",
+      "caption": "图形化选择本步检查项，已添加物件不会重复添加",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "feda62cb8cf3a27d4b6e4b934a07eb202400478646270793cb4e69f661373588"
+    },
+    {
+      "file": "zh-26-object-region.jpg",
+      "language": "zh",
+      "caption": "在全部识别区域与指定工具工作区之间选择",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "4b65754e359d7490aefcfef907f42f670c2445442dd5cd8d5acfbdc634d27351"
+    },
+    {
+      "file": "zh-29-combination.jpg",
+      "language": "zh",
+      "caption": "全部同时满足与满足其中任一项的区别",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "2e536b415f6a897eeb7d32c5eb985695806e49c2e6e7932a061ac2e2e332e66a"
+    },
+    {
+      "file": "zh-30-drag-highlight.jpg",
+      "language": "zh",
+      "caption": "原始拖动帧显示接收位置高亮；未证实松手新增成功。",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "7510c822a42810ff0c9cfb35a4a846743c12ec508e8abe182c15f870a48dac2b"
+    },
+    {
+      "file": "zh-31-hand-visit.jpg",
+      "language": "zh",
+      "caption": "任意一手靠近橡胶锤后离开，操作范围为工具工作区，完成后人工核对",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "sha256": "4e4d819c0bb896fc30f31947f49e880536ee4632f1b588c725c20ef33d53f429"
+    }
+  ]
+}

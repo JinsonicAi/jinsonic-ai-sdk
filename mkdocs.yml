@@ -113,6 +113,16 @@ nav:
       - 快速开始: zh/quickstart.md
       - 设备开箱与快速上手: zh/device-onboarding.md
       - AI 助手使用说明: zh/ai-assistant/index.md
+      - SOP 系统使用说明:
+          - 使用说明首页: zh/sop/index.md
+          - 入门示例: zh/sop/quickstart.md
+          - 视频与识别完善: zh/sop/video-and-recognition.md
+          - 规则、区域与时间: zh/sop/rules-and-regions.md
+          - 手部动作: zh/sop/hand-operations.md
+          - 工具栏与拖拽: zh/sop/toolbar-and-drag.md
+          - 验证、保存与运行: zh/sop/validation-and-operation.md
+          - 故障排查: zh/sop/troubleshooting.md
+          - 控件速查与清单: zh/sop/reference.md
       - SDK 开发指南: zh/sdk-guide.md
       - OpenAPI 对接协议: zh/reference/openapi-protocol.md
       - Web 用户使用手册: zh/user-manual/index.md
@@ -134,6 +144,16 @@ nav:
       - Quick Start: en/quickstart.md
       - Device Onboarding & Quick Start: en/device-onboarding.md
       - AI Assistant User Guide: en/ai-assistant/index.md
+      - SOP System User Guide:
+          - Guide Home: en/sop/index.md
+          - Quick Start: en/sop/quickstart.md
+          - Video and Recognition: en/sop/video-and-recognition.md
+          - Checks, Regions and Timing: en/sop/rules-and-regions.md
+          - Hand Operations: en/sop/hand-operations.md
+          - Toolbar and Drag Operations: en/sop/toolbar-and-drag.md
+          - Validation, Saving and Operation: en/sop/validation-and-operation.md
+          - Troubleshooting: en/sop/troubleshooting.md
+          - Controls and Checklists: en/sop/reference.md
       - SDK Development Guide: en/sdk-guide.md
       - OpenAPI Integration Protocol: en/reference/openapi-protocol.md
       - Web User Manual: en/user-manual/index.md

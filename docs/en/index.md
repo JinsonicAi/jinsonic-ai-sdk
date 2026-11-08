@@ -20,6 +20,8 @@ It is not a single-algorithm demo, but a deliverable, extensible, and maintainab
 
 [:material-robot: Illustrated AI Assistant Guide](ai-assistant/index.md){ .md-button }
 
+[:material-format-list-checks: Illustrated SOP System Guide](sop/index.md){ .md-button }
+
 </div>
 
 ## Choose an Entry Point by Role
