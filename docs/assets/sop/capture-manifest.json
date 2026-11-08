@@ -142,10 +142,11 @@
     {
       "file": "en-23-save-task.jpg",
       "language": "en",
-      "caption": "Save and Run are separate in the outer task editor; neither is clicked here.",
+      "caption": "Recaptured English outer task editor with separate hand/object branches and a lower video bypass to OSD. Save and Run controls are visible; no task was saved or run.",
       "capture": "live device interface",
       "original_bytes": true,
-      "sha256": "c8dcfe3ebfc4d87bff01b5d8009c92524a47f27066bfa61cd5206a1203576613"
+      "sha256": "f51914e881b49932af1b2a84f74ea82b2aa63da39a1825dd5103de2c89dd2e46",
+      "recaptured": "2026-11-08"
     },
     {
       "file": "en-25-target-picker.jpg",
@@ -318,10 +319,11 @@
     {
       "file": "zh-23-save-task.jpg",
       "language": "zh",
-      "caption": "外层任务编辑器的保存与运行是两个独立动作；此图尚未点击保存或运行。",
+      "caption": "重新拍摄的中文外层任务编辑器，手部与物件检测分支分列，原视频从下方绕入 OSD；保留保存与运行位置。未保存、运行或修改用户原页面草稿。",
       "capture": "live device interface",
       "original_bytes": true,
-      "sha256": "efac0ee41b42fd5100d34bcfbb26c501b02528f9f9f9dbc50e5a6f15ee7de51e"
+      "sha256": "e94c158960b841d196204bc52efb8840a99596262056c9c105b23960420849b4",
+      "recaptured": "2026-11-08"
     },
     {
       "file": "zh-25-target-picker.jpg",
@@ -362,6 +364,36 @@
       "capture": "live device interface",
       "original_bytes": true,
       "sha256": "4e4d819c0bb896fc30f31947f49e880536ee4632f1b588c725c20ef33d53f429"
+    },
+    {
+      "file": "zh-32-flow-routing.jpg",
+      "language": "zh",
+      "caption": "中文实际画布连线近景：网络拉流并行输入手部与物件检测，检测结果进入 SOP，视频与工序状态进入 OSD。浏览器原生局部截图，未重绘。",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "recaptured": "2026-11-08",
+      "sha256": "3a29e057eaf66ed87f7c05b5c48fa5309a8b2a9b3e74efad7324d3603b22e39e",
+      "browser_clip": {
+        "x": 100,
+        "y": 430,
+        "width": 1130,
+        "height": 320
+      }
+    },
+    {
+      "file": "en-32-flow-routing.jpg",
+      "language": "en",
+      "caption": "English live canvas close-up: parallel hand/object detection into SOP, with video and SOP status into OSD. Native browser screenshot clip, no redrawn pixels.",
+      "capture": "live device interface",
+      "original_bytes": true,
+      "recaptured": "2026-11-08",
+      "sha256": "64f1f927598da401a30bb8f5d5d7deb5dfb7bdc1198f196f01d96a6e3e634978",
+      "browser_clip": {
+        "x": 180,
+        "y": 350,
+        "width": 976,
+        "height": 220
+      }
     }
   ],
   "example_footage": {

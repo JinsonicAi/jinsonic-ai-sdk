@@ -710,6 +710,26 @@ The small region label under a diagram object is operational information. It is 
 
 An editor draft, a saved task, and a running task are different states. Closing a window alone does not prove deployment.
 
+
+#### 4.10.1 Reading the example connections {#workspace-reference--flow-routing}
+
+[![Actual parallel hand and object branches with video routed below into OSD](../../assets/sop/en-32-flow-routing.jpg)](../../assets/sop/en-32-flow-routing.jpg)
+
+*Figure 4-1: A close-up captured directly from the live canvas. Hand and object detection occupy separate rows; the original video follows the lower bypass. No nodes or connections were redrawn.*
+
+| Connection | What it carries |
+|---|---|
+| Network Pull Stream → Hand Landmarks | Camera images for visible-hand detection |
+| Network Pull Stream → Prompt Detection | The same images for object detection |
+| Hand Landmarks and Prompt Detection → SOP Workflow | Detection results used to evaluate step conditions |
+| Network Pull Stream → OSD Overlay | Original video used as the overlay background |
+| SOP Workflow → OSD Overlay | Current SOP status |
+| OSD Overlay → Network Streaming | Output video with overlaid guidance |
+
+The two detection branches are parallel data sources. Their positions do not mean “operate the hand first, then the object”; order comes from the steps and conditions inside SOP. An object-only plan does not need a hand-detection branch.
+
+In other layouts, paths may cross on the canvas. A crossing by itself does not join the signals: follow the arrows to their actual nodes and ports. Use **Arrange** to organize the display, then check the connections. Do not add or remove connections just to reproduce a picture's appearance.
+
 ### 4.11 Change-impact reference {#workspace-reference--11-change-impact-reference}
 
 | Change | Recheck at least |
