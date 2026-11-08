@@ -20,7 +20,7 @@ AIBox SDK 面向园区、工厂、社区、门店、交通、仓储和安防等�
 
 [:material-robot: AI 助手图文使用说明](zh/ai-assistant/index.md){ .md-button }
 
-[:material-format-list-checks: SOP 系统图文使用说明](zh/sop/index.md){ .md-button }
+[:material-format-list-checks: SOP 系统图文使用说明](zh/sop/index.md#overview){ .md-button }
 
 </div>
 

@@ -1,7 +1,7 @@
 # Device Onboarding & Quick Start
 
 !!! tip "Next: configure an SOP workflow"
-    After signing in and connecting the device, follow the [SOP System User Guide](sop/index.md), starting with tool readiness and operator confirmation before adding hands, regions, and validation.
+    After signing in and connecting the device, follow the [SOP System User Guide](sop/index.md#overview), starting with tool readiness and operator confirmation before adding hands, regions, and validation.
 
 This chapter is for users who have **just received a Jinsonic AIBOX device**. It walks you from physical connection to running your first algorithm task in the web management platform: **connect the box → discover its IP → install the SDK → log in → create a task**.
 
