@@ -37,3 +37,18 @@
 /* Dialog details remain links to the original complete screenshot. */
 .md-typeset .sop-ui-map--detail a { position: absolute; inset: 0; overflow: hidden; border-radius: .4rem; }
 .md-typeset .sop-ui-map--portrait { max-width: 24rem; margin-inline: auto; }
+
+/* Full-resolution viewing keeps ordinary document scrolling and a no-JS link fallback. */
+.sop-image-viewer{width:calc(100vw - 32px);height:calc(100dvh - 32px);max-width:none;max-height:none;padding:0;border:1px solid #60758d;border-radius:12px;background:#101924;color:#f1f5f9;overflow:hidden}
+.sop-image-viewer[open]{display:flex;flex-direction:column}
+.sop-image-viewer::backdrop{background:#030914d9}
+.sop-image-viewer-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid #425469;flex:none}
+.sop-image-viewer-caption{flex:1 1 12rem;font:500 14px/1.5 system-ui;overflow-wrap:anywhere}
+.sop-image-viewer button{min-height:40px;padding:6px 12px;border:1px solid #72849a;border-radius:7px;color:inherit;background:#23354a;font:14px system-ui;cursor:pointer}
+.sop-image-viewer button:focus-visible,.sop-image-viewer-viewport:focus-visible{outline:3px solid #6eb8ff;outline-offset:-3px}
+.sop-image-viewer-viewport{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;background:#0b111b;padding:12px}
+.sop-image-viewer-viewport img{display:block;max-width:none;max-height:none;margin:auto}
+.sop-image-viewer-status{flex:none;padding:6px 12px;font:12px/1.5 system-ui;color:#cbd5e1}
+.md-typeset a:has(>img[src*="/assets/sop/"]){cursor:zoom-in}
+@media(max-width:600px){.sop-image-viewer{width:calc(100vw - 12px);height:calc(100dvh - 12px)}.sop-image-viewer-bar{gap:6px;padding:8px}.sop-image-viewer-caption{flex-basis:100%}.sop-image-viewer button{min-height:40px;padding:6px 9px}}
+@media print{.sop-image-viewer{display:none!important}}

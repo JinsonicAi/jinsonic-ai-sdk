@@ -1,5 +1,5 @@
 {
-  "source": "Unmodified device screenshots; page-layer crop and numerical annotations, original full image linked",
+  "source": "Unmodified native lossless PNG device captures; page-layer crop and numerical location aids, full original linked. Positions visually checked against the replacement captures.",
   "maps": [
     {
       "id": "C1",
@@ -85,23 +85,23 @@
             12
           ],
           [
-            15,
+            8,
             21
           ],
           [
-            18,
+            24,
             21
           ],
           [
-            72,
+            62,
             43
           ],
           [
-            73,
-            49
+            79,
+            50
           ],
           [
-            90,
+            93,
             96
           ]
         ],
@@ -111,23 +111,23 @@
             12
           ],
           [
-            15,
+            8,
             21
           ],
           [
-            18,
+            24,
             21
           ],
           [
-            72,
+            62,
             43
           ],
           [
-            73,
-            49
+            79,
+            50
           ],
           [
-            90,
+            93,
             96
           ]
         ]
@@ -159,37 +159,37 @@
       "pins": {
         "zh": [
           [
-            28,
+            34,
             34
           ],
           [
-            56,
+            61,
             34
           ],
           [
-            28,
+            34,
             38
           ],
           [
-            77,
+            78.5,
             19
           ]
         ],
         "en": [
           [
-            25,
+            32,
             34
           ],
           [
-            54,
+            61,
             34
           ],
           [
-            25,
+            32,
             38
           ],
           [
-            73,
+            75,
             19
           ]
         ]
@@ -210,16 +210,16 @@
       },
       "crop": {
         "zh": [
-          26,
+          32,
           15,
-          56,
-          28
+          50,
+          27
         ],
         "en": [
-          24,
+          30,
           15,
-          56,
-          28
+          50,
+          27
         ]
       }
     },
@@ -231,12 +231,12 @@
       "pins": {
         "zh": [
           [
-            72,
+            75,
             21
           ],
           [
             18,
-            60
+            60.5
           ],
           [
             18,
@@ -253,12 +253,12 @@
         ],
         "en": [
           [
-            65,
+            75,
             21
           ],
           [
             18,
-            60
+            60.5
           ],
           [
             18,
@@ -269,7 +269,7 @@
             70
           ],
           [
-            88,
+            89,
             88
           ]
         ]
@@ -299,29 +299,29 @@
       "pins": {
         "zh": [
           [
-            33,
+            34,
             48
           ],
           [
-            53,
+            54,
             57
           ],
           [
-            65,
+            62,
             57
           ]
         ],
         "en": [
           [
-            33,
+            36,
             48
           ],
           [
-            48,
+            50,
             58
           ],
           [
-            65,
+            60,
             58
           ]
         ]
@@ -361,29 +361,29 @@
       "pins": {
         "zh": [
           [
-            48,
+            62,
             43
           ],
           [
-            41,
-            65
+            43,
+            68
           ],
           [
-            18,
+            20,
             43
           ]
         ],
         "en": [
           [
-            45,
+            62,
             43
           ],
           [
-            41,
-            65
+            43,
+            68
           ],
           [
-            18,
+            20,
             43
           ]
         ]
@@ -409,45 +409,45 @@
       "pins": {
         "zh": [
           [
-            19,
+            22,
             27
           ],
           [
-            72,
+            77,
             46
           ],
           [
-            88,
+            93,
             49
           ],
           [
-            73,
+            80,
             55
           ],
           [
-            87,
+            91,
             37
           ]
         ],
         "en": [
           [
-            21,
+            22,
             27
           ],
           [
-            72,
+            77,
             46
           ],
           [
-            88,
+            93,
             49
           ],
           [
-            73,
+            80,
             55
           ],
           [
-            85,
+            91,
             37
           ]
         ]
@@ -477,54 +477,54 @@
       "pins": {
         "zh": [
           [
-            30,
-            55
+            31,
+            70
           ],
           [
-            48,
-            55
+            51,
+            70
           ],
           [
-            76,
-            55
+            74,
+            70
           ],
           [
-            19,
-            61
+            18.6,
+            77
           ],
           [
-            94,
-            61
+            95,
+            77
           ],
           [
-            33,
-            58
+            31.4,
+            77
           ]
         ],
         "en": [
           [
-            36,
+            37,
             70
           ],
           [
-            54,
+            60,
             70
           ],
           [
-            41,
-            73
+            93,
+            70
           ],
           [
-            19,
-            79
+            18.6,
+            80
           ],
           [
-            94,
-            79
+            95,
+            80
           ],
           [
-            33,
-            76
+            31.4,
+            80
           ]
         ]
       },
@@ -555,54 +555,54 @@
       "pins": {
         "zh": [
           [
-            20,
-            30
+            25,
+            29
           ],
           [
-            20,
+            25,
             34
           ],
           [
-            62,
+            64,
             50
           ],
           [
-            21,
+            23,
             62
           ],
           [
-            21,
+            34,
             67
           ],
           [
-            84,
+            89,
             79
           ]
         ],
         "en": [
           [
-            20,
+            25,
             29
           ],
           [
-            20,
-            38
+            25,
+            34
           ],
           [
-            62,
-            55
+            64,
+            50
           ],
           [
-            21,
-            66
+            23,
+            62
           ],
           [
-            21,
-            72
+            34,
+            67
           ],
           [
-            83,
-            83
+            89,
+            79
           ]
         ]
       },
@@ -741,34 +741,26 @@
             87
           ],
           [
-            60,
+            61,
             83
           ]
         ],
         "en": [
           [
             22,
-            47
+            68.7
           ],
           [
             38,
-            55
+            76.2
           ],
           [
             22,
-            64
+            85.4
           ],
           [
-            60,
-            59
-          ],
-          [
-            60,
-            67
-          ],
-          [
-            60,
-            78
+            61,
+            80.5
           ]
         ]
       },
@@ -782,101 +774,104 @@
         "en": [
           "Combination selector at left: All at the same time, etc.",
           "Diagram object at left: select the condition",
-          "Dashed slot under the diagram: add a check object",
-          "What to check at right: condition type",
-          "Where to check: region; Replace object below changes the target",
-          "More settings: score and other less frequent parameters"
+          "Dashed slot below the diagram: add a check object",
+          "What to check at right: condition type; scroll down for regions and More settings"
         ]
       },
       "crop": {
         "zh": [
           20,
-          49,
+          50,
           75,
-          43
+          42
         ],
         "en": [
           20,
-          43,
+          49,
           75,
-          43
+          39
         ]
       }
     },
     {
       "id": "C12",
       "suffix": "12-auto-completion",
-      "zh": "完成方式：自动/辅助/人工、持续时长和高级时间",
-      "en": "Completion: automatic/assisted/manual, hold duration, and advanced timing",
+      "zh": "持续确认与完成时限",
+      "en": "Confirmation hold and time limit",
       "pins": {
         "zh": [
           [
-            22,
-            60
+            24,
+            47.7
           ],
           [
-            23,
-            78
+            42,
+            51.6
           ],
           [
-            23,
-            83
+            31,
+            54.5
           ],
           [
-            22,
-            91
+            24,
+            63.7
+          ],
+          [
+            89,
+            69.4
           ]
         ],
         "en": [
           [
-            22,
-            54
+            24,
+            47.7
           ],
           [
-            23,
-            72
+            42,
+            51.6
           ],
           [
-            23,
-            76
+            31,
+            54.5
           ],
           [
-            22,
-            85
+            24,
+            63.7
           ],
           [
-            82,
-            91
+            89,
+            69.4
           ]
         ]
       },
       "labels": {
         "zh": [
-          "完成方式下拉框：决定由系统还是人确认",
-          "持续确认滑杆：调整满足要求的持续时长",
+          "持续确认：展开后调整条件需要保持的时长",
+          "持续确认滑杆：拖动微调时长",
           "秒数输入框：直接填写持续时间",
-          "高级设置：继续向下查看输入短暂中断与完成时限"
+          "高级设置：查看输入短暂中断参数",
+          "完成时限：本步最多允许多久，0 表示不限时"
         ],
         "en": [
-          "Completion-method selector: system or operator confirmation",
-          "Confirmation hold slider: required stable duration",
+          "Confirmation hold: expanded duration settings",
+          "Hold slider: drag to change the required duration",
           "Seconds field: enter the duration directly",
           "Advanced: brief input interruptions",
-          "Time limit near the bottom: step deadline; 0 disables timeout"
+          "Time limit: maximum step duration; 0 disables timeout"
         ]
       },
       "crop": {
         "zh": [
           20,
-          35,
+          44,
           75,
-          57
+          30
         ],
         "en": [
           20,
-          43,
+          44,
           75,
-          49
+          30
         ]
       }
     },
@@ -910,11 +905,11 @@
         ],
         "en": [
           [
-            23,
+            25,
             28
           ],
           [
-            23,
+            25,
             36
           ],
           [
@@ -922,11 +917,11 @@
             72
           ],
           [
-            23,
+            25,
             79
           ],
           [
-            76,
+            73,
             79
           ]
         ]
@@ -982,13 +977,13 @@
             47
           ],
           [
-            80,
-            28
+            88,
+            30
           ]
         ],
         "en": [
           [
-            8,
+            6,
             21
           ],
           [
@@ -1000,7 +995,7 @@
             53
           ],
           [
-            80,
+            88,
             24
           ]
         ]

@@ -23,7 +23,7 @@
 
     中文页面配中文界面截图；英文手册另配英文界面截图。用户自己命名的任务、物件、区域和操作说明不会因为切换界面语言而自动翻译。
 
-点击任意配图可查看原始大图。图中“等待检测”“待验证”是当前页面状态，不是已经通过验收的标记。
+点击任意配图可打开图片查看器，选择 **适应窗口** 或 **原图 100%**；按 **＋/−** 调整倍率，按 **Esc** 或 **关闭** 返回原阅读位置。按住浏览器的新标签快捷键点击图片，可直接打开原图。图中“等待检测”“待验证”是当前页面状态，不是已经通过验收的标记。
 
 ## 1. 认识 SOP 与阅读指南 {#overview}
 ### 1.1 先理解系统检查的是什么 {#overview--1-先理解系统检查的是什么}
@@ -49,7 +49,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 示教原片约 60 秒。上述时间仅用于解释选段；不同录像应根据真实动作重新设置。先使用单目标流程理解操作，再扩展到多工具备齐、区域检查、手部操作和无序步骤。
 
-[![图 1：工具工作台示例的工序编辑器](../../assets/sop/zh-04-editor-overview.jpg)](../../assets/sop/zh-04-editor-overview.jpg)
+[![图 1：工具工作台示例的工序编辑器](../../assets/sop/zh-04-editor-overview.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-04-editor-overview.png)
 
 *图 1：左侧选择工序，中间查看视频与目标，右侧管理参考资料。上方是方案和摄像头，下方继续编排与验证。*
 
@@ -130,6 +130,8 @@ SOP 将现场要求拆成可观察的条件。例如：
 3. 点击图片查看原始大图；不要靠缩略图猜输入内容。
 4. 按自己工位的任务、物件和区域名称操作。
 5. 完成后回到真实页面核对结果，不把截图中的状态当成当前状态。
+
+本手册界面配图现采用重新采集的原生无损 PNG，正文按版心缩小预览，点击后可按原图 100% 查看小字。截图像素不等于视频源的细节：示例录像为 800 × 320，放大截图不会凭空增加原片细节。视频内已经叠加的文字也不随网页语言自动改写。
 
 中文和英文分别提供对应界面截图。示例原录像可从[入门章节](#quickstart--使用配套示例录像)下载；出处与许可见[素材署名](#reference--7-示例素材与截图来源)。
 
@@ -247,7 +249,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | 拖动播放头 | 预览位置改变 | 区分播放头与起终点手柄，见[界面说明](#workspace-reference) |
 | 核对时长 | 与上传/录制片段一致 | 检查是否正在看旧素材或另一操作的示范 |
 
-[![完整教学录像与时间轴](../../assets/sop/zh-06-teaching-video.jpg)](../../assets/sop/zh-06-teaching-video.jpg)
+[![完整教学录像与时间轴](../../assets/sop/zh-06-teaching-video.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-06-teaching-video.png)
 
 **本节完成标志：** 您能说出目标清楚出现的时间、动作开始与结束时间，以及一段物件确实不在位或操作未完成的画面。
 
@@ -280,7 +282,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 - 覆盖操作过程的区域要包含移动途中，不应只包住两个端点。
 - 画好全局区域后，还要逐条把条件绑定到需要的区域。
 
-[![在真实画面绘制区域](../../assets/sop/zh-18-draw-region.jpg)](../../assets/sop/zh-18-draw-region.jpg)
+[![在真实画面绘制区域](../../assets/sop/zh-18-draw-region.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-18-draw-region.png)
 
 ### 2.8 准备验证样本 {#preparation--8-准备验证样本}
 
@@ -353,7 +355,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 6. 填写容易辨认的任务名称，例如“工具就绪与人工确认”。
 7. 点击 **创建并编辑**，进入任务编辑流程，再进入 **编辑工序**。
 
-[![图 2：创建 SOP 任务与选择物件检查](../../assets/sop/zh-02-create-task.jpg)](../../assets/sop/zh-02-create-task.jpg)
+[![图 2：创建 SOP 任务与选择物件检查](../../assets/sop/zh-02-create-task.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-02-create-task.png)
 
 *图 2：入门流程选择“只检查物件”。如果工艺需要手靠近、离开或移动，参阅手部专章。*
 
@@ -361,7 +363,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 ### 3.3 认识工序编辑器 {#quickstart--3-认识工序编辑器}
 
-[![图 3：工序编辑器的主要区域](../../assets/sop/zh-04-editor-overview.jpg)](../../assets/sop/zh-04-editor-overview.jpg)
+[![图 3：工序编辑器的主要区域](../../assets/sop/zh-04-editor-overview.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-04-editor-overview.png)
 
 | 区域 | 怎么用 |
 |---|---|
@@ -383,7 +385,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 4. 已有视频地址但未搜索到设备时，展开对应入口，由管理员核对地址与网络。
 5. 选定后，检查方案栏是否显示正确的摄像头。
 
-[![图 4：选择工位摄像头](../../assets/sop/zh-05-camera.jpg)](../../assets/sop/zh-05-camera.jpg)
+[![图 4：选择工位摄像头](../../assets/sop/zh-05-camera.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-05-camera.png)
 
 **预期结果：** 摄像头来源属于当前工位，后续录制来自该来源。
 
@@ -399,7 +401,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 4. 播放视频，检查开头、中段和结尾是否正常，时间轴是否有真实缩略图。
 5. 暂停在橡胶锤清楚可见的一帧。
 
-[![图 5：完整示教录像与时间轴](../../assets/sop/zh-06-teaching-video.jpg)](../../assets/sop/zh-06-teaching-video.jpg)
+[![图 5：完整示教录像与时间轴](../../assets/sop/zh-06-teaching-video.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-06-teaching-video.png)
 
 #### 3.5.2 录制现场 {#quickstart--52-录制现场}
 
@@ -409,7 +411,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 4. 确认需要替换后再开始，完整执行一次工序，结束时停止。
 5. 等待录像就绪，再播放检查。
 
-[![图 6：重新录制前的替换说明](../../assets/sop/zh-07-record-warning.jpg)](../../assets/sop/zh-07-record-warning.jpg)
+[![图 6：重新录制前的替换说明](../../assets/sop/zh-07-record-warning.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-07-record-warning.png)
 
 重新录制完整流程会替换该方案的示范视频，包括独立分步素材，并重置各步起止时间；已有目标、参考、全局区域和规则按提示保留。取消录制保留原草稿。不要为了“再看一次画面”而重新录制，使用播放器即可。
 
@@ -424,7 +426,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 5. 转到 **目标** 页，检查参考图片是否确实是橡胶锤。
 6. 如正常操作中会有明显角度变化，点击 **补充角度**，从另一帧为同一个目标增加参考。不要把每个角度都新建成一个不同物件。
 
-[![图 7：目标参考和补充角度](../../assets/sop/zh-10-target-reference.jpg)](../../assets/sop/zh-10-target-reference.jpg)
+[![图 7：目标参考和补充角度](../../assets/sop/zh-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-10-target-reference.png)
 
 一把橡胶锤可以有多张参考，物件数量仍是一把。每张参考可能占用检测容量；应保留有代表性的角度，而不是重复加入几乎一样的图片。
 
@@ -437,7 +439,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 5. 对漏检画面进行人工核对与补框，按[识别章节](#video-and-recognition)完成试检、采用和复验。
 6. 不要仅看第一帧成功就认为整段录像已通过。检查正常角度、物件移动、手靠近、遮挡及空场景。
 
-[![图 8：识别检查与参考管理入口](../../assets/sop/zh-10-target-reference.jpg)](../../assets/sop/zh-10-target-reference.jpg)
+[![图 8：识别检查与参考管理入口](../../assets/sop/zh-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-10-target-reference.png)
 
 **继续条件：** 正常清晰的目标画面能被可靠识别；漏检、误检和重复框已有明确处理结果。仍有明显错误时，停留在本步骤，不要靠放宽工序规则掩盖识别问题。
 
@@ -452,9 +454,9 @@ SOP 将现场要求拆成可观察的条件。例如：
 7. 将持续确认设为本例的 **0.8 秒**；根据真实工艺重新决定时长。
 8. 检查关系图、完成方式和区域是否与要求一致。
 
-[![图 9：第一步的目标检查](../../assets/sop/zh-11-object-condition.jpg)](../../assets/sop/zh-11-object-condition.jpg)
+[![图 9：第一步的目标检查](../../assets/sop/zh-11-object-condition.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-11-object-condition.png)
 
-[![图 10：持续满足后完成](../../assets/sop/zh-12-auto-completion.jpg)](../../assets/sop/zh-12-auto-completion.jpg)
+[![图 10：持续满足后完成](../../assets/sop/zh-12-auto-completion.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-12-auto-completion.png)
 
 如果需要人再核对一次，选择 **视觉检测＋人工核对**。它表示视觉条件满足后，仍需操作员确认；不要把它与纯人工步骤混淆。
 
@@ -466,7 +468,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 4. 打开完成方式，选择 **操作员确认**。
 5. 保持两步为依次执行；本例不把它们组成任意顺序组。
 
-[![图 11：纯人工确认步骤](../../assets/sop/zh-13-manual-completion.jpg)](../../assets/sop/zh-13-manual-completion.jpg)
+[![图 11：纯人工确认步骤](../../assets/sop/zh-13-manual-completion.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-13-manual-completion.png)
 
 **预期结果：** 第一阶段完成后才进入人工确认步骤。未轮到此步、结果未知或旧画面失效时，不应借助旧确认按钮跳过流程。
 
@@ -479,9 +481,9 @@ SOP 将现场要求拆成可观察的条件。例如：
 5. 需要时拖动端点，并核对顶部时间读数。
 6. 点击本步的 **播放示范**，确认播放的是该步对应片段。
 
-[![图 12：阶段独立时间段](../../assets/sop/zh-14-stage-range.jpg)](../../assets/sop/zh-14-stage-range.jpg)
+[![图 12：阶段独立时间段](../../assets/sop/zh-14-stage-range.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-14-stage-range.png)
 
-[![图 13：本步示范播放器](../../assets/sop/zh-15-demo-player.jpg)](../../assets/sop/zh-15-demo-player.jpg)
+[![图 13：本步示范播放器](../../assets/sop/zh-15-demo-player.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-15-demo-player.png)
 
 每个阶段的时间段独立，允许有交集。对同一原片做完整方案验证时，各阶段待验证范围应被总体验证范围覆盖。总体范围缩小时，先处理页面指出的冲突，不要假定系统会静默截断所有阶段。
 
@@ -504,7 +506,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 5. 重新打开任务，检查步骤名称、物件、区域、时间、完成方式和示范视频仍然正确。
 6. 确认任务保存成功后，再按现场安排启动并进入 **工位运行**。
 
-[![图 14：任务编辑器中的保存与运行入口](../../assets/sop/zh-23-save-task.jpg)](../../assets/sop/zh-23-save-task.jpg)
+[![图 14：任务编辑器中的保存与运行入口](../../assets/sop/zh-23-save-task.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-23-save-task.png)
 
 **完成**只保留到草稿，**保存**才将任务配置交给设备；**运行**是独立操作。关闭或取消未保存的编辑，应按提示决定是否保留，不要假设所有浏览器草稿已经成为设备上的正式方案。
 
@@ -530,7 +532,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 ### 4.1 界面总览 {#workspace-reference--1-界面总览}
 
-[![工序编辑器各主要区域](../../assets/sop/zh-04-editor-overview.jpg)](../../assets/sop/zh-04-editor-overview.jpg)
+[![工序编辑器各主要区域](../../assets/sop/zh-04-editor-overview.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-04-editor-overview.png)
 
 | 区域 | 主要内容 | 操作后核对 |
 |---|---|---|
@@ -563,7 +565,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 4. 返回方案栏检查来源。
 5. 核对新来源的教学画面、目标、区域和左右手方向。
 
-[![摄像头选择窗口](../../assets/sop/zh-05-camera.jpg)](../../assets/sop/zh-05-camera.jpg)
+[![摄像头选择窗口](../../assets/sop/zh-05-camera.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-05-camera.png)
 
 设备网页登录账号与摄像头账号可能不同。无法连接时，应先核对来源和网络，不要在多个步骤中反复更换相同来源。
 
@@ -592,7 +594,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 **常见误解：** 在视频中看到物件，不等于已经建立目标；建立目标，也不等于每个工序都已经配置该目标。
 
-[![目标和参考管理](../../assets/sop/zh-10-target-reference.jpg)](../../assets/sop/zh-10-target-reference.jpg)
+[![目标和参考管理](../../assets/sop/zh-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-10-target-reference.png)
 
 #### 4.4.3 参考角度选择 {#workspace-reference--43-参考角度选择}
 
@@ -621,7 +623,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 2. **起点手柄**：选段开始位置。
 3. **终点手柄**：选段结束位置。
 
-[![总范围及端点编辑](../../assets/sop/zh-08-plan-range.jpg)](../../assets/sop/zh-08-plan-range.jpg)
+[![总范围及端点编辑](../../assets/sop/zh-08-plan-range.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-08-plan-range.png)
 
 #### 4.6.1 只想预览某个时刻 {#workspace-reference--61-只想预览某个时刻}
 
@@ -645,7 +647,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 每个阶段保留自己的时间范围，可以与其他阶段重叠。阶段时间轴上的“验证范围”和“操作示范”用于不同目的，切换后核对当前显示值。
 
-[![阶段选段及用途切换](../../assets/sop/zh-14-stage-range.jpg)](../../assets/sop/zh-14-stage-range.jpg)
+[![阶段选段及用途切换](../../assets/sop/zh-14-stage-range.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-14-stage-range.png)
 
 ### 4.7 阶段工具栏 {#workspace-reference--7-阶段工具栏}
 
@@ -664,7 +666,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 “检测设置”管理工位共用能力和左右手方向。步骤内的“检查关系”“完成方式”管理当前工序的业务要求。添加手部来源，不会自动把每步变成手部工序。
 
-[![独立检测设置窗口](../../assets/sop/zh-16-detection-settings.jpg)](../../assets/sop/zh-16-detection-settings.jpg)
+[![独立检测设置窗口](../../assets/sop/zh-16-detection-settings.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-16-detection-settings.png)
 
 完整拖入、新增、替换、移除和撤销操作见[工具栏与拖拽](#toolbar-and-drag)。
 
@@ -678,7 +680,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 点击视频缩略图的播放入口。核对本步时间文字与播放器实际范围。示范是给人看的教学内容，不能用它的缩略图代替识别参考。
 
-[![本步示范视频入口](../../assets/sop/zh-15-demo-player.jpg)](../../assets/sop/zh-15-demo-player.jpg)
+[![本步示范视频入口](../../assets/sop/zh-15-demo-player.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-15-demo-player.png)
 
 #### 4.8.3 操作要点 {#workspace-reference--83-操作要点}
 
@@ -712,14 +714,14 @@ SOP 将现场要求拆成可观察的条件。例如：
 | 任务保存 | 持久保存任务 | 等待结果，再重新打开核对 |
 | 任务运行 | 使用保存后的任务运行 | 进入工位运行，核对当前步骤 |
 
-[![外层任务保存位置](../../assets/sop/zh-23-save-task.jpg)](../../assets/sop/zh-23-save-task.jpg)
+[![外层任务保存位置](../../assets/sop/zh-23-save-task.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-23-save-task.png)
 
 保存后必须核对任务和版本。浏览器草稿、已保存任务、正在运行任务是三个状态，不要仅凭窗口关闭推断现场已应用。
 
 
 #### 4.10.1 示例流程的连线应该怎样看 {#workspace-reference--flow-routing}
 
-[![物件与手部检测并行、视频从下方绕入 OSD 的实际连线近景](../../assets/sop/zh-32-flow-routing.jpg)](../../assets/sop/zh-32-flow-routing.jpg)
+[![物件与手部检测并行、视频从下方绕入 OSD 的实际连线近景](../../assets/sop/zh-32-flow-routing.png){loading="lazy" decoding="async" width="1840" height="450"}](../../assets/sop/zh-32-flow-routing.png)
 
 *图 4-1：实际网页画布的局部截图。手部与物件检测上下分开，原视频走下方旁路，便于分清检测结果、工序状态与视频画面。未修改截图中的节点或连线。*
 
@@ -774,9 +776,9 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 ### 5.2 新建任务窗口 {#control-reference--2-新建任务窗口}
 
-<div class="sop-ui-map sop-ui-map--detail sop-ui-map--portrait" style="aspect-ratio:41820/57112" markdown="1">
+<div class="sop-ui-map sop-ui-map--detail sop-ui-map--portrait" style="aspect-ratio:83606/114165" markdown="1">
 
-[![图 C1 · 新建 SOP 任务：先选类型，再命名并创建](../../assets/sop/zh-02-create-task.jpg){style="position:absolute;max-width:none;width:294.117647%;left:-97.058824%;top:-35.593220%;"}](../../assets/sop/zh-02-create-task.jpg)
+[![图 C1 · 新建 SOP 任务：先选类型，再命名并创建](../../assets/sop/zh-02-create-task.png){style="position:absolute;max-width:none;width:294.117647%;height:auto;left:-97.058824%;top:-35.593220%;" loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-02-create-task.png)
 
 <span class="sop-ui-pin" style="left:88.235294%;top:27.118644%" aria-hidden="true">1</span>
 <span class="sop-ui-pin" style="left:11.764706%;top:40.677966%" aria-hidden="true">2</span>
@@ -794,6 +796,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | **3** | 任务名称：窗口下半部输入框 |
 | **4** | 创建并编辑/取消：窗口右下角 |
 
+
 位置说明：窗口上部为任务类型；中部是物件/手部选择；下部是任务名称；右下角是创建，左侧是取消。
 
 | 控件 | 功能与操作 | 结果与核对 |
@@ -810,14 +813,14 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 <div class="sop-ui-map" markdown="1">
 
-[![图 C2 · 编辑器总览：方案、导航、目标、参考与完成入口](../../assets/sop/zh-04-editor-overview.jpg)](../../assets/sop/zh-04-editor-overview.jpg)
+[![图 C2 · 编辑器总览：方案、导航、目标、参考与完成入口](../../assets/sop/zh-04-editor-overview.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-04-editor-overview.png)
 
-<span class="sop-ui-pin" style="left:90%;top:12%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:15%;top:21%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:18%;top:21%" aria-hidden="true">3</span>
-<span class="sop-ui-pin" style="left:72%;top:43%" aria-hidden="true">4</span>
-<span class="sop-ui-pin" style="left:73%;top:49%" aria-hidden="true">5</span>
-<span class="sop-ui-pin" style="left:90%;top:96%" aria-hidden="true">6</span>
+<span class="sop-ui-pin" style="left:90.000000%;top:12.000000%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:8.000000%;top:21.000000%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:24.000000%;top:21.000000%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:62.000000%;top:43.000000%" aria-hidden="true">4</span>
+<span class="sop-ui-pin" style="left:79.000000%;top:50.000000%" aria-hidden="true">5</span>
+<span class="sop-ui-pin" style="left:93.000000%;top:96.000000%" aria-hidden="true">6</span>
 
 </div>
 
@@ -831,6 +834,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | **4** | 画布右上：缩放、适应窗口、平移 |
 | **5** | 主图右侧：参考列表与补充角度 |
 | **6** | 编辑器右下：完成；它先返回任务草稿 |
+
 
 | 位置/控件 | 作用 | 操作后的核对 |
 |---|---|---|
@@ -846,14 +850,14 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 ### 5.4 摄像头选择窗口 {#control-reference--4-摄像头选择窗口}
 
-<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:68880/27104" markdown="1">
+<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:132500/52245" markdown="1">
 
-[![图 C3 · 摄像头入口：认证、搜索、已有地址](../../assets/sop/zh-05-camera.jpg){style="position:absolute;max-width:none;width:178.571429%;left:-46.428571%;top:-53.571429%;"}](../../assets/sop/zh-05-camera.jpg)
+[![图 C3 · 摄像头入口：认证、搜索、已有地址](../../assets/sop/zh-05-camera.png){style="position:absolute;max-width:none;width:200.000000%;height:auto;left:-64.000000%;top:-55.555556%;" loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-05-camera.png)
 
-<span class="sop-ui-pin" style="left:3.571429%;top:67.857143%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:53.571429%;top:67.857143%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:3.571429%;top:82.142857%" aria-hidden="true">3</span>
-<span class="sop-ui-pin" style="left:91.071429%;top:14.285714%" aria-hidden="true">4</span>
+<span class="sop-ui-pin" style="left:4.000000%;top:70.370370%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:58.000000%;top:70.370370%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:4.000000%;top:85.185185%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:93.000000%;top:14.814815%" aria-hidden="true">4</span>
 
 </div>
 
@@ -865,6 +869,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | **2** | 搜索摄像头：密码框右侧 |
 | **3** | 已有视频地址/未搜索到设备：表单下方折叠入口 |
 | **4** | 收起：浮层右上，返回主编辑区 |
+
 
 | 控件 | 位置与使用方法 | 注意事项 |
 |---|---|---|
@@ -880,13 +885,13 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 <div class="sop-ui-map" markdown="1">
 
-[![图 C4 · 教学视频：素材工具、播放器和总选段](../../assets/sop/zh-06-teaching-video.jpg)](../../assets/sop/zh-06-teaching-video.jpg)
+[![图 C4 · 教学视频：素材工具、播放器和总选段](../../assets/sop/zh-06-teaching-video.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-06-teaching-video.png)
 
-<span class="sop-ui-pin" style="left:72%;top:21%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:18%;top:60%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:18%;top:63%" aria-hidden="true">3</span>
-<span class="sop-ui-pin" style="left:18%;top:70%" aria-hidden="true">4</span>
-<span class="sop-ui-pin" style="left:89%;top:88%" aria-hidden="true">5</span>
+<span class="sop-ui-pin" style="left:75.000000%;top:21.000000%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:18.000000%;top:60.500000%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:18.000000%;top:63.000000%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:18.000000%;top:70.000000%" aria-hidden="true">4</span>
+<span class="sop-ui-pin" style="left:89.000000%;top:88.000000%" aria-hidden="true">5</span>
 
 </div>
 
@@ -899,6 +904,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | **3** | 播放器底部：视频播放进度条 |
 | **4** | 播放器下方：总范围，供目标抽帧和方案验证 |
 | **5** | 总范围下方右侧：补充验证录像、验证本方案 |
+
 
 | 控件 | 所在位置 | 功能、前提与结果 |
 |---|---|---|
@@ -914,13 +920,13 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 #### 5.5.1 录制状态下的按钮 {#control-reference--51-录制状态下的按钮}
 
-<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:46740/26136" markdown="1">
+<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:93442/52245" markdown="1">
 
-[![图 C5 · 重新录制：先阅读替换范围，再选择取消或开始](../../assets/sop/zh-07-record-warning.jpg){style="position:absolute;max-width:none;width:263.157895%;left:-81.578947%;top:-137.037037%;"}](../../assets/sop/zh-07-record-warning.jpg)
+[![图 C5 · 重新录制：先阅读替换范围，再选择取消或开始](../../assets/sop/zh-07-record-warning.png){style="position:absolute;max-width:none;width:263.157895%;height:auto;left:-81.578947%;top:-137.037037%;" loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-07-record-warning.png)
 
-<span class="sop-ui-pin" style="left:5.263158%;top:40.740741%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:57.894737%;top:74.074074%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:89.473684%;top:74.074074%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:7.894737%;top:40.740741%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:60.526316%;top:74.074074%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:81.578947%;top:74.074074%" aria-hidden="true">3</span>
 
 </div>
 
@@ -931,6 +937,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | **1** | 窗口正文：替换对象、起止时间重置及保留内容 |
 | **2** | 取消：保留当前编辑并返回 |
 | **3** | 开始录制：明确需要替换素材时才执行 |
+
 
 | 控件 | 什么时候使用 | 影响 |
 |---|---|---|
@@ -947,11 +954,11 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 <div class="sop-ui-map" markdown="1">
 
-[![图 C6 · 画布：查看工具和目标框](../../assets/sop/zh-10-target-reference.jpg)](../../assets/sop/zh-10-target-reference.jpg)
+[![图 C6 · 画布：查看工具和目标框](../../assets/sop/zh-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-10-target-reference.png)
 
-<span class="sop-ui-pin" style="left:48%;top:43%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:41%;top:65%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:18%;top:43%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:62.000000%;top:43.000000%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:43.000000%;top:68.000000%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:20.000000%;top:43.000000%" aria-hidden="true">3</span>
 
 </div>
 
@@ -962,6 +969,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | **1** | 画布顶部右侧：减号、比例、加号、适应窗口、移动画面 |
 | **2** | 画面内目标框：单击选择、双击编辑、右键更多 |
 | **3** | 画布顶部左侧：当前交互提示 |
+
 
 | 控件 | 位置 | 用途与核对 |
 |---|---|---|
@@ -983,13 +991,13 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 <div class="sop-ui-map" markdown="1">
 
-[![图 C7 · 目标资料：参考列表、补充角度和完善识别](../../assets/sop/zh-10-target-reference.jpg)](../../assets/sop/zh-10-target-reference.jpg)
+[![图 C7 · 目标资料：参考列表、补充角度和完善识别](../../assets/sop/zh-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-10-target-reference.png)
 
-<span class="sop-ui-pin" style="left:19%;top:27%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:72%;top:46%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:88%;top:49%" aria-hidden="true">3</span>
-<span class="sop-ui-pin" style="left:73%;top:55%" aria-hidden="true">4</span>
-<span class="sop-ui-pin" style="left:87%;top:37%" aria-hidden="true">5</span>
+<span class="sop-ui-pin" style="left:22.000000%;top:27.000000%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:77.000000%;top:46.000000%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:93.000000%;top:49.000000%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:80.000000%;top:55.000000%" aria-hidden="true">4</span>
+<span class="sop-ui-pin" style="left:91.000000%;top:37.000000%" aria-hidden="true">5</span>
 
 </div>
 
@@ -1002,6 +1010,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | **3** | 补充角度：参考图片标题右侧 |
 | **4** | 角度卡片：选中后在主图核对该参考 |
 | **5** | 帮我完善识别：目标标题条右端 |
+
 
 | 控件 | 所在位置 | 操作与预期 |
 |---|---|---|
@@ -1026,14 +1035,14 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 <div class="sop-ui-map" markdown="1">
 
-[![图 C8 · 时间轴：精确时间、预览、起点、终点与播放头](../../assets/sop/zh-08-plan-range.jpg)](../../assets/sop/zh-08-plan-range.jpg)
+[![图 C8 · 时间轴：精确时间、预览、起点、终点与播放头](../../assets/sop/zh-08-plan-range.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-08-plan-range.png)
 
-<span class="sop-ui-pin" style="left:30%;top:55%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:48%;top:55%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:76%;top:55%" aria-hidden="true">3</span>
-<span class="sop-ui-pin" style="left:19%;top:61%" aria-hidden="true">4</span>
-<span class="sop-ui-pin" style="left:94%;top:61%" aria-hidden="true">5</span>
-<span class="sop-ui-pin" style="left:33%;top:58%" aria-hidden="true">6</span>
+<span class="sop-ui-pin" style="left:31.000000%;top:70.000000%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:51.000000%;top:70.000000%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:74.000000%;top:70.000000%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:18.600000%;top:77.000000%" aria-hidden="true">4</span>
+<span class="sop-ui-pin" style="left:95.000000%;top:77.000000%" aria-hidden="true">5</span>
+<span class="sop-ui-pin" style="left:31.400000%;top:77.000000%" aria-hidden="true">6</span>
 
 </div>
 
@@ -1047,6 +1056,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | **4** | 绿色起点手柄：决定片段开始 |
 | **5** | 橙色终点手柄：决定片段结束 |
 | **6** | 白色播放头：当前回看时间，不是范围边界 |
+
 
 | 控件 | 怎么用 | 怎么确认没有改错 |
 |---|---|---|
@@ -1137,16 +1147,16 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 ### 5.12 阶段工具栏与动作配置 {#control-reference--12-阶段工具栏与动作配置}
 
-<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:94710/66792" markdown="1">
+<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:189343/133515" markdown="1">
 
-[![图 C9 · 手部动作配置：选择端点、动作、区域并添加](../../assets/sop/zh-19-hand-actions.jpg){style="position:absolute;max-width:none;width:129.870130%;left:-24.675325%;top:-21.739130%;"}](../../assets/sop/zh-19-hand-actions.jpg)
+[![图 C9 · 手部动作配置：选择端点、动作、区域并添加](../../assets/sop/zh-19-hand-actions.png){style="position:absolute;max-width:none;width:129.870130%;height:auto;left:-24.675325%;top:-21.739130%;" loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-19-hand-actions.png)
 
-<span class="sop-ui-pin" style="left:1.298701%;top:21.739130%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:1.298701%;top:27.536232%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:55.844156%;top:50.724638%" aria-hidden="true">3</span>
-<span class="sop-ui-pin" style="left:2.597403%;top:68.115942%" aria-hidden="true">4</span>
-<span class="sop-ui-pin" style="left:2.597403%;top:75.362319%" aria-hidden="true">5</span>
-<span class="sop-ui-pin" style="left:84.415584%;top:92.753623%" aria-hidden="true">6</span>
+<span class="sop-ui-pin" style="left:7.792208%;top:20.289855%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:7.792208%;top:27.536232%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:58.441558%;top:50.724638%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:5.194805%;top:68.115942%" aria-hidden="true">4</span>
+<span class="sop-ui-pin" style="left:19.480519%;top:75.362319%" aria-hidden="true">5</span>
+<span class="sop-ui-pin" style="left:90.909091%;top:92.753623%" aria-hidden="true">6</span>
 
 </div>
 
@@ -1160,6 +1170,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | **4** | 动作图下方：起始区与到达区槽位 |
 | **5** | 更下方：操作范围；应覆盖整个过程 |
 | **6** | 面板右下：添加到本阶段，条件不完整时不可用 |
+
 
 | 控件 | 所在位置/作用 | 操作后核对 |
 |---|---|---|
@@ -1181,9 +1192,9 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 ### 5.13 检测设置窗口 {#control-reference--13-检测设置窗口}
 
-<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:68880/46464" markdown="1">
+<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:137704/92880" markdown="1">
 
-[![图 C10 · 检测设置：物件、手部、可选高级来源](../../assets/sop/zh-16-detection-settings.jpg){style="position:absolute;max-width:none;width:178.571429%;left:-39.285714%;top:-54.166667%;"}](../../assets/sop/zh-16-detection-settings.jpg)
+[![图 C10 · 检测设置：物件、手部、可选高级来源](../../assets/sop/zh-16-detection-settings.png){style="position:absolute;max-width:none;width:178.571429%;height:auto;left:-39.285714%;top:-54.166667%;" loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-16-detection-settings.png)
 
 <span class="sop-ui-pin" style="left:3.571429%;top:27.083333%" aria-hidden="true">1</span>
 <span class="sop-ui-pin" style="left:3.571429%;top:52.083333%" aria-hidden="true">2</span>
@@ -1203,6 +1214,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | **4** | 高级设置：按需要更换共用识别来源 |
 | **5** | 返回工序：关闭设置返回编排；不是保存任务 |
 
+
 | 控件 | 功能 | 注意事项 |
 |---|---|---|
 | 物件识别来源 | 选择工位物件识别能力 | 更换会影响下方列出的使用步骤 |
@@ -1217,14 +1229,14 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 ### 5.14 检查关系与完成设置 {#control-reference--14-检查关系与完成设置}
 
-<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:92250/41624" markdown="1">
+<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:198750/81270" markdown="1">
 
-[![图 C11 · 检查关系：组合、物件、添加入口与具体要求](../../assets/sop/zh-11-object-condition.jpg){style="position:absolute;max-width:none;width:133.333333%;left:-26.666667%;top:-113.953488%;"}](../../assets/sop/zh-11-object-condition.jpg)
+[![图 C11 · 检查关系：组合、物件、添加入口与具体要求](../../assets/sop/zh-11-object-condition.png){style="position:absolute;max-width:none;width:133.333333%;height:auto;left:-26.666667%;top:-119.047619%;" loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-11-object-condition.png)
 
-<span class="sop-ui-pin" style="left:2.666667%;top:48.837209%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:24.000000%;top:67.441860%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:2.666667%;top:88.372093%" aria-hidden="true">3</span>
-<span class="sop-ui-pin" style="left:53.333333%;top:79.069767%" aria-hidden="true">4</span>
+<span class="sop-ui-pin" style="left:2.666667%;top:47.619048%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:24.000000%;top:66.666667%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:2.666667%;top:88.095238%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:54.666667%;top:78.571429%" aria-hidden="true">4</span>
 
 </div>
 
@@ -1236,6 +1248,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | **2** | 左侧图示物件：点击选择要设置的条件 |
 | **3** | 图示下方虚线入口：添加检查物件 |
 | **4** | 右侧检查什么：本图下方还可继续滚动设置区域和更多参数 |
+
 
 | 控件 | 用法 | 结果 |
 |---|---|---|
@@ -1256,25 +1269,28 @@ SOP 将现场要求拆成可观察的条件。例如：
 | 删除关系 | 删除选中要求 | 注意是否是最后一项及页面限制 |
 | 收起 | 返回规则摘要/图示 | 收起不是保存任务 |
 
-<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:92250/55176" markdown="1">
+<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:198750/58050" markdown="1">
 
-[![图 C12 · 完成方式：自动/辅助/人工、持续时长和高级时间](../../assets/sop/zh-12-auto-completion.jpg){style="position:absolute;max-width:none;width:133.333333%;left:-26.666667%;top:-61.403509%;"}](../../assets/sop/zh-12-auto-completion.jpg)
+[![图 C12 · 持续确认与完成时限](../../assets/sop/zh-12-auto-completion.png){style="position:absolute;max-width:none;width:133.333333%;height:auto;left:-26.666667%;top:-146.666667%;" loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-12-auto-completion.png)
 
-<span class="sop-ui-pin" style="left:2.666667%;top:43.859649%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:4.000000%;top:75.438596%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:4.000000%;top:84.210526%" aria-hidden="true">3</span>
-<span class="sop-ui-pin" style="left:2.666667%;top:98.245614%" aria-hidden="true">4</span>
+<span class="sop-ui-pin" style="left:5.333333%;top:12.333333%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:29.333333%;top:25.333333%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:14.666667%;top:35.000000%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:5.333333%;top:65.666667%" aria-hidden="true">4</span>
+<span class="sop-ui-pin" style="left:92.000000%;top:84.666667%" aria-hidden="true">5</span>
 
 </div>
 
-<p class="sop-map-caption">图 C12 · 完成方式：自动/辅助/人工、持续时长和高级时间。数字是本手册的定位标注，不是网页按钮。点击图片可打开无标注原图；功能说明见下表。</p>
+<p class="sop-map-caption">图 C12 · 持续确认与完成时限。数字是本手册的定位标注，不是网页按钮。点击图片可打开无标注原图；功能说明见下表。</p>
 
 | 图中编号 | 对应位置与功能组 |
 |---|---|
-| **1** | 完成方式下拉框：决定由系统还是人确认 |
-| **2** | 持续确认滑杆：调整满足要求的持续时长 |
+| **1** | 持续确认：展开后调整条件需要保持的时长 |
+| **2** | 持续确认滑杆：拖动微调时长 |
 | **3** | 秒数输入框：直接填写持续时间 |
-| **4** | 高级设置：继续向下查看输入短暂中断与完成时限 |
+| **4** | 高级设置：查看输入短暂中断参数 |
+| **5** | 完成时限：本步最多允许多久，0 表示不限时 |
+
 
 | 控件 | 功能 | 核对 |
 |---|---|---|
@@ -1289,9 +1305,9 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 ### 5.15 目标选择器 {#control-reference--15-目标选择器}
 
-<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:73800/65824" markdown="1">
+<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:147540/131580" markdown="1">
 
-[![图 C13 · 目标选择：搜索、卡片、分页、选择计数与提交](../../assets/sop/zh-25-target-picker.jpg){style="position:absolute;max-width:none;width:166.666667%;left:-33.333333%;top:-23.529412%;"}](../../assets/sop/zh-25-target-picker.jpg)
+[![图 C13 · 目标选择：搜索、卡片、分页、选择计数与提交](../../assets/sop/zh-25-target-picker.png){style="position:absolute;max-width:none;width:166.666667%;height:auto;left:-33.333333%;top:-23.529412%;" loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-25-target-picker.png)
 
 <span class="sop-ui-pin" style="left:5.000000%;top:17.647059%" aria-hidden="true">1</span>
 <span class="sop-ui-pin" style="left:5.000000%;top:29.411765%" aria-hidden="true">2</span>
@@ -1311,6 +1327,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | **4** | 窗口左下：已选数量和可新增数量 |
 | **5** | 窗口右下：取消或添加所选项 |
 
+
 | 控件 | 功能 | 核对 |
 |---|---|---|
 | 搜索 | 按已有目标资料过滤 | 搜索不会新建目标 |
@@ -1325,12 +1342,12 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 <div class="sop-ui-map" markdown="1">
 
-[![图 C14 · 工序排序：调整模式、上下移动、无序分组与阶段操作](../../assets/sop/zh-17-ordering.jpg)](../../assets/sop/zh-17-ordering.jpg)
+[![图 C14 · 工序排序：调整模式、上下移动、无序分组与阶段操作](../../assets/sop/zh-17-ordering.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-17-ordering.png)
 
-<span class="sop-ui-pin" style="left:8%;top:21%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:3%;top:43%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:3%;top:47%" aria-hidden="true">3</span>
-<span class="sop-ui-pin" style="left:80%;top:28%" aria-hidden="true">4</span>
+<span class="sop-ui-pin" style="left:8.000000%;top:21.000000%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:3.000000%;top:43.000000%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:3.000000%;top:47.000000%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:88.000000%;top:30.000000%" aria-hidden="true">4</span>
 
 </div>
 
@@ -1342,6 +1359,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | **2** | 每张步骤卡片下：上移/下移 |
 | **3** | 第一步下方：与下一步组成一组，适合可任意先后的工作 |
 | **4** | 阶段工具栏右上：删除本步、拖动柄及移动按钮 |
+
 
 | 控件 | 作用 | 注意事项 |
 |---|---|---|
@@ -1404,7 +1422,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | 待采用数量 | 尚未显式采用的改进资料 | 与正式参考数分开核对 |
 | 修改范围 | 仅本步或所有使用步骤 | 先读受影响步骤，再应用 |
 
-[![目标参考及容量所在区域](../../assets/sop/zh-10-target-reference.jpg)](../../assets/sop/zh-10-target-reference.jpg)
+[![目标参考及容量所在区域](../../assets/sop/zh-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-10-target-reference.png)
 
 **例子：** 一把锤有正面、侧面两个参考，仍然只是一种逻辑目标；现场只有一把锤时，不能因为参考数为 2 就要求数量为 2。
 
@@ -1459,7 +1477,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | 操作范围 | 覆盖完整动作过程 | 不能只覆盖起点或终点 |
 | 起始区/到达区 | 顺序动作的两个位置 | 区域应能表达真实变化 |
 
-[![单条关系的区域绑定](../../assets/sop/zh-26-object-region.jpg)](../../assets/sop/zh-26-object-region.jpg)
+[![单条关系的区域绑定](../../assets/sop/zh-26-object-region.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-26-object-region.png)
 
 区域不是“只对框内图像运行算法”的同义词。它可以用于结果筛选或规则判断；判断范围正确不等于其他画面绝不会产生检测。
 
@@ -1481,7 +1499,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 ### 6.7 持续时间 {#parameters--7-持续时间}
 
-[![持续时间的滑杆和秒数输入](../../assets/sop/zh-12-auto-completion.jpg)](../../assets/sop/zh-12-auto-completion.jpg)
+[![持续时间的滑杆和秒数输入](../../assets/sop/zh-12-auto-completion.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-12-auto-completion.png)
 
 **用途：** 条件必须稳定满足多久，才算当前要求成立。
 
@@ -1577,13 +1595,13 @@ SOP 将现场要求拆成可观察的条件。例如：
 4. 找到物件清晰出现和确实不出现的片段。
 5. 把严重遮挡、模糊、反光等画面与正常画面区分开。
 
-[![教学视频和时间轴](../../assets/sop/zh-06-teaching-video.jpg)](../../assets/sop/zh-06-teaching-video.jpg)
+[![教学视频和时间轴](../../assets/sop/zh-06-teaching-video.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-06-teaching-video.png)
 
 *视频应能正常播放和定位。静态参考画面能显示，不代表时间轴缩略图已准备好。*
 
 重新录制完整流程会替换当前示范素材并重置有关选段。请先阅读替换提示；只想回看时使用播放或定位，不要重新录制。
 
-[![重新录制提示](../../assets/sop/zh-07-record-warning.jpg)](../../assets/sop/zh-07-record-warning.jpg)
+[![重新录制提示](../../assets/sop/zh-07-record-warning.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-07-record-warning.png)
 
 ### 7.2 分清三种时间范围 {#video-and-recognition--2-分清三种时间范围}
 
@@ -1593,7 +1611,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | 阶段的验证范围 | 单独复核本阶段 | 核对该阶段下方时间轴 |
 | 操作示范 | 给操作人员播放本步对应动作 | 点击本步“播放示范”，核对实际开始与停止位置 |
 
-[![总范围与起终点编辑](../../assets/sop/zh-08-plan-range.jpg)](../../assets/sop/zh-08-plan-range.jpg)
+[![总范围与起终点编辑](../../assets/sop/zh-08-plan-range.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-08-plan-range.png)
 
 #### 7.2.1 调整时间的方法 {#video-and-recognition--调整时间的方法}
 
@@ -1615,7 +1633,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 4. 使用现场能听懂的名称，例如“橡胶锤”。
 5. 确认后切换到“目标”，检查参考图内容。
 
-[![目标参考图与补充角度入口](../../assets/sop/zh-10-target-reference.jpg)](../../assets/sop/zh-10-target-reference.jpg)
+[![目标参考图与补充角度入口](../../assets/sop/zh-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-10-target-reference.png)
 
 #### 7.3.1 一个物件与多个参考角度 {#video-and-recognition--一个物件与多个参考角度}
 
@@ -1736,7 +1754,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | 工具准备与标签检查互不依赖，均须完成 | 同一阶段的任意顺序工序 |
 | 前一步完成后才能开始后一步 | 不同阶段顺序执行 |
 
-[![同一步的组合方式](../../assets/sop/zh-29-combination.jpg)](../../assets/sop/zh-29-combination.jpg)
+[![同一步的组合方式](../../assets/sop/zh-29-combination.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-29-combination.png)
 
 ### 8.2 配置物件检查 {#rules-and-regions--2-配置物件检查}
 
@@ -1747,7 +1765,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 5. 需要多项时，继续添加，并核对组合方式。
 6. 回到预览图，逐条读出条件，确认与现场要求一致。
 
-[![物件检查设置](../../assets/sop/zh-11-object-condition.jpg)](../../assets/sop/zh-11-object-condition.jpg)
+[![物件检查设置](../../assets/sop/zh-11-object-condition.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-11-object-condition.png)
 
 参考图片用于“识别它是谁”；检查条件用于“决定本步要它满足什么”。添加参考图片不会自动创建一条工序要求。
 
@@ -1767,7 +1785,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 4. 命名，例如“工具工作区”“备料工作区”。
 5. 确认并核对覆盖位置。
 
-[![绘制工具工作区](../../assets/sop/zh-18-draw-region.jpg)](../../assets/sop/zh-18-draw-region.jpg)
+[![绘制工具工作区](../../assets/sop/zh-18-draw-region.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-18-draw-region.png)
 
 区域应根据工位用途命名。避免“区域1”“区域2”难以区分。边界不要贴着物件正常活动的极限位置，以免轻微画面波动导致进出状态反复切换。
 
@@ -1775,7 +1793,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 在本条物件的区域入口选择“工具工作区”。也可以把工具栏的区域拖到支持的区域位置；操作细节见[工具栏与拖拽](#toolbar-and-drag)。
 
-[![把检查绑定到指定区域](../../assets/sop/zh-26-object-region.jpg)](../../assets/sop/zh-26-object-region.jpg)
+[![把检查绑定到指定区域](../../assets/sop/zh-26-object-region.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-26-object-region.png)
 
 | 区域选择 | 意义 |
 |---|---|
@@ -1831,7 +1849,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 ### 8.6 完成方式与时长 {#rules-and-regions--6-完成方式与时长}
 
-[![持续满足后自动完成](../../assets/sop/zh-12-auto-completion.jpg)](../../assets/sop/zh-12-auto-completion.jpg)
+[![持续满足后自动完成](../../assets/sop/zh-12-auto-completion.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-12-auto-completion.png)
 
 | 完成方式 | 适合场景 | 核对重点 |
 |---|---|---|
@@ -1839,7 +1857,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | 条件满足后人工核对 | 视觉能提供依据，仍需人工质量检查 | 条件先满足，操作员再确认 |
 | 人工确认 | 当前动作需要人判断 | 操作说明清楚，确认对象是当前工序 |
 
-[![人工确认完成](../../assets/sop/zh-13-manual-completion.jpg)](../../assets/sop/zh-13-manual-completion.jpg)
+[![人工确认完成](../../assets/sop/zh-13-manual-completion.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-13-manual-completion.png)
 
 - **持续时间**：过滤瞬间出现或短暂抖动，不等于录像片段时长。
 - **完成时限**：允许完成本步的最长时间；0表示不检查超时，以界面提示为准。
@@ -1856,13 +1874,13 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 示范视频用于培训；验证范围用于验证。使用阶段“验证范围”时，检查提示是否同步更新该阶段示范；需要独立教学片段时切换到“操作示范”，并核对播放器显示。不要假设修改一个阶段会修改其他阶段。
 
-[![阶段独立时间范围](../../assets/sop/zh-14-stage-range.jpg)](../../assets/sop/zh-14-stage-range.jpg)
+[![阶段独立时间范围](../../assets/sop/zh-14-stage-range.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-14-stage-range.png)
 
 ### 8.8 任意顺序组与排序 {#rules-and-regions--8-任意顺序组与排序}
 
 进入左侧“调整顺序”，按实际依赖关系组织阶段。同阶段工序可任意顺序完成，但仍需全部完成；不同阶段保持顺序。
 
-[![阶段与组内顺序调整](../../assets/sop/zh-17-ordering.jpg)](../../assets/sop/zh-17-ordering.jpg)
+[![阶段与组内顺序调整](../../assets/sop/zh-17-ordering.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-17-ordering.png)
 
 不要为了减少点击把有前后依赖的工序放进任意顺序组。调整后重新核对步骤名称、组别、时间范围及验证结果。
 
@@ -1898,7 +1916,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 4. 返回工序，确认工具栏出现 **任意一手、左手、右手** 等设备支持的手部入口。
 5. 检查物件识别来源仍然正确。手与物件的配合条件同时需要手部和物件来源。
 
-[![图 1：工位检测设置中的手部识别入口](../../assets/sop/zh-16-detection-settings.jpg)](../../assets/sop/zh-16-detection-settings.jpg)
+[![图 1：工位检测设置中的手部识别入口](../../assets/sop/zh-16-detection-settings.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-16-detection-settings.png)
 
 检测设置为当前工位共用，会随任务保存。添加了识别来源，不等于已经给所有工序添加了手部要求；仍须在相应步骤配置检查。
 
@@ -1921,7 +1939,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 7. 只有两侧都核对正确，才在工序中使用左手/右手约束。
 8. 相机位置、镜像或方向改变后，重新校对。
 
-[![图 2：手部左右方向设置](../../assets/sop/zh-20-hand-direction.jpg)](../../assets/sop/zh-20-hand-direction.jpg)
+[![图 2：手部左右方向设置](../../assets/sop/zh-20-hand-direction.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-20-hand-direction.png)
 
 **检查点：** 操作员分别展示左、右手时，画面标签与本人一致。选择“区分左右”只是配置动作，不是校对已经完成的证据。
 
@@ -1945,7 +1963,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 5. 在 **这一步检查什么？** 中选择实际需要的操作方式。
 6. 设置操作范围，查看判断条件，确认后点击 **添加到本阶段**。
 
-[![图 3：先选手，再选物件，选择操作方式](../../assets/sop/zh-19-hand-actions.jpg)](../../assets/sop/zh-19-hand-actions.jpg)
+[![图 3：先选手，再选物件，选择操作方式](../../assets/sop/zh-19-hand-actions.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-19-hand-actions.png)
 
 工具栏可以提供“靠近后离开”“伴随移送到指定位置”等完整操作模板。页面明确提示它是**添加为本阶段的新操作，保留原有检查**时，添加后应检查阶段内是否多出一个步骤。不要以为它必然替换当前物件条件。
 
@@ -2000,7 +2018,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 7. 保留或选择 **完成后人工核对**，用于确认画面不能证明的质量。
 8. 点击 **添加到本阶段**，检查新增操作名称与条件。
 
-[![图 4：靠近后离开及其真实判断说明](../../assets/sop/zh-31-hand-visit.jpg)](../../assets/sop/zh-31-hand-visit.jpg)
+[![图 4：靠近后离开及其真实判断说明](../../assets/sop/zh-31-hand-visit.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-31-hand-visit.png)
 
 **预期结果：** 只一直靠近不会完成“靠近后离开”；一开始就远离也不应跳过前面的靠近阶段。后一项需要在前一项完成后发生有效的条件变化。
 
@@ -2072,7 +2090,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 5. 用另一段独立录像检查姿态、速度和摆放变化。
 6. 同时检查正常样本和反例，不只挑最清楚的一次。
 
-[![图 5：阶段范围与分阶段验证入口](../../assets/sop/zh-14-stage-range.jpg)](../../assets/sop/zh-14-stage-range.jpg)
+[![图 5：阶段范围与分阶段验证入口](../../assets/sop/zh-14-stage-range.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-14-stage-range.png)
 
 | 现象 | 先检查 | 不要直接做什么 |
 |---|---|---|
@@ -2128,7 +2146,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 6. 检查关系图、条件数量、目标名称和区域文字。
 7. 如与预期不符，立即撤销并使用点击入口重新设置。
 
-[![拖动时可放置位置的高亮](../../assets/sop/zh-30-drag-highlight.jpg)](../../assets/sop/zh-30-drag-highlight.jpg)
+[![拖动时可放置位置的高亮](../../assets/sop/zh-30-drag-highlight.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-30-drag-highlight.png)
 
 *此图展示拖动中的可接收反馈。是否添加成功，必须看松手后的条件或操作是否出现。*
 
@@ -2147,7 +2165,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 3. 勾选要增加的物件并确认选择。
 4. 回到关系图，核对新条件和组合方式。
 
-[![点击添加时的目标选择器](../../assets/sop/zh-25-target-picker.jpg)](../../assets/sop/zh-25-target-picker.jpg)
+[![点击添加时的目标选择器](../../assets/sop/zh-25-target-picker.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-25-target-picker.png)
 
 | 想做什么 | 不要混淆 |
 |---|---|
@@ -2179,7 +2197,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 4. 检查区域文字是否更新。
 5. 用区域内、区域外和边界画面验证。
 
-[![区域选择与绑定](../../assets/sop/zh-26-object-region.jpg)](../../assets/sop/zh-26-object-region.jpg)
+[![区域选择与绑定](../../assets/sop/zh-26-object-region.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-26-object-region.png)
 
 把区域拖到某个物件的区域位置，表示修改该物件检查范围，不是移动视频画面的区域形状。要改区域形状，应打开全局区域编辑。
 
@@ -2200,9 +2218,9 @@ SOP 将现场要求拆成可观察的条件。例如：
 7. 检查本阶段新增了什么操作、原有检查是否仍保留。
 8. 验证该阶段，并按操作者本人左右手核对画面标注。
 
-[![手与物件的动作选择](../../assets/sop/zh-19-hand-actions.jpg)](../../assets/sop/zh-19-hand-actions.jpg)
+[![手与物件的动作选择](../../assets/sop/zh-19-hand-actions.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-19-hand-actions.png)
 
-[![靠近后离开的条件预览](../../assets/sop/zh-31-hand-visit.jpg)](../../assets/sop/zh-31-hand-visit.jpg)
+[![靠近后离开的条件预览](../../assets/sop/zh-31-hand-visit.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-31-hand-visit.png)
 
 添加到同一阶段的操作可能与原操作构成任意顺序组；若业务要求先后依赖，应重新组织阶段，不能只检查动作模板内部顺序。
 
@@ -2271,7 +2289,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 4. 播放片头、中间、片尾。
 5. 确认时间轴显示真实缩略图。
 
-[![实训 A 的教学素材入口](../../assets/sop/zh-06-teaching-video.jpg)](../../assets/sop/zh-06-teaching-video.jpg)
+[![实训 A 的教学素材入口](../../assets/sop/zh-06-teaching-video.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-06-teaching-video.png)
 
 #### 11.1.3 A3. 建立一个目标 {#scenario-labs--a3-建立一个目标}
 
@@ -2295,7 +2313,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 7. 持续时间设为 0.8 秒，本步时限先为 0。
 8. 读回关系图，确认没有额外工具或手部要求。
 
-[![实训 A 的物件与完成方式](../../assets/sop/zh-12-auto-completion.jpg)](../../assets/sop/zh-12-auto-completion.jpg)
+[![实训 A 的物件与完成方式](../../assets/sop/zh-12-auto-completion.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-12-auto-completion.png)
 
 #### 11.1.5 A5. 配置第二步 {#scenario-labs--a5-配置第二步}
 
@@ -2306,7 +2324,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 5. 选择对应示范片段。
 6. 核对先工具就绪，再人工确认。
 
-[![实训 A 的人工确认配置](../../assets/sop/zh-13-manual-completion.jpg)](../../assets/sop/zh-13-manual-completion.jpg)
+[![实训 A 的人工确认配置](../../assets/sop/zh-13-manual-completion.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-13-manual-completion.png)
 
 #### 11.1.6 A6. 设置并验证范围 {#scenario-labs--a6-设置并验证范围}
 
@@ -2357,7 +2375,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 8. 回到图示，读出三项要求。
 9. 选包含三件均就绪的片段验证，再拍缺少一件的反例。
 
-[![多项同时满足的组合设置](../../assets/sop/zh-29-combination.jpg)](../../assets/sop/zh-29-combination.jpg)
+[![多项同时满足的组合设置](../../assets/sop/zh-29-combination.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-29-combination.png)
 
 | 测试 | 预期 |
 |---|---|
@@ -2382,9 +2400,9 @@ SOP 将现场要求拆成可观察的条件。例如：
 6. 将其他工具或手部条件分别绑定它们所需的区域。
 7. 选择包含区域内、区域外和边界位置的录像验证。
 
-[![区域图形](../../assets/sop/zh-18-draw-region.jpg)](../../assets/sop/zh-18-draw-region.jpg)
+[![区域图形](../../assets/sop/zh-18-draw-region.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-18-draw-region.png)
 
-[![真正生效的是条件上的区域绑定](../../assets/sop/zh-26-object-region.jpg)](../../assets/sop/zh-26-object-region.jpg)
+[![真正生效的是条件上的区域绑定](../../assets/sop/zh-26-object-region.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-26-object-region.png)
 
 #### 11.3.3 C3. 边界测试 {#scenario-labs--c3-边界测试}
 
@@ -2418,9 +2436,9 @@ SOP 将现场要求拆成可观察的条件。例如：
 10. 若和原操作组成同阶段任意顺序组，确认工艺是否允许；不允许则重新组织阶段。
 11. 用完整真实动作录像验证。
 
-[![手部操作类型选择](../../assets/sop/zh-19-hand-actions.jpg)](../../assets/sop/zh-19-hand-actions.jpg)
+[![手部操作类型选择](../../assets/sop/zh-19-hand-actions.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-19-hand-actions.png)
 
-[![靠近后离开的配置与条件入口](../../assets/sop/zh-31-hand-visit.jpg)](../../assets/sop/zh-31-hand-visit.jpg)
+[![靠近后离开的配置与条件入口](../../assets/sop/zh-31-hand-visit.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-31-hand-visit.png)
 
 | 录像 | 预期 |
 |---|---|
@@ -2455,7 +2473,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 6. 两个范围可以重叠；总范围应覆盖参与阶段。
 7. 验证组内两种顺序、遗漏一步和过早最终确认。
 
-[![任意顺序阶段的组织入口](../../assets/sop/zh-17-ordering.jpg)](../../assets/sop/zh-17-ordering.jpg)
+[![任意顺序阶段的组织入口](../../assets/sop/zh-17-ordering.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-17-ordering.png)
 
 | 操作顺序 | 预期 |
 |---|---|
@@ -2545,7 +2563,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 5. 是否已满足检测、仍等待人工核对；
 6. 是否存在输入中断、目标不明确等状态。
 
-[![阶段的录像范围](../../assets/sop/zh-14-stage-range.jpg)](../../assets/sop/zh-14-stage-range.jpg)
+[![阶段的录像范围](../../assets/sop/zh-14-stage-range.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-14-stage-range.png)
 
 操作员确认步骤不能只靠录像像素证明“人员已经确认”。在实际交互中检查确认对象、时机及后续阶段是否正确。
 
@@ -2591,7 +2609,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 ### 12.6 保存的三个层级 {#validation-and-operation--6-保存的三个层级}
 
-[![外层任务保存与运行](../../assets/sop/zh-23-save-task.jpg)](../../assets/sop/zh-23-save-task.jpg)
+[![外层任务保存与运行](../../assets/sop/zh-23-save-task.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-23-save-task.png)
 
 1. **工序编辑器“完成”**：把本次编排返回任务草稿。
 2. **节点配置“确认”**：若仍显示该窗口，将节点配置返回外层编辑器。
@@ -2666,7 +2684,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 ### 13.2 从任务进入工位 {#operator-guide--2-从任务进入工位}
 
-[![启动前外层任务的保存与运行位置](../../assets/sop/zh-23-save-task.jpg)](../../assets/sop/zh-23-save-task.jpg)
+[![启动前外层任务的保存与运行位置](../../assets/sop/zh-23-save-task.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-23-save-task.png)
 
 图示为配置人员启动任务前的外层入口，不是正在生产的合格结果图。
 
@@ -2742,7 +2760,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 ### 13.7 执行纯人工确认步骤 {#operator-guide--7-执行纯人工确认步骤}
 
-[![人工确认的配置示例，说明该步由人判断](../../assets/sop/zh-13-manual-completion.jpg)](../../assets/sop/zh-13-manual-completion.jpg)
+[![人工确认的配置示例，说明该步由人判断](../../assets/sop/zh-13-manual-completion.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-13-manual-completion.png)
 
 图示为配置入口。现场操作时使用运行页面当前步骤的确认按钮。
 
@@ -2892,6 +2910,66 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 *配图素材署名见[示例素材与截图来源](#reference--7-示例素材与截图来源)。*
 
+### 13.19 完整运行实例：工具就绪 → 人工确认 → 本件完成 {#station-live-example}
+
+本节是设备上一次实际运行的操作记录，使用本手册同一段工作台视频和已保存、已发布的两步测试方案。截图是实际页面的无损原图；不是配置预览或绘制的效果图。两步都已验证，随后执行“完成本件”，最后停止了测试任务。
+
+本例说明怎样操作和核对流程。它没有覆盖生产所需的独立录像、缺件、错序、遮挡、多人和长时间稳定性验收，不能据此认定所有工艺场景已通过。
+
+#### 13.19.1 进入并核对工位
+
+1. 在任务管理中核对任务名称、摄像头和已发布方案；启动正确任务。
+2. 从该任务的 **工位运行** 进入独立工位页。
+3. 看左侧实际视频，确认不是上一时刻的静止画面；再看右侧“状态已同步”。
+4. 核对标题中的任务名称。右上角依次提供语言、浅色/深色、复制工位链接、全屏和任务管理入口。
+5. 语言下拉框可选择中文、English、Tiếng Việt、ខ្មែរ、ລາວ。切换界面语言只改变固定界面文字，不会重新开始工件或自动翻译用户填写的任务、工位、物件名称与说明。
+
+#### 13.19.2 若显示等待恢复核对，先处理恢复
+
+[![图 13-A：真实运行中的恢复核对，右侧保留第一步已验证状态](../../assets/sop/zh-39-station-recovery.png){loading="lazy" decoding="async" width="2560" height="1440"}](../../assets/sop/zh-39-station-recovery.png)
+
+本例是在前一次运行停止后重新进入同一测试工件，因此先显示 **等待恢复核对**，右侧保留第一步已验证记录。这是恢复保护，不能把它当作已正常继续执行。
+
+1. 滚动右侧面板，找到 **核对后恢复**。
+2. 核对当前实物、未完成操作、摄像头和方案仍与该工件相符。
+3. 阅读恢复对话框；符合现场事实时再点 **确认并恢复**。
+4. 等待“进行中”，确认仍是应继续的步骤。若工件已被换走、来源或配置已变，交负责人处理，不盲目恢复。
+
+#### 13.19.3 工具检查通过后执行人工确认
+
+[![图 13-B：第一步橡胶锤就绪已验证，第二步人工确认完成正在执行](../../assets/sop/zh-36-station-manual.png){loading="lazy" decoding="async" width="2560" height="1440"}](../../assets/sop/zh-36-station-manual.png)
+
+| 图中位置 | 本例显示 | 应怎样操作 |
+|---|---|---|
+| 右侧上部“当前操作” | 人工确认完成，2/2 | 这里的 2/2 是当前操作序号；仍需看每一步状态 |
+| 第一张绿色步骤卡 | 橡胶锤就绪，已验证 | 自动检查已完成；不要再次添加同一工具条件 |
+| 第二张蓝色步骤卡 | 人工确认完成，进行中 | 阅读说明，核对真实操作 |
+| 右侧蓝色主按钮 | 人工确认完成 | 确认实物符合要求后点击一次 |
+| 主按钮下方 | 暂停、返工、中止本件 | 分别用于临时停止、重做、终止；不能代替正常确认 |
+
+点击 **人工确认完成** 后等待成功回读。不要连续点击。如果结果未知，按本章“网络慢或确认结果未知”处理。
+
+#### 13.19.4 两步验证后，明确结束本件
+
+1. 核对两张步骤卡都显示 **已验证**。
+2. 若页面提供 **完成本件**，点击该按钮完成结束动作。
+3. 等待 **本件合规完成** 和两条绿色已验证记录。
+4. 此时出现的 **开始本件** 是为下一件准备的，不要为了检查上一件结果再点一次。
+
+[![图 13-C：实际人工确认和完成本件之后的终态，两项均已验证](../../assets/sop/zh-37-station-completed.png){loading="lazy" decoding="async" width="2560" height="1440"}](../../assets/sop/zh-37-station-completed.png)
+
+!!! note "如何阅读本例的画面与结果"
+    本次采集时，右侧已同步运行面板已显示完成终态，左侧视频内的 OSD 仍保留了先前“等待恢复核对”的文字。视频叠字可能滞后，不能用旧叠字代替当前工件状态；遇到不一致时应核对本件详情与设备记录。本手册保留该真实差异，没有修图把它改成通过效果。现场交付仍需检查视频、叠字与工序状态的一致性。
+
+#### 13.19.5 测试结束后停止任务
+
+完成一件产品不等于停止后台检测。测试负责人应返回 **任务管理** 停止测试任务，再确认任务为“已停止”。关闭工位网页、切换语言或退出全屏均不会停止任务。
+
+[![图 13-D：停止任务后的工位页，只用于说明停止诊断状态](../../assets/sop/zh-38-station-stopped.png){loading="lazy" decoding="async" width="2560" height="1440"}](../../assets/sop/zh-38-station-stopped.png)
+
+停止后的“任务未运行/暂无运行实例”表示后台已经停止，不能作为新工件的完成证据。正式生产是否保持常开，由现场运行规范决定。
+
+
 ## 14. 方案备份、迁移、维护与现场交付 {#maintenance}
 
 
@@ -2931,7 +3009,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 ### 14.3 正确保存与重开 {#maintenance--3-正确保存与重开}
 
-[![外层任务保存位置](../../assets/sop/zh-23-save-task.jpg)](../../assets/sop/zh-23-save-task.jpg)
+[![外层任务保存位置](../../assets/sop/zh-23-save-task.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-23-save-task.png)
 
 1. 工序编辑器点“完成”。
 2. SOP 节点窗口仍显示时点“确定/确认”。
@@ -3128,7 +3206,7 @@ SOP 将现场要求拆成可观察的条件。例如：
 | 操作按钮灰色 | 视频、来源、能力或配置是否未就绪 | 阅读旁边提示，完成当前必需项 |
 | 重新录制后原片段消失 | 是否确认了替换完整流程 | 从保留的录像重新配置；以后先阅读替换范围 |
 
-[![加载成功的视频与时间轴示例](../../assets/sop/zh-06-teaching-video.jpg)](../../assets/sop/zh-06-teaching-video.jpg)
+[![加载成功的视频与时间轴示例](../../assets/sop/zh-06-teaching-video.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-06-teaching-video.png)
 
 #### 15.1.1 阶段选段没有同步到示范 {#troubleshooting--阶段选段没有同步到示范}
 

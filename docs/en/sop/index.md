@@ -23,7 +23,7 @@ This guide is for process engineers, operators, deployment teams, and administra
 
     This English guide uses separate captures of the English interface. Names and instructions entered by users are project data: changing the interface language does not automatically translate them. In the example, 橡胶锤 means “rubber mallet,” 工具工作区 means “tool work area,” and 人工确认完成 means “operator confirmation.”
 
-Click an illustration to view the original image. A screenshot showing “Awaiting detection” or “Not validated” illustrates that state; it does not certify a successful acceptance test.
+Click an illustration to open the image viewer. Choose **Fit to window** or **Original 100%**, use **+/−** to zoom, and press **Esc** or **Close** to return to your reading position. A browser new-tab modifier click still opens the raw original. A screenshot showing “Awaiting detection” or “Not validated” illustrates that state; it does not certify a successful acceptance test.
 
 ## 1. Understanding SOP and Using This Manual {#overview}
 ### 1.1 Understand what the system checks {#overview--1-understand-what-the-system-checks}
@@ -49,7 +49,7 @@ The example video shows a fixed-camera workbench with a rubber mallet, drill, pa
 
 The full teaching video is approximately 60 seconds. These times explain range selection; choose times that match your own recording. After the two-step example, extend the plan to several tools, regions, hand operations, and unordered steps.
 
-[![Figure 1: SOP editor for the workbench example](../../assets/sop/en-04-editor-overview.jpg)](../../assets/sop/en-04-editor-overview.jpg)
+[![Figure 1: SOP editor for the workbench example](../../assets/sop/en-04-editor-overview.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-04-editor-overview.png)
 
 *Figure 1: Select a step on the left, inspect video and targets in the center, and manage references on the right. Plan and camera controls are above; authoring and validation continue below.*
 
@@ -124,6 +124,8 @@ Read critical actions as prerequisites → location → procedure → expected b
 ### 1.8 Using the figures {#overview--8-using-the-figures}
 
 Identify whether a figure shows configuration, references, an operation setup, or a persistence control. Use location tables to find the top, left, right, or footer control, and click figures to inspect original resolution.
+
+The interface figures are freshly captured native lossless PNGs. The article fits them to its column; open Original 100% to read small controls. Screenshot dimensions do not create extra video detail: the example source is 800 × 320. Text already embedded in the video is not automatically rewritten when the page language changes.
 
 Use your own station names and verify the real page afterward. Screenshot states are not your current state. Chinese and English chapters use their corresponding interface captures. Download the [sample footage](#quickstart--use-the-accompanying-sample-recording); see [credits](#reference--7-sample-and-screenshot-credits).
 
@@ -241,7 +243,7 @@ Record a stable initial workplace, the operation, and its final state. Do not pl
 | Drag the playhead | Preview position changes | Distinguish the playhead from endpoint handles; see [Workspace reference](#workspace-reference) |
 | Compare duration | Matches the uploaded or recorded material | Check for an older asset or another step's demonstration |
 
-[![Teaching recording and timeline](../../assets/sop/en-06-teaching-video.jpg)](../../assets/sop/en-06-teaching-video.jpg)
+[![Teaching recording and timeline](../../assets/sop/en-06-teaching-video.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-06-teaching-video.png)
 
 **Completion check:** Identify a clear target view, the action's beginning and end, and a view where the object is genuinely not ready or the operation is incomplete.
 
@@ -274,7 +276,7 @@ Use functional names such as Tool area, Parts area, and Assembly area. Have the 
 - A process area should include the route, not only its endpoints.
 - After drawing shared regions, assign each requirement to its intended area.
 
-[![Drawing a region on the actual picture](../../assets/sop/en-18-draw-region.jpg)](../../assets/sop/en-18-draw-region.jpg)
+[![Drawing a region on the actual picture](../../assets/sop/en-18-draw-region.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-18-draw-region.png)
 
 ### 2.8 Prepare validation cases {#preparation--8-prepare-validation-cases}
 
@@ -347,7 +349,7 @@ The sample uses the same workbench as the illustrations, making it easier to fin
 6. Enter a recognizable task name, such as “Tool readiness and confirmation.”
 7. Click **Create and Edit**, then enter the task's **Edit steps** workflow.
 
-[![Figure 2: Creating an SOP task and selecting object checks](../../assets/sop/en-02-create-task.jpg)](../../assets/sop/en-02-create-task.jpg)
+[![Figure 2: Creating an SOP task and selecting object checks](../../assets/sop/en-02-create-task.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-02-create-task.png)
 
 *Figure 2: Begin with object checks. Use the hand-operation chapter when the process requires approach, withdrawal, or a transfer.*
 
@@ -355,7 +357,7 @@ The task name, plan name, and station name can differ. The task name identifies 
 
 ### 3.3 Find the main editor controls {#quickstart--3-find-the-main-editor-controls}
 
-[![Figure 3: Main areas of the SOP editor](../../assets/sop/en-04-editor-overview.jpg)](../../assets/sop/en-04-editor-overview.jpg)
+[![Figure 3: Main areas of the SOP editor](../../assets/sop/en-04-editor-overview.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-04-editor-overview.png)
 
 | Area | Purpose |
 |---|---|
@@ -377,7 +379,7 @@ Collapse the step list or maximize the editor when you need space. Numbered navi
 4. If you have a video address but discovery finds no camera, expand the existing-address entry and have the administrator verify the address and network.
 5. Check that the plan bar shows the intended camera.
 
-[![Figure 4: Choosing the station camera](../../assets/sop/en-05-camera.jpg)](../../assets/sop/en-05-camera.jpg)
+[![Figure 4: Choosing the station camera](../../assets/sop/en-05-camera.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-05-camera.png)
 
 **Expected result:** Recording uses the intended station source.
 
@@ -393,7 +395,7 @@ After changing the camera, record or check the teaching video, target references
 4. Play the beginning, middle, and end and check that the timeline contains real thumbnails.
 5. Pause on a clear view of the mallet.
 
-[![Figure 5: Complete teaching video and timeline](../../assets/sop/en-06-teaching-video.jpg)](../../assets/sop/en-06-teaching-video.jpg)
+[![Figure 5: Complete teaching video and timeline](../../assets/sop/en-06-teaching-video.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-06-teaching-video.png)
 
 #### 3.5.2 Record the station {#quickstart--52-record-the-station}
 
@@ -403,7 +405,7 @@ After changing the camera, record or check the teaching video, target references
 4. Start only if you intend to replace it, perform the complete operation, then stop.
 5. Wait for the recording to become ready and play it back.
 
-[![Figure 6: Confirmation before recording a replacement](../../assets/sop/en-07-record-warning.jpg)](../../assets/sop/en-07-record-warning.jpg)
+[![Figure 6: Confirmation before recording a replacement](../../assets/sop/en-07-record-warning.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-07-record-warning.png)
 
 Recording the complete process again replaces the plan's demonstration material, including separately assigned step material, and resets step time ranges. Existing targets, references, global regions, and rules are retained as described by the confirmation. Canceling keeps the current draft. Use playback, rather than re-recording, when you only want to look at a picture again.
 
@@ -418,7 +420,7 @@ Recording the complete process again replaces the plan's demonstration material,
 5. Switch to **Targets** and check that the reference actually depicts the mallet.
 6. If normal operation includes a different appearance, use **Add angle** on another frame of the same target. Do not create a separate logical object for each angle.
 
-[![Figure 7: Target references and additional angles](../../assets/sop/en-10-target-reference.jpg)](../../assets/sop/en-10-target-reference.jpg)
+[![Figure 7: Target references and additional angles](../../assets/sop/en-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-10-target-reference.png)
 
 One mallet can have several reference images and still be one physical object. References may consume detection capacity. Keep representative views rather than many near-identical pictures.
 
@@ -431,7 +433,7 @@ One mallet can have several reference images and still be one physical object. R
 5. Review misses and add manual boxes, then complete trial detection, adoption, and rechecking as described in the [recognition chapter](#video-and-recognition).
 6. Include different angles, motion, hands near the tool, occlusion, and an empty work area. One successful first frame is insufficient.
 
-[![Figure 8: Recognition review entry and reference controls](../../assets/sop/en-10-target-reference.jpg)](../../assets/sop/en-10-target-reference.jpg)
+[![Figure 8: Recognition review entry and reference controls](../../assets/sop/en-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-10-target-reference.png)
 
 **Proceed when:** Recognition is reliable in normal clear views, and misses, false detections, and duplicates have been examined. Do not loosen step requirements to hide an unresolved recognition problem.
 
@@ -446,9 +448,9 @@ One mallet can have several reference images and still be one physical object. R
 7. Set the example hold time to **0.8 seconds**. Choose the real value according to your process.
 8. Check the relationship diagram, completion method, and region.
 
-[![Figure 9: Object requirement for the first step](../../assets/sop/en-11-object-condition.jpg)](../../assets/sop/en-11-object-condition.jpg)
+[![Figure 9: Object requirement for the first step](../../assets/sop/en-11-object-condition.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-11-object-condition.png)
 
-[![Figure 10: Completion after a sustained condition](../../assets/sop/en-12-auto-completion.jpg)](../../assets/sop/en-12-auto-completion.jpg)
+[![Figure 10: Completion after a sustained condition](../../assets/sop/en-12-auto-completion.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-12-auto-completion.png)
 
 Choose visual detection plus operator review when a person must inspect the result after the visual conditions are met. This differs from a step based entirely on operator confirmation.
 
@@ -460,7 +462,7 @@ Choose visual detection plus operator review when a person must inspect the resu
 4. Choose operator confirmation as its completion method.
 5. Keep these two steps sequential. They should not be in an unordered group because the second depends on the first.
 
-[![Figure 11: Operator-confirmed step](../../assets/sop/en-13-manual-completion.jpg)](../../assets/sop/en-13-manual-completion.jpg)
+[![Figure 11: Operator-confirmed step](../../assets/sop/en-13-manual-completion.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-13-manual-completion.png)
 
 **Expected result:** The confirmation step becomes current after the readiness stage finishes. An old confirmation control should not be used to skip a pending step or override an uncertain state.
 
@@ -473,9 +475,9 @@ Choose visual detection plus operator review when a person must inspect the resu
 5. You can also drag an endpoint. Verify the displayed times afterward.
 6. Open **Play demonstration** and verify that it uses the intended step segment.
 
-[![Figure 12: A stage's independent range](../../assets/sop/en-14-stage-range.jpg)](../../assets/sop/en-14-stage-range.jpg)
+[![Figure 12: A stage's independent range](../../assets/sop/en-14-stage-range.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-14-stage-range.png)
 
-[![Figure 13: The step demonstration player](../../assets/sop/en-15-demo-player.jpg)](../../assets/sop/en-15-demo-player.jpg)
+[![Figure 13: The step demonstration player](../../assets/sop/en-15-demo-player.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-15-demo-player.png)
 
 Stage ranges are independent and may overlap. When validating a plan against the same source recording, the overall validation range must cover the stages being tested. If narrowing it creates a conflict, resolve the indicated stages rather than assuming the application silently clips every stage.
 
@@ -498,7 +500,7 @@ A stage result applies to that stage and segment; it does not automatically vali
 5. Reopen the task and verify names, targets, regions, ranges, completion methods, and demonstrations.
 6. Only after saving successfully, start the task according to your site procedure and enter **Station operation**.
 
-[![Figure 14: Saving and running from the task editor](../../assets/sop/en-23-save-task.jpg)](../../assets/sop/en-23-save-task.jpg)
+[![Figure 14: Saving and running from the task editor](../../assets/sop/en-23-save-task.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/en-23-save-task.png)
 
 **Done** returns changes to the draft; **Save** persists the task on the device; **Run** is separate. Follow the prompt when closing or canceling unsaved edits. Browser draft data is not automatically a saved production configuration.
 
@@ -524,7 +526,7 @@ This chapter explains where an action is performed, what it affects, and where t
 
 ### 4.1 Workspace overview {#workspace-reference--1-workspace-overview}
 
-[![Main areas of the SOP editor](../../assets/sop/en-04-editor-overview.jpg)](../../assets/sop/en-04-editor-overview.jpg)
+[![Main areas of the SOP editor](../../assets/sop/en-04-editor-overview.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-04-editor-overview.png)
 
 | Area | Contents | Verify after use |
 |---|---|---|
@@ -557,7 +559,7 @@ Names are business data. Changing the interface language does not translate them
 4. Verify the source in the plan bar.
 5. Check footage, references, regions, and handedness against the new view.
 
-[![Camera selection](../../assets/sop/en-05-camera.jpg)](../../assets/sop/en-05-camera.jpg)
+[![Camera selection](../../assets/sop/en-05-camera.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-05-camera.png)
 
 Device Web credentials and camera credentials may differ. If connection fails, resolve source and network details before repeatedly changing the same source inside several steps.
 
@@ -586,7 +588,7 @@ Inspect references and improve recognition. Check the selected name, reference c
 
 Seeing an object in the recording does not establish a configured target. Creating a target does not add it to every step.
 
-[![Target and reference management](../../assets/sop/en-10-target-reference.jpg)](../../assets/sop/en-10-target-reference.jpg)
+[![Target and reference management](../../assets/sop/en-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-10-target-reference.png)
 
 #### 4.4.3 Reference views {#workspace-reference--43-reference-views}
 
@@ -615,7 +617,7 @@ In narrow windows, maximize the editor, collapse the step list, or close unneede
 2. **Start handle:** beginning of the selected range.
 3. **End handle:** end of the selected range.
 
-[![Overall range and endpoint editing](../../assets/sop/en-08-plan-range.jpg)](../../assets/sop/en-08-plan-range.jpg)
+[![Overall range and endpoint editing](../../assets/sop/en-08-plan-range.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-08-plan-range.png)
 
 #### 4.6.1 Preview a time {#workspace-reference--61-preview-a-time}
 
@@ -639,7 +641,7 @@ Seek to the intended picture first, then use the appropriate control. When disab
 
 Each stage retains its own range, which may overlap another stage's range. **Validation range** and **Operation demo** have different purposes. Check the displayed values after switching purposes.
 
-[![Stage-specific timeline](../../assets/sop/en-14-stage-range.jpg)](../../assets/sop/en-14-stage-range.jpg)
+[![Stage-specific timeline](../../assets/sop/en-14-stage-range.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-14-stage-range.png)
 
 ### 4.7 Stage toolbar {#workspace-reference--7-stage-toolbar}
 
@@ -658,7 +660,7 @@ The toolbar lists available objects, regions, and hands. Selecting one does not 
 
 **Detection settings** manages station-wide capability and handedness. A step's checks and completion controls define its business requirements. Adding a hand source does not make every step a hand operation.
 
-[![Detection settings dialog](../../assets/sop/en-16-detection-settings.jpg)](../../assets/sop/en-16-detection-settings.jpg)
+[![Detection settings dialog](../../assets/sop/en-16-detection-settings.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-16-detection-settings.png)
 
 See [Toolbar and drag operations](#toolbar-and-drag) for addition, replacement, removal, and undo.
 
@@ -672,7 +674,7 @@ Use actionable names such as “Prepare tools,” “Review parts,” or “Conf
 
 Click the video thumbnail's playback entry. Compare its time label with actual playback boundaries. The demo teaches the operator; its thumbnail is not a recognition reference.
 
-[![Step demonstration entry](../../assets/sop/en-15-demo-player.jpg)](../../assets/sop/en-15-demo-player.jpg)
+[![Step demonstration entry](../../assets/sop/en-15-demo-player.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-15-demo-player.png)
 
 #### 4.8.3 Operator instructions {#workspace-reference--83-operator-instructions}
 
@@ -706,14 +708,14 @@ The small region label under a diagram object is operational information. It is 
 | Task Save | Persists the task | Wait for acknowledgement, then reopen |
 | Task Run | Runs the saved task | Open station operation and check the active step |
 
-[![Saving in the outer task editor](../../assets/sop/en-23-save-task.jpg)](../../assets/sop/en-23-save-task.jpg)
+[![Saving in the outer task editor](../../assets/sop/en-23-save-task.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/en-23-save-task.png)
 
 An editor draft, a saved task, and a running task are different states. Closing a window alone does not prove deployment.
 
 
 #### 4.10.1 Reading the example connections {#workspace-reference--flow-routing}
 
-[![Actual parallel hand and object branches with video routed below into OSD](../../assets/sop/en-32-flow-routing.jpg)](../../assets/sop/en-32-flow-routing.jpg)
+[![Actual parallel hand and object branches with video routed below into OSD](../../assets/sop/en-32-flow-routing.png){loading="lazy" decoding="async" width="1840" height="450"}](../../assets/sop/en-32-flow-routing.png)
 
 *Figure 4-1: A close-up captured directly from the live canvas. Hand and object detection occupy separate rows; the original video follows the lower bypass. No nodes or connections were redrawn.*
 
@@ -766,9 +768,9 @@ If a control cannot be found, close the uppermost child dialog and identify the 
 
 ### 5.2 Create Task dialog {#control-reference--2-create-task-dialog}
 
-<div class="sop-ui-map sop-ui-map--detail sop-ui-map--portrait" style="aspect-ratio:41820/61952" markdown="1">
+<div class="sop-ui-map sop-ui-map--detail sop-ui-map--portrait" style="aspect-ratio:90100/123840" markdown="1">
 
-[![Figure C1 · Create an SOP task: choose a type, name it, then create](../../assets/sop/en-02-create-task.jpg){style="position:absolute;max-width:none;width:294.117647%;left:-97.058824%;top:-28.125000%;"}](../../assets/sop/en-02-create-task.jpg)
+[![Figure C1 · Create an SOP task: choose a type, name it, then create](../../assets/sop/en-02-create-task.png){style="position:absolute;max-width:none;width:294.117647%;height:auto;left:-97.058824%;top:-28.125000%;" loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-02-create-task.png)
 
 <span class="sop-ui-pin" style="left:88.235294%;top:25.000000%" aria-hidden="true">1</span>
 <span class="sop-ui-pin" style="left:11.764706%;top:39.062500%" aria-hidden="true">2</span>
@@ -786,6 +788,7 @@ If a control cannot be found, close the uppermost child dialog and identify the 
 | **3** | Task name: field in the lower half |
 | **4** | Create and Edit / Cancel: dialog footer |
 
+
 The upper area chooses task type, the middle selects object/hand capabilities, and the lower area contains the task name. Creation is at the lower right.
 
 | Control | Purpose | Verify |
@@ -802,14 +805,14 @@ The upper area chooses task type, the middle selects object/hand capabilities, a
 
 <div class="sop-ui-map" markdown="1">
 
-[![Figure C2 · Editor overview: plan, navigation, targets, references, and completion](../../assets/sop/en-04-editor-overview.jpg)](../../assets/sop/en-04-editor-overview.jpg)
+[![Figure C2 · Editor overview: plan, navigation, targets, references, and completion](../../assets/sop/en-04-editor-overview.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-04-editor-overview.png)
 
-<span class="sop-ui-pin" style="left:90%;top:12%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:15%;top:21%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:18%;top:21%" aria-hidden="true">3</span>
-<span class="sop-ui-pin" style="left:72%;top:43%" aria-hidden="true">4</span>
-<span class="sop-ui-pin" style="left:73%;top:49%" aria-hidden="true">5</span>
-<span class="sop-ui-pin" style="left:90%;top:96%" aria-hidden="true">6</span>
+<span class="sop-ui-pin" style="left:90.000000%;top:12.000000%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:8.000000%;top:21.000000%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:24.000000%;top:21.000000%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:62.000000%;top:43.000000%" aria-hidden="true">4</span>
+<span class="sop-ui-pin" style="left:79.000000%;top:50.000000%" aria-hidden="true">5</span>
+<span class="sop-ui-pin" style="left:93.000000%;top:96.000000%" aria-hidden="true">6</span>
 
 </div>
 
@@ -823,6 +826,7 @@ The upper area chooses task type, the middle selects object/hand capabilities, a
 | **4** | Canvas upper right: zoom, fit, and pan |
 | **5** | Right of picture: reference list and Add view |
 | **6** | Editor footer right: Done returns to the task draft |
+
 
 | Location/control | Effect | Verify |
 |---|---|---|
@@ -838,14 +842,14 @@ The upper area chooses task type, the middle selects object/hand capabilities, a
 
 ### 5.4 Camera picker {#control-reference--4-camera-picker}
 
-<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:68880/27104" markdown="1">
+<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:132500/52245" markdown="1">
 
-[![Figure C3 · Camera controls: credentials, discovery, and an existing address](../../assets/sop/en-05-camera.jpg){style="position:absolute;max-width:none;width:178.571429%;left:-42.857143%;top:-53.571429%;"}](../../assets/sop/en-05-camera.jpg)
+[![Figure C3 · Camera controls: credentials, discovery, and an existing address](../../assets/sop/en-05-camera.png){style="position:absolute;max-width:none;width:200.000000%;height:auto;left:-60.000000%;top:-55.555556%;" loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-05-camera.png)
 
-<span class="sop-ui-pin" style="left:1.785714%;top:67.857143%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:53.571429%;top:67.857143%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:1.785714%;top:82.142857%" aria-hidden="true">3</span>
-<span class="sop-ui-pin" style="left:87.500000%;top:14.285714%" aria-hidden="true">4</span>
+<span class="sop-ui-pin" style="left:4.000000%;top:70.370370%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:62.000000%;top:70.370370%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:4.000000%;top:85.185185%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:90.000000%;top:14.814815%" aria-hidden="true">4</span>
 
 </div>
 
@@ -857,6 +861,7 @@ The upper area chooses task type, the middle selects object/hand capabilities, a
 | **2** | Find cameras: right of password |
 | **3** | Existing address / camera not found: disclosure below fields |
 | **4** | Collapse: popover upper right |
+
 
 | Control | Location/use | Important detail |
 |---|---|---|
@@ -872,13 +877,13 @@ The upper area chooses task type, the middle selects object/hand capabilities, a
 
 <div class="sop-ui-map" markdown="1">
 
-[![Figure C4 · Teaching video: media tools, player, and the overall range](../../assets/sop/en-06-teaching-video.jpg)](../../assets/sop/en-06-teaching-video.jpg)
+[![Figure C4 · Teaching video: media tools, player, and the overall range](../../assets/sop/en-06-teaching-video.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-06-teaching-video.png)
 
-<span class="sop-ui-pin" style="left:65%;top:21%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:18%;top:60%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:18%;top:63%" aria-hidden="true">3</span>
-<span class="sop-ui-pin" style="left:18%;top:70%" aria-hidden="true">4</span>
-<span class="sop-ui-pin" style="left:88%;top:88%" aria-hidden="true">5</span>
+<span class="sop-ui-pin" style="left:75.000000%;top:21.000000%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:18.000000%;top:60.500000%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:18.000000%;top:63.000000%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:18.000000%;top:70.000000%" aria-hidden="true">4</span>
+<span class="sop-ui-pin" style="left:89.000000%;top:88.000000%" aria-hidden="true">5</span>
 
 </div>
 
@@ -891,6 +896,7 @@ The upper area chooses task type, the middle selects object/hand capabilities, a
 | **3** | Player bottom: playback seek bar |
 | **4** | Below player: overall target-scan / plan-validation range |
 | **5** | Below range at right: Add validation video and Validate plan |
+
 
 | Control | Location | Purpose and result |
 |---|---|---|
@@ -906,13 +912,13 @@ The upper area chooses task type, the middle selects object/hand capabilities, a
 
 #### 5.5.1 Recording states {#control-reference--51-recording-states}
 
-<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:46740/27104" markdown="1">
+<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:100700/54180" markdown="1">
 
-[![Figure C5 · Re-recording: read the replacement scope before cancelling or starting](../../assets/sop/en-07-record-warning.jpg){style="position:absolute;max-width:none;width:263.157895%;left:-81.578947%;top:-128.571429%;"}](../../assets/sop/en-07-record-warning.jpg)
+[![Figure C5 · Re-recording: read the replacement scope before cancelling or starting](../../assets/sop/en-07-record-warning.png){style="position:absolute;max-width:none;width:263.157895%;height:auto;left:-81.578947%;top:-128.571429%;" loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-07-record-warning.png)
 
-<span class="sop-ui-pin" style="left:5.263158%;top:42.857143%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:44.736842%;top:78.571429%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:89.473684%;top:78.571429%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:13.157895%;top:42.857143%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:50.000000%;top:78.571429%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:76.315789%;top:78.571429%" aria-hidden="true">3</span>
 
 </div>
 
@@ -923,6 +929,7 @@ The upper area chooses task type, the middle selects object/hand capabilities, a
 | **1** | Dialog body: replacement scope, reset ranges, and retained data |
 | **2** | Cancel: keep current editing and return |
 | **3** | Start recording: use only when replacement is intended |
+
 
 | Control | When used | Effect |
 |---|---|---|
@@ -939,11 +946,11 @@ For replay, use playback rather than Record.
 
 <div class="sop-ui-map" markdown="1">
 
-[![Figure C6 · Canvas: view controls and target box](../../assets/sop/en-10-target-reference.jpg)](../../assets/sop/en-10-target-reference.jpg)
+[![Figure C6 · Canvas: view controls and target box](../../assets/sop/en-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-10-target-reference.png)
 
-<span class="sop-ui-pin" style="left:45%;top:43%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:41%;top:65%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:18%;top:43%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:62.000000%;top:43.000000%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:43.000000%;top:68.000000%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:20.000000%;top:43.000000%" aria-hidden="true">3</span>
 
 </div>
 
@@ -954,6 +961,7 @@ For replay, use playback rather than Record.
 | **1** | Canvas top right: minus, scale, plus, fit, pan |
 | **2** | Target box: select, double-click to edit, right-click for more |
 | **3** | Canvas top left: interaction hint |
+
 
 | Control | Location | Purpose |
 |---|---|---|
@@ -975,13 +983,13 @@ Removing a box, deleting a region, and deleting a step affect different objects.
 
 <div class="sop-ui-map" markdown="1">
 
-[![Figure C7 · Target references: view list, additional views, and recognition review](../../assets/sop/en-10-target-reference.jpg)](../../assets/sop/en-10-target-reference.jpg)
+[![Figure C7 · Target references: view list, additional views, and recognition review](../../assets/sop/en-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-10-target-reference.png)
 
-<span class="sop-ui-pin" style="left:21%;top:27%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:72%;top:46%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:88%;top:49%" aria-hidden="true">3</span>
-<span class="sop-ui-pin" style="left:73%;top:55%" aria-hidden="true">4</span>
-<span class="sop-ui-pin" style="left:85%;top:37%" aria-hidden="true">5</span>
+<span class="sop-ui-pin" style="left:22.000000%;top:27.000000%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:77.000000%;top:46.000000%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:93.000000%;top:49.000000%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:80.000000%;top:55.000000%" aria-hidden="true">4</span>
+<span class="sop-ui-pin" style="left:91.000000%;top:37.000000%" aria-hidden="true">5</span>
 
 </div>
 
@@ -994,6 +1002,7 @@ Removing a box, deleting a region, and deleting a step affect different objects.
 | **3** | Add view: right of the Reference image title |
 | **4** | View card: select and compare with the main picture |
 | **5** | Improve recognition: right end of the target heading |
+
 
 | Control | Location | Purpose and verification |
 |---|---|---|
@@ -1018,14 +1027,14 @@ Removing a box, deleting a region, and deleting a step affect different objects.
 
 <div class="sop-ui-map" markdown="1">
 
-[![Figure C8 · Timeline: exact times, preview, endpoints, and playhead](../../assets/sop/en-08-plan-range.jpg)](../../assets/sop/en-08-plan-range.jpg)
+[![Figure C8 · Timeline: exact times, preview, endpoints, and playhead](../../assets/sop/en-08-plan-range.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-08-plan-range.png)
 
-<span class="sop-ui-pin" style="left:36%;top:70%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:54%;top:70%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:41%;top:73%" aria-hidden="true">3</span>
-<span class="sop-ui-pin" style="left:19%;top:79%" aria-hidden="true">4</span>
-<span class="sop-ui-pin" style="left:94%;top:79%" aria-hidden="true">5</span>
-<span class="sop-ui-pin" style="left:33%;top:76%" aria-hidden="true">6</span>
+<span class="sop-ui-pin" style="left:37.000000%;top:70.000000%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:60.000000%;top:70.000000%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:93.000000%;top:70.000000%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:18.600000%;top:80.000000%" aria-hidden="true">4</span>
+<span class="sop-ui-pin" style="left:95.000000%;top:80.000000%" aria-hidden="true">5</span>
+<span class="sop-ui-pin" style="left:31.400000%;top:80.000000%" aria-hidden="true">6</span>
 
 </div>
 
@@ -1039,6 +1048,7 @@ Removing a box, deleting a region, and deleting a step affect different objects.
 | **4** | Green start handle: range beginning |
 | **5** | Orange end handle: range end |
 | **6** | White playhead: viewing position, not a range boundary |
+
 
 | Control | Use | Verify |
 |---|---|---|
@@ -1131,16 +1141,16 @@ If no proposal is available, read which evidence is missing. No proposal is not 
 
 ### 5.12 Stage toolbar and operation setup {#control-reference--12-stage-toolbar-and-operation-setup}
 
-<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:94710/70664" markdown="1">
+<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:204050/141255" markdown="1">
 
-[![Figure C9 · Hand-action setup: choose endpoints, action, areas, and add](../../assets/sop/en-19-hand-actions.jpg){style="position:absolute;max-width:none;width:129.870130%;left:-24.675325%;top:-20.547945%;"}](../../assets/sop/en-19-hand-actions.jpg)
+[![Figure C9 · Hand-action setup: choose endpoints, action, areas, and add](../../assets/sop/en-19-hand-actions.png){style="position:absolute;max-width:none;width:129.870130%;height:auto;left:-24.675325%;top:-20.547945%;" loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-19-hand-actions.png)
 
-<span class="sop-ui-pin" style="left:1.298701%;top:19.178082%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:1.298701%;top:31.506849%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:55.844156%;top:54.794521%" aria-hidden="true">3</span>
-<span class="sop-ui-pin" style="left:2.597403%;top:69.863014%" aria-hidden="true">4</span>
-<span class="sop-ui-pin" style="left:2.597403%;top:78.082192%" aria-hidden="true">5</span>
-<span class="sop-ui-pin" style="left:83.116883%;top:93.150685%" aria-hidden="true">6</span>
+<span class="sop-ui-pin" style="left:7.792208%;top:19.178082%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:7.792208%;top:26.027397%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:58.441558%;top:47.945205%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:5.194805%;top:64.383562%" aria-hidden="true">4</span>
+<span class="sop-ui-pin" style="left:19.480519%;top:71.232877%" aria-hidden="true">5</span>
+<span class="sop-ui-pin" style="left:90.909091%;top:87.671233%" aria-hidden="true">6</span>
 
 </div>
 
@@ -1154,6 +1164,7 @@ If no proposal is available, read which evidence is missing. No proposal is not 
 | **4** | Below the action diagram: start and end region slots |
 | **5** | Below the slots: operation area covering the process |
 | **6** | Panel lower right: Add to this stage; disabled until valid |
+
 
 | Control | Location/purpose | Verify |
 |---|---|---|
@@ -1175,9 +1186,9 @@ If no proposal is available, read which evidence is missing. No proposal is not 
 
 ### 5.13 Detection settings dialog {#control-reference--13-detection-settings-dialog}
 
-<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:68880/46464" markdown="1">
+<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:148400/92880" markdown="1">
 
-[![Figure C10 · Detection settings: objects, hands, and optional advanced sources](../../assets/sop/en-16-detection-settings.jpg){style="position:absolute;max-width:none;width:178.571429%;left:-39.285714%;top:-54.166667%;"}](../../assets/sop/en-16-detection-settings.jpg)
+[![Figure C10 · Detection settings: objects, hands, and optional advanced sources](../../assets/sop/en-16-detection-settings.png){style="position:absolute;max-width:none;width:178.571429%;height:auto;left:-39.285714%;top:-54.166667%;" loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-16-detection-settings.png)
 
 <span class="sop-ui-pin" style="left:3.571429%;top:27.083333%" aria-hidden="true">1</span>
 <span class="sop-ui-pin" style="left:3.571429%;top:52.083333%" aria-hidden="true">2</span>
@@ -1197,6 +1208,7 @@ If no proposal is available, read which evidence is missing. No proposal is not 
 | **4** | Advanced settings: manage shared recognition sources when needed |
 | **5** | Back to steps: return to editing; does not save the task |
 
+
 | Control | Purpose | Important detail |
 |---|---|---|
 | Object source | Select station object capability | Affects listed steps |
@@ -1211,16 +1223,14 @@ If no proposal is available, read which evidence is missing. No proposal is not 
 
 ### 5.14 Checks and completion controls {#control-reference--14-checks-and-completion-controls}
 
-<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:92250/41624" markdown="1">
+<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:198750/75465" markdown="1">
 
-[![Figure C11 · Check configuration: combination, object, add slot, and details](../../assets/sop/en-11-object-condition.jpg){style="position:absolute;max-width:none;width:133.333333%;left:-26.666667%;top:-100.000000%;"}](../../assets/sop/en-11-object-condition.jpg)
+[![Figure C11 · Check configuration: combination, object, add slot, and details](../../assets/sop/en-11-object-condition.png){style="position:absolute;max-width:none;width:133.333333%;height:auto;left:-26.666667%;top:-125.641026%;" loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-11-object-condition.png)
 
-<span class="sop-ui-pin" style="left:2.666667%;top:9.302326%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:24.000000%;top:27.906977%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:2.666667%;top:48.837209%" aria-hidden="true">3</span>
-<span class="sop-ui-pin" style="left:53.333333%;top:37.209302%" aria-hidden="true">4</span>
-<span class="sop-ui-pin" style="left:53.333333%;top:55.813953%" aria-hidden="true">5</span>
-<span class="sop-ui-pin" style="left:53.333333%;top:81.395349%" aria-hidden="true">6</span>
+<span class="sop-ui-pin" style="left:2.666667%;top:50.512821%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:24.000000%;top:69.743590%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:2.666667%;top:93.333333%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:54.666667%;top:80.769231%" aria-hidden="true">4</span>
 
 </div>
 
@@ -1230,10 +1240,9 @@ If no proposal is available, read which evidence is missing. No proposal is not 
 |---|---|
 | **1** | Combination selector at left: All at the same time, etc. |
 | **2** | Diagram object at left: select the condition |
-| **3** | Dashed slot under the diagram: add a check object |
-| **4** | What to check at right: condition type |
-| **5** | Where to check: region; Replace object below changes the target |
-| **6** | More settings: score and other less frequent parameters |
+| **3** | Dashed slot below the diagram: add a check object |
+| **4** | What to check at right: condition type; scroll down for regions and More settings |
+
 
 | Control/function | Use | Result |
 |---|---|---|
@@ -1254,27 +1263,28 @@ If no proposal is available, read which evidence is missing. No proposal is not 
 | Remove relationship | Delete selected requirement | Respect final-item restrictions |
 | Collapse | Return to diagram/summary | Does not save the task |
 
-<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:92250/47432" markdown="1">
+<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:198750/58050" markdown="1">
 
-[![Figure C12 · Completion: automatic/assisted/manual, hold duration, and advanced timing](../../assets/sop/en-12-auto-completion.jpg){style="position:absolute;max-width:none;width:133.333333%;left:-26.666667%;top:-87.755102%;"}](../../assets/sop/en-12-auto-completion.jpg)
+[![Figure C12 · Confirmation hold and time limit](../../assets/sop/en-12-auto-completion.png){style="position:absolute;max-width:none;width:133.333333%;height:auto;left:-26.666667%;top:-146.666667%;" loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-12-auto-completion.png)
 
-<span class="sop-ui-pin" style="left:2.666667%;top:22.448980%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:4.000000%;top:59.183673%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:4.000000%;top:67.346939%" aria-hidden="true">3</span>
-<span class="sop-ui-pin" style="left:2.666667%;top:85.714286%" aria-hidden="true">4</span>
-<span class="sop-ui-pin" style="left:82.666667%;top:97.959184%" aria-hidden="true">5</span>
+<span class="sop-ui-pin" style="left:5.333333%;top:12.333333%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:29.333333%;top:25.333333%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:14.666667%;top:35.000000%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:5.333333%;top:65.666667%" aria-hidden="true">4</span>
+<span class="sop-ui-pin" style="left:92.000000%;top:84.666667%" aria-hidden="true">5</span>
 
 </div>
 
-<p class="sop-map-caption">Figure C12 · Completion: automatic/assisted/manual, hold duration, and advanced timing. Numbers are manual location aids, not product buttons. Open the image for the unmodified capture; the following tables explain the controls.</p>
+<p class="sop-map-caption">Figure C12 · Confirmation hold and time limit. Numbers are manual location aids, not product buttons. Open the image for the unmodified capture; the following tables explain the controls.</p>
 
 | Marker | Location and control group |
 |---|---|
-| **1** | Completion-method selector: system or operator confirmation |
-| **2** | Confirmation hold slider: required stable duration |
+| **1** | Confirmation hold: expanded duration settings |
+| **2** | Hold slider: drag to change the required duration |
 | **3** | Seconds field: enter the duration directly |
 | **4** | Advanced: brief input interruptions |
-| **5** | Time limit near the bottom: step deadline; 0 disables timeout |
+| **5** | Time limit: maximum step duration; 0 disables timeout |
+
 
 | Control/function | Purpose | Verify |
 |---|---|---|
@@ -1289,15 +1299,15 @@ If no proposal is available, read which evidence is missing. No proposal is not 
 
 ### 5.15 Target picker {#control-reference--15-target-picker}
 
-<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:73800/65824" markdown="1">
+<div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:159000/131580" markdown="1">
 
-[![Figure C13 · Target picker: search, cards, pages, selection count, and submit](../../assets/sop/en-25-target-picker.jpg){style="position:absolute;max-width:none;width:166.666667%;left:-33.333333%;top:-23.529412%;"}](../../assets/sop/en-25-target-picker.jpg)
+[![Figure C13 · Target picker: search, cards, pages, selection count, and submit](../../assets/sop/en-25-target-picker.png){style="position:absolute;max-width:none;width:166.666667%;height:auto;left:-33.333333%;top:-23.529412%;" loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-25-target-picker.png)
 
-<span class="sop-ui-pin" style="left:5.000000%;top:17.647059%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:5.000000%;top:29.411765%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:8.333333%;top:17.647059%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:8.333333%;top:29.411765%" aria-hidden="true">2</span>
 <span class="sop-ui-pin" style="left:76.666667%;top:82.352941%" aria-hidden="true">3</span>
-<span class="sop-ui-pin" style="left:5.000000%;top:92.647059%" aria-hidden="true">4</span>
-<span class="sop-ui-pin" style="left:93.333333%;top:92.647059%" aria-hidden="true">5</span>
+<span class="sop-ui-pin" style="left:8.333333%;top:92.647059%" aria-hidden="true">4</span>
+<span class="sop-ui-pin" style="left:88.333333%;top:92.647059%" aria-hidden="true">5</span>
 
 </div>
 
@@ -1310,6 +1320,7 @@ If no proposal is available, read which evidence is missing. No proposal is not 
 | **3** | List lower right: pages and previous/next |
 | **4** | Dialog lower left: selected count and remaining allowance |
 | **5** | Dialog lower right: Cancel / Add selected |
+
 
 | Control | Purpose | Verify |
 |---|---|---|
@@ -1325,12 +1336,12 @@ If no proposal is available, read which evidence is missing. No proposal is not 
 
 <div class="sop-ui-map" markdown="1">
 
-[![Figure C14 · Reordering: mode, movement, unordered groups, and stage controls](../../assets/sop/en-17-ordering.jpg)](../../assets/sop/en-17-ordering.jpg)
+[![Figure C14 · Reordering: mode, movement, unordered groups, and stage controls](../../assets/sop/en-17-ordering.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-17-ordering.png)
 
-<span class="sop-ui-pin" style="left:8%;top:21%" aria-hidden="true">1</span>
-<span class="sop-ui-pin" style="left:3%;top:48%" aria-hidden="true">2</span>
-<span class="sop-ui-pin" style="left:3%;top:53%" aria-hidden="true">3</span>
-<span class="sop-ui-pin" style="left:80%;top:24%" aria-hidden="true">4</span>
+<span class="sop-ui-pin" style="left:6.000000%;top:21.000000%" aria-hidden="true">1</span>
+<span class="sop-ui-pin" style="left:3.000000%;top:48.000000%" aria-hidden="true">2</span>
+<span class="sop-ui-pin" style="left:3.000000%;top:53.000000%" aria-hidden="true">3</span>
+<span class="sop-ui-pin" style="left:88.000000%;top:24.000000%" aria-hidden="true">4</span>
 
 </div>
 
@@ -1342,6 +1353,7 @@ If no proposal is available, read which evidence is missing. No proposal is not 
 | **2** | Below each step card: move up/down |
 | **3** | Below the first step: Group with next step for independent work |
 | **4** | Stage toolbar upper right: delete, drag handle, movement controls |
+
 
 | Control/function | Effect | Important detail |
 |---|---|---|
@@ -1404,7 +1416,7 @@ Input limits are permitted interface bounds, not recommended process settings. T
 | Pending adoption | Unadopted improvement data | Distinct from admitted references |
 | Edit scope | This step or all uses | Read affected steps first |
 
-[![Reference and capacity information](../../assets/sop/en-10-target-reference.jpg)](../../assets/sop/en-10-target-reference.jpg)
+[![Reference and capacity information](../../assets/sop/en-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-10-target-reference.png)
 
 Two views of one mallet do not require two physical mallets.
 
@@ -1459,7 +1471,7 @@ Duplicates, overlap, boundary ambiguity, and uncertain physical identity affect 
 | Operation area | Whole action path | Not just endpoints |
 | Origin/destination | Sequence positions | A genuine state change |
 
-[![A requirement's region assignment](../../assets/sop/en-26-object-region.jpg)](../../assets/sop/en-26-object-region.jpg)
+[![A requirement's region assignment](../../assets/sop/en-26-object-region.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-26-object-region.png)
 
 Region constraints are not synonymous with running the detector only on cropped pixels. They may constrain filtering or rule evaluation.
 
@@ -1481,7 +1493,7 @@ The advanced relationship-threshold input spans 0–16; boundary tolerance spans
 
 ### 6.7 Hold duration {#parameters--7-hold-duration}
 
-[![Hold controls](../../assets/sop/en-12-auto-completion.jpg)](../../assets/sop/en-12-auto-completion.jpg)
+[![Hold controls](../../assets/sop/en-12-auto-completion.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-12-auto-completion.png)
 
 Hold specifies stable satisfaction before the requirement completes.
 
@@ -1575,13 +1587,13 @@ Use a fixed camera, stable lighting, and clearly visible objects. Start with one
 4. Locate examples where the object is clearly present and clearly absent.
 5. Distinguish normal views from severe occlusion, blur, or glare.
 
-[![Teaching video and timeline](../../assets/sop/en-06-teaching-video.jpg)](../../assets/sop/en-06-teaching-video.jpg)
+[![Teaching video and timeline](../../assets/sop/en-06-teaching-video.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-06-teaching-video.png)
 
 *A visible reference image does not establish that the video timeline has finished loading.*
 
 Recording the complete process again replaces demonstration material and resets relevant ranges. Read the replacement prompt. Use playback or seeking when you only want to inspect an existing picture.
 
-[![Replacement recording confirmation](../../assets/sop/en-07-record-warning.jpg)](../../assets/sop/en-07-record-warning.jpg)
+[![Replacement recording confirmation](../../assets/sop/en-07-record-warning.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-07-record-warning.png)
 
 ### 7.2 Understand the three ranges {#video-and-recognition--2-understand-the-three-ranges}
 
@@ -1591,7 +1603,7 @@ Recording the complete process again replaces demonstration material and resets 
 | Stage validation range | Validate the selected stage separately | The timeline below that stage |
 | Demonstration | Show the operator the action for that step | Actual start and stop positions in Play demonstration |
 
-[![Overall range and endpoint editing](../../assets/sop/en-08-plan-range.jpg)](../../assets/sop/en-08-plan-range.jpg)
+[![Overall range and endpoint editing](../../assets/sop/en-08-plan-range.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-08-plan-range.png)
 
 #### 7.2.1 Adjusting a range {#video-and-recognition--adjusting-a-range}
 
@@ -1613,7 +1625,7 @@ After changing the overall range, follow the prompt to scan again. Existing pict
 4. Give it a recognizable name such as “Rubber mallet.”
 5. Confirm, then inspect the reference in **Targets**.
 
-[![Target references and additional angles](../../assets/sop/en-10-target-reference.jpg)](../../assets/sop/en-10-target-reference.jpg)
+[![Target references and additional angles](../../assets/sop/en-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-10-target-reference.png)
 
 #### 7.3.1 References are not physical quantity {#video-and-recognition--references-are-not-physical-quantity}
 
@@ -1718,7 +1730,7 @@ Within one step, several detection conditions can be combined. **Steps finishing
 | Tool preparation and label inspection are independent, but both required | Unordered steps in one stage |
 | The next action must wait for the previous action | Separate sequential stages |
 
-[![Condition combination options in the English interface](../../assets/sop/en-29-combination.jpg)](../../assets/sop/en-29-combination.jpg)
+[![Condition combination options in the English interface](../../assets/sop/en-29-combination.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-29-combination.png)
 
 ### 8.2 Configure an object check {#rules-and-regions--2-configure-an-object-check}
 
@@ -1729,7 +1741,7 @@ Within one step, several detection conditions can be combined. **Steps finishing
 5. Add other conditions if needed and check the combination mode.
 6. Read each requirement from the preview diagram and compare it with the real process.
 
-[![Object check configuration](../../assets/sop/en-11-object-condition.jpg)](../../assets/sop/en-11-object-condition.jpg)
+[![Object check configuration](../../assets/sop/en-11-object-condition.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-11-object-condition.png)
 
 References tell recognition what the object looks like. Conditions define what the step requires. Adding a reference does not automatically create a process requirement.
 
@@ -1745,7 +1757,7 @@ Quantity counts detected instances meeting the target, score, region, and other 
 4. Give it a meaningful name, such as “Tool area” or “Preparation area.”
 5. Confirm and check its position.
 
-[![Drawing the tool area](../../assets/sop/en-18-draw-region.jpg)](../../assets/sop/en-18-draw-region.jpg)
+[![Drawing the tool area](../../assets/sop/en-18-draw-region.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-18-draw-region.png)
 
 Use names describing the workplace rather than several indistinguishable numbered regions. Avoid placing boundaries exactly at the normal limits of object movement.
 
@@ -1753,7 +1765,7 @@ Use names describing the workplace rather than several indistinguishable numbere
 
 Select the named region under the relevant object. Alternatively, drag the toolbar region to a compatible region position; see [Toolbar and drag operations](#toolbar-and-drag).
 
-[![Binding an object check to a named region](../../assets/sop/en-26-object-region.jpg)](../../assets/sop/en-26-object-region.jpg)
+[![Binding an object check to a named region](../../assets/sop/en-26-object-region.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-26-object-region.png)
 
 | Selection | Meaning |
 |---|---|
@@ -1793,7 +1805,7 @@ See [Hand operations](#hand-operations) for ordered templates. Validate step ord
 
 ### 8.6 Completion and timing {#rules-and-regions--6-completion-and-timing}
 
-[![Automatic completion after a sustained condition](../../assets/sop/en-12-auto-completion.jpg)](../../assets/sop/en-12-auto-completion.jpg)
+[![Automatic completion after a sustained condition](../../assets/sop/en-12-auto-completion.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-12-auto-completion.png)
 
 | Method | Typical use | Check |
 |---|---|---|
@@ -1801,7 +1813,7 @@ See [Hand operations](#hand-operations) for ordered templates. Validate step ord
 | Visual conditions then operator review | Vision provides evidence, but a person checks quality | Conditions first, confirmation afterward |
 | Operator confirmation | The action requires human judgment | Clear instructions and the current step |
 
-[![Operator confirmation](../../assets/sop/en-13-manual-completion.jpg)](../../assets/sop/en-13-manual-completion.jpg)
+[![Operator confirmation](../../assets/sop/en-13-manual-completion.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-13-manual-completion.png)
 
 A hold time filters brief observations; it is not the length of the demonstration clip. A completion deadline limits the time allowed for a step; 0 means no timeout check where indicated. Sequence deadlines and allowed gaps constrain the process and are separate settings. Missing reliable input is not successful completion.
 
@@ -1815,13 +1827,13 @@ For plan validation using the same source recording, the overall selection shoul
 
 Demonstrations train the operator; validation ranges define the evidence to check. When editing a stage's validation range, check the synchronization message and demonstration player. Use the demonstration mode for an independent teaching selection. Changing one stage must not be assumed to update the others.
 
-[![Independent stage selection](../../assets/sop/en-14-stage-range.jpg)](../../assets/sop/en-14-stage-range.jpg)
+[![Independent stage selection](../../assets/sop/en-14-stage-range.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-14-stage-range.png)
 
 ### 8.8 Grouping and order {#rules-and-regions--8-grouping-and-order}
 
 Use **Reorder** in the step list to organize the actual dependencies. Steps in an unordered stage can finish in any order, but all are required before advancing.
 
-[![Reordering stages and steps](../../assets/sop/en-17-ordering.jpg)](../../assets/sop/en-17-ordering.jpg)
+[![Reordering stages and steps](../../assets/sop/en-17-ordering.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-17-ordering.png)
 
 Keep dependent steps in sequential stages. After changes, review names, grouping, ranges, and validation results.
 
@@ -1857,7 +1869,7 @@ Do not enable hand checks simply because hands happen to appear in the recording
 4. Return to the stage and check the available hand tools, such as either hand, left hand, and right hand.
 5. Keep the correct object-detection source. A hand-object relationship needs evidence from both sources.
 
-[![Figure 1: Hand-recognition entry in station detection settings](../../assets/sop/en-16-detection-settings.jpg)](../../assets/sop/en-16-detection-settings.jpg)
+[![Figure 1: Hand-recognition entry in station detection settings](../../assets/sop/en-16-detection-settings.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-16-detection-settings.png)
 
 Detection settings are shared by the station and saved with the task. Adding a source does not automatically require hands in every step; configure the steps that need them.
 
@@ -1880,7 +1892,7 @@ Use **the operator's own left and right**, not the left and right edges of the s
 7. Use left/right constraints only after both sides have been checked.
 8. Recalibrate after changes to camera position, mirroring, or orientation.
 
-[![Figure 2: Hand-direction settings](../../assets/sop/en-20-hand-direction.jpg)](../../assets/sop/en-20-hand-direction.jpg)
+[![Figure 2: Hand-direction settings](../../assets/sop/en-20-hand-direction.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-20-hand-direction.png)
 
 **Checkpoint:** Labels agree with the operator's own hands. Enabling distinction is a configuration action, not evidence that calibration has passed.
 
@@ -1904,7 +1916,7 @@ A limit of two detected hands **does not prove that both belong to one person**.
 5. Choose the operation type.
 6. Set the operation region, expand the condition summary, and add it to the stage.
 
-[![Figure 3: Select a hand, then an object and operation type](../../assets/sop/en-19-hand-actions.jpg)](../../assets/sop/en-19-hand-actions.jpg)
+[![Figure 3: Select a hand, then an object and operation type](../../assets/sop/en-19-hand-actions.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-19-hand-actions.png)
 
 The toolbar may offer complete templates such as approach-then-withdraw and transfer-to-position. If the interface says it adds a new operation while keeping existing checks, verify that a new step appears in the stage. Do not assume the existing object check is replaced.
 
@@ -1953,7 +1965,7 @@ For example, an operator works near the mallet and then withdraws. The system ch
 7. Keep or select operator review after completion for quality requirements that need a person.
 8. Add the operation and review its generated name and conditions.
 
-[![Figure 4: Approach-then-withdraw configuration and View conditions entry](../../assets/sop/en-31-hand-visit.jpg)](../../assets/sop/en-31-hand-visit.jpg)
+[![Figure 4: Approach-then-withdraw configuration and View conditions entry](../../assets/sop/en-31-hand-visit.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-31-hand-visit.png)
 
 **Expected result:** Remaining near the tool does not complete the whole sequence. Starting far away must not skip the approach. A later phase requires a valid change after the preceding phase is complete.
 
@@ -2018,7 +2030,7 @@ An observed false condition differs from having no fresh trusted observation. In
 5. Use an independent recording with normal variations in posture, speed, and placement.
 6. Include negative cases, not only the clearest successful example.
 
-[![Figure 5: Stage range and stage-validation entry](../../assets/sop/en-14-stage-range.jpg)](../../assets/sop/en-14-stage-range.jpg)
+[![Figure 5: Stage range and stage-validation entry](../../assets/sop/en-14-stage-range.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-14-stage-range.png)
 
 | Symptom | Check first | Avoid |
 |---|---|---|
@@ -2074,7 +2086,7 @@ If hands are unavailable, add the capability in **Detection settings**, then ver
 6. Inspect the diagram, condition count, target names, and region labels.
 7. If incorrect, undo and use the click-based control.
 
-[![Target selection through the click-based alternative](../../assets/sop/en-25-target-picker.jpg)](../../assets/sop/en-25-target-picker.jpg)
+[![Target selection through the click-based alternative](../../assets/sop/en-25-target-picker.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-25-target-picker.png)
 
 *Click-based addition provides an alternative when a drag does not create the expected requirement.*
 
@@ -2111,7 +2123,7 @@ Alternatively, select the diagram target and use the explicit replacement contro
 4. Check that its region label changes.
 5. Test inside, outside, and boundary views.
 
-[![An object requirement and its region](../../assets/sop/en-26-object-region.jpg)](../../assets/sop/en-26-object-region.jpg)
+[![An object requirement and its region](../../assets/sop/en-26-object-region.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-26-object-region.png)
 
 Assigning a region changes the check's coverage, not the polygon's shape. Edit the global region to change its geometry.
 
@@ -2132,9 +2144,9 @@ The explicit click path is:
 7. Inspect the added operation and retained checks.
 8. Validate the stage and compare labels with the operator's own hands.
 
-[![Choosing a hand action](../../assets/sop/en-19-hand-actions.jpg)](../../assets/sop/en-19-hand-actions.jpg)
+[![Choosing a hand action](../../assets/sop/en-19-hand-actions.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-19-hand-actions.png)
 
-[![Approach-then-withdraw configuration](../../assets/sop/en-31-hand-visit.jpg)](../../assets/sop/en-31-hand-visit.jpg)
+[![Approach-then-withdraw configuration](../../assets/sop/en-31-hand-visit.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-31-hand-visit.png)
 
 An added operation in the same stage can form an unordered group with existing operations. If the business requires a dependency, reorganize the stages. The sequence inside the template does not establish order between separate operations.
 
@@ -2194,7 +2206,7 @@ Illustrative ranges are 10–16 and 16–20 seconds. Check actual footage rather
 4. Play the beginning, middle, and end.
 5. Verify real timeline thumbnails.
 
-[![Lab A teaching footage](../../assets/sop/en-06-teaching-video.jpg)](../../assets/sop/en-06-teaching-video.jpg)
+[![Lab A teaching footage](../../assets/sop/en-06-teaching-video.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-06-teaching-video.png)
 
 #### 11.1.3 A3. Establish one target {#scenario-labs--a3-establish-one-target}
 
@@ -2218,7 +2230,7 @@ Illustrative ranges are 10–16 and 16–20 seconds. Check actual footage rather
 7. Set a 0.8-second hold; initially leave deadline at zero.
 8. Read the diagram back and remove accidental unrelated requirements.
 
-[![Object and completion setup](../../assets/sop/en-12-auto-completion.jpg)](../../assets/sop/en-12-auto-completion.jpg)
+[![Object and completion setup](../../assets/sop/en-12-auto-completion.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-12-auto-completion.png)
 
 #### 11.1.5 A5. Configure confirmation {#scenario-labs--a5-configure-confirmation}
 
@@ -2229,7 +2241,7 @@ Illustrative ranges are 10–16 and 16–20 seconds. Check actual footage rather
 5. Select its demonstration.
 6. Verify readiness precedes confirmation.
 
-[![Manual completion setup](../../assets/sop/en-13-manual-completion.jpg)](../../assets/sop/en-13-manual-completion.jpg)
+[![Manual completion setup](../../assets/sop/en-13-manual-completion.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-13-manual-completion.png)
 
 #### 11.1.6 A6. Ranges and validation {#scenario-labs--a6-ranges-and-validation}
 
@@ -2280,7 +2292,7 @@ Mallet, drill, and paint cup must coexist. This is one step with several simulta
 8. Read all three requirements from the diagram.
 9. Validate coexistence and a separate missing-item recording.
 
-[![Combination selection](../../assets/sop/en-29-combination.jpg)](../../assets/sop/en-29-combination.jpg)
+[![Combination selection](../../assets/sop/en-29-combination.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-29-combination.png)
 
 | Test | Expected behavior |
 |---|---|
@@ -2305,9 +2317,9 @@ Similar tools may appear on a neighboring table. Only the current station's tool
 6. Assign other tools or hands separately as needed.
 7. Validate inside, outside, and boundary views.
 
-[![Drawing the area](../../assets/sop/en-18-draw-region.jpg)](../../assets/sop/en-18-draw-region.jpg)
+[![Drawing the area](../../assets/sop/en-18-draw-region.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-18-draw-region.png)
 
-[![Binding the actual requirement](../../assets/sop/en-26-object-region.jpg)](../../assets/sop/en-26-object-region.jpg)
+[![Binding the actual requirement](../../assets/sop/en-26-object-region.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-26-object-region.png)
 
 #### 11.3.3 C3. Boundary tests {#scenario-labs--c3-boundary-tests}
 
@@ -2341,9 +2353,9 @@ Object recognition works, hands remain visible, and any directional requirement 
 10. If it forms an unordered group, verify that the process permits that grouping.
 11. Validate real complete-action footage.
 
-[![Choose hand operation](../../assets/sop/en-19-hand-actions.jpg)](../../assets/sop/en-19-hand-actions.jpg)
+[![Choose hand operation](../../assets/sop/en-19-hand-actions.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-19-hand-actions.png)
 
-[![Approach/withdrawal setup and condition entry](../../assets/sop/en-31-hand-visit.jpg)](../../assets/sop/en-31-hand-visit.jpg)
+[![Approach/withdrawal setup and condition entry](../../assets/sop/en-31-hand-visit.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-31-hand-visit.png)
 
 | Footage | Expected behavior |
 |---|---|
@@ -2378,7 +2390,7 @@ Tool readiness and label review may occur in either order. Final confirmation fo
 6. Permit overlapping intervals; cover them in the overall scope.
 7. Test both orders, omitted work, and early final confirmation.
 
-[![Ordering and grouping](../../assets/sop/en-17-ordering.jpg)](../../assets/sop/en-17-ordering.jpg)
+[![Ordering and grouping](../../assets/sop/en-17-ordering.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-17-ordering.png)
 
 | Order | Expected behavior |
 |---|---|
@@ -2460,7 +2472,7 @@ Click the stage validation control and inspect:
 5. Visual conditions met but operator review pending.
 6. Missing input or ambiguous observations.
 
-[![A stage's selected recording range](../../assets/sop/en-14-stage-range.jpg)](../../assets/sop/en-14-stage-range.jpg)
+[![A stage's selected recording range](../../assets/sop/en-14-stage-range.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-14-stage-range.png)
 
 Video pixels alone cannot establish that a person performed an operator-confirmation action. Check the actual confirmation control, timing, and following stage in the interactive workflow.
 
@@ -2495,7 +2507,7 @@ Retain plan version, footage, range, and result for each run. After changing rec
 
 ### 12.6 Three save levels {#validation-and-operation--6-three-save-levels}
 
-[![Outer task save and run controls](../../assets/sop/en-23-save-task.jpg)](../../assets/sop/en-23-save-task.jpg)
+[![Outer task save and run controls](../../assets/sop/en-23-save-task.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/en-23-save-task.png)
 
 1. **Done** in the SOP editor returns changes to the task draft.
 2. **Confirm** in node settings, if still open, returns node configuration to the outer editor.
@@ -2555,7 +2567,7 @@ For operators and supervisors. Configuration and validation should be completed 
 
 ### 13.2 Enter station operation {#operator-guide--2-enter-station-operation}
 
-[![Outer task Save and Run controls before operation](../../assets/sop/en-23-save-task.jpg)](../../assets/sop/en-23-save-task.jpg)
+[![Outer task Save and Run controls before operation](../../assets/sop/en-23-save-task.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/en-23-save-task.png)
 
 This figure shows the configuration entry before operation, not a passing production result.
 
@@ -2625,7 +2637,7 @@ A disabled confirmation is not a visual-check bypass.
 
 ### 13.7 Manual confirmation {#operator-guide--7-manual-confirmation}
 
-[![Configuration example for a manual step](../../assets/sop/en-13-manual-completion.jpg)](../../assets/sop/en-13-manual-completion.jpg)
+[![Configuration example for a manual step](../../assets/sop/en-13-manual-completion.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-13-manual-completion.png)
 
 The figure illustrates configuration. During operation, use the runtime control for the active step.
 
@@ -2767,6 +2779,66 @@ Record unfinished and exceptional work. Closing the browser does not necessarily
 
 *Footage attribution: [Sample and screenshot credits](#reference--7-sample-and-screenshot-credits).*
 
+### 13.19 Complete live example: tool ready → operator confirmation → workpiece completed {#station-live-example}
+
+This section records an actual device run using the same workbench footage and a saved, published two-step test plan. These are native lossless screenshots of the running station, not configuration previews or simulated results. Both steps were verified, **Finish workpiece** was accepted, and the test task was then stopped.
+
+The example demonstrates the operation and state checks. It does not cover independent footage, missing parts, wrong order, occlusion, multiple people, or long-duration production acceptance. It is not evidence that every process scenario has passed.
+
+#### 13.19.1 Enter and check the station
+
+1. In task management, check the task, camera and published plan, then start the correct task.
+2. Open **Station operation** on that task to enter the dedicated station page.
+3. Check that the video on the left updates; separately check that the runtime state on the right is synchronized.
+4. Read the task title. The upper-right controls provide language, Light/Dark, copy station link, fullscreen and Task management.
+5. The language selector supports 中文, English, Tiếng Việt, ខ្មែរ and ລາວ. Changing language updates fixed interface text; it does not restart the workpiece or automatically translate user-authored task, station, object names or instructions.
+
+#### 13.19.2 Review recovery before continuing, when required
+
+[![Figure 13-A: real restart recovery, retaining the verified first step](../../assets/sop/en-39-station-recovery.png){loading="lazy" decoding="async" width="2560" height="1440"}](../../assets/sop/en-39-station-recovery.png)
+
+This test resumed a workpiece after an earlier task stop. It therefore first displayed **Recovery review required**, while retaining the verified first step. This protection is not permission to continue without reviewing the physical workpiece.
+
+1. Scroll the right-hand panel to **Review and resume**.
+2. Check the workpiece, unfinished action, camera and plan against the retained state.
+3. Read the confirmation dialog and choose **Confirm and resume** only when it matches the actual station.
+4. Wait for the running state and verify the pending step. If the workpiece, source or configuration has changed, ask the responsible person to resolve it instead of blindly resuming.
+
+#### 13.19.3 Confirm the manual step after the tool check passes
+
+[![Figure 13-B: the mallet-ready step is verified; operator confirmation is the active second step](../../assets/sop/en-36-station-manual.png){loading="lazy" decoding="async" width="2560" height="1440"}](../../assets/sop/en-36-station-manual.png)
+
+| Location | What this example shows | What to do |
+|---|---|---|
+| Current operation near the top of the right panel | Operator confirmation, 2/2 | This is the current operation index; read the state of each step too |
+| First green step card | Mallet ready, Verified | Its automatic check is complete; do not add a duplicate requirement |
+| Second blue step card | Operator confirmation, In progress | Read the instructions and inspect the real work |
+| Blue primary action | Confirm completion | Click once after checking the physical requirements |
+| Actions below it | Pause, Rework, Abort workpiece | These temporarily stop, repeat or terminate work; they do not replace normal confirmation |
+
+After **Confirm completion**, wait for a successful read-back. Do not repeatedly click. If the result is unknown, follow the network/unknown-confirmation procedure in this chapter.
+
+#### 13.19.4 Explicitly finish the workpiece after both steps
+
+1. Verify that both step cards say **Verified**.
+2. If **Finish workpiece** is offered, use it to perform the final closing action.
+3. Wait for **Workpiece completed in compliance** and the two green verified entries.
+4. **Start workpiece** is now for the next item. Do not press it just to recheck the previous result.
+
+[![Figure 13-C: actual terminal state after confirmation and Finish workpiece; both steps verified](../../assets/sop/en-37-station-completed.png){loading="lazy" decoding="async" width="2560" height="1440"}](../../assets/sop/en-37-station-completed.png)
+
+!!! note "Read the video and runtime result separately"
+    During this capture, the synchronized runtime panel on the right had reached the completed state, while the video OSD on the left still displayed an earlier recovery message. An old overlay does not replace the current workpiece state. Resolve discrepancies using workpiece details and device records. The screenshot retains this observed difference; it was not retouched into a passing image. On-site acceptance must still check consistency among video, overlays and workflow state.
+
+#### 13.19.5 Stop the task after a test
+
+Finishing one workpiece does not stop background detection. Return to **Task management**, stop the test task, and confirm that it is stopped. Closing the station page, changing language or leaving fullscreen does not stop the task.
+
+[![Figure 13-D: stopped-task station page, shown as a diagnostic example](../../assets/sop/en-38-station-stopped.png){loading="lazy" decoding="async" width="2560" height="1440"}](../../assets/sop/en-38-station-stopped.png)
+
+A stopped task or missing live instance is a stop diagnostic, not evidence that a new workpiece completed. Whether production runs continuously is determined by the site's operating procedure.
+
+
 ## 14. Backup, Migration, Maintenance, and Handover {#maintenance}
 
 
@@ -2797,7 +2869,7 @@ Export success, closing a window, or scan completion is not task-save acknowledg
 
 ### 14.3 Save and reopen {#maintenance--3-save-and-reopen}
 
-[![Outer task Save location](../../assets/sop/en-23-save-task.jpg)](../../assets/sop/en-23-save-task.jpg)
+[![Outer task Save location](../../assets/sop/en-23-save-task.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/en-23-save-task.png)
 
 1. Select Done in the SOP editor.
 2. Confirm the node if its dialog remains.
@@ -2988,7 +3060,7 @@ Retain the current configuration. Investigate connection/video, recognition, reg
 | Disabled buttons | Read the message about video, source, capability, or configuration readiness |
 | Old clips changed after recording again | Check whether complete-process replacement was confirmed |
 
-[![Loaded video and timeline](../../assets/sop/en-06-teaching-video.jpg)](../../assets/sop/en-06-teaching-video.jpg)
+[![Loaded video and timeline](../../assets/sop/en-06-teaching-video.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-06-teaching-video.png)
 
 #### 15.1.1 Stage selection and demonstration differ {#troubleshooting--stage-selection-and-demonstration-differ}
 
