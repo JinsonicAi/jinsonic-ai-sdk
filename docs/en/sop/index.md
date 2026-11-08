@@ -1,4 +1,4 @@
-# SOP System User Guide
+# SOP System User Manual
 
 [简体中文](../../zh/sop/index.md)
 
@@ -87,4 +87,45 @@ Avoid changing references, thresholds, regions, timing, and order together. Reso
 | Station operators | Follow the station display, review requirements needing confirmation, and respond to guidance |
 | Administrators/deployment personnel | Maintain cameras, detection sources, compatible versions, storage, networking, and runtime placement |
 
+## 6. Manual structure and reading paths
+
+| Part | Chapters | Purpose |
+|---|---|---|
+| Getting started | [Preparation](preparation.md), [Quick start](quickstart.md) | Establish the process and complete a two-step workflow |
+| Interface and controls | [Workspace](workspace-reference.md), [Buttons](control-reference.md), [Parameters](parameters.md) | Find controls, availability, effects, and units |
+| Recognition and rules | [Video/targets](video-and-recognition.md), [Regions/timing](rules-and-regions.md), [Hands](hand-operations.md), [Dragging](toolbar-and-drag.md) | Configure actual requirements |
+| Complete labs | [Six scenarios](scenario-labs.md) | Combine individual functions into testable work |
+| Validation and operation | [Validate/save](validation-and-operation.md), [Operator manual](operator-guide.md) | Validate, persist, operate, and recover |
+| Maintenance and handover | [Backup/migration](maintenance.md), [Troubleshooting](troubleshooting.md), [Reference](reference.md) | Maintain and deliver the installation |
+
+### By role
+
+- **First configuration:** preparation → quick start → targets → rules → validation.
+- **Process owner:** requirements → parameter meanings → labs → acceptance.
+- **Operator:** operator station manual, demonstrations, and recovery.
+- **Installer/administrator:** controls → sources → migration → maintenance.
+- **Finding a button:** use the [Tool and button reference](control-reference.md) for the current window.
+
+## 7. Reading conventions
+
+| Term | Meaning |
+|---|---|
+| This step | Selected operation, not automatically its entire stage or plan |
+| Current target | Selected logical object, possibly with several views |
+| X → Y | Open X, then select Y |
+| Expected result | Behavior to verify, not acceptance measured for your station |
+| Disabled/unavailable | Prerequisite, capability, read-only, or busy restriction |
+| Draft | Edited work that still needs the completion/confirmation/save sequence |
+| Illustrated names/values | Teaching examples, not process standards |
+
+Read critical actions as prerequisites → location → procedure → expected behavior → recovery. Input bounds describe the current interface; device capability and rule validation also apply.
+
+## 8. Using the figures
+
+Identify whether a figure shows configuration, references, an operation setup, or a persistence control. Use location tables to find the top, left, right, or footer control, and click figures to inspect original resolution.
+
+Use your own station names and verify the real page afterward. Screenshot states are not your current state. Chinese and English chapters use their corresponding interface captures. Download the [sample footage](quickstart.md#use-the-accompanying-sample-recording); see [credits](reference.md#7-sample-and-screenshot-credits).
+
 **Next: [Build the first two-step example →](quickstart.md)**
+
+*Example footage and reference views in the screenshots: [wooden-box assembly dataset and CC BY 4.0 credits](reference.md#7-sample-and-screenshot-credits).*

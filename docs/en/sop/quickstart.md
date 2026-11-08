@@ -22,6 +22,13 @@ This chapter builds one understandable two-step workflow. First check a rubber m
 
 **Checkpoint:** You can point out the mallet, the part of the video where it is clearly visible, and the point where the operator should confirm.
 
+
+### Use the accompanying sample recording
+
+[Download the 60-second workbench sample (MP4, approximately 9.5 MB)](../../assets/sop/workbench-60s.mp4). If it opens in the browser, save it through the video menu, then upload it as described in this chapter. Upload the video, rather than a screenshot.
+
+The sample uses the same workbench as the illustrations, making it easier to find the mallet and compare times. It is a fixed 800 × 320 crop from the original recording's first 60 seconds. For your own station, use your own fixed-camera footage rather than copying the example's coordinates. See [Sample and screenshot credits](reference.md#7-sample-and-screenshot-credits) for authors, source, license, and adaptations.
+
 ## 2. Sign in and create an SOP task
 
 1. Open the device management address in your browser and sign in.
@@ -199,3 +206,5 @@ A stage result applies to that stage and segment; it does not automatically vali
 - [ ] Saved settings and video remain correct after reopening.
 
 **Next: [Video, targets, and recognition →](video-and-recognition.md)**
+
+*Example footage and reference views in the screenshots: [wooden-box assembly dataset and CC BY 4.0 credits](reference.md#7-sample-and-screenshot-credits).*

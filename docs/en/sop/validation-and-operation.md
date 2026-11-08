@@ -96,3 +96,5 @@ Before cleanup, identify task, version, and retention needs, and back up accordi
 Configuration completeness is not production acceptance. Acceptance requires trustworthy observations and appropriate validation.
 
 **Next: [Troubleshooting →](troubleshooting.md)**
+
+*Example footage and reference views in the screenshots: [wooden-box assembly dataset and CC BY 4.0 credits](reference.md#7-sample-and-screenshot-credits).*

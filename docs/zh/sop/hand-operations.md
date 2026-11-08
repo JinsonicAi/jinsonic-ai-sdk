@@ -226,3 +226,5 @@
 - [ ] 保存后重新打开，手部来源、方向和规则仍正确。
 
 **相关：[工具栏与拖拽](toolbar-and-drag.md) · [规则与区域](rules-and-regions.md) · [验证与运行](validation-and-operation.md)**
+
+*配图中的示例录像及参考画面来源：[木箱装配数据集与 CC BY 4.0 署名说明](reference.md#7-示例素材与截图来源)。*

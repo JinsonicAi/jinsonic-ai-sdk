@@ -1,0 +1,23 @@
+{
+  "title": "A video dataset for wooden box assembly",
+  "authors": [
+    "Jiayun Zhang",
+    "Petr Byvshev",
+    "Yu Xiao"
+  ],
+  "year": 2020,
+  "version": "v2",
+  "source": "https://zenodo.org/records/4047982",
+  "doi": "10.5281/zenodo.4047982",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "source_file": "03_noglove_cam2_720.mp4",
+  "source_md5": "0f594fe9cebc2e45f454aa9bc65b7aff",
+  "source_sha256": "be379c5d7b73bfc9636de72d8cff7bcbb21506fe9637c15717934fab9a2596c4",
+  "distributed_file": "workbench-60s.mp4",
+  "distributed_sha256": "f2defe28a40720f6be508730932ab254eea7a7b65608c9c8cc34c20d3dab6672",
+  "distributed_bytes": 9476844,
+  "adaptations": "First 60 seconds; fixed crop x=288,y=400,width=800,height=320; 15 fps H.264; audio omitted.",
+  "screenshot_context": "Authentic device Web screenshots include video excerpts, references, regions, and interface overlays. Screenshot bytes are unaltered.",
+  "purpose": "User guide example; no endorsement by the dataset authors or recognition/production acceptance claim."
+}

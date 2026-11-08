@@ -126,3 +126,5 @@ Use **Reorder** in the step list to organize the actual dependencies. Steps in a
 Keep dependent steps in sequential stages. After changes, review names, grouping, ranges, and validation results.
 
 **Next: [Toolbar, drag operations, and undo →](toolbar-and-drag.md)**
+
+*Example footage and reference views in the screenshots: [wooden-box assembly dataset and CC BY 4.0 credits](reference.md#7-sample-and-screenshot-credits).*

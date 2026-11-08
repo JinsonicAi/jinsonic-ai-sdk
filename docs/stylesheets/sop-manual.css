@@ -1,0 +1,39 @@
+/* SOP manual only: numbered reading aids over unmodified UI captures. */
+.md-typeset .sop-ui-map {
+  position: relative;
+  margin: 1rem 0 .35rem;
+  line-height: 0;
+  border: 1px solid var(--aibox-doc-border, #cbd5e1);
+  border-radius: .4rem;
+  overflow: visible;
+}
+.md-typeset .sop-ui-map p { margin: 0; }
+.md-typeset .sop-ui-map a { display: block; }
+.md-typeset .sop-ui-map img { display: block; width: 100%; margin: 0; border-radius: .4rem; }
+.md-typeset .sop-ui-map .sop-ui-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #064f9e;
+  color: #fff;
+  font: 700 .72rem/1 system-ui, sans-serif;
+  box-shadow: 0 0 0 1px #064f9e, 0 1px 4px #0005;
+  pointer-events: none;
+}
+.md-typeset .sop-map-caption { margin: .4rem 0 .7rem; font-size: .72rem; color: var(--aibox-doc-muted, #64748b); line-height: 1.6; }
+@media (max-width: 600px) {
+  .md-typeset .sop-ui-map .sop-ui-pin { width: 1rem; height: 1rem; font-size: .6rem; border-width: 1px; }
+}
+@media print {
+  .md-typeset .sop-ui-map { break-inside: avoid; }
+  .md-typeset .sop-ui-map .sop-ui-pin { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
+
+/* Dialog details remain links to the original complete screenshot. */
+.md-typeset .sop-ui-map--detail a { position: absolute; inset: 0; overflow: hidden; border-radius: .4rem; }
+.md-typeset .sop-ui-map--portrait { max-width: 24rem; margin-inline: auto; }

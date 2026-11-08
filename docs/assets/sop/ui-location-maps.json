@@ -1,0 +1,1024 @@
+{
+  "source": "Unmodified device screenshots; page-layer crop and numerical annotations, original full image linked",
+  "maps": [
+    {
+      "id": "C1",
+      "suffix": "02-create-task",
+      "zh": "新建 SOP 任务：先选类型，再命名并创建",
+      "en": "Create an SOP task: choose a type, name it, then create",
+      "pins": {
+        "zh": [
+          [
+            63,
+            37
+          ],
+          [
+            37,
+            45
+          ],
+          [
+            37,
+            61
+          ],
+          [
+            63,
+            74
+          ]
+        ],
+        "en": [
+          [
+            63,
+            34
+          ],
+          [
+            37,
+            43
+          ],
+          [
+            37,
+            62
+          ],
+          [
+            63,
+            77
+          ]
+        ]
+      },
+      "labels": {
+        "zh": [
+          "SOP 工序：任务类型区右侧",
+          "物件/手部：类型下方两张选择卡片",
+          "任务名称：窗口下半部输入框",
+          "创建并编辑/取消：窗口右下角"
+        ],
+        "en": [
+          "SOP workflow: right side of task type",
+          "Object/hand choices: two cards below the type",
+          "Task name: field in the lower half",
+          "Create and Edit / Cancel: dialog footer"
+        ]
+      },
+      "crop": {
+        "zh": [
+          33,
+          21,
+          34,
+          59
+        ],
+        "en": [
+          33,
+          18,
+          34,
+          64
+        ]
+      }
+    },
+    {
+      "id": "C2",
+      "suffix": "04-editor-overview",
+      "zh": "编辑器总览：方案、导航、目标、参考与完成入口",
+      "en": "Editor overview: plan, navigation, targets, references, and completion",
+      "pins": {
+        "zh": [
+          [
+            90,
+            12
+          ],
+          [
+            15,
+            21
+          ],
+          [
+            18,
+            21
+          ],
+          [
+            72,
+            43
+          ],
+          [
+            73,
+            49
+          ],
+          [
+            90,
+            96
+          ]
+        ],
+        "en": [
+          [
+            90,
+            12
+          ],
+          [
+            15,
+            21
+          ],
+          [
+            18,
+            21
+          ],
+          [
+            72,
+            43
+          ],
+          [
+            73,
+            49
+          ],
+          [
+            90,
+            96
+          ]
+        ]
+      },
+      "labels": {
+        "zh": [
+          "方案栏：摄像头、导出和导入；窗口控制在其上方右侧",
+          "步骤栏：顶部的排序与收起/展开，下面为步骤列表",
+          "主区左上：视频/目标模式切换",
+          "画布右上：缩放、适应窗口、平移",
+          "主图右侧：参考列表与补充角度",
+          "编辑器右下：完成；它先返回任务草稿"
+        ],
+        "en": [
+          "Plan bar: camera and import/export; window controls are above at right",
+          "Step list: reorder/collapse at top, step cards below",
+          "Workspace upper left: Video / Targets",
+          "Canvas upper right: zoom, fit, and pan",
+          "Right of picture: reference list and Add view",
+          "Editor footer right: Done returns to the task draft"
+        ]
+      }
+    },
+    {
+      "id": "C3",
+      "suffix": "05-camera",
+      "zh": "摄像头入口：认证、搜索、已有地址",
+      "en": "Camera controls: credentials, discovery, and an existing address",
+      "pins": {
+        "zh": [
+          [
+            28,
+            34
+          ],
+          [
+            56,
+            34
+          ],
+          [
+            28,
+            38
+          ],
+          [
+            77,
+            19
+          ]
+        ],
+        "en": [
+          [
+            25,
+            34
+          ],
+          [
+            54,
+            34
+          ],
+          [
+            25,
+            38
+          ],
+          [
+            73,
+            19
+          ]
+        ]
+      },
+      "labels": {
+        "zh": [
+          "摄像头账号与密码：浮层中部，两者均未填写",
+          "搜索摄像头：密码框右侧",
+          "已有视频地址/未搜索到设备：表单下方折叠入口",
+          "收起：浮层右上，返回主编辑区"
+        ],
+        "en": [
+          "Camera credentials: middle of popover; both fields are empty",
+          "Find cameras: right of password",
+          "Existing address / camera not found: disclosure below fields",
+          "Collapse: popover upper right"
+        ]
+      },
+      "crop": {
+        "zh": [
+          26,
+          15,
+          56,
+          28
+        ],
+        "en": [
+          24,
+          15,
+          56,
+          28
+        ]
+      }
+    },
+    {
+      "id": "C4",
+      "suffix": "06-teaching-video",
+      "zh": "教学视频：素材工具、播放器和总选段",
+      "en": "Teaching video: media tools, player, and the overall range",
+      "pins": {
+        "zh": [
+          [
+            72,
+            21
+          ],
+          [
+            18,
+            60
+          ],
+          [
+            18,
+            63
+          ],
+          [
+            18,
+            70
+          ],
+          [
+            89,
+            88
+          ]
+        ],
+        "en": [
+          [
+            65,
+            21
+          ],
+          [
+            18,
+            60
+          ],
+          [
+            18,
+            63
+          ],
+          [
+            18,
+            70
+          ],
+          [
+            88,
+            88
+          ]
+        ]
+      },
+      "labels": {
+        "zh": [
+          "主区上方右侧：上传、录制、画区域、添加目标",
+          "播放器左下：播放/暂停；右下为音量和全屏",
+          "播放器底部：视频播放进度条",
+          "播放器下方：总范围，供目标抽帧和方案验证",
+          "总范围下方右侧：补充验证录像、验证本方案"
+        ],
+        "en": [
+          "Workspace upper right: Upload, Record, Draw region, Add target",
+          "Player lower left: play/pause; volume and fullscreen are at right",
+          "Player bottom: playback seek bar",
+          "Below player: overall target-scan / plan-validation range",
+          "Below range at right: Add validation video and Validate plan"
+        ]
+      }
+    },
+    {
+      "id": "C5",
+      "suffix": "07-record-warning",
+      "zh": "重新录制：先阅读替换范围，再选择取消或开始",
+      "en": "Re-recording: read the replacement scope before cancelling or starting",
+      "pins": {
+        "zh": [
+          [
+            33,
+            48
+          ],
+          [
+            53,
+            57
+          ],
+          [
+            65,
+            57
+          ]
+        ],
+        "en": [
+          [
+            33,
+            48
+          ],
+          [
+            48,
+            58
+          ],
+          [
+            65,
+            58
+          ]
+        ]
+      },
+      "labels": {
+        "zh": [
+          "窗口正文：替换对象、起止时间重置及保留内容",
+          "取消：保留当前编辑并返回",
+          "开始录制：明确需要替换素材时才执行"
+        ],
+        "en": [
+          "Dialog body: replacement scope, reset ranges, and retained data",
+          "Cancel: keep current editing and return",
+          "Start recording: use only when replacement is intended"
+        ]
+      },
+      "crop": {
+        "zh": [
+          31,
+          37,
+          38,
+          27
+        ],
+        "en": [
+          31,
+          36,
+          38,
+          28
+        ]
+      }
+    },
+    {
+      "id": "C6",
+      "suffix": "10-target-reference",
+      "zh": "画布：查看工具和目标框",
+      "en": "Canvas: view controls and target box",
+      "pins": {
+        "zh": [
+          [
+            48,
+            43
+          ],
+          [
+            41,
+            65
+          ],
+          [
+            18,
+            43
+          ]
+        ],
+        "en": [
+          [
+            45,
+            43
+          ],
+          [
+            41,
+            65
+          ],
+          [
+            18,
+            43
+          ]
+        ]
+      },
+      "labels": {
+        "zh": [
+          "画布顶部右侧：减号、比例、加号、适应窗口、移动画面",
+          "画面内目标框：单击选择、双击编辑、右键更多",
+          "画布顶部左侧：当前交互提示"
+        ],
+        "en": [
+          "Canvas top right: minus, scale, plus, fit, pan",
+          "Target box: select, double-click to edit, right-click for more",
+          "Canvas top left: interaction hint"
+        ]
+      }
+    },
+    {
+      "id": "C7",
+      "suffix": "10-target-reference",
+      "zh": "目标资料：参考列表、补充角度和完善识别",
+      "en": "Target references: view list, additional views, and recognition review",
+      "pins": {
+        "zh": [
+          [
+            19,
+            27
+          ],
+          [
+            72,
+            46
+          ],
+          [
+            88,
+            49
+          ],
+          [
+            73,
+            55
+          ],
+          [
+            87,
+            37
+          ]
+        ],
+        "en": [
+          [
+            21,
+            27
+          ],
+          [
+            72,
+            46
+          ],
+          [
+            88,
+            49
+          ],
+          [
+            73,
+            55
+          ],
+          [
+            85,
+            37
+          ]
+        ]
+      },
+      "labels": {
+        "zh": [
+          "当前目标卡片：检查名称、参考数和待采用数",
+          "右侧标题：当前目标与图片/待采用数量",
+          "补充角度：参考图片标题右侧",
+          "角度卡片：选中后在主图核对该参考",
+          "帮我完善识别：目标标题条右端"
+        ],
+        "en": [
+          "Current target card: name, reference count, and pending count",
+          "Reference panel header: selected target and image/pending counts",
+          "Add view: right of the Reference image title",
+          "View card: select and compare with the main picture",
+          "Improve recognition: right end of the target heading"
+        ]
+      }
+    },
+    {
+      "id": "C8",
+      "suffix": "08-plan-range",
+      "zh": "时间轴：精确时间、预览、起点、终点与播放头",
+      "en": "Timeline: exact times, preview, endpoints, and playhead",
+      "pins": {
+        "zh": [
+          [
+            30,
+            55
+          ],
+          [
+            48,
+            55
+          ],
+          [
+            76,
+            55
+          ],
+          [
+            19,
+            61
+          ],
+          [
+            94,
+            61
+          ],
+          [
+            33,
+            58
+          ]
+        ],
+        "en": [
+          [
+            36,
+            70
+          ],
+          [
+            54,
+            70
+          ],
+          [
+            41,
+            73
+          ],
+          [
+            19,
+            79
+          ],
+          [
+            94,
+            79
+          ],
+          [
+            33,
+            76
+          ]
+        ]
+      },
+      "labels": {
+        "zh": [
+          "起点/终点文字：此图正在编辑起点，单位与格式见正文",
+          "时间编辑后面的预览、保存、取消、定位",
+          "选起点/选终点：把有效预览位置设为相应端点",
+          "绿色起点手柄：决定片段开始",
+          "橙色终点手柄：决定片段结束",
+          "白色播放头：当前回看时间，不是范围边界"
+        ],
+        "en": [
+          "Start/end text: the start is being edited in this figure",
+          "Preview range, Save, Cancel, and Go to time after the fields",
+          "Set start / Set end: use the valid preview position",
+          "Green start handle: range beginning",
+          "Orange end handle: range end",
+          "White playhead: viewing position, not a range boundary"
+        ]
+      }
+    },
+    {
+      "id": "C9",
+      "suffix": "19-hand-actions",
+      "zh": "手部动作配置：选择端点、动作、区域并添加",
+      "en": "Hand-action setup: choose endpoints, action, areas, and add",
+      "pins": {
+        "zh": [
+          [
+            20,
+            30
+          ],
+          [
+            20,
+            34
+          ],
+          [
+            62,
+            50
+          ],
+          [
+            21,
+            62
+          ],
+          [
+            21,
+            67
+          ],
+          [
+            84,
+            79
+          ]
+        ],
+        "en": [
+          [
+            20,
+            29
+          ],
+          [
+            20,
+            38
+          ],
+          [
+            62,
+            55
+          ],
+          [
+            21,
+            66
+          ],
+          [
+            21,
+            72
+          ],
+          [
+            83,
+            83
+          ]
+        ]
+      },
+      "labels": {
+        "zh": [
+          "工具栏物件行：选择对应物件",
+          "工具栏手部行：选择任意一手、左手或右手",
+          "右侧动作选择：伴随移送或靠近后离开",
+          "动作图下方：起始区与到达区槽位",
+          "更下方：操作范围；应覆盖整个过程",
+          "面板右下：添加到本阶段，条件不完整时不可用"
+        ],
+        "en": [
+          "Toolbar object row: choose the relevant object",
+          "Toolbar hand row: choose either, left, or right hand",
+          "Action selector at right: move together or approach/withdraw",
+          "Below the action diagram: start and end region slots",
+          "Below the slots: operation area covering the process",
+          "Panel lower right: Add to this stage; disabled until valid"
+        ]
+      },
+      "crop": {
+        "zh": [
+          19,
+          15,
+          77,
+          69
+        ],
+        "en": [
+          19,
+          15,
+          77,
+          73
+        ]
+      }
+    },
+    {
+      "id": "C10",
+      "suffix": "16-detection-settings",
+      "zh": "检测设置：物件、手部、可选高级来源",
+      "en": "Detection settings: objects, hands, and optional advanced sources",
+      "pins": {
+        "zh": [
+          [
+            24,
+            39
+          ],
+          [
+            24,
+            51
+          ],
+          [
+            24,
+            57
+          ],
+          [
+            24,
+            64
+          ],
+          [
+            76,
+            70
+          ]
+        ],
+        "en": [
+          [
+            24,
+            39
+          ],
+          [
+            24,
+            51
+          ],
+          [
+            24,
+            57
+          ],
+          [
+            24,
+            64
+          ],
+          [
+            76,
+            70
+          ]
+        ]
+      },
+      "labels": {
+        "zh": [
+          "上方卡片：物件能力与使用工序数",
+          "中部卡片：手部识别状态及用途",
+          "添加手部识别：未添加时显示",
+          "高级设置：按需要更换共用识别来源",
+          "返回工序：关闭设置返回编排；不是保存任务"
+        ],
+        "en": [
+          "Upper card: object capability and affected-step count",
+          "Middle card: hand-recognition state and purpose",
+          "Add hand recognition: shown when not yet added",
+          "Advanced settings: manage shared recognition sources when needed",
+          "Back to steps: return to editing; does not save the task"
+        ]
+      },
+      "crop": {
+        "zh": [
+          22,
+          26,
+          56,
+          48
+        ],
+        "en": [
+          22,
+          26,
+          56,
+          48
+        ]
+      }
+    },
+    {
+      "id": "C11",
+      "suffix": "11-object-condition",
+      "zh": "检查关系：组合、物件、添加入口与具体要求",
+      "en": "Check configuration: combination, object, add slot, and details",
+      "pins": {
+        "zh": [
+          [
+            22,
+            70
+          ],
+          [
+            38,
+            78
+          ],
+          [
+            22,
+            87
+          ],
+          [
+            60,
+            83
+          ]
+        ],
+        "en": [
+          [
+            22,
+            47
+          ],
+          [
+            38,
+            55
+          ],
+          [
+            22,
+            64
+          ],
+          [
+            60,
+            59
+          ],
+          [
+            60,
+            67
+          ],
+          [
+            60,
+            78
+          ]
+        ]
+      },
+      "labels": {
+        "zh": [
+          "左侧组合选择：全部同时满足等",
+          "左侧图示物件：点击选择要设置的条件",
+          "图示下方虚线入口：添加检查物件",
+          "右侧检查什么：本图下方还可继续滚动设置区域和更多参数"
+        ],
+        "en": [
+          "Combination selector at left: All at the same time, etc.",
+          "Diagram object at left: select the condition",
+          "Dashed slot under the diagram: add a check object",
+          "What to check at right: condition type",
+          "Where to check: region; Replace object below changes the target",
+          "More settings: score and other less frequent parameters"
+        ]
+      },
+      "crop": {
+        "zh": [
+          20,
+          49,
+          75,
+          43
+        ],
+        "en": [
+          20,
+          43,
+          75,
+          43
+        ]
+      }
+    },
+    {
+      "id": "C12",
+      "suffix": "12-auto-completion",
+      "zh": "完成方式：自动/辅助/人工、持续时长和高级时间",
+      "en": "Completion: automatic/assisted/manual, hold duration, and advanced timing",
+      "pins": {
+        "zh": [
+          [
+            22,
+            60
+          ],
+          [
+            23,
+            78
+          ],
+          [
+            23,
+            83
+          ],
+          [
+            22,
+            91
+          ]
+        ],
+        "en": [
+          [
+            22,
+            54
+          ],
+          [
+            23,
+            72
+          ],
+          [
+            23,
+            76
+          ],
+          [
+            22,
+            85
+          ],
+          [
+            82,
+            91
+          ]
+        ]
+      },
+      "labels": {
+        "zh": [
+          "完成方式下拉框：决定由系统还是人确认",
+          "持续确认滑杆：调整满足要求的持续时长",
+          "秒数输入框：直接填写持续时间",
+          "高级设置：继续向下查看输入短暂中断与完成时限"
+        ],
+        "en": [
+          "Completion-method selector: system or operator confirmation",
+          "Confirmation hold slider: required stable duration",
+          "Seconds field: enter the duration directly",
+          "Advanced: brief input interruptions",
+          "Time limit near the bottom: step deadline; 0 disables timeout"
+        ]
+      },
+      "crop": {
+        "zh": [
+          20,
+          35,
+          75,
+          57
+        ],
+        "en": [
+          20,
+          43,
+          75,
+          49
+        ]
+      }
+    },
+    {
+      "id": "C13",
+      "suffix": "25-target-picker",
+      "zh": "目标选择：搜索、卡片、分页、选择计数与提交",
+      "en": "Target picker: search, cards, pages, selection count, and submit",
+      "pins": {
+        "zh": [
+          [
+            23,
+            28
+          ],
+          [
+            23,
+            36
+          ],
+          [
+            66,
+            72
+          ],
+          [
+            23,
+            79
+          ],
+          [
+            76,
+            79
+          ]
+        ],
+        "en": [
+          [
+            23,
+            28
+          ],
+          [
+            23,
+            36
+          ],
+          [
+            66,
+            72
+          ],
+          [
+            23,
+            79
+          ],
+          [
+            76,
+            79
+          ]
+        ]
+      },
+      "labels": {
+        "zh": [
+          "上方搜索框：按名称或来源筛选",
+          "中部卡片：勾选目标；灰色卡片可能已加入本步",
+          "列表右下：页数与上一页/下一页",
+          "窗口左下：已选数量和可新增数量",
+          "窗口右下：取消或添加所选项"
+        ],
+        "en": [
+          "Search at top: filter by name or source",
+          "Cards in the middle: select; a disabled card may already be in the step",
+          "List lower right: pages and previous/next",
+          "Dialog lower left: selected count and remaining allowance",
+          "Dialog lower right: Cancel / Add selected"
+        ]
+      },
+      "crop": {
+        "zh": [
+          20,
+          16,
+          60,
+          68
+        ],
+        "en": [
+          20,
+          16,
+          60,
+          68
+        ]
+      }
+    },
+    {
+      "id": "C14",
+      "suffix": "17-ordering",
+      "zh": "工序排序：调整模式、上下移动、无序分组与阶段操作",
+      "en": "Reordering: mode, movement, unordered groups, and stage controls",
+      "pins": {
+        "zh": [
+          [
+            8,
+            21
+          ],
+          [
+            3,
+            43
+          ],
+          [
+            3,
+            47
+          ],
+          [
+            80,
+            28
+          ]
+        ],
+        "en": [
+          [
+            8,
+            21
+          ],
+          [
+            3,
+            48
+          ],
+          [
+            3,
+            53
+          ],
+          [
+            80,
+            24
+          ]
+        ]
+      },
+      "labels": {
+        "zh": [
+          "左栏顶部：完成调整，退出排序模式",
+          "每张步骤卡片下：上移/下移",
+          "第一步下方：与下一步组成一组，适合可任意先后的工作",
+          "阶段工具栏右上：删除本步、拖动柄及移动按钮"
+        ],
+        "en": [
+          "Step list top: Finish reordering exits ordering mode",
+          "Below each step card: move up/down",
+          "Below the first step: Group with next step for independent work",
+          "Stage toolbar upper right: delete, drag handle, movement controls"
+        ]
+      }
+    }
+  ]
+}

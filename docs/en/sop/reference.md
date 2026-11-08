@@ -103,3 +103,11 @@ The Chinese and English guides use their corresponding interface language. Updat
 [Quick start](quickstart.md) → [Video and recognition](video-and-recognition.md) → [Regions and checks](rules-and-regions.md) → [Hand operations](hand-operations.md) → [Toolbar and dragging](toolbar-and-drag.md) → [Validation and operation](validation-and-operation.md).
 
 Use [Troubleshooting](troubleshooting.md) without rebuilding the task from scratch.
+
+## 7. Sample and screenshot credits
+
+The original workbench footage is from **Jiayun Zhang, Petr Byvshev, and Yu Xiao (2020), _A video dataset for wooden box assembly_, v2, Zenodo**, DOI: [10.5281/zenodo.4047982](https://zenodo.org/records/4047982), distributed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
+
+The accompanying sample derives from **03_noglove_cam2_720.mp4**: the first 60 seconds, a fixed 800 × 320 work-area crop, converted to 15 fps H.264, with audio omitted. Documentation screenshots were captured through actual AIBox Web interactions and include footage excerpts, references, and interface overlays. Screenshot files have no rewritten interface text or detection results. Example names, regions, and rules were configured for the explanation. The dataset authors do not endorse this product or its example configuration.
+
+The [original release](https://zenodo.org/records/4047982) provides the full recordings; the excerpt is available in the [quick start](quickstart.md#use-the-accompanying-sample-recording). The footage and screenshots illustrate operation and do not certify recognition accuracy or production quality.

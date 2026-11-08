@@ -213,3 +213,5 @@ An observed false condition differs from having no fresh trusted observation. In
 - [ ] Sources, direction, and rules remain correct after saving and reopening.
 
 **Related: [Toolbar and drag-and-drop](toolbar-and-drag.md) · [Rules and regions](rules-and-regions.md) · [Validation and operation](validation-and-operation.md)**
+
+*Example footage and reference views in the screenshots: [wooden-box assembly dataset and CC BY 4.0 credits](reference.md#7-sample-and-screenshot-credits).*

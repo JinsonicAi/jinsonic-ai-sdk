@@ -39,9 +39,9 @@ Drag the toolbar object onto **Drop an object here or click to add** at the bott
 
 For the click-based path:
 
-1. Click the same addition entry.
-2. Select the required object in the picker.
-3. Confirm the selection.
+1. Click the same addition entry. If the checks are in collapsed preview mode, the first click opens the editor.
+2. In the expanded editor, click **Add related object** or its addition position to open the target picker.
+3. Select the required object and confirm.
 4. Check the new requirement and combination mode.
 
 Adding another required tool is different from replacing a target. Adding a reference view belongs in target references. Requiring two physical objects belongs in quantity settings, rather than duplicated identical conditions.
@@ -118,3 +118,5 @@ Check for an actual new condition, current stage, read-only state, capability, d
 If that works, retain the configuration and report the source object, receiving position, and visible hint to the administrator. Do not repeatedly drag, re-record the video, or clear the task to resolve a drag issue.
 
 **Next: [Validation, saving, and station operation →](validation-and-operation.md)**
+
+*Example footage and reference views in the screenshots: [wooden-box assembly dataset and CC BY 4.0 credits](reference.md#7-sample-and-screenshot-credits).*

@@ -28,18 +28,20 @@
     {
       "file": "en-06-teaching-video.jpg",
       "language": "en",
-      "caption": "Loaded workbench recording and seekable timeline in English.",
+      "caption": "English teaching video and all eight thumbnails fully loaded, without a loading spinner.",
       "capture": "live device interface",
       "original_bytes": true,
-      "sha256": "2aa9ed8131f12c7187e69b7e14e11d34ddb58e62433c3151f5cdf0e9fbcd7dbe"
+      "sha256": "92986b0d5145c779d61b5cfe1466741f0944d96accda1675c1261ae6252cb980",
+      "recaptured": "2026-11-08"
     },
     {
       "file": "en-07-record-warning.jpg",
       "language": "en",
-      "caption": "English replacement confirmation; recording has not been started.",
+      "caption": "Actual English re-record replacement confirmation; Start recording was not pressed; cancelled afterward.",
       "capture": "live device interface",
       "original_bytes": true,
-      "sha256": "2ccd93b04367df4fc3e0b4d8c8b6b8bb24736414f06244ce5233b94bb90e5475"
+      "sha256": "3fd2fa039164c0a6e1cfc9db34d2ed235f1d4a0db68368c2f431469d7e3e1fc3",
+      "recaptured": "2026-11-08"
     },
     {
       "file": "en-08-plan-range.jpg",
@@ -361,5 +363,28 @@
       "original_bytes": true,
       "sha256": "4e4d819c0bb896fc30f31947f49e880536ee4632f1b588c725c20ef33d53f429"
     }
-  ]
+  ],
+  "example_footage": {
+    "title": "A video dataset for wooden box assembly",
+    "authors": [
+      "Jiayun Zhang",
+      "Petr Byvshev",
+      "Yu Xiao"
+    ],
+    "year": 2020,
+    "version": "v2",
+    "source": "https://zenodo.org/records/4047982",
+    "doi": "10.5281/zenodo.4047982",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "source_file": "03_noglove_cam2_720.mp4",
+    "source_md5": "0f594fe9cebc2e45f454aa9bc65b7aff",
+    "source_sha256": "be379c5d7b73bfc9636de72d8cff7bcbb21506fe9637c15717934fab9a2596c4",
+    "distributed_file": "workbench-60s.mp4",
+    "distributed_sha256": "f2defe28a40720f6be508730932ab254eea7a7b65608c9c8cc34c20d3dab6672",
+    "distributed_bytes": 9476844,
+    "adaptations": "First 60 seconds; fixed crop x=288,y=400,width=800,height=320; 15 fps H.264; audio omitted.",
+    "screenshot_context": "Authentic device Web screenshots include video excerpts, references, regions, and interface overlays. Screenshot bytes are unaltered.",
+    "purpose": "User guide example; no endorsement by the dataset authors or recognition/production acceptance claim."
+  }
 }

@@ -103,3 +103,11 @@
 [入门闭环](quickstart.md) → [视频与识别](video-and-recognition.md) → [区域与规则](rules-and-regions.md) → [手部动作](hand-operations.md) → [工具栏与拖拽](toolbar-and-drag.md) → [验证与运行](validation-and-operation.md)。
 
 遇到问题时使用[故障排查](troubleshooting.md)，不必重新从头配置。
+
+## 7. 示例素材与截图来源
+
+工作台示例中的原始录像来自 **Jiayun Zhang、Petr Byvshev、Yu Xiao（2020），《A video dataset for wooden box assembly》，v2，Zenodo**，DOI：[10.5281/zenodo.4047982](https://zenodo.org/records/4047982)，按 [Creative Commons Attribution 4.0 International（CC BY 4.0）](https://creativecommons.org/licenses/by/4.0/) 提供。
+
+本手册配套文件取自原文件 **03_noglove_cam2_720.mp4**：使用前 60 秒，裁剪工作区为 800 × 320，转换为 15 帧/秒 H.264，并省略声音。文档截图是在 AIBox Web 页面中实际操作和截取，画面含该素材片段、参考图和界面叠加。截图文件未改写文字或检测结果；示例命名、区域及规则是为讲解配置的内容。原数据集作者不为本产品或示例配置背书。
+
+可在[原始发布页](https://zenodo.org/records/4047982)取得完整录像；配套片段可从[入门示例](quickstart.md#使用配套示例录像)下载。录像与截图用于说明操作，不构成对识别准确率或生产质量的认证。

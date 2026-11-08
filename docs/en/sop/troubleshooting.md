@@ -81,3 +81,5 @@ On narrow screens, collapse the step list and maximize the editor. After text ed
 Provide device/software/browser versions, task and plan names, plan version, exact entry and action, recording duration and selected range, problem timestamp, expected versus actual result, screenshots, minimal reproduction, save/run state, and recent camera or source changes.
 
 Do not include passwords or full camera credentials in screenshots or reports.
+
+*Example footage and reference views in the screenshots: [wooden-box assembly dataset and CC BY 4.0 credits](reference.md#7-sample-and-screenshot-credits).*
