@@ -774,6 +774,20 @@
       "height": 1440,
       "bytes": 218800,
       "sha256": "8d865ebcce64d36deb7c48f307ef647e5b35becb642ca278f82b40faa7bc5737"
+    },
+    {
+      "file": "en-30-drag-highlight.png",
+      "language": "en",
+      "caption": "Actual English SOP editor while dragging an object: compatible receiving positions have purple dashed outlines; drag cancelled without applying a change. Custom object, region and plan names are preserved user data.",
+      "capture": "live device interface; original CDP Page.captureScreenshot PNG at 3840x2160, scale 1",
+      "original_bytes": true,
+      "sha256": "ae0711b3680ad54194c89c85f76a75a32dcbfeeaf70ebab07a067c8621d60afb",
+      "width": 3840,
+      "height": 2160,
+      "bytes": 1405967,
+      "format": "PNG",
+      "captured": "2026-11-09",
+      "resampled": false
     }
   ],
   "example_footage": {
@@ -803,5 +817,6 @@
     "lossless": true,
     "resampled": false,
     "notes": "All UI screenshots were captured again as native PNG bytes. Video imagery retains the original 800×320 sample detail; no super-resolution or fabricated UI was used."
-  }
+  },
+  "updated": "2026-11-09"
 }

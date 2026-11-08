@@ -2086,6 +2086,10 @@ If hands are unavailable, add the capability in **Detection settings**, then ver
 6. Inspect the diagram, condition count, target names, and region labels.
 7. If incorrect, undo and use the click-based control.
 
+[![English editor showing compatible receiving positions during an object drag](../../assets/sop/en-30-drag-highlight.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-30-drag-highlight.png)
+
+*During a drag, purple dashed outlines mark compatible receiving positions in **Checks in this step**. A highlighted position does not mean a change has been applied: check the final condition after releasing. Click the figure and choose **Original 100%** to inspect the native 3840 × 2160 capture. Object and region names remain the user's own data.*
+
 [![Target selection through the click-based alternative](../../assets/sop/en-25-target-picker.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-25-target-picker.png)
 
 *Click-based addition provides an alternative when a drag does not create the expected requirement.*
