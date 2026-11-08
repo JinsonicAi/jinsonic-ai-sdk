@@ -2828,7 +2828,7 @@ After **Confirm completion**, wait for a successful read-back. Do not repeatedly
 [![Figure 13-C: actual terminal state after confirmation and Finish workpiece; both steps verified](../../assets/sop/en-37-station-completed.png){loading="lazy" decoding="async" width="2560" height="1440"}](../../assets/sop/en-37-station-completed.png)
 
 !!! note "Read the video and runtime result separately"
-    During this capture, the synchronized runtime panel on the right had reached the completed state, while the video OSD on the left still displayed an earlier recovery message. An old overlay does not replace the current workpiece state. Resolve discrepancies using workpiece details and device records. The screenshot retains this observed difference; it was not retouched into a passing image. On-site acceptance must still check consistency among video, overlays and workflow state.
+    During this capture, the runtime panel on the right had synchronized to completion, while the preview on the left still showed an earlier recovery frame. Device records confirm that the time visible in the video precedes the workpiece completion record. This screenshot alone therefore does not establish that the overlay failed to update. If the preview stalls or falls behind, refresh the video, wait for visible updates, and then check workpiece details and device records. The screenshot preserves this capture discrepancy. On-site acceptance must still check consistency among video, overlays and workflow state.
 
 #### 13.19.5 Stop the task after a test
 
