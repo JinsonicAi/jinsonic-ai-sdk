@@ -1,7 +1,7 @@
 # AI-BOX Edge Box Management Platform — User Manual (English)
 
 !!! tip "SOP workflows"
-    For reusable steps, objects and hands, regions, toolbar dragging, stage validation, and station operation, read the [SOP System User Guide](../sop/index.md#overview).
+    For reusable steps, objects and hands, regions, toolbar dragging, stage validation, and station operation, read the [SOP User Manual](../sop/index.md).
 
 !!! tip "Illustrated AI assistant guide"
     For conversational task creation and management, alarm, log and recording queries, see the [AI Assistant User Guide](../ai-assistant/index.md), including step-by-step screenshots and model-service settings.
@@ -16,6 +16,7 @@
 
 **Find content by role**
 
+- **SOP configuration and operation**: [Two-step quick start](../sop/index.md#quickstart) · [Tools and buttons](../sop/index.md#control-reference) · [Hand operations](../sop/index.md#hand-operations) · [Station operation](../sop/index.md#operator-guide)
 - **First-time use**: [Login](#3-quick-start-login) → [Task Management](#5-task-management) → [Flow Editor](#6-flow-editor) → [Comprehensive Example](#19-comprehensive-example)
 - **Daily use**: [Video Preview](#11-video-preview--multi-view) · [Alert Management](#12-alert-management) · [Face Library & Recording](#14-plugins-face-library--recording)
 - **System operations**: [Plugin Management](#13-plugin-management) · [System Management](#17-settings--system-management) · [Troubleshooting](#21-troubleshooting)

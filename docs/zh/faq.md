@@ -121,6 +121,7 @@ aarch64-none-linux-gnu-g++ --version
 
 ## 还没解决？
 
+- SOP 选段、识别、手部、验证与恢复：[SOP 系统用户手册 · 排障](sop/index.md#troubleshooting)
 - 完整排障章节：[SDK 开发指南](sdk-guide.md)
 - 报警链路联调：[报警联动](alarm-linkage.md)
 - 部署运维流程：[交付运维](deployment-ops.md)

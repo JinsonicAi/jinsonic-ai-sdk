@@ -20,13 +20,29 @@ It is not a single-algorithm demo, but a deliverable, extensible, and maintainab
 
 [:material-robot: Illustrated AI Assistant Guide](ai-assistant/index.md){ .md-button }
 
-[:material-format-list-checks: Illustrated SOP System Guide](sop/index.md#overview){ .md-button }
+[:material-format-list-checks: SOP User Manual](sop/index.md){ .md-button }
 
 </div>
 
 ## Choose an Entry Point by Role
 
 <div class="grid cards" markdown>
+
+-   :material-format-list-checks:{ .lg .middle } __Process Configuration Staff__
+
+    ---
+
+    Select targets, draw regions, configure object and hand conditions, author steps, and validate each stage.
+
+    [:octicons-arrow-right-24: SOP User Manual: start with the two-step example](sop/index.md#quickstart)
+
+-   :material-account-hard-hat:{ .lg .middle } __Station Operators__
+
+    ---
+
+    View the current step, play demonstrations, confirm work, pause and resume, and handle incident guidance.
+
+    [:octicons-arrow-right-24: SOP Operator Station Manual](sop/index.md#operator-guide)
 
 -   :material-brain:{ .lg .middle } __Algorithm Engineers__
 
@@ -94,6 +110,14 @@ Task decoding, preprocessing, inference, and encoding are ideally completed as a
 
 <div class="grid cards" markdown>
 
+-   :material-format-list-checks:{ .lg .middle } __SOP Workflows__
+
+    ---
+
+    Combine objects, hands, regions, timing, and ordered or unordered conditions into reusable steps; validate progressively and guide station operations.
+
+    [:octicons-arrow-right-24: SOP User Manual](sop/index.md)
+
 -   :material-puzzle:{ .lg .middle } __Plugin-Based Algorithms__
 
     ---
@@ -136,7 +160,10 @@ Task decoding, preprocessing, inference, and encoding are ideally completed as a
 
 ```mermaid
 flowchart LR
-    S([New user]) --> Q[Quick Start]
+    S([New user]) --> U[Device Onboarding]
+    U --> W[SOP User Manual]
+    W --> V[Stage validation and station operation]
+    S --> Q[SDK Quick Start]
     Q --> R[Runtime Location and Deployment]
     R --> P[Plugin Development]
     P --> A[Alarm Linkage]
@@ -144,12 +171,14 @@ flowchart LR
     C --> E([Customer-facing solutions])
 ```
 
-1. New users should start with [Quick Start](quickstart.md).
-2. For deployment and compute selection, see [Runtime Location and Deployment](runtime-location.md).
-3. For algorithm customization, see [Plugin Development](plugin-development.md).
-4. For alarm push, TTS, and RS485 relays, see [Alarm Linkage](alarm-linkage.md).
-5. For customer-facing solution presentations, see [Algorithm Capabilities](algorithm-capabilities.md).
-6. For issues, check the [FAQ](faq.md), and for version changes see the [Changelog](changelog.md).
+1. For a new device, start with [Device Onboarding and Quick Start](device-onboarding.md).
+2. To configure targets, regions, hand operations, and workflow steps, read the [SOP User Manual](sop/index.md). Complete the two-step example before extending the scene.
+3. For SDK builds and sample development, start with [Quick Start](quickstart.md).
+4. For deployment and compute selection, see [Runtime Location and Deployment](runtime-location.md).
+5. For algorithm customization, see [Plugin Development](plugin-development.md).
+6. For alarm push, TTS, and RS485 relays, see [Alarm Linkage](alarm-linkage.md).
+7. For customer-facing solutions, see [Algorithm Capabilities](algorithm-capabilities.md).
+8. For issues, check the [FAQ](faq.md); for version changes, see the [Changelog](changelog.md).
 
 ## Documentation Map
 
@@ -158,6 +187,7 @@ flowchart LR
 | [Quick Start](quickstart.md) | Get the SDK, build, deploy, create tasks, and validate results | Everyone |
 | [SDK Development Guide](sdk-guide.md) | Architecture, interfaces, alarm protocol, demos, troubleshooting | Algorithm / platform engineers |
 | [Web User Manual](user-manual/index.md) | Platform UI operations and task management | Delivery / operations |
+| [SOP User Manual](sop/index.md) | Targets and hands, regions and timing, step authoring, stage/plan validation, saving, and station operation | Process staff / operators / deployment teams |
 | [Runtime Location and Deployment](runtime-location.md) | AX / RK / AXCL runtime locations and deployment forms | Platform / delivery engineers |
 | [Plugin Development](plugin-development.md) | Node lifecycle, project structure, configuration forms | Algorithm engineers |
 | [Alarm Linkage](alarm-linkage.md) | Alarm pipeline, RS485 relays, concurrency control | Platform / delivery engineers |

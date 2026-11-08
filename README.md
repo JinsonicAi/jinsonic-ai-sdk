@@ -15,7 +15,7 @@
 >
 > ### 👉 [https://aibox-sdk-docs.readthedocs.io](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/)
 >
-> This README is a quick landing page. Detailed content (plugin development, alarm protocol, algorithm capabilities, deployment & operations) is maintained on the online docs site.
+> This README is a quick landing page. Detailed content (SOP workflows, plugin development, alarm protocol, algorithm capabilities, deployment & operations) is maintained on the online docs site.
 
 ---
 
@@ -47,6 +47,7 @@ AIBox SDK (`aibox_sdk`) is the customer development kit for the Jinsonic edge-in
 - Algorithm engineers
 - Backend engineers
 - Delivery / integration engineers
+- Process configuration staff and station operators
 
 ---
 
@@ -59,6 +60,7 @@ Full docs are hosted on the [online docs site](https://aibox-sdk-docs.readthedoc
 | 🚀 Quick Start | Environment setup, one-shot build, on-board deployment & acceptance | [Open](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/en/quickstart/) |
 | 📘 SDK Development Guide | Architecture, repo structure, full interface reference | [Open](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/en/sdk-guide/) |
 | 🖥️ Web User Manual | Platform operation manual (create tasks, configure, view alarms) | [Open](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/en/user-manual/) |
+| 📋 SOP User Manual | Targets and hands, regions and timing, step authoring, stage validation, saving, and station operation | [Open](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/en/sop/) |
 | 📍 Runtime Location & Deployment | Standalone / compute-card / RK-local deployment | [Open](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/en/runtime-location/) |
 | 🔌 Plugin Development | Plugin lifecycle, Node implementation, fast algorithm integration | [Open](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/en/plugin-development/) |
 | 🔔 Alarm Linkage | Alarm protocol, message spec, and linkage routing | [Open](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/en/alarm-linkage/) |
@@ -72,6 +74,8 @@ Full docs are hosted on the [online docs site](https://aibox-sdk-docs.readthedoc
 ## Quick Start
 
 > Full steps (toolchain download, environment variables, acceptance checklist) are in the [Quick Start docs](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/en/quickstart/).
+
+To configure a workflow on an available device, continue from [Device Onboarding](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/en/device-onboarding/) to the [SOP User Manual](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/en/sop/) and follow “select targets → improve recognition → author steps → validate → operate the station.”
 
 ```bash
 # 1. Clone the repository

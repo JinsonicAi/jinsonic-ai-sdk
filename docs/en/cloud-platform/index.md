@@ -2,7 +2,7 @@
 
 > Version 1.0 · Updated 2026-09-09 · For device administrators, deployment engineers, monitoring operators, and support teams
 
-[简体中文](../../zh/cloud-platform/index.md) · [Device Web User Manual](../user-manual/index.md) · [Device Onboarding and Quick Start](../device-onboarding.md)
+[简体中文](../../zh/cloud-platform/index.md) · [Device Web User Manual](../user-manual/index.md) · [Device Onboarding and Quick Start](../device-onboarding.md) · [SOP User Manual](../sop/index.md)
 
 This guide explains how to connect an AI-BOX to the cloud management platform, claim it into your organization, manage its analysis tasks remotely, watch live video, investigate alarm evidence, and maintain the installation. Follow the sequence: prepare the device → configure its cloud connection → add the device → verify connectivity → configure a task → view live video → review alarms.
 
@@ -10,6 +10,9 @@ This guide explains how to connect an AI-BOX to the cloud management platform, c
     This guide reflects the cloud and device interfaces reviewed in September 2026. Screenshots show actual application pages. Device names, counts, alarm statistics, and status values are examples captured at that moment. Firmware, installed plugins, account permissions, and later releases may change the available controls. Both language editions use the same real screenshots; this edition explains their Chinese labels in English and includes a bilingual menu glossary.
 
 Click any screenshot to open the original image and inspect small labels or complete field values.
+
+!!! tip "Configure an SOP workflow task"
+    When the current cloud interface and device provide SOP workflows, see the [SOP User Manual](../sop/index.md) for steps, object/hand conditions, regions, progressive validation, and operation. This guide covers cloud onboarding, permissions, and remote management.
 
 **Reading paths by role**
 

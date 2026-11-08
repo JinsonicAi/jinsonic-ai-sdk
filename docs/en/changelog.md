@@ -7,6 +7,13 @@ This page records the main changes of the documentation site and the SDK.
 
 ## Documentation Site
 
+### 2026-11-08 (SOP User Manual)
+
+- Added the [SOP User Manual](sop/index.md): one continuous page per language, with a right-hand on-page chapter navigator.
+- Covered targets and recognition, hands, regions and timing, toolbar dragging, stage/plan validation, station operation, and maintenance, with real interface captures and button-location explanations.
+- Aligned SOP navigation across both READMEs, homepage roles, capabilities, reading paths, documentation maps, and related guides.
+- The manual explains operations; supported device capabilities and site acceptance depend on the actual compatible version and validation results.
+
 ### 2026-09-11 (AI assistant RC3)
 
 - Added internal/external model-storage settings, mount/UUID checks, AX/RK installation commands, effective-binding checks, and migration limits within the same [user guide](ai-assistant/index.md#installation-storage), preserving one navigation entry.

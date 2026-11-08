@@ -16,6 +16,9 @@ flowchart LR
 !!! tip "阅读建议"
     如果你只想先跑通一个 Demo，按 1→2→3→6 走即可；需要在 Web 端配置业务任务，再补充 4→5。
 
+!!! tip "配置现成设备上的 SOP 工序"
+    工艺配置人员和操作员可从 [设备开箱与快速上手](device-onboarding.md) 进入 [SOP 系统用户手册](sop/index.md)，按目标、区域、手部条件、工序编排和逐级验证的顺序操作。
+
 ## 1. 获取 SDK
 
 ### 1.1 目录结构
@@ -235,6 +238,7 @@ flowchart LR
 
 ## 下一步
 
+- 配置可复用工序并完成验证：[SOP 系统用户手册](sop/index.md#quickstart)
 - 深入架构、接口与报警协议：[SDK 开发指南](sdk-guide.md)
 - 选择合适的硬件后端：[运行位置与部署](runtime-location.md)
 - 开发自己的算法插件：[插件开发](plugin-development.md)

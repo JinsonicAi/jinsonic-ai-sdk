@@ -20,13 +20,29 @@ AIBox SDK 面向园区、工厂、社区、门店、交通、仓储和安防等�
 
 [:material-robot: AI 助手图文使用说明](zh/ai-assistant/index.md){ .md-button }
 
-[:material-format-list-checks: SOP 系统图文使用说明](zh/sop/index.md#overview){ .md-button }
+[:material-format-list-checks: SOP 系统用户手册](zh/sop/index.md){ .md-button }
 
 </div>
 
 ## 按角色选择入口
 
 <div class="grid cards" markdown>
+
+-   :material-format-list-checks:{ .lg .middle } __工艺与配置人员__
+
+    ---
+
+    选择目标、绘制区域、设置物件和手部条件，编排工序并逐阶段验证。
+
+    [:octicons-arrow-right-24: SOP 系统用户手册：从两步实例开始](zh/sop/index.md#quickstart)
+
+-   :material-account-hard-hat:{ .lg .middle } __现场操作员__
+
+    ---
+
+    查看当前工序、播放操作示范、人工确认、暂停恢复和异常提示。
+
+    [:octicons-arrow-right-24: SOP 操作员工位手册](zh/sop/index.md#operator-guide)
 
 -   :material-brain:{ .lg .middle } __算法工程师__
 
@@ -94,6 +110,14 @@ flowchart LR
 
 <div class="grid cards" markdown>
 
+-   :material-format-list-checks:{ .lg .middle } __SOP 工序系统__
+
+    ---
+
+    组合物件、手部、区域、时间及先后或任意顺序条件，编排可复用工序，逐级验证并指导工位操作。
+
+    [:octicons-arrow-right-24: SOP 系统用户手册](zh/sop/index.md)
+
 -   :material-puzzle:{ .lg .middle } __插件化算法__
 
     ---
@@ -136,7 +160,10 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    S([新用户]) --> Q[快速开始]
+    S([新用户]) --> U[设备开箱与快速上手]
+    U --> W[SOP 系统用户手册]
+    W --> V[阶段验证与工位运行]
+    S --> Q[SDK 快速开始]
     Q --> R[运行位置与部署]
     R --> P[插件开发]
     P --> A[报警联动]
@@ -144,12 +171,14 @@ flowchart LR
     C --> E([对外方案])
 ```
 
-1. 新用户先看 [快速开始](zh/quickstart.md)。
-2. 部署和算力选择看 [运行位置与部署](zh/runtime-location.md)。
-3. 算法二次开发看 [插件开发](zh/plugin-development.md)。
-4. 报警推送、TTS、485 继电器看 [报警联动](zh/alarm-linkage.md)。
-5. 对外方案介绍看 [算法能力](zh/algorithm-capabilities.md)。
-6. 遇到问题查 [常见问题 FAQ](zh/faq.md)，版本变化看 [更新记录](zh/changelog.md)。
+1. 第一次拿到设备，先看 [设备开箱与快速上手](zh/device-onboarding.md)。
+2. 配置目标、区域、手部动作和工序流程，阅读 [SOP 系统用户手册](zh/sop/index.md)，先走完两步入门实例，再扩展场景。
+3. SDK 构建和样例开发，从 [快速开始](zh/quickstart.md) 进入。
+4. 部署和算力选择看 [运行位置与部署](zh/runtime-location.md)。
+5. 算法二次开发看 [插件开发](zh/plugin-development.md)。
+6. 报警推送、TTS、485 继电器看 [报警联动](zh/alarm-linkage.md)。
+7. 对外方案介绍看 [算法能力](zh/algorithm-capabilities.md)。
+8. 遇到问题查 [常见问题 FAQ](zh/faq.md)，版本变化看 [更新记录](zh/changelog.md)。
 
 ## 文档地图
 
@@ -158,6 +187,7 @@ flowchart LR
 | [快速开始](zh/quickstart.md) | 获取 SDK、编译、部署、创建任务、验证结果 | 全部 |
 | [SDK 开发指南](zh/sdk-guide.md) | 架构、接口、报警协议、Demo、排障 | 算法 / 平台工程师 |
 | [Web 用户手册](zh/user-manual/index.md) | 平台界面操作与任务管理 | 交付 / 运维 |
+| [SOP 系统用户手册](zh/sop/index.md) | 目标与手部、区域与时间、工序编排、阶段/方案验证、保存与工位运行 | 工艺配置 / 操作员 / 交付运维 |
 | [运行位置与部署](zh/runtime-location.md) | AX / RK / AXCL 运行位置与部署形态 | 平台 / 交付工程师 |
 | [插件开发](zh/plugin-development.md) | 节点生命周期、工程结构、配置表单 | 算法工程师 |
 | [报警联动](zh/alarm-linkage.md) | 报警链路、485 继电器、并发控制 | 平台 / 交付工程师 |

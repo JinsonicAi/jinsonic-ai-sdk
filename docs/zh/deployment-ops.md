@@ -94,6 +94,7 @@ ldd /usr/local/aibox/bin/TaskManager | grep -E 'rga|mpp|rknn'
 
 ## 相关文档
 
+- SOP 工序交付、备份和维护：[SOP 系统用户手册](sop/index.md#maintenance)
 - 高频问题速查：[常见问题 FAQ](faq.md)
 - 报警链路联调：[报警联动](alarm-linkage.md)
 - 运行位置选型：[运行位置与部署](runtime-location.md)

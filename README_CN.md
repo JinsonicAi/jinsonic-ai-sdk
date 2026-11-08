@@ -15,7 +15,7 @@
 >
 > ### 👉 [https://aibox-sdk-docs.readthedocs.io](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/)
 >
-> 本 README 为快速入口页，详细内容（插件开发、报警协议、算法能力、部署交付等）均在在线文档站维护。
+> 本 README 为快速入口页，详细内容（SOP 工序使用、插件开发、报警协议、算法能力、部署交付等）均在在线文档站维护。
 
 ---
 
@@ -47,6 +47,7 @@ AIBox SDK（`aibox_sdk`）是鲸算边缘智能算法平台的客户开发套件
 - 算法工程师
 - 平台后端工程师
 - 交付实施工程师
+- 工艺配置人员与现场操作员
 
 ---
 
@@ -59,6 +60,7 @@ AIBox SDK（`aibox_sdk`）是鲸算边缘智能算法平台的客户开发套件
 | 🚀 快速开始 | 环境准备、一键构建、板端部署与验收 | [打开](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/zh/quickstart/) |
 | 📘 SDK 开发指南 | 架构、目录结构、核心接口全解 | [打开](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/zh/sdk-guide/) |
 | 🖥️ Web 用户使用手册 | 平台端操作手册（建任务、配置、告警查看） | [打开](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/zh/user-manual/) |
+| 📋 SOP 系统用户手册 | 目标与手部、区域与时间、工序编排、逐阶段验证、保存与工位运行 | [打开](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/zh/sop/) |
 | 📍 运行位置与部署 | 独立板卡 / 算力卡 / RK 本地多形态部署 | [打开](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/zh/runtime-location/) |
 | 🔌 插件开发 | 插件生命周期、Node 实现、快速集成算法 | [打开](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/zh/plugin-development/) |
 | 🔔 报警联动 | 报警协议、报文规范与联动路由 | [打开](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/zh/alarm-linkage/) |
@@ -72,6 +74,8 @@ AIBox SDK（`aibox_sdk`）是鲸算边缘智能算法平台的客户开发套件
 ## 快速开始
 
 > 完整步骤（工具链下载、环境变量、验收清单）见 [快速开始文档](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/zh/quickstart/)。
+
+已有可用设备、准备配置工序时，从 [设备开箱与快速上手](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/zh/device-onboarding/) 进入 [SOP 系统用户手册](https://aibox-sdk-docs.readthedocs.io/zh-cn/latest/zh/sop/)，按“选择目标 → 完善识别 → 编排 → 验证 → 工位运行”操作。
 
 ```bash
 # 1. 克隆仓库

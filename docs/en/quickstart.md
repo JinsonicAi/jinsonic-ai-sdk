@@ -16,6 +16,9 @@ flowchart LR
 !!! tip "Reading recommendation"
     If you only want to get a demo running first, follow 1→2→3→6; when you need to configure business tasks in the Web UI, add 4→5.
 
+!!! tip "Configure an SOP workflow on an available device"
+    Process staff and operators can continue from [Device Onboarding](device-onboarding.md) to the [SOP User Manual](sop/index.md), following targets, regions, hand conditions, step authoring, and progressive validation.
+
 ## 1. Get the SDK
 
 ### 1.1 Directory Structure
@@ -235,6 +238,7 @@ Target enters the region
 
 ## Next Steps
 
+- Configure and validate reusable steps: [SOP User Manual](sop/index.md#quickstart)
 - Dive into the architecture, interfaces, and alarm protocol: [SDK Development Guide](sdk-guide.md)
 - Choose the right hardware backend: [Runtime Location and Deployment](runtime-location.md)
 - Develop your own algorithm plugin: [Plugin Development](plugin-development.md)

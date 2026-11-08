@@ -94,6 +94,7 @@ During on-site troubleshooting, you can enable diagnostic capabilities via envir
 
 ## Related Documents
 
+- SOP handover, backup, and maintenance: [SOP User Manual](sop/index.md#maintenance)
 - Quick reference for frequent questions: [FAQ](faq.md)
 - Alarm pipeline validation: [Alarm Linkage](alarm-linkage.md)
 - Runtime location selection: [Runtime Location and Deployment](runtime-location.md)

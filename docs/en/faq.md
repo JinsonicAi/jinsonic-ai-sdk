@@ -119,6 +119,7 @@ Ensure the plugin directory ends with `_plugin`. `plugins/CMakeLists.txt` discov
 
 ## Still stuck?
 
+- SOP ranges, recognition, hands, validation, and recovery: [SOP User Manual · Troubleshooting](sop/index.md#troubleshooting)
 - Full troubleshooting: [SDK Development Guide](sdk-guide.md)
 - Alarm chain: [Alarm Linkage](alarm-linkage.md)
 - Deployment and operations: [Deployment and Operations](deployment-ops.md)
