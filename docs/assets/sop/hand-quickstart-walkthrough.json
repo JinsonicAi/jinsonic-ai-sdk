@@ -1,0 +1,142 @@
+{
+  "date": "2026-11-13",
+  "task": "入门教程:工具箱与手部操作",
+  "board": "AX650 test board 234",
+  "input": "uploaded original local file for recorded validation; controlled replay source for station only",
+  "video_sha256": "2e09a1893ed0090adc9ccd58af17736f420aa935f02146968cf52a816a3a8591",
+  "frames": 312,
+  "video_unchanged": true,
+  "target": {
+    "name": "工具箱",
+    "references": [
+      {
+        "time_s": 28.8,
+        "xyxy": [
+          202,
+          280,
+          409,
+          425
+        ]
+      },
+      {
+        "time_s": 4.4,
+        "xyxy": [
+          111,
+          207,
+          354,
+          478
+        ]
+      }
+    ],
+    "final_reference_count": 2,
+    "final_pending": 0
+  },
+  "stages": [
+    "工具箱就绪",
+    "手靠近工具箱",
+    "人工核对完成"
+  ],
+  "hand": {
+    "rule": "hand_near",
+    "selector": "any",
+    "regions": "full frame",
+    "distance_ratio": 0.25,
+    "duration_ms": 800,
+    "mode": "allow_brief_misses",
+    "max_miss_gap_ms": 300,
+    "window_ms": 1600,
+    "min_detected_time_ratio": 0.8,
+    "input_gap_ms": 500,
+    "completion": "automatic"
+  },
+  "hand_stage": {
+    "validation_id": "f55231479ce89631cca194926b034c21",
+    "frames": 312,
+    "result": "1/1",
+    "verdict": "stage_review_only"
+  },
+  "whole_plan_attempts": [
+    {
+      "validation_id": "a5dd06c7fc3d145bdd490e8c98d33d7d",
+      "frames": 312,
+      "result": "2/3",
+      "confirmation": "UNKNOWN",
+      "verdict": "manual_confirmation_required"
+    },
+    {
+      "validation_id": "ad3331cfd2aaca6c54af14dbc6ce0b8b",
+      "frames": 312,
+      "result": "2/3",
+      "confirmation": "not recorded",
+      "verdict": "manual_confirmation_required"
+    },
+    {
+      "validation_id": "dc37020e559cd092ca1a5dca17e48388",
+      "frames": 312,
+      "result": "3/3",
+      "confirmation": "APPLIED",
+      "verdict": "steps_satisfied"
+    }
+  ],
+  "no_threshold_or_model_changes_between_attempts": true,
+  "recognition_review": {
+    "images": 11,
+    "stride_frames": 30,
+    "low_score_examples_s": [
+      24,
+      30
+    ],
+    "best_candidate_rounded": 0.21,
+    "threshold": 0.25,
+    "temporary_box_trial_s": 24,
+    "result": "one box unmatched",
+    "adopted": false,
+    "trial_draft_cancelled": true
+  },
+  "quality_limitations": [
+    "3 ambiguous physical-identity observations",
+    "independent sampling reports unsupported source; formal replay result is separate",
+    "not commercial accuracy certification"
+  ],
+  "station": {
+    "cycle_count": 1,
+    "steps": "3/3 verified",
+    "manual_confirmation_observed": true,
+    "finish_workpiece_clicked": true,
+    "outcome": "completed in compliance",
+    "task_stopped": true,
+    "other_tasks_untouched": true,
+    "temporary_replay_source_stopped": true
+  },
+  "ui_fix": {
+    "file": "frontend_shared/src/sop/SopConditionEditor.vue",
+    "template_visibility_gates": 2,
+    "algorithm_or_input_pipeline_changes": false,
+    "authorization": "explicit user approval in tutorial conversation"
+  },
+  "screenshots": [
+    "en-h02-hand-input-graph.png",
+    "en-h04-two-references.png",
+    "en-h09-near-rule.png",
+    "en-h10-hand-completion.png",
+    "zh-h01-create-hand-task.png",
+    "zh-h02-hand-input-graph.png",
+    "zh-h03-video-loaded.png",
+    "zh-h04-closed-reference.png",
+    "zh-h05-open-reference.png",
+    "zh-h06-object-auto.png",
+    "zh-h08-hand-select.png",
+    "zh-h09-near-rule.png",
+    "zh-h10-hand-completion.png",
+    "zh-h11-manual-stage.png",
+    "zh-h12-hand-stage-pass.png",
+    "zh-h13-whole-manual.png",
+    "zh-h15-whole-pass.png",
+    "zh-h16-station-ready.png",
+    "zh-h17-station-manual.png",
+    "zh-h18-station-completed.png",
+    "zh-h19-low-score-frame.png",
+    "zh-h21-frame-trial-result.png",
+    "zh-h22-saved-summary.png"
+  ]
+}

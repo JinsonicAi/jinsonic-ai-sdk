@@ -2,13 +2,14 @@
 
 [简体中文](../../zh/sop/index.md)
 
-This guide is for process engineers, operators, deployment teams, and administrators using AIBox SOP for the first time. A fixed-camera workbench example takes you through **choosing a camera → preparing a video → selecting a target → improving recognition → defining steps → validating stages → validating the plan → saving → station operation**. You do not need to write code, rule expressions, or JSON.
+This guide is for process engineers, operators, deployment teams, and administrators using AIBox SOP for the first time. Object-only and hand-plus-object worked examples take you through **choosing a camera → preparing a video → selecting a target → improving recognition → defining steps → validating stages → validating the plan → saving → station operation**. You do not need to write code, rule expressions, or JSON.
 
 **Read chapter 1 to understand the system, then follow the complete [five-minute example in chapter 2](#five-minute-quickstart). Consult the tool details afterward as needed.** All chapters are on this page. Use the table of contents on the right or the links below to jump directly to a section.
 
 | What do you need to do? | Chapter |
 |---|---|
 | Complete your first SOP with a worked example | [Five-minute quick start](#five-minute-quickstart) |
+| Complete object, hand-action, and operator-review stages | [Toolbox and hand worked example](#five-minute-hand-example) |
 | Find additional guidance for the two-step example | [Detailed walkthrough: tool readiness and operator confirmation](#quickstart) |
 | Record, upload, play, or select a video range | [Video, targets, and recognition](#video-and-recognition) |
 | Draw target boxes, add angles, review misses and duplicate boxes | [Video, targets, and recognition](#video-and-recognition) |
@@ -126,9 +127,9 @@ Read critical actions as prerequisites → location → procedure → expected b
 
 Identify whether a figure shows configuration, references, an operation setup, or a persistence control. Use location tables to find the top, left, right, or footer control, and click figures to inspect original resolution.
 
-The interface figures are freshly captured native lossless PNGs. The article fits them to its column; open Original 100% to read small controls. Screenshot dimensions do not create extra video detail: the example source is 800 × 320. Text already embedded in the video is not automatically rewritten when the page language changes.
+The interface figures are freshly captured native lossless PNGs. The article fits them to its column; open Original 100% to read small controls. Screenshot dimensions do not create extra video detail: the workbench source is 800 × 320 and the hand example is 480 × 480. Text already embedded in the video is not automatically rewritten when the page language changes.
 
-Use your own station names and verify the real page afterward. Screenshot states are not your current state. Chinese and English chapters use their corresponding interface captures. Download the [sample footage](#quickstart--use-the-accompanying-sample-recording); see [credits](#reference--7-sample-and-screenshot-credits).
+Use your own station names and verify the real page afterward. Screenshot states are not your current state. Chapters primarily use their corresponding interface captures; section 2.7 labels shared Chinese images and gives English control names. Download the [sample footage](#quickstart--use-the-accompanying-sample-recording); see [credits](#reference--7-sample-and-screenshot-credits).
 
 **Next: [Chapter 2: complete five-minute quick-start example →](#five-minute-quickstart)**
 
@@ -136,9 +137,9 @@ Use your own station names and verify the real page afterward. Screenshot states
 
 ## 2. Five-minute quickstart: build a complete SOP, step by step {#five-minute-quickstart}
 
-Follow this worked example in order: **upload video → draw a rubber mallet → check and improve recognition → configure an automatic step and an operator step → validate each stage → validate the whole plan → save → operate the station**. Each section explains the exact action, expected result, and recovery when the result differs.
+This chapter contains **2.1–2.6, object detection plus operator confirmation**, and **[2.7, the complete toolbox, hand-action, and operator-review example](#five-minute-hand-example)**. Complete the basics, then the hand example before consulting tool details. Follow the first example in order: **upload video → draw a rubber mallet → check and improve recognition → configure an automatic step and an operator step → validate each stage → validate the whole plan → save → operate the station**. Each section explains the exact action, expected result, and recovery when the result differs.
 
-“Five-minute” describes the short learning route. Your first careful walkthrough, uploads, scans, and device validation take additional time. The new screenshots are native lossless PNG captures, mostly **3840 × 2160**; click an image to inspect it at 100%. The source video is 800 × 320, so a larger screenshot does not add video detail. Interface controls are English. User-defined names remain Chinese in this recorded example; they do not change when the interface language changes.
+“Five-minute” describes the short learning route. Your first careful walkthrough, uploads, scans, and device validation take additional time. The new screenshots are native lossless PNG captures, mostly **3840 × 2160**; click an image to inspect it at 100%. The workbench video is 800 × 320 and the hand example is 480 × 480; a larger screenshot does not add video detail. Images in 2.1–2.6 show English controls; 2.7 identifies shared Chinese captures. User-defined names remain Chinese in this recorded example; they do not change when the interface language changes.
 
 **Download first: [workbench-60s.mp4 — 60 seconds, approximately 9.5 MB](../../assets/sop/workbench-60s.mp4).** Use the mallet with a wooden handle and black head. Starting with one object makes it easier to understand automatic and human completion. See the [source and license credits](#reference--7-sample-and-screenshot-credits).
 
@@ -345,19 +346,11 @@ Use the scan's **0.00 s** image for this exercise. It already contains a detecte
 
 **Checkpoint:** seeing the mallet cannot complete this second step. If it still contains an object requirement, check whether you copied stage 1 or chose visual checks plus operator review.
 
-#### 2.3.5 Hand tools: an optional, separate extension after the baseline
+#### 2.3.5 Continue with the complete hand-action example
 
-This final two-step example does not require a hand action. Add hand checks in a separate practice plan, so the working baseline remains available.
+The mallet exercise teaches the basic two-step workflow; it does not validate hand actions. After 2.4–2.6, continue to **[2.7, the complete toolbox and hand tutorial](#five-minute-hand-example)** in this same quickstart chapter. Create toolbox ready → hand near toolbox → operator review, using its supplied recording, two reference views, real hand source, stage/full validation, and one completed station workpiece. That section provides actual controls, values, low-score box trials, checkpoints, and native UHD images.
 
-1. Open **Detection settings** in the stage toolbar and add/check the supported hand-recognition source. The **Hands** toolbar should appear.
-2. Start with **Any hand**. Add the hand and mallet in the relationship editor, then choose the intended relationship. Near/far checks use distance; accompanied transfer additionally needs start and destination areas.
-3. For left/right checks, verify the operator's own anatomical left/right in the image. Use the swap control if the orientation is reversed.
-4. Draw and name distinct start/end areas before placing them in their respective slots; verify the selected area names too.
-5. Choose a continuous video interval with clear hand, object, and complete movement. **Validate stage**, inspect conditions, hold progress and reasons, then revalidate the entire extended plan. Missing hand detection does not prove a hand is far away; proximity does not prove grasping.
-
-[![Figure 2-15: hand-object tools and transfer areas](../../assets/sop/en-19-hand-actions.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/en-19-hand-actions.png)
-
-**Checkpoint:** do not reuse the object-only pass as evidence that hand actions passed. Resolve a missing source or missing continuous demonstration before testing the extension. See [Hand operations](#hand-operations) for the individual action controls.
+Proximity, near-then-away, and accompanying transfer are different rules. Complete single proximity first; consult [hand-operation details](#hand-operations) when your process needs transfer or left/right hands. An object-only pass cannot validate a hand/object action.
 
 ### 2.4 Validate each stage, then the whole plan {#five-minute-validation}
 
@@ -457,6 +450,226 @@ Rings and light-flow effects indicate activity, not a pass. Check text, reasons,
 | Station | Start, automatic first step, human second step, compliant result | 2.6.2–2.6.3 |
 
 For your real process, also test missing/wrong parts, occlusion, wrong order, and input interruption. Use [Controls and their locations](#control-reference) for reference, and [Preparation](#preparation) to turn your own process into a new plan.
+
+### 2.7 Complete hand example: toolbox ready → hand near toolbox → operator review {#five-minute-hand-example}
+
+Build a **new, complete task with both object detection and Hand Landmarks**. Keep the mallet task from 2.1–2.6. This example takes you through the file, references, hand rule, temporal settings, stage validation, full validation, saving, and a station workpiece. Follow all sixteen subsections and their checkpoints.
+
+The recording shows hands working around a toolbox. We check **visible hand-to-toolbox proximity**, not successful grasping, correct tool sorting, contact force, or assembly quality. The observed results were **1/1 for the hand stage**, **3/3 with operator confirmation in full recorded validation**, and **3/3, completed in compliance at the station**. These are workflow results for the specified configuration; they do not mean every frame was recognized correctly.
+
+| Setting | Enter or check |
+|---|---|
+| Task and plan name | `入门教程:工具箱与手部操作` (Tutorial: toolbox and hand operation) |
+| File | [toolbox-hand-31s.mp4, 31.2 seconds, about 2.5 MB](../../assets/sop/toolbox-hand-31s.mp4); original 480 × 480, 10 fps |
+| Logical object | `工具箱` (Toolbox); primary closed view at 28.8 s, additional open view at 4.4 s; final References: 2, Pending: 0 |
+| Stage 1 | `工具箱就绪` (Toolbox ready); toolbox detected, full frame, continuous 0.8 s, automatic completion |
+| Stage 2 | `手靠近工具箱` (Hand near toolbox); any hand near toolbox, both full frame, proximity range 25%, detected for 0.8 s in total, automatic completion |
+| Stage 2 timing safeguards | Maximum missed-detection interval 0.3 s; observation window 1.6 s; minimum detected-time ratio 80%; input interruption tolerance 0.5 s |
+| Stage 3 | `人工核对完成` (Operator review complete); operator confirmation, no visual checks |
+| Ranges | All stage validation and demonstration ranges, and the whole-plan range: **0–31.2 s**; stages still execute in order |
+| Time limit | 0 for all three steps |
+
+The unmodified video is from FraunhoferIPK's IndEgo dataset under CC BY 4.0; see [credits](#reference--7-sample-and-screenshot-credits). New UI images are native **3840 × 2160 lossless PNGs**, linked to their originals. The video remains 480 × 480. The same observed run supplies the Chinese and English guide. Some action/result images retain the Chinese UI; this section gives their English control names. User-entered Chinese task and step names are deliberately unchanged when the interface language changes.
+
+#### 2.7.1 Download the recording and create the hand-plus-object task
+
+1. Download the MP4 above. Play it locally and confirm it shows a black toolbox opening/closing and the operator's hands for about 31 seconds. Do not substitute the mallet recording or a webpage thumbnail.
+2. In task management click **Add Task → SOP Workflow**.
+3. Choose the option for checking **hand operations**, described as combining hands, objects, and operation order. Enter the task name from the table and choose **Create and edit**.
+4. Click **Arrange** on the canvas. The same video input must feed **Prompt Detection** and **Hand Landmarks**, with both detection-result connections entering **SOP Workflow**. SOP status then goes to OSD. Keep both branches.
+
+[![H-01: choose the hand-and-object creation mode; Chinese UI from the actual task creation.](../../assets/sop/zh-h01-create-hand-task.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h01-create-hand-task.png)
+
+[![H-02: the English canvas shows Hand Landmarks and Prompt Detection feeding the same SOP.](../../assets/sop/en-h02-hand-input-graph.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-h02-hand-input-graph.png)
+
+**Checkpoint:** both algorithm nodes and their connections are present. If the hand source is missing, check the creation mode or add the supported source using [hand-source settings](#hand-operations). Naming an object reference “hand” does not provide hand landmarks.
+
+#### 2.7.2 Open the editor and upload the complete local file
+
+1. Double-click **SOP Workflow → Edit steps**, then **Maximize editor**.
+2. Enter the tutorial plan name. The camera selector describes the input for real task operation. The test address in these screenshots is not a permanent customer source; do not copy it.
+3. Click **Upload** above the image and select `toolbox-hand-31s.mp4`. Wait for upload, video decoding, and thumbnails to finish.
+4. Play and pause. Check the picture and **0:31.2** duration. After seeking, wait until the new picture is actually visible before capturing a reference.
+5. For your own on-site material, use **Record**, choose the camera, record the complete operation, stop and save, then check playback. Use the downloadable file first to reproduce this particular exercise.
+
+[![H-03: the uploaded complete file, its picture, and its 31.2-second timeline; Chinese UI.](../../assets/sop/zh-h03-video-loaded.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h03-video-loaded.png)
+
+**Checkpoint:** editor validation reads the uploaded file directly. **Do not create an RTSP publisher for editor validation.** The configured network camera/source is a separate requirement for station operation later.
+
+#### 2.7.3 Create the toolbox primary reference at 28.8 seconds
+
+1. Click the main clip's start-time control, enter **28.8**, and click **Locate**. Wait for the closed-toolbox image to appear.
+2. Click **Add target**. Drag from the toolbox's upper-left outer edge to its lower-right edge, enclosing the complete case with little background. Do not include the entire table, monitor, or hands.
+3. In the target-name field enter `工具箱`, then click **Add to this step** and wait for reference storage to finish.
+4. Check there is one logical toolbox and one primary reference. In the original 480 × 480 image, the example rectangle is approximately **(202,280)–(409,425)**. These are image coordinates to help identify the object, not browser-window coordinates to click blindly.
+
+[![H-04: the closed toolbox primary reference at 28.8 seconds; Chinese UI.](../../assets/sop/zh-h04-closed-reference.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h04-closed-reference.png)
+
+**Recovery:** cancel and redraw if the reference contains the whole table. Wait for saving rather than repeatedly adding duplicate targets.
+
+#### 2.7.4 Add the open view to the same toolbox
+
+1. Select the existing **工具箱**, then **Add view** in its reference area. Do not create another logical target.
+2. Locate **4.4 s** in the video, choose **Use current frame**, and draw the complete open case, including lid and lower half.
+3. Click **Save additional reference** and wait. The original-image rectangle is approximately **(111,207)–(354,478)**.
+4. Check **one toolbox, References: 2, Pending: 0**. View 1 and view 2 should show its closed and open appearances under the same target name.
+5. Seeking may have changed the main clip start. Use **Expand range to include all stages**, or edit the endpoints, to restore **0–31.2 s**.
+6. Save this two-reference baseline: **Done → Confirm if shown → outer Save**. Wait, then reopen the editor. The following frame-trial exercise can now be cancelled without losing this baseline.
+
+[![H-05: save the open case as another view of the same object; Chinese UI.](../../assets/sop/zh-h05-open-reference.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h05-open-reference.png)
+
+[![H-06: the saved English editor confirms two references and zero pending additions.](../../assets/sop/en-h04-two-references.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-h04-two-references.png)
+
+**Checkpoint:** two views do not mean two physical objects. Each reference uses detection capacity, but both views belong to the same logical toolbox.
+
+#### 2.7.5 Run Improve recognition and interpret yellow results
+
+1. Select **工具箱 → Improve recognition**. Keep one image every **30 frames**. This 31.2-second file produces **11 result images**; wait for 11/11 generated.
+2. Inspect **3.00 s**, then the yellow **24.00 s** or **30.00 s** thumbnail. Always compare the original image with the candidate box.
+3. In the observed scan, those two frames had a best candidate around **0.21**, below the **25%** trial threshold, and therefore zero retained after rules. Yellow is a low-score candidate to review, not a satisfied SOP condition. Zero retained candidates does not establish that the physical toolbox is absent.
+4. Choose the actual image situation: target present but missed/low-score → **Target present: add boxes**; clear image with no target → the clear-and-absent choice; indeterminate occlusion/blur → **Unclear**.
+
+[![H-07: actual low-score candidates around 0.21 fall below 25%; Chinese UI.](../../assets/sop/zh-h19-low-score-frame.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h19-low-score-frame.png)
+
+**Checkpoint:** a candidate score is not plan accuracy. “11/11 generated” is not “all 11 images manually accepted.” See [2.2](#five-minute-recognition) for the full recognition workflow.
+
+#### 2.7.6 Draw a missing box and test this frame before adopting it
+
+1. On the **24.00 s** original choose **Target present: add boxes**, then draw the actual toolbox outline. Scroll until the entire image is visible before drawing near the bottom.
+2. The review area should show **one manual box**. Use its **Edit** or **Delete** control to correct it. For multiple real instances, mark each before choosing the all-boxes-complete option.
+3. Click **Test this frame** directly after drawing. The box is used as a **temporary reference** to test this image; it does not automatically modify the saved plan. Keep 25% and wait for testing to end.
+4. Read **New-box trial** and the per-box results. The detected position must correspond to the human box. In this actual trial, **one box remained unmatched and the same-frame trial did not pass**. Do not call it successful just because a colored box appears.
+5. **The final tutorial plan keeps the original two references.** Do not adopt this failed trial box. Choose **Finish** to return to the target area and check Pending. Cancel this unadopted editor draft using the bottom **Cancel**, then reopen the saved baseline and verify References: 2, Pending: 0. Do not save the trial draft over the validated configuration.
+
+[![H-08: the actual failed temporary-reference trial; no automatic adoption took place.](../../assets/sop/zh-h21-frame-trial-result.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h21-frame-trial-result.png)
+
+!!! note "When should a new box be adopted and applied?"
+    For your own material, choose a clear representative view, correct the box, and retest. Once the reference content and detected position are correct, explicitly **Adopt boxes**, then **Recheck** the current target. Repeat stage and whole-plan validation for the changed references, followed by **Done → Confirm if shown → outer Save**. A successful same-frame trial does not validate other frames. Do not merely lower the threshold to obtain a green result. This example can complete its conditions during valid action intervals with its two clear references; it does not require adding this failed trial reference.
+
+#### 2.7.7 Configure stage 1: Toolbox ready
+
+1. Select step 1 and use the pencil to name it **工具箱就绪**. Instructions: “Confirm the toolbox is clearly visible; wait for the object condition to stabilize.”
+2. Open **Checks in this step → Edit**. Keep one **toolbox detected** condition, **Full frame**.
+3. Open **How is this step completed? → Settings**, choose **Complete automatically after visual detection**, **Must be continuously satisfied**, and **0.8 s**.
+4. Keep Time limit **0**. Set both this stage's **Validation range** and **Demonstration** to **0–31.2 s**.
+
+[![H-09: stage 1 uses a continuous 0.8-second object check; Chinese UI.](../../assets/sop/zh-h06-object-auto.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h06-object-auto.png)
+
+**Checkpoint:** the preview says hold 0.8 seconds → conditions met, not operator review. Keep this stage before the hand stage, not in an arbitrary-order group.
+
+#### 2.7.8 Add stage 2 and check the hand source
+
+1. Click **Add step**, name it **手靠近工具箱**. Instructions: “Move any visible hand near the toolbox and hold briefly; this step checks visible proximity only.”
+2. Select the step and open **Detection settings** in its toolbar. Check that **Hand Landmarks** is available. On return, the hand toolbar should include **Any hand**. Built-in hand recognition does not require drawing a hand reference image.
+3. Use **Any hand**. Left/right options may remain unavailable until orientation is reviewed. Only calibrate operator-relative left/right when your process needs it; see [hand operations](#hand-operations).
+4. Keep both stage ranges **0–31.2 s**. This first-person camera moves, so use full frame for both ends of the relationship; do not invent fixed start/end regions for this example.
+
+**Checkpoint:** the task has a real hand source and an Any hand tool, with the same single toolbox target. Missing hand observations are not proof that the hand moved far away.
+
+#### 2.7.9 Add the single hand-near-object relationship
+
+1. Open stage 2 **Checks in this step → Edit**. A new operator step offers **Switch to visual checks and add a spatial relation**. An existing visual step offers **Add spatial relation · Choose a hand and object**.
+2. In target A choose **Any hand · Hand Landmarks**, then **Next: choose B**.
+3. In target B choose **工具箱 · Object detection**, check the A/B choices, then **Add spatial relation**.
+4. Click **Near** in the diagram. Check the relation type is **Hand near object**. Set both target regions to **Full frame**.
+5. Open **More settings**, keeping the proximity range at **25%**. This distance varies with object size; it is neither 25 centimetres nor the hand confidence threshold.
+
+[![H-10: choose a hand as A and the same toolbox as B; Chinese selection dialog.](../../assets/sop/zh-h08-hand-select.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h08-hand-select.png)
+
+[![H-11: English hand-near relationship, full-frame scope, and relative distance setting.](../../assets/sop/en-h09-near-rule.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-h09-near-rule.png)
+
+**Checkpoint:** **Any hand → Near → 工具箱**. Near-then-away and accompanying-transfer templates are different operations requiring their own complete motion and, where applicable, start/end regions. Do not substitute them here.
+
+#### 2.7.10 Configure automatic hand completion and timing safeguards
+
+1. Open stage 2 completion settings. A new hand/object relation may default to visual-plus-operator-review. For this example choose **Complete automatically after visual detection**; the independent third stage supplies human review.
+2. Choose **Allow brief missed detections** and a total detected duration of **0.8 s**. Missed time pauses accumulation rather than counting toward the 0.8 seconds.
+3. Open **Advanced · Brief input interruptions**. Check input interruption tolerance **0.5 s**, maximum missed-detection interval **0.3 s**, observation range **1.6 s**, and minimum detected-time ratio **80%**.
+4. Leave Time limit **0**. The collapsed preview should say **Detected for 0.8 s in total (brief misses allowed)** and automatic completion.
+
+[![H-12: English automatic completion and its separate missed-detection/input-interruption settings.](../../assets/sop/en-h10-hand-completion.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-h10-hand-completion.png)
+
+**Checkpoint:** a 0.3-second missed-detection interval is different from 0.5-second input interruption tolerance. Completion still requires valid detection and sufficient detected-time ratio; interruption or invisibility cannot complete the operation.
+
+#### 2.7.11 Add the independent operator stage and save
+
+1. Click **Add step**, name it **人工核对完成**. Instructions: “Check the toolbox and actual operation before completing this workpiece; visible proximity does not prove grasping or assembly quality.”
+2. Keep **Operator confirmation**, no visual conditions, Time limit **0**.
+3. Set both stage ranges **0–31.2 s**. Check the left list contains toolbox ready → hand near toolbox → operator review, three stages with one step each.
+4. **Done → Confirm if shown → outer Save**, wait, then reopen. Check all three stages, References: 2, Pending: 0. Temporary unadopted trial boxes must not enter this final version.
+
+[![H-13: the independent operator-confirmation stage; Chinese UI from actual authoring.](../../assets/sop/zh-h11-manual-stage.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h11-manual-stage.png)
+
+#### 2.7.12 Validate the hand stage separately
+
+1. Select **手靠近工具箱**, check its **Validation range: 0–31.2 s**, then click **Validate stage** under that stage.
+2. Wait for detection and inspect the real output, hand/toolbox condition reasons, and duration progress. Status rings and relationship highlights follow actual states; animation and input-processing progress are not pass criteria.
+3. After the clip ends, return to editing and inspect that stage's checks and reasons. The observed run processed **312 frames**, completed **1/1**, and satisfied the hand-to-object distance relation.
+4. The first stage has the same entry for its object check. A standalone operator stage needs confirmation while its validation is running. Separate stage passes do not establish whole-plan ordering; continue below.
+
+[![H-14: actual hand-stage result, 312 frames and 1/1; Chinese UI explicitly limits this to a stage review.](../../assets/sop/zh-h12-hand-stage-pass.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h12-hand-stage-pass.png)
+
+**Recovery:** distinguish missing/invalid hand detection, missing toolbox, unmet distance, insufficient accumulated duration, and invalid input before changing anything. Review ambiguous-object observations against the image; they are not reliable count/absence evidence.
+
+#### 2.7.13 Validate the full plan and obtain an applied confirmation
+
+1. Read this subsection before starting and locate the third-step confirmation control: the original clip lasts only 31.2 seconds. Restore the main range to **0–31.2 s**, then click the upper **Validate plan**, not Validate stage under stage 2.
+2. Wait for actual replay. **工具箱就绪** then **手靠近工具箱** should become **Completed**. The current third step becomes **人工核对完成 / Waiting for confirmation**.
+3. Read the right-side instructions and inspect the image. While replay is still active and the button is available, click **I reviewed the video; confirm this step** once, then wait for the returned state. A click, temporarily disabled button, or automatic scroll into view is not acknowledgment.
+4. Verify the third step actually becomes **Operator confirmed**. If it still waits, read the error/receipt notice. Use offered status-recheck or original-request retry controls as directed, without repeatedly submitting. If replay ends without applied confirmation, retain the 2/3 result and rerun after returning to editing; do not relabel it as passed afterward.
+5. Wait for the complete file to finish. Require **3/3 completed**, **Operator confirmed** on the last step, and the message that this clip's SOP conditions are satisfied. The successful record processed all **312 frames**. Two earlier attempts did not obtain completed confirmation; the image below is the later applied result.
+
+[![H-15: during replay, two automatic steps are complete and the final step has a distinct confirmation button; Chinese UI.](../../assets/sop/zh-h13-whole-manual.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h13-whole-manual.png)
+
+[![H-16: actual full-plan terminal result, 3/3 and the last step operator-confirmed; Chinese UI.](../../assets/sop/zh-h15-whole-pass.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h15-whole-pass.png)
+
+**Read the other notices too:** this example retains three ambiguous physical-identity observations. Independent sampling also reports an unsupported detection-source path. The formal replay's 3/3 result does not turn those into successful recognition-quality or sampling acceptance. The screenshot preserves the notices; this is not commercial accuracy certification.
+
+#### 2.7.14 Finish, save, and reopen the actual task
+
+1. Click **Return to editing**. Check you have not changed targets, references, rules, ranges, or order after validation.
+2. Click bottom **Done** and wait for the editor to close. If the SOP node window remains, click **Confirm**.
+3. On the task canvas click **Save** and wait for saving to finish. Reopen SOP Workflow: its summary should say **Steps: 3**. Reopen the editor and check References: 2, Pending: 0 and the configuration table.
+4. If the reopened draft differs from the validated version, investigate; an earlier screenshot does not validate later edits.
+
+[![H-20: the saved SOP summary still contains three steps, version 3, after reopening; Chinese UI.](../../assets/sop/zh-h22-saved-summary.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h22-saved-summary.png)
+
+#### 2.7.15 Run one station workpiece from automatic checks to human review
+
+1. The task input must actually show **the same toolbox appearance and hand operation**. The observed station used a controlled source of this same original video. That test address has been stopped and is not a customer feed. With your own camera, record its view, create appropriate references, and validate again. Uploading a file into the editor does not replace the camera picture.
+2. Click **Run** on the canvas and wait for the task to run. Coordinate occupied resources without stopping another person's task. On this task's card choose **Station operation**, then **Open station page** for the larger view.
+3. Check the task title, **Video: Live**, **Status synced**, and an image that actually updates. Click **Start workpiece**. Running the task and beginning a workpiece are separate actions.
+4. Watch the first two automatic steps become **Verified**, reaching **2/3**. The third offers **Confirm completion**. Read the instructions, inspect the station, click it, and wait for **Operation confirmed** and a verified third step.
+5. After **3/3**, this example still requires **Finish workpiece**. Verify **Workpiece ended / Workpiece completed in compliance**. Verified steps and an ended workpiece are two distinct checkpoints.
+6. Stop your own tutorial task after practising. **Start workpiece** begins the next item; it does not merely display the previous result.
+
+[![H-17: the station before starting the workpiece; Chinese UI.](../../assets/sop/zh-h16-station-ready.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h16-station-ready.png)
+
+[![H-18: both automatic steps are verified; the third retains the operator button; Chinese UI.](../../assets/sop/zh-h17-station-manual.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h17-station-manual.png)
+
+[![H-19: the same station workpiece has ended, all three steps verified, completed in compliance; Chinese UI.](../../assets/sop/zh-h18-station-completed.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h18-station-completed.png)
+
+**Reading the station images:** the authentic captures retain a connecting/stalled display notice. They illustrate the step controls and acknowledged workpiece outcome, not proof of continuously healthy video. Refresh and wait for a live picture before inspecting or starting the next workpiece.
+
+**Recovery:** if the picture is stalled, use **Refresh video**, wait for recovery, and inspect again; refreshing does not reset the workpiece. If confirmation outcome is unknown, **Recheck status** before retrying the original request when allowed. Do not start another workpiece to conceal an uncertain result. Pause, interruption, and operator-waiting animations are not completed steps.
+
+#### 2.7.16 Check the complete exercise before consulting tool details
+
+| Checkpoint | Required outcome | Return to |
+|---|---|---|
+| Task graph | Hand Landmarks and object results both enter SOP | 2.7.1 |
+| File | The 31.2-second local file plays and seeks | 2.7.2 |
+| References | One logical toolbox, two views, zero pending | 2.7.3–2.7.4; cancel unadopted trial drafts |
+| Yellow result | 0.21 below 25% is not treated as satisfied | 2.7.5–2.7.6 |
+| Hand rule | Any hand near toolbox; both full frame | 2.7.8–2.7.9 |
+| Timing/completion | Continuous 0.8 s object step; tolerant total 0.8 s hand step with stated safeguards; human third step | 2.7.7, 2.7.10–2.7.11 |
+| Stage | Hand stage: 312 frames, 1/1 | 2.7.12 and condition reasons |
+| Full plan | Complete file, 3/3, last step operator-confirmed | 2.7.13 |
+| Persistence | Three stages and two references remain on reopen | 2.7.14 |
+| Station | Two automatic checks → human confirmation → finish → compliant result | 2.7.15 |
+
+You have now connected objects, hands, temporal rules, human confirmation, and station operation in one example. Continue to [hand operation details](#hand-operations), [toolbar and drag-and-drop](#toolbar-and-drag), and [validation and operation](#validation-and-operation). For near-then-away or transfer-and-place, choose a suitable complete-motion recording and counterexamples; a proximity pass here does not validate those different actions.
+
 
 ## 3. Deployment Preparation and Process Requirements {#preparation}
 
@@ -3572,3 +3785,5 @@ The original workbench footage is from **Jiayun Zhang, Petr Byvshev, and Yu Xiao
 The accompanying sample derives from **03_noglove_cam2_720.mp4**: the first 60 seconds, a fixed 800 × 320 work-area crop, converted to 15 fps H.264, with audio omitted. Documentation screenshots were captured through actual AIBox Web interactions and include footage excerpts, references, and interface overlays. Screenshot files have no rewritten interface text or detection results. Example names, regions, and rules were configured for the explanation. The dataset authors do not endorse this product or its example configuration.
 
 The [original release](https://zenodo.org/records/4047982) provides the full recordings; the excerpt is available in the [quick start](#quickstart--use-the-accompanying-sample-recording). The footage and screenshots illustrate operation and do not certify recognition accuracy or production quality.
+
+The complete hand tutorial uses **FraunhoferIPK / IndEgo**, original file **8_Singular_Actions/15_Sorting_tools_of_461_toolbox/mp4_480/User_14_Short_15_480.mp4**, pinned to commit `c822468b5e0c9c42ebbf2939d3be936c2b203704`. See the [original file and dataset](https://huggingface.co/datasets/FraunhoferIPK/IndEgo/blob/c822468b5e0c9c42ebbf2939d3be936c2b203704/8_Singular_Actions/15_Sorting_tools_of_461_toolbox/mp4_480/User_14_Short_15_480.mp4), licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The distributed [toolbox-hand-31s.mp4](../../assets/sop/toolbox-hand-31s.mp4) is a byte-for-byte copy with only the filename changed: no crop or transcode; 480 × 480, 10 fps, 312 frames, 31.2 seconds. SHA-256: `2e09a1893ed0090adc9ccd58af17736f420aa935f02146968cf52a816a3a8591`. Authentic UI captures include this video, references, and actual overlays, with no rewritten image text/results. The dataset provider does not endorse the product. This tutorial is not acceptance of grasp, transfer, or commercial accuracy.
