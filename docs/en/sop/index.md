@@ -4,11 +4,12 @@
 
 This guide is for process engineers, operators, deployment teams, and administrators using AIBox SOP for the first time. A fixed-camera workbench example takes you through **choosing a camera → preparing a video → selecting a target → improving recognition → defining steps → validating stages → validating the plan → saving → station operation**. You do not need to write code, rule expressions, or JSON.
 
-**For your first plan, follow the chapters in order.** All chapters are on this page. Use the table of contents on the right or the links below to jump directly to a section.
+**Read chapter 1 to understand the system, then follow the complete [five-minute example in chapter 2](#five-minute-quickstart). Consult the tool details afterward as needed.** All chapters are on this page. Use the table of contents on the right or the links below to jump directly to a section.
 
 | What do you need to do? | Chapter |
 |---|---|
-| Build your first understandable plan | [Quick start: tool readiness and operator confirmation](#quickstart) |
+| Complete your first SOP with a worked example | [Five-minute quick start](#five-minute-quickstart) |
+| Find additional guidance for the two-step example | [Detailed walkthrough: tool readiness and operator confirmation](#quickstart) |
 | Record, upload, play, or select a video range | [Video, targets, and recognition](#video-and-recognition) |
 | Draw target boxes, add angles, review misses and duplicate boxes | [Video, targets, and recognition](#video-and-recognition) |
 | Check only selected areas, counts, or object positions | [Rules, regions, and timing](#rules-and-regions) |
@@ -71,7 +72,7 @@ A **stage** is an execution group. It can contain one step or an unordered group
 
 ### 1.4 Recommended learning path {#overview--4-recommended-learning-path}
 
-1. Build “mallet ready → operator confirmation” using the [quick start](#quickstart).
+1. Follow the complete [five-minute example in chapter 2](#five-minute-quickstart) to build “mallet ready → operator confirmation”; consult the [detailed walkthrough](#quickstart) for more guidance.
 2. Inspect recognition at different positions and angles and with hand occlusion using the [recognition chapter](#video-and-recognition).
 3. Add the regions, counts, timing, and grouping your process requires.
 4. If hands matter, complete [hand-direction calibration and hand-operation setup](#hand-operations).
@@ -92,7 +93,7 @@ Avoid changing references, thresholds, regions, timing, and order together. Reso
 
 | Part | Chapters | Purpose |
 |---|---|---|
-| Getting started | [Preparation](#preparation), [Quick start](#quickstart) | Establish the process and complete a two-step workflow |
+| Getting started | [Five-minute example](#five-minute-quickstart), [Preparation](#preparation), [Detailed walkthrough](#quickstart) | Complete a two-step workflow, then prepare your actual process |
 | Interface and controls | [Workspace](#workspace-reference), [Buttons](#control-reference), [Parameters](#parameters) | Find controls, availability, effects, and units |
 | Recognition and rules | [Video/targets](#video-and-recognition), [Regions/timing](#rules-and-regions), [Hands](#hand-operations), [Dragging](#toolbar-and-drag) | Configure actual requirements |
 | Complete labs | [Six scenarios](#scenario-labs) | Combine individual functions into testable work |
@@ -101,7 +102,7 @@ Avoid changing references, thresholds, regions, timing, and order together. Reso
 
 #### 1.6.1 By role {#overview--by-role}
 
-- **First configuration:** preparation → quick start → targets → rules → validation.
+- **First configuration:** five-minute example → preparation → detailed walkthrough → targets → rules → validation.
 - **Process owner:** requirements → parameter meanings → labs → acceptance.
 - **Operator:** operator station manual, demonstrations, and recovery.
 - **Installer/administrator:** controls → sources → migration → maintenance.
@@ -129,16 +130,165 @@ The interface figures are freshly captured native lossless PNGs. The article fit
 
 Use your own station names and verify the real page afterward. Screenshot states are not your current state. Chinese and English chapters use their corresponding interface captures. Download the [sample footage](#quickstart--use-the-accompanying-sample-recording); see [credits](#reference--7-sample-and-screenshot-credits).
 
-**Next: [Build the first two-step example →](#quickstart)**
+**Next: [Chapter 2: complete five-minute quick-start example →](#five-minute-quickstart)**
 
 *Example footage and reference views in the screenshots: [wooden-box assembly dataset and CC BY 4.0 credits](#reference--7-sample-and-screenshot-credits).*
 
-## 2. Deployment Preparation and Process Requirements {#preparation}
+## 2. Five-Minute Quick Start: Complete Your First SOP {#five-minute-quickstart}
+
+Build one complete **Mallet ready → Operator confirmation** workflow, starting with a new task and continuing through recognition, validation, saving, and station operation. Follow the steps in order. Each step gives concrete settings and an outcome to check; detailed tool instructions follow later in this manual.
+
+**Get the example:** [Download the workbench video (MP4, 60 seconds, approximately 9.5 MB)](../../assets/sop/workbench-60s.mp4). One distinctive rubber mallet and one operator check make automatic and manual completion easy to understand. See the [source and license](#reference--7-sample-and-screenshot-credits).
+
+| What you will build | Setting |
+|---|---|
+| Task / plan name | First SOP: tools ready and operator confirmation |
+| Target | Mallet, initially with one clear reference |
+| Overall validation range | Source seconds 10–20 |
+| Stage 1 | Mallet ready; object detected continuously for 0.8 seconds, then automatic completion; validate 10–16 seconds |
+| Stage 2 | Operator confirmation; operator completes the step; validate 16–20 seconds |
+| Final behavior | Automatic first step, a second step awaiting confirmation, then finish the workpiece |
+
+*Five minutes is the learning route; uploading and device detection may require additional time. Click figures for Original 100%. Recheck with recordings from your own station before production use.*
+
+### 2.1 Create the task and upload or record a complete video {#five-minute-media}
+
+1. Sign in, check the device connection, and choose **Add task → SOP workflow → Check objects only**.
+2. Name it **First SOP: tools ready and operator confirmation**. Choose **Create and edit**, then **Edit steps**.
+3. Give the plan the same name in the SOP editor.
+4. Choose one media route below.
+
+=== "Practice with the supplied video"
+
+    Click **Upload** above the workspace and select `workbench-60s.mp4`. Once ready, play it and pause near **0:10**. Locate the rubber mallet on the bench.
+
+=== "Practice with your own station recording"
+
+    Use **Choose / change** at the top to select the station camera, then **Record** above the workspace. Show the tools, perform the operation, and retain a final view for inspection. Stop and replay. Read any replacement notice first. Replace this example's 10–20 second range with the actual times in your recording.
+
+5. Below the player, set the overall start to **0:10.0** and end to **0:20.0**. Preview the range. Magnifier **+/−** supports precise positioning; **1:1** restores the range view.
+
+[![Quick start 1: Upload or Record above the video, with the overall validation range below](../../assets/sop/en-06-teaching-video.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-06-teaching-video.png)
+
+**Check:** Playable video, real timeline images, and a 10–20 second range. The figure locates the controls; change its full range to the example range. Editor validation reads local video directly and needs no separate RTSP input.
+
+### 2.2 Create the mallet target and detect the current frame after boxing {#five-minute-recognition}
+
+1. Pause near **0:10** on a clear **Video** frame and click **Add target**.
+2. Draw a close box around the mallet's recognizable body, excluding hands, large background areas, and neighboring tools. Name it **Mallet** and confirm.
+3. Open **Targets**, select the mallet card under **This step**, and check its reference on the right.
+4. Choose **1 image every 30 frames** in the target toolbar, then **Improve**. This example is 15 fps, so sampling is approximately every two seconds; use the actual image timestamps.
+5. Inspect results as they appear. Check box position, misses, and duplicate boxes on the same mallet.
+
+[![Quick start 2: Select the mallet, open recognition review, and check its reference on the right](../../assets/sop/en-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-10-target-reference.png)
+
+**For a miss, complete this correction loop:**
+
+1. Open the missed image, choose **Present: draw boxes**, and box the mallet on the original image. Box every target of that type if several appear.
+2. **Click “Try this frame” on the right immediately; no full-video rescan is needed first.** Added boxes become temporary references for detecting their targets in this image.
+3. Read each box's result, such as **Detected**, **Below threshold**, or **No matching candidate**. Open **Recognition details** for candidates and scores. Compare the manual purple box with the new algorithm detection at the same physical location.
+4. If unmatched, check box placement, visibility, and reference angle, adjust, and **Try this frame** again. A purple annotation alone is not a detection.
+5. When suitable, choose **Clear image, all boxed**, explicitly apply the required boxes as references, then **recheck the target / selected range**.
+6. Inspect other images for improvement and new false or duplicate detections. With no misses, continue to the next step; mark obscured images **Unclear**.
+
+**Check:** Current-frame matches first, then results across the range. A single-frame trial and a video recheck are different checks; applying boxes does not save the whole task. [Detailed annotation instructions →](#video-and-recognition--5-complete-the-manual-box-workflow)
+
+### 2.3 Define two steps using the toolbar and check settings {#five-minute-authoring}
+
+**Configure stage 1, “Mallet ready”:**
+
+1. Select the first step on the left. Name it **Mallet ready** and enter **Keep the mallet clearly visible on the workstation** as its instruction.
+2. Open the step's **checks → Edit**, then select or drag **Mallet** from the stage toolbar.
+3. Choose the object-detected check and **Full frame** as its area.
+4. Open the completion settings. Choose **automatic after visual detection**, set the hold to **0.8 seconds**, and use a **0** time limit for this example (no timeout).
+
+[![Quick start 3: Add the mallet from the toolbar and configure the first step's detection check](../../assets/sop/en-11-object-condition.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-11-object-condition.png)
+
+**Create stage 2, “Operator confirmation”:**
+
+1. Click **Add step** on the left, after the first step, and name it **Operator confirmation**.
+2. Enter **Inspect tool placement and station condition; confirm when correct** as its instruction.
+3. Choose **Operator confirmation** as the completion mode. Do not add a mandatory visual target check to this purely manual step.
+4. Keep the steps sequential; do not put them in an unordered group.
+
+[![Quick start 3B: Configure the second step for operator confirmation](../../assets/sop/en-13-manual-completion.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/en-13-manual-completion.png)
+
+**Check:** Exactly two steps, correct order, a mallet check in the first, and explicit operator completion in the second. Toolbar **objects / regions / hands** add check items. **Detection settings** manages recognition sources; edit each step's specific rule in its relationship diagram.
+
+??? info "Optional exercise with the same example: Either hand near the mallet"
+
+    Complete the two-step example first, then extend it if needed:
+
+    1. Choose **Detection settings → Add hand recognition**, return to the steps, and start with **Either hand**. Calibrate direction before requiring left or right.
+    2. Add **Hand near mallet** between the existing steps. Select a hand and the mallet from the toolbar, open their relationship settings, and choose proximity. Start with the full frame.
+    3. Replay the source and find a continuous range in which the hand is clearly visible and actually near the mallet. Use it for this stage and ensure the overall range covers it.
+    4. **Validate this stage** and check the image, hand condition, hold, and outcome. Record a suitable action if the video has no sufficiently clear continuous example. An undetected hand does not prove withdrawal.
+    5. Revalidate the complete three-step plan after the exercise passes. Keep the original two-step plan if practicing only the main example.
+
+    [![Quick start extension: Hands, objects, and the hand-object action configuration entry](../../assets/sop/en-19-hand-actions.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-19-hand-actions.png)
+
+    The figure locates the movement-together tools. A proximity check, approach followed by withdrawal, and a region-constrained transfer have different requirements; choose using [Hand operations](#hand-operations). Proximity does not prove a secure grasp, and one image cannot establish a completed transfer.
+
+### 2.4 Validate stage 1, stage 2, and then the complete plan {#five-minute-validation}
+
+**A. Validate stage 1:**
+
+1. Below stage 1, select **Validation range** and set **0:10.0–0:16.0**.
+2. Click **Validate this stage**. Watch the device's actual detection output and check the mallet detection and 0.8 second hold.
+3. Check that this stage's one step completes. Otherwise, expand the step's checks and reasons, correct the target or rule, and revalidate.
+
+**B. Validate stage 2:**
+
+1. Select stage 2, set **0:16.0–0:20.0**, and **Validate this stage**.
+2. Review the image and instructions when the manual step is reached. Once allowed, click **Confirm step** in the stage. The corresponding button in the separate validation window reads **I reviewed the video; confirm this step**.
+3. Wait for the updated result and check completion. If the button is missing or unavailable, read the status before continuing; do not bypass the step or repeatedly click.
+
+[![Quick start 4: Set stage 2's own range and use Validate this stage](../../assets/sop/en-14-stage-range.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-14-stage-range.png)
+
+**C. Validate the complete sequence:**
+
+1. Check the overall range is **0:10.0–0:20.0**, then click **Validate plan**.
+2. Watch the first step run and complete, followed by the second awaiting operator confirmation. Review and confirm it using the current entry.
+3. Check that both steps complete in order and the final result is as expected. A recording-processing completion alone does not establish step completion.
+
+**Check:** Stage 1 completes automatically; stage 2 requires confirmation; full-plan validation reproduces their order. Revalidate affected parts and the plan after changing targets, ranges, order, or completion modes.
+
+### 2.5 Understand the example's automatic and manual paths {#five-minute-completion}
+
+The example follows **mallet condition stable for 0.8 seconds → automatic first-step completion → second step requests inspection → operator confirms → both steps complete**.
+
+[![Quick start 5: Configure the first step to complete automatically after a stable visual condition](../../assets/sop/en-12-auto-completion.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-12-auto-completion.png)
+
+| Required behavior | Configuration | Operator experience |
+|---|---|---|
+| This example: automatic check, then human inspection | Automatic visual step followed by operator confirmation | Detection advances step 1; a person completes step 2 |
+| Visual check and human inspection in the same step | Visual detection plus operator review | Inspect and confirm after the visual conditions are ready |
+| Entirely automatic workflow | Every step has a reliable visible check and automatic completion | Rules advance the sequence; do not simply switch this example's rule-free manual step to automatic |
+
+A clear target, short range, and simple rule make the first successful workflow easier to diagnose. Investigate unmet checks rather than lowering thresholds or removing required conditions to get a pass.
+
+### 2.6 Save and complete a real station cycle {#five-minute-station}
+
+1. Click **Done** in the SOP editor to return the plan to the task draft. Confirm the node dialog if still open.
+2. Click **Save** in the outer task editor and wait for success. Reopen and check the steps, target, ranges, and completion modes.
+3. For your own station, select its camera and repeat this exercise with references and recordings of its real tools before operational use. The downloaded example teaches the workflow; your camera will not automatically show its workbench.
+4. Run the saved task, choose **Station operation / Open station**, and **Start workpiece**.
+5. Place the mallet at the real station. Watch detection complete the first step and advance to **Operator confirmation**.
+6. Read the instructions, inspect the actual tools and station, then choose **Operator confirmation**. Check that both step cards show **Verified**.
+7. Follow **Finish workpiece**, check the compliant completion result and both step results, then start the next piece.
+
+[![Quick start 6: Actual station result for the same two-step workbench example, with both steps verified](../../assets/sop/en-37-station-completed.png){loading="lazy" decoding="async" width="2560" height="1440"}](../../assets/sop/en-37-station-completed.png)
+
+**Check:** Actual station video and a clear current step, instruction, confirmation action, and workpiece result on the right. This figure is an actual capture of the manual's two-step example. Editor validation uses local recordings; operational tasks use the camera input in their saved task graph.
+
+**Example complete:** Video, recognition, added-box trials, two-step authoring, stage and full-plan validation, saving, and station operation now form one complete route. Continue with the [tool reference](#control-reference) or the [complete station run record](#station-live-example).
+
+## 3. Deployment Preparation and Process Requirements {#preparation}
 
 
 Use this chapter before configuring a production workflow. Its outputs are a clear process worksheet, usable teaching footage, distinguishable targets, and an explicit list of quality checks that require an operator. Every subsequent editor action should implement a stated requirement.
 
-### 2.1 Responsibilities {#preparation--1-responsibilities}
+### 3.1 Responsibilities {#preparation--1-responsibilities}
 
 | Role | Before configuration | After configuration |
 |---|---|---|
@@ -149,9 +299,9 @@ Use this chapter before configuring a production workflow. Its outputs are a cle
 
 One person may hold several roles. Keep the responsibilities explicit even then. An engineer understanding the editor does not establish that an operator understands the station instructions.
 
-### 2.2 Checks before opening the editor {#preparation--2-checks-before-opening-the-editor}
+### 3.2 Checks before opening the editor {#preparation--2-checks-before-opening-the-editor}
 
-#### 2.2.1 Device and browser {#preparation--21-device-and-browser}
+#### 3.2.1 Device and browser {#preparation--21-device-and-browser}
 
 1. Complete [Device Onboarding](../device-onboarding.md) and verify access from the station computer.
 2. Sign in at the device address selected for the installation. Screenshot addresses are examples.
@@ -162,7 +312,7 @@ One person may hold several roles. Keep the responsibilities explicit even then.
 
 **Expected result:** Device status and task controls load reliably. Starting a task is not required at this point.
 
-#### 2.2.2 Camera {#preparation--22-camera}
+#### 3.2.2 Camera {#preparation--22-camera}
 
 | Item | Ready condition | Resolve first |
 |---|---|---|
@@ -175,13 +325,13 @@ One person may hold several roles. Keep the responsibilities explicit even then.
 
 Regions follow image coordinates. A region may still be drawn on screen after the camera moves while no longer representing the intended workplace.
 
-#### 2.2.3 Capabilities {#preparation--23-capabilities}
+#### 3.2.3 Capabilities {#preparation--23-capabilities}
 
 Begin object-only workflows with object recognition. Add hand recognition when hand/object relationships are required. Check left and right using the actual installed orientation.
 
 A plugin name alone does not establish that a complete operation is available. Check the editor's targets, conditions, and validation controls, then verify the actual recording.
 
-### 2.3 Turn process language into a worksheet {#preparation--3-turn-process-language-into-a-worksheet}
+### 3.3 Turn process language into a worksheet {#preparation--3-turn-process-language-into-a-worksheet}
 
 Write the intended action first, then its observable evidence. “Pick up the mallet” may require approach, object movement, arrival, and operator review. Hand proximity alone does not establish a completed pickup.
 
@@ -202,7 +352,7 @@ Use one clearly completable work unit per row:
 
 Do not replace an unobservable quality requirement with an easy position check. A drill near a screw does not establish torque; a cup inside a region does not establish liquid quantity.
 
-### 2.4 Establish dependencies {#preparation--4-establish-dependencies}
+### 3.4 Establish dependencies {#preparation--4-establish-dependencies}
 
 Ask:
 
@@ -219,9 +369,9 @@ Ask:
 
 Overlapping video ranges do not make operations interchangeable. Non-overlapping video ranges do not by themselves establish a mandatory dependency. Use the process requirements.
 
-### 2.5 Prepare teaching footage {#preparation--5-prepare-teaching-footage}
+### 3.5 Prepare teaching footage {#preparation--5-prepare-teaching-footage}
 
-#### 2.5.1 What to include {#preparation--51-what-to-include}
+#### 3.5.1 What to include {#preparation--51-what-to-include}
 
 Record a stable initial workplace, the operation, and its final state. Do not place critical events at the first or last frame or during camera movement.
 
@@ -232,7 +382,7 @@ Record a stable initial workplace, the operation, and its final state. Do not pl
 5. Retain a clear final-position view.
 6. Record another operation separately for independent validation.
 
-#### 2.5.2 Check the uploaded recording {#preparation--52-check-the-uploaded-recording}
+#### 3.5.2 Check the uploaded recording {#preparation--52-check-the-uploaded-recording}
 
 | Action | Expected observation | If not obtained |
 |---|---|---|
@@ -247,15 +397,15 @@ Record a stable initial workplace, the operation, and its final state. Do not pl
 
 **Completion check:** Identify a clear target view, the action's beginning and end, and a view where the object is genuinely not ready or the operation is incomplete.
 
-### 2.6 Prepare the target list {#preparation--6-prepare-the-target-list}
+### 3.6 Prepare the target list {#preparation--6-prepare-the-target-list}
 
-#### 2.6.1 Naming {#preparation--61-naming}
+#### 3.6.1 Naming {#preparation--61-naming}
 
 Use a practical appearance or purpose plus the object name, such as “Rubber mallet” or “White paint cup.” Several reference views may belong to one logical target. Do not accidentally make front and side views into two objects that must coexist.
 
 For similar objects, specify the visible difference. A longer name does not solve a distinction that the image resolution cannot show.
 
-#### 2.6.2 Reference planning {#preparation--62-reference-planning}
+#### 3.6.2 Reference planning {#preparation--62-reference-planning}
 
 | Reference | Purpose | Also test |
 |---|---|---|
@@ -266,7 +416,7 @@ For similar objects, specify the visible difference. A longer name does not solv
 
 After adding a reference, check both improved recognition and new false or duplicate detections. More references do not automatically mean greater stability.
 
-### 2.7 Prepare the region list {#preparation--7-prepare-the-region-list}
+### 3.7 Prepare the region list {#preparation--7-prepare-the-region-list}
 
 Use functional names such as Tool area, Parts area, and Assembly area. Have the process owner approve the boundaries.
 
@@ -278,7 +428,7 @@ Use functional names such as Tool area, Parts area, and Assembly area. Have the 
 
 [![Drawing a region on the actual picture](../../assets/sop/en-18-draw-region.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-18-draw-region.png)
 
-### 2.8 Prepare validation cases {#preparation--8-prepare-validation-cases}
+### 3.8 Prepare validation cases {#preparation--8-prepare-validation-cases}
 
 | Class | Include | Principle |
 |---|---|---|
@@ -293,7 +443,7 @@ Use functional names such as Tool area, Parts area, and Assembly area. Have the 
 
 These specify a test design, not results already measured by this manual. Retain recordings, configuration versions, expected results, and observations.
 
-### 2.9 Preparation checklist {#preparation--9-preparation-checklist}
+### 3.9 Preparation checklist {#preparation--9-preparation-checklist}
 
 - [ ] Correct task and station identified.
 - [ ] Complete footage plays and seeks.
@@ -309,12 +459,12 @@ These specify a test design, not results already measured by this manual. Retain
 
 *Footage attribution: [Sample and screenshot credits](#reference--7-sample-and-screenshot-credits).*
 
-## 3. Quick Start: Tool Readiness → Operator Confirmation {#quickstart}
+## 4. Detailed Walkthrough: Tool Readiness → Operator Confirmation {#quickstart}
 
 
 This chapter builds one understandable two-step workflow. First check a rubber mallet, then ask the operator to confirm. **Verify recognition before proceeding to stage and plan validation.** Add hands and multiple targets after the basic workflow is clear.
 
-### 3.1 Prepare the station and recording {#quickstart--1-prepare-the-station-and-recording}
+### 4.1 Prepare the station and recording {#quickstart--1-prepare-the-station-and-recording}
 
 1. Fix the camera in place and give the work area a substantial part of the image.
 2. Check that the mallet is clearly visible in its normal position. Avoid persistent occlusion by hands, reflections, or other tools.
@@ -333,13 +483,13 @@ This chapter builds one understandable two-step workflow. First check a rubber m
 **Checkpoint:** You can point out the mallet, the part of the video where it is clearly visible, and the point where the operator should confirm.
 
 
-#### 3.1.1 Use the accompanying sample recording {#quickstart--use-the-accompanying-sample-recording}
+#### 4.1.1 Use the accompanying sample recording {#quickstart--use-the-accompanying-sample-recording}
 
 [Download the 60-second workbench sample (MP4, approximately 9.5 MB)](../../assets/sop/workbench-60s.mp4). If it opens in the browser, save it through the video menu, then upload it as described in this chapter. Upload the video, rather than a screenshot.
 
 The sample uses the same workbench as the illustrations, making it easier to find the mallet and compare times. It is a fixed 800 × 320 crop from the original recording's first 60 seconds. For your own station, use your own fixed-camera footage rather than copying the example's coordinates. See [Sample and screenshot credits](#reference--7-sample-and-screenshot-credits) for authors, source, license, and adaptations.
 
-### 3.2 Sign in and create an SOP task {#quickstart--2-sign-in-and-create-an-sop-task}
+### 4.2 Sign in and create an SOP task {#quickstart--2-sign-in-and-create-an-sop-task}
 
 1. Open the device management address in your browser and sign in.
 2. Wait for a connected device state. For initial setup, complete [Device Onboarding](../device-onboarding.md).
@@ -355,7 +505,7 @@ The sample uses the same workbench as the illustrations, making it easier to fin
 
 The task name, plan name, and station name can differ. The task name identifies the managed task, the plan name identifies the process, and the station name identifies the operator's workplace. Use meaningful, consistent names rather than several indistinguishable “Test” plans.
 
-### 3.3 Find the main editor controls {#quickstart--3-find-the-main-editor-controls}
+### 4.3 Find the main editor controls {#quickstart--3-find-the-main-editor-controls}
 
 [![Figure 3: Main areas of the SOP editor](../../assets/sop/en-04-editor-overview.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-04-editor-overview.png)
 
@@ -371,7 +521,7 @@ The task name, plan name, and station name can differ. The task name identifies 
 
 Collapse the step list or maximize the editor when you need space. Numbered navigation remains available when the list is collapsed. Use ordinary scrolling to move through the page. Use the displayed modifier key or the plus/minus controls to zoom the image.
 
-### 3.4 Choose the station camera {#quickstart--4-choose-the-station-camera}
+### 4.4 Choose the station camera {#quickstart--4-choose-the-station-camera}
 
 1. Click **Choose / change** in the plan bar.
 2. Prefer a camera already configured for this station.
@@ -385,9 +535,9 @@ Collapse the step list or maximize the editor when you need space. Numbered navi
 
 After changing the camera, record or check the teaching video, target references, regions, hand directions, and validation footage again. Regions drawn for a previous viewpoint should not be assumed correct for a new viewpoint.
 
-### 3.5 Upload or record the complete process {#quickstart--5-upload-or-record-the-complete-process}
+### 4.5 Upload or record the complete process {#quickstart--5-upload-or-record-the-complete-process}
 
-#### 3.5.1 Use an existing recording {#quickstart--51-use-an-existing-recording}
+#### 4.5.1 Use an existing recording {#quickstart--51-use-an-existing-recording}
 
 1. Click **Upload**.
 2. Select a video format supported by the device interface.
@@ -397,7 +547,7 @@ After changing the camera, record or check the teaching video, target references
 
 [![Figure 5: Complete teaching video and timeline](../../assets/sop/en-06-teaching-video.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-06-teaching-video.png)
 
-#### 3.5.2 Record the station {#quickstart--52-record-the-station}
+#### 4.5.2 Record the station {#quickstart--52-record-the-station}
 
 1. Select the camera.
 2. Click **Record**.
@@ -411,7 +561,7 @@ Recording the complete process again replaces the plan's demonstration material,
 
 **Checkpoint:** The source video plays, you can locate a clear mallet frame, and the camera and recording are correct.
 
-### 3.6 Create the mallet target {#quickstart--6-create-the-mallet-target}
+### 4.6 Create the mallet target {#quickstart--6-create-the-mallet-target}
 
 1. Pause the **Video** view on a clear frame.
 2. Click **Add target**.
@@ -424,7 +574,7 @@ Recording the complete process again replaces the plan's demonstration material,
 
 One mallet can have several reference images and still be one physical object. References may consume detection capacity. Keep representative views rather than many near-identical pictures.
 
-### 3.7 Check recognition before authoring further {#quickstart--7-check-recognition-before-authoring-further}
+### 4.7 Check recognition before authoring further {#quickstart--7-check-recognition-before-authoring-further}
 
 1. Select the recording range in the upper timeline.
 2. Choose the sampling interval. A smaller interval produces more pictures and requires more processing and review.
@@ -437,7 +587,7 @@ One mallet can have several reference images and still be one physical object. R
 
 **Proceed when:** Recognition is reliable in normal clear views, and misses, false detections, and duplicates have been examined. Do not loosen step requirements to hide an unresolved recognition problem.
 
-### 3.8 Configure “Mallet ready” {#quickstart--8-configure-mallet-ready}
+### 4.8 Configure “Mallet ready” {#quickstart--8-configure-mallet-ready}
 
 1. Select the first step and give it a meaningful name.
 2. Enter a short instruction such as “Check that the mallet is clearly visible in the tool work area and remains ready.”
@@ -454,7 +604,7 @@ One mallet can have several reference images and still be one physical object. R
 
 Choose visual detection plus operator review when a person must inspect the result after the visual conditions are met. This differs from a step based entirely on operator confirmation.
 
-### 3.9 Configure “Operator confirmation” {#quickstart--9-configure-operator-confirmation}
+### 4.9 Configure “Operator confirmation” {#quickstart--9-configure-operator-confirmation}
 
 1. Add a second step after the first.
 2. Name it “Operator confirmation.”
@@ -466,7 +616,7 @@ Choose visual detection plus operator review when a person must inspect the resu
 
 **Expected result:** The confirmation step becomes current after the readiness stage finishes. An old confirmation control should not be used to skip a pending step or override an uncertain state.
 
-### 3.10 Assign a separate range to each stage {#quickstart--10-assign-a-separate-range-to-each-stage}
+### 4.10 Assign a separate range to each stage {#quickstart--10-assign-a-separate-range-to-each-stage}
 
 1. Find **Validation range** below the stage.
 2. For the first stage, select a clear view of the mallet—seconds **10–16** in this example.
@@ -481,7 +631,7 @@ Choose visual detection plus operator review when a person must inspect the resu
 
 Stage ranges are independent and may overlap. When validating a plan against the same source recording, the overall validation range must cover the stages being tested. If narrowing it creates a conflict, resolve the indicated stages rather than assuming the application silently clips every stage.
 
-### 3.11 Validate stages, then the plan {#quickstart--11-validate-stages-then-the-plan}
+### 4.11 Validate stages, then the plan {#quickstart--11-validate-stages-then-the-plan}
 
 1. Use **Validate stage 1** and inspect the observed condition and completion result.
 2. If it is wrong, expand the step's checks and reasons and correct the relevant target, region, or timing.
@@ -491,7 +641,7 @@ Stage ranges are independent and may overlap. When validating a plan against the
 
 A stage result applies to that stage and segment; it does not automatically validate the entire plan. Reaching the end of a video or processing a number of frames is not a step pass rate. See [Validation and operation](#validation-and-operation) for result interpretation.
 
-### 3.12 Finish, save, and reopen {#quickstart--12-finish-save-and-reopen}
+### 4.12 Finish, save, and reopen {#quickstart--12-finish-save-and-reopen}
 
 1. Click **Done** in the SOP editor to return the changes to the task draft.
 2. If the node configuration window is still open, confirm it to return the node settings to the task editor.
@@ -504,7 +654,7 @@ A stage result applies to that stage and segment; it does not automatically vali
 
 **Done** returns changes to the draft; **Save** persists the task on the device; **Run** is separate. Follow the prompt when closing or canceling unsaved edits. Browser draft data is not automatically a saved production configuration.
 
-### 3.13 End-of-chapter checklist {#quickstart--13-end-of-chapter-checklist}
+### 4.13 End-of-chapter checklist {#quickstart--13-end-of-chapter-checklist}
 
 - [ ] The full recording and both demonstration clips play.
 - [ ] The mallet is one logical target; reference angles are not confused with physical count.
@@ -519,12 +669,12 @@ A stage result applies to that stage and segment; it does not automatically vali
 
 *Example footage and reference views in the screenshots: [wooden-box assembly dataset and CC BY 4.0 credits](#reference--7-sample-and-screenshot-credits).*
 
-## 4. Editor Workspace and Control Reference {#workspace-reference}
+## 5. Editor Workspace and Control Reference {#workspace-reference}
 
 
 This chapter explains where an action is performed, what it affects, and where to verify its result. Video, targets, steps, and validation form one connected workspace.
 
-### 4.1 Workspace overview {#workspace-reference--1-workspace-overview}
+### 5.1 Workspace overview {#workspace-reference--1-workspace-overview}
 
 [![Main areas of the SOP editor](../../assets/sop/en-04-editor-overview.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-04-editor-overview.png)
 
@@ -543,15 +693,15 @@ This chapter explains where an action is performed, what it affects, and where t
 | Stage timeline | Stage-specific validation/demo range | Other stages were not accidentally changed |
 | Footer | Messages, Cancel, Done | Task still needs saving afterward |
 
-### 4.2 Plan name, version, and camera {#workspace-reference--2-plan-name-version-and-camera}
+### 5.2 Plan name, version, and camera {#workspace-reference--2-plan-name-version-and-camera}
 
-#### 4.2.1 Name {#workspace-reference--21-name}
+#### 5.2.1 Name {#workspace-reference--21-name}
 
 Edit the plan-name field. Use a recognizable station or product plus the purpose, such as “Assembly A: Tool preparation.” Do not use a version number as the only identity. Check the actual version displayed by the system.
 
 Names are business data. Changing the interface language does not translate them automatically.
 
-#### 4.2.2 Camera selection {#workspace-reference--22-camera-selection}
+#### 5.2.2 Camera selection {#workspace-reference--22-camera-selection}
 
 1. Click **Choose / change**.
 2. Choose the current station's camera.
@@ -563,7 +713,7 @@ Names are business data. Changing the interface language does not translate them
 
 Device Web credentials and camera credentials may differ. If connection fails, resolve source and network details before repeatedly changing the same source inside several steps.
 
-### 4.3 Step list {#workspace-reference--3-step-list}
+### 5.3 Step list {#workspace-reference--3-step-list}
 
 | Action | Method | Meaning |
 |---|---|---|
@@ -576,13 +726,13 @@ Device Web credentials and camera credentials may differ. If connection fails, r
 
 Numbers identify positions; names express actions. Moving a card does not by itself edit a condition's internal event sequence.
 
-### 4.4 Video and Targets modes {#workspace-reference--4-video-and-targets-modes}
+### 5.4 Video and Targets modes {#workspace-reference--4-video-and-targets-modes}
 
-#### 4.4.1 Video {#workspace-reference--41-video}
+#### 5.4.1 Video {#workspace-reference--41-video}
 
 Play teaching footage, choose reference times, draw shared regions, and add targets. Seek to a clear picture before drawing.
 
-#### 4.4.2 Targets {#workspace-reference--42-targets}
+#### 5.4.2 Targets {#workspace-reference--42-targets}
 
 Inspect references and improve recognition. Check the selected name, reference count, and pending-adoption count first.
 
@@ -590,13 +740,13 @@ Seeing an object in the recording does not establish a configured target. Creati
 
 [![Target and reference management](../../assets/sop/en-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-10-target-reference.png)
 
-#### 4.4.3 Reference views {#workspace-reference--43-reference-views}
+#### 5.4.3 Reference views {#workspace-reference--43-reference-views}
 
 After selecting a reference card, compare it with the main picture. An additional view represents another appearance of the same logical object; it does not mean two physical objects must coexist.
 
 Pending adoption identifies improvements not yet admitted as plan references. Follow [Recognition improvement](#video-and-recognition) through trial, adoption, and video recheck.
 
-### 4.5 Scrolling, zooming, panning, and drawing {#workspace-reference--5-scrolling-zooming-panning-and-drawing}
+### 5.5 Scrolling, zooming, panning, and drawing {#workspace-reference--5-scrolling-zooming-panning-and-drawing}
 
 | Purpose | Control | What it does not change automatically |
 |---|---|---|
@@ -611,7 +761,7 @@ Check the current mode before drawing, especially when the starting point is ins
 
 In narrow windows, maximize the editor, collapse the step list, or close unneeded settings. Do not rely on making all browser text extremely small.
 
-### 4.6 The three timeline controls {#workspace-reference--6-the-three-timeline-controls}
+### 5.6 The three timeline controls {#workspace-reference--6-the-three-timeline-controls}
 
 1. **Playhead:** current viewing position.
 2. **Start handle:** beginning of the selected range.
@@ -619,11 +769,11 @@ In narrow windows, maximize the editor, collapse the step list, or close unneede
 
 [![Overall range and endpoint editing](../../assets/sop/en-08-plan-range.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-08-plan-range.png)
 
-#### 4.6.1 Preview a time {#workspace-reference--61-preview-a-time}
+#### 5.6.1 Preview a time {#workspace-reference--61-preview-a-time}
 
 Drag the playhead or follow the displayed seek instructions. Verify the main picture and current time, rather than only the thumbnail strip. Avoid grabbing an endpoint by mistake.
 
-#### 4.6.2 Change a range {#workspace-reference--62-change-a-range}
+#### 5.6.2 Change a range {#workspace-reference--62-change-a-range}
 
 1. Identify whether this is the overall or a stage-specific timeline.
 2. Drag its endpoint, or click the displayed start/end time.
@@ -633,30 +783,30 @@ Drag the playhead or follow the displayed seek instructions. Verify the main pic
 
 **Click to move the nearest endpoint** means clicking may edit the range. For viewing only, prefer drag-to-preview and explicit playback controls.
 
-#### 4.6.3 Set start and Set end {#workspace-reference--63-set-start-and-set-end}
+#### 5.6.3 Set start and Set end {#workspace-reference--63-set-start-and-set-end}
 
 Seek to the intended picture first, then use the appropriate control. When disabled, establish a valid loaded video position first. A disabled control is not evidence of a successful edit.
 
-#### 4.6.4 Independent stage ranges {#workspace-reference--64-independent-stage-ranges}
+#### 5.6.4 Independent stage ranges {#workspace-reference--64-independent-stage-ranges}
 
 Each stage retains its own range, which may overlap another stage's range. **Validation range** and **Operation demo** have different purposes. Check the displayed values after switching purposes.
 
 [![Stage-specific timeline](../../assets/sop/en-14-stage-range.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-14-stage-range.png)
 
-### 4.7 Stage toolbar {#workspace-reference--7-stage-toolbar}
+### 5.7 Stage toolbar {#workspace-reference--7-stage-toolbar}
 
-#### 4.7.1 Scope {#workspace-reference--71-scope}
+#### 5.7.1 Scope {#workspace-reference--71-scope}
 
 The toolbar lists available objects, regions, and hands. Selecting one does not always immediately change a rule: an operation setup may still require **Add to this stage**.
 
-#### 4.7.2 Selection order {#workspace-reference--72-selection-order}
+#### 5.7.2 Selection order {#workspace-reference--72-selection-order}
 
 - Hand/object operation: select the hand, then the object.
 - Object readiness or position: select the object, then the offered operation type.
 - Region assignment: drop the region into its compatible slot or click the slot.
 - Existing requirement: select its diagram object or relationship control.
 
-#### 4.7.3 Shared settings versus step rules {#workspace-reference--73-shared-settings-versus-step-rules}
+#### 5.7.3 Shared settings versus step rules {#workspace-reference--73-shared-settings-versus-step-rules}
 
 **Detection settings** manages station-wide capability and handedness. A step's checks and completion controls define its business requirements. Adding a hand source does not make every step a hand operation.
 
@@ -664,29 +814,29 @@ The toolbar lists available objects, regions, and hands. Selecting one does not 
 
 See [Toolbar and drag operations](#toolbar-and-drag) for addition, replacement, removal, and undo.
 
-### 4.8 Operation card {#workspace-reference--8-operation-card}
+### 5.8 Operation card {#workspace-reference--8-operation-card}
 
-#### 4.8.1 Name {#workspace-reference--81-name}
+#### 5.8.1 Name {#workspace-reference--81-name}
 
 Use actionable names such as “Prepare tools,” “Review parts,” or “Confirm completion.” The adjacent name-edit control does not configure visual rules.
 
-#### 4.8.2 Demonstration {#workspace-reference--82-demonstration}
+#### 5.8.2 Demonstration {#workspace-reference--82-demonstration}
 
 Click the video thumbnail's playback entry. Compare its time label with actual playback boundaries. The demo teaches the operator; its thumbnail is not a recognition reference.
 
 [![Step demonstration entry](../../assets/sop/en-15-demo-player.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-15-demo-player.png)
 
-#### 4.8.3 Operator instructions {#workspace-reference--83-operator-instructions}
+#### 5.8.3 Operator instructions {#workspace-reference--83-operator-instructions}
 
 Enter material, position, action, and quality-review instructions directly. Prefer short practical sentences: “Place the cup in the parts area. Check that it is undamaged before confirming.”
 
 Do not put development logs or threshold experiments in operator instructions. When the interface states that instructions appear on the station screen, review them as the operator will read them.
 
-#### 4.8.4 Status {#workspace-reference--84-status}
+#### 5.8.4 Status {#workspace-reference--84-status}
 
 Waiting, not validated, and review-required indicators describe state; they are not editable fields. Inspect the relevant reason rather than renaming the step to hide a state.
 
-### 4.9 Relationship diagram and settings {#workspace-reference--9-relationship-diagram-and-settings}
+### 5.9 Relationship diagram and settings {#workspace-reference--9-relationship-diagram-and-settings}
 
 1. Open **Checks in this step → Edit**.
 2. Select the relevant relationship or object.
@@ -697,7 +847,7 @@ Waiting, not validated, and review-required indicators describe state; they are 
 
 The small region label under a diagram object is operational information. It is not equivalent to merely having a region card in the toolbar.
 
-### 4.10 Done, Cancel, Close, and Save {#workspace-reference--10-done-cancel-close-and-save}
+### 5.10 Done, Cancel, Close, and Save {#workspace-reference--10-done-cancel-close-and-save}
 
 | Action | Effect | Next action |
 |---|---|---|
@@ -713,7 +863,7 @@ The small region label under a diagram object is operational information. It is 
 An editor draft, a saved task, and a running task are different states. Closing a window alone does not prove deployment.
 
 
-#### 4.10.1 Reading the example connections {#workspace-reference--flow-routing}
+#### 5.10.1 Reading the example connections {#workspace-reference--flow-routing}
 
 [![Actual parallel hand and object branches with video routed below into OSD](../../assets/sop/en-32-flow-routing.png){loading="lazy" decoding="async" width="1840" height="450"}](../../assets/sop/en-32-flow-routing.png)
 
@@ -732,7 +882,7 @@ The two detection branches are parallel data sources. Their positions do not mea
 
 In other layouts, paths may cross on the canvas. A crossing by itself does not join the signals: follow the arrows to their actual nodes and ports. Use **Arrange** to organize the display, then check the connections. Do not add or remove connections just to reproduce a picture's appearance.
 
-### 4.11 Change-impact reference {#workspace-reference--11-change-impact-reference}
+### 5.11 Change-impact reference {#workspace-reference--11-change-impact-reference}
 
 | Change | Recheck at least |
 |---|---|
@@ -749,12 +899,12 @@ In other layouts, paths may cross on the canvas. A crossing by itself does not j
 
 *Footage attribution: [Sample and screenshot credits](#reference--7-sample-and-screenshot-credits).*
 
-## 5. Tool and Button Reference: Locations and Effects {#control-reference}
+## 6. Tool and Button Reference: Locations and Effects {#control-reference}
 
 
 Use this chapter to identify a control while working. Each group provides an actual interface screenshot followed by location, purpose, availability, result, and verification. Click figures to enlarge. Controls depend on mode, selection, capability, and busy/read-only state. A missing control is not a reason to recreate the task.
 
-### 5.1 Identify the window first {#control-reference--1-identify-the-window-first}
+### 6.1 Identify the window first {#control-reference--1-identify-the-window-first}
 
 | Window | How to recognize it | Confirmation at this level |
 |---|---|---|
@@ -766,7 +916,7 @@ Use this chapter to identify a control while working. Each group provides an act
 
 If a control cannot be found, close the uppermost child dialog and identify the current layer. Do not use the outer **Run** control to try to open configuration.
 
-### 5.2 Create Task dialog {#control-reference--2-create-task-dialog}
+### 6.2 Create Task dialog {#control-reference--2-create-task-dialog}
 
 <div class="sop-ui-map sop-ui-map--detail sop-ui-map--portrait" style="aspect-ratio:90100/123840" markdown="1">
 
@@ -801,7 +951,7 @@ The upper area chooses task type, the middle selects object/hand capabilities, a
 | Create and Edit | Create and enter editing | Does not mean running or validated |
 | Cancel / close | Leave creation | An incomplete creation is not a saved task |
 
-### 5.3 Window and plan bar {#control-reference--3-window-and-plan-bar}
+### 6.3 Window and plan bar {#control-reference--3-window-and-plan-bar}
 
 <div class="sop-ui-map" markdown="1">
 
@@ -840,7 +990,7 @@ The upper area chooses task type, the middle selects object/hand capabilities, a
 | Step-list collapse/expand | Change sidebar width | Numbered navigation remains |
 | Add step / plus | Add a work unit | Configure its name, instructions, checks, and completion |
 
-### 5.4 Camera picker {#control-reference--4-camera-picker}
+### 6.4 Camera picker {#control-reference--4-camera-picker}
 
 <div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:132500/52245" markdown="1">
 
@@ -873,7 +1023,7 @@ The upper area chooses task type, the middle selects object/hand capabilities, a
 | Existing-address entry | Collapsible area below discovery | Administrator checks address/network when discovery is unavailable |
 | Use this address | After a valid address | Disabled for invalid input; repeated clicks do not correct its format |
 
-### 5.5 Video and recording controls {#control-reference--5-video-and-recording-controls}
+### 6.5 Video and recording controls {#control-reference--5-video-and-recording-controls}
 
 <div class="sop-ui-map" markdown="1">
 
@@ -910,7 +1060,7 @@ The upper area chooses task type, the middle selects object/hand capabilities, a
 | Full screen | Player's right side | Expand video, not the entire SOP editor |
 | More | Player's right side | Browser-provided functions; contents depend on the browser |
 
-#### 5.5.1 Recording states {#control-reference--51-recording-states}
+#### 6.5.1 Recording states {#control-reference--51-recording-states}
 
 <div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:100700/54180" markdown="1">
 
@@ -942,7 +1092,7 @@ The upper area chooses task type, the middle selects object/hand capabilities, a
 
 For replay, use playback rather than Record.
 
-### 5.6 Canvas toolbar and context menu {#control-reference--6-canvas-toolbar-and-context-menu}
+### 6.6 Canvas toolbar and context menu {#control-reference--6-canvas-toolbar-and-context-menu}
 
 <div class="sop-ui-map" markdown="1">
 
@@ -979,7 +1129,7 @@ For replay, use playback rather than Record.
 
 Removing a box, deleting a region, and deleting a step affect different objects.
 
-### 5.7 Targets and reference views {#control-reference--7-targets-and-reference-views}
+### 6.7 Targets and reference views {#control-reference--7-targets-and-reference-views}
 
 <div class="sop-ui-map" markdown="1">
 
@@ -1023,7 +1173,7 @@ Removing a box, deleting a region, and deleting a step affect different objects.
 | Retry added-box previews | Failed preview state | Retry loading; do not duplicate the boxes |
 | Adopt and recheck | Available pending reference area | Explicitly admit improvements and recheck; still validate stages/plan and save |
 
-### 5.8 Timeline controls {#control-reference--8-timeline-controls}
+### 6.8 Timeline controls {#control-reference--8-timeline-controls}
 
 <div class="sop-ui-map" markdown="1">
 
@@ -1067,7 +1217,7 @@ Removing a box, deleting a region, and deleting a step affect different objects.
 
 Identically named controls affect their own timeline. Check its heading and stage after editing.
 
-### 5.9 Scan controls {#control-reference--9-scan-controls}
+### 6.9 Scan controls {#control-reference--9-scan-controls}
 
 **Improve recognition** can reopen retained work or initiate a check for the selected range. Identify target and interval first. Wait for an explicit state rather than repeatedly starting.
 
@@ -1089,7 +1239,7 @@ Identically named controls affect their own timeline. Check its heading and stag
 
 Some specialized scan/review labels depend on the device's supported interface. Follow the matching purpose and the displayed status.
 
-### 5.10 Per-frame review controls {#control-reference--10-per-frame-review-controls}
+### 6.10 Per-frame review controls {#control-reference--10-per-frame-review-controls}
 
 These are beside the selected scan picture. Judge the original image first.
 
@@ -1110,7 +1260,7 @@ These are beside the selected scan picture. Judge the original image first.
 | Retry save | Human review did not save | Keep this page and retry |
 | Read latest state | Another window changed the frame | Reconcile current content before saving |
 
-#### 5.10.1 Trial and candidate controls {#control-reference--101-trial-and-candidate-controls}
+#### 6.10.1 Trial and candidate controls {#control-reference--101-trial-and-candidate-controls}
 
 | Control/function | Purpose | Verify |
 |---|---|---|
@@ -1124,7 +1274,7 @@ These are beside the selected scan picture. Judge the original image first.
 | Inspect/change this reference gate | Edit the specified reference | Recheck positives and negatives afterward |
 | Low-score candidates per query | Inspect individual source evidence | Do not add scores into an accuracy value |
 
-### 5.11 Independent footage and suggestions {#control-reference--11-independent-footage-and-suggestions}
+### 6.11 Independent footage and suggestions {#control-reference--11-independent-footage-and-suggestions}
 
 | Control/function | Prerequisite | Effect |
 |---|---|---|
@@ -1139,7 +1289,7 @@ These are beside the selected scan picture. Judge the original image first.
 
 If no proposal is available, read which evidence is missing. No proposal is not an implicit instruction to lower a threshold.
 
-### 5.12 Stage toolbar and operation setup {#control-reference--12-stage-toolbar-and-operation-setup}
+### 6.12 Stage toolbar and operation setup {#control-reference--12-stage-toolbar-and-operation-setup}
 
 <div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:204050/141255" markdown="1">
 
@@ -1184,7 +1334,7 @@ If no proposal is available, read which evidence is missing. No proposal is not 
 | Add to this stage | Setup bottom | Commit the new operation; inspect retained existing checks |
 | Cancel in setup | Setup header | Discard unsubmitted operation |
 
-### 5.13 Detection settings dialog {#control-reference--13-detection-settings-dialog}
+### 6.13 Detection settings dialog {#control-reference--13-detection-settings-dialog}
 
 <div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:148400/92880" markdown="1">
 
@@ -1221,7 +1371,7 @@ If no proposal is available, read which evidence is missing. No proposal is not 
 | Remove unused source | Remove unreferenced capability | Confirm no active references |
 | Back to steps / close | Return to authoring | Changes remain in task draft until saved |
 
-### 5.14 Checks and completion controls {#control-reference--14-checks-and-completion-controls}
+### 6.14 Checks and completion controls {#control-reference--14-checks-and-completion-controls}
 
 <div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:198750/75465" markdown="1">
 
@@ -1297,7 +1447,7 @@ If no proposal is available, read which evidence is missing. No proposal is not 
 | Completion deadline | Maximum step time | Zero disables deadline, not hold duration |
 | How this step is judged | Show actual rule explanation | Read back with process owner |
 
-### 5.15 Target picker {#control-reference--15-target-picker}
+### 6.15 Target picker {#control-reference--15-target-picker}
 
 <div class="sop-ui-map sop-ui-map--detail" style="aspect-ratio:159000/131580" markdown="1">
 
@@ -1332,7 +1482,7 @@ If no proposal is available, read which evidence is missing. No proposal is not 
 | Replace | Submit one replacement | Subject changes; condition count may not |
 | Cancel / close | Leave selection | Previously committed actions are separate |
 
-### 5.16 Ordering controls {#control-reference--16-ordering-controls}
+### 6.16 Ordering controls {#control-reference--16-ordering-controls}
 
 <div class="sop-ui-map" markdown="1">
 
@@ -1365,7 +1515,7 @@ If no proposal is available, read which evidence is missing. No proposal is not 
 | Separate/remove from group, when offered | Restore independent stage | Revalidate order |
 | Delete this step | Remove identified operation | Read confirmation; back up important configuration |
 
-### 5.17 Validation, records, and persistence {#control-reference--17-validation-records-and-persistence}
+### 6.17 Validation, records, and persistence {#control-reference--17-validation-records-and-persistence}
 
 | Control/function | Location | Purpose |
 |---|---|---|
@@ -1388,12 +1538,12 @@ See [Operator station guide](#operator-guide) for runtime commands and [Paramete
 
 *Footage attribution: [Sample and screenshot credits](#reference--7-sample-and-screenshot-credits).*
 
-## 6. Parameters, Units, Defaults, and States {#parameters}
+## 7. Parameters, Units, Defaults, and States {#parameters}
 
 
 Use this chapter to determine what a value controls, how changing it affects behavior, and what must be revalidated. Do not adjust settings repeatedly until the screen turns green. Identify the recognition, geometry, timing, or workflow issue first.
 
-### 6.1 Parameter categories {#parameters--1-parameter-categories}
+### 7.1 Parameter categories {#parameters--1-parameter-categories}
 
 | Category | Question | Typical fields |
 |---|---|---|
@@ -1405,7 +1555,7 @@ Use this chapter to determine what a value controls, how changing it affects beh
 
 Input limits are permitted interface bounds, not recommended process settings. The device also validates capability and combinations. Values such as 0.8 seconds are examples, not universal standards.
 
-### 6.2 Targets and references {#parameters--2-targets-and-references}
+### 7.2 Targets and references {#parameters--2-targets-and-references}
 
 | Field | Meaning | Guidance |
 |---|---|---|
@@ -1420,19 +1570,19 @@ Input limits are permitted interface bounds, not recommended process settings. T
 
 Two views of one mallet do not require two physical mallets.
 
-### 6.3 Distinguish three thresholds {#parameters--3-distinguish-three-thresholds}
+### 7.3 Distinguish three thresholds {#parameters--3-distinguish-three-thresholds}
 
-#### 6.3.1 Source detection threshold {#parameters--31-source-detection-threshold}
+#### 7.3.1 Source detection threshold {#parameters--31-source-detection-threshold}
 
 Found in target/reference recognition settings; controls retained candidates from the detector. The corresponding percentage input currently permits 1–95. Different references may have their own gates.
 
-#### 6.3.2 Condition minimum confidence {#parameters--32-condition-minimum-confidence}
+#### 7.3.2 Condition minimum confidence {#parameters--32-condition-minimum-confidence}
 
 Found under the relationship's additional recognition settings. A and B can have separate requirements, displayed as 0–100%.
 
 This filters results available to the condition. Lowering it cannot recover a candidate already removed by a higher detector gate. Inspect both layers when a conflict is reported.
 
-#### 6.3.3 Current-image trial threshold {#parameters--33-current-image-trial-threshold}
+#### 7.3.3 Current-image trial threshold {#parameters--33-current-image-trial-threshold}
 
 Controls the current trial. A successful frame trial does not establish success across all footage or steps. The trial percentage input permits 1–95.
 
@@ -1446,7 +1596,7 @@ Controls the current trial. A successful frame trial does not establish success 
 
 After edits, check true targets, similar objects, empty backgrounds, and duplicates. Improve footage or references when reliable distinction is unavailable.
 
-### 6.4 Quantity {#parameters--4-quantity}
+### 7.4 Quantity {#parameters--4-quantity}
 
 | Requirement | Minimum | Maximum | Meaning |
 |---|---:|---:|---|
@@ -1459,7 +1609,7 @@ The current input upper bound is 10000, not a guarantee of reliable counting at 
 
 Duplicates, overlap, boundary ambiguity, and uncertain physical identity affect count reliability. Relaxing the count does not repair those problems.
 
-### 6.5 Regions {#parameters--5-regions}
+### 7.5 Regions {#parameters--5-regions}
 
 | Choice | Meaning | Verify |
 |---|---|---|
@@ -1475,23 +1625,23 @@ Duplicates, overlap, boundary ambiguity, and uncertain physical identity affect 
 
 Region constraints are not synonymous with running the detector only on cropped pixels. They may constrain filtering or rule evaluation.
 
-### 6.6 Spatial relationships and distance {#parameters--6-spatial-relationships-and-distance}
+### 7.6 Spatial relationships and distance {#parameters--6-spatial-relationships-and-distance}
 
-#### 6.6.1 Direction {#parameters--61-direction}
+#### 7.6.1 Direction {#parameters--61-direction}
 
 A left of B differs from B left of A. After replacement, verify subjects, relation, and both regions. Revalidate after mirroring or orientation changes.
 
-#### 6.6.2 Hand/object distance {#parameters--62-handobject-distance}
+#### 7.6.2 Hand/object distance {#parameters--62-handobject-distance}
 
 Distance is normalized with object size. The current intuitive slider spans 10%–100%, in 5% steps. This is not detection confidence, centimeters, force, or contact pressure.
 
 A wider range can accept a nearby non-operating hand; a narrow range can reject normal variation. Test both the intended action and a hand merely passing nearby.
 
-#### 6.6.3 Advanced geometry {#parameters--63-advanced-geometry}
+#### 7.6.3 Advanced geometry {#parameters--63-advanced-geometry}
 
 The advanced relationship-threshold input spans 0–16; boundary tolerance spans 0.001–1. Meaning depends on relationship type. Normally retain generated settings and verify the visual relationship first. Do not apply one value universally or accept ambiguous boundaries as satisfied.
 
-### 6.7 Hold duration {#parameters--7-hold-duration}
+### 7.7 Hold duration {#parameters--7-hold-duration}
 
 [![Hold controls](../../assets/sop/en-12-auto-completion.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-12-auto-completion.png)
 
@@ -1505,7 +1655,7 @@ Hold specifies stable satisfaction before the requirement completes.
 
 With All together, the combination must hold, rather than each object appearing once at unrelated times.
 
-### 6.8 Input-gap tolerance {#parameters--8-input-gap-tolerance}
+### 7.8 Input-gap tolerance {#parameters--8-input-gap-tolerance}
 
 Controls a temporary lack of trustworthy observations, not an observed incorrect action. A common generated value is 0.5 seconds; use the loaded value and specific template. The general input permits 0.001–60 seconds, while continuous-observation templates can impose tighter bounds.
 
@@ -1513,7 +1663,7 @@ Do not enlarge a gap until repeatedly missed hands appear to complete a sequence
 
 Determine whether the interval contains no new trustworthy input or clear evidence that a requirement fails.
 
-### 6.9 Deadlines and sequence time {#parameters--9-deadlines-and-sequence-time}
+### 7.9 Deadlines and sequence time {#parameters--9-deadlines-and-sequence-time}
 
 | Field | Purpose | Current input bounds | Zero |
 |---|---|---|---|
@@ -1524,7 +1674,7 @@ Determine whether the interval contains no new trustworthy input or clear eviden
 
 For a tool held ready for 0.8 seconds within a 20-second step, set hold and deadline separately.
 
-### 6.10 Ranges and sampling {#parameters--10-ranges-and-sampling}
+### 7.10 Ranges and sampling {#parameters--10-ranges-and-sampling}
 
 1. Endpoints must be inside their asset and Start before End.
 2. Overall scope controls target scanning/plan validation; stage scope belongs to that stage.
@@ -1535,7 +1685,7 @@ For a tool held ready for 0.8 seconds within a 20-second step, set hold and dead
 
 For illustration, every 30 frames is approximately two seconds at 15 fps or one second at 30 fps. Verify actual result timestamps rather than relying on conversion alone.
 
-### 6.11 Completion methods {#parameters--11-completion-methods}
+### 7.11 Completion methods {#parameters--11-completion-methods}
 
 | Method | System responsibility | Operator responsibility |
 |---|---|---|
@@ -1545,7 +1695,7 @@ For illustration, every 30 frames is approximately two seconds at 15 fps or one 
 
 Review is for requirements that images cannot establish, not an arbitrary bypass for failed visual checks.
 
-### 6.12 States are not parameters {#parameters--12-states-are-not-parameters}
+### 7.12 States are not parameters {#parameters--12-states-are-not-parameters}
 
 | State/message | Meaning | Next action |
 |---|---|---|
@@ -1558,7 +1708,7 @@ Review is for requirements that images cannot establish, not an arbitrary bypass
 | State not synchronized | Current device state untrusted | Reconnect and read back before confirmation |
 | No samples in record | That run lacks annotation pictures | Does not prove recognition review |
 
-### 6.13 Controlled parameter change {#parameters--13-controlled-parameter-change}
+### 7.13 Controlled parameter change {#parameters--13-controlled-parameter-change}
 
 1. Record the specific issue and original setting.
 2. Classify it and avoid changing several categories together.
@@ -1572,12 +1722,12 @@ Review is for requirements that images cannot establish, not an arbitrary bypass
 
 *Footage attribution: [Sample and screenshot credits](#reference--7-sample-and-screenshot-credits).*
 
-## 7. Video, Targets, and Recognition {#video-and-recognition}
+## 8. Video, Targets, and Recognition {#video-and-recognition}
 
 
 Establish reliable object recognition before using it to judge a process. A reference, a manual annotation, a single-image trial, adoption, and a video recheck are separate actions.
 
-### 7.1 Check the teaching recording {#video-and-recognition--1-check-the-teaching-recording}
+### 8.1 Check the teaching recording {#video-and-recognition--1-check-the-teaching-recording}
 
 Use a fixed camera, stable lighting, and clearly visible objects. Start with one object in a short recording before adding hands and multiple requirements.
 
@@ -1595,7 +1745,7 @@ Recording the complete process again replaces demonstration material and resets 
 
 [![Replacement recording confirmation](../../assets/sop/en-07-record-warning.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-07-record-warning.png)
 
-### 7.2 Understand the three ranges {#video-and-recognition--2-understand-the-three-ranges}
+### 8.2 Understand the three ranges {#video-and-recognition--2-understand-the-three-ranges}
 
 | Range | Purpose | What to check |
 |---|---|---|
@@ -1605,7 +1755,7 @@ Recording the complete process again replaces demonstration material and resets 
 
 [![Overall range and endpoint editing](../../assets/sop/en-08-plan-range.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-08-plan-range.png)
 
-#### 7.2.1 Adjusting a range {#video-and-recognition--adjusting-a-range}
+#### 8.2.1 Adjusting a range {#video-and-recognition--adjusting-a-range}
 
 - Drag either endpoint, release it, and check the displayed time.
 - Click a displayed time and enter seconds or minutes:seconds. Save and locate the frame if needed.
@@ -1617,7 +1767,7 @@ Seeking does not mean every stage range changes. Each stage has its own range, a
 
 After changing the overall range, follow the prompt to scan again. Existing pictures may belong to the previous selection. Check the result's times, range, and target.
 
-### 7.3 Create one logical target {#video-and-recognition--3-create-one-logical-target}
+### 8.3 Create one logical target {#video-and-recognition--3-create-one-logical-target}
 
 1. Pause a clear frame in **Video**.
 2. Click **Add target**.
@@ -1627,7 +1777,7 @@ After changing the overall range, follow the prompt to scan again. Existing pict
 
 [![Target references and additional angles](../../assets/sop/en-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-10-target-reference.png)
 
-#### 7.3.1 References are not physical quantity {#video-and-recognition--references-are-not-physical-quantity}
+#### 8.3.1 References are not physical quantity {#video-and-recognition--references-are-not-physical-quantity}
 
 | Intended meaning | Configuration |
 |---|---|
@@ -1640,7 +1790,7 @@ Angles and aliases can consume detection capacity. Follow the displayed capacity
 
 A good reference keeps the object clear and dominant, covers realistic orientation and scale, and does not merge adjacent objects or hide their distinguishing features. Check similar tools for false detections.
 
-### 7.4 Improve recognition {#video-and-recognition--4-improve-recognition}
+### 8.4 Improve recognition {#video-and-recognition--4-improve-recognition}
 
 1. Select the target.
 2. Set the overall scan range and sampling interval.
@@ -1651,19 +1801,21 @@ A good reference keeps the object clear and dominant, covers realistic orientati
 
 A smaller sampling interval creates more pictures and requires more processing and review. Review a representative segment first, then the complete recording. A successful segment does not establish that the whole video is reliable.
 
-### 7.5 Complete the manual-box workflow {#video-and-recognition--5-complete-the-manual-box-workflow}
+### 8.5 Complete the manual-box workflow {#video-and-recognition--5-complete-the-manual-box-workflow}
 
-#### 7.5.1 Confirm the object in the original image {#video-and-recognition--confirm-the-object-in-the-original-image}
+#### 8.5.1 Confirm the object in the original image {#video-and-recognition--confirm-the-object-in-the-original-image}
 
 Judge the original image rather than relying solely on a low-score candidate. If it is too unclear to identify, record an unclear view instead of drawing an unsupported box.
 
-#### 7.5.2 Draw and save the annotation {#video-and-recognition--draw-and-save-the-annotation}
+#### 8.5.2 Draw and save the annotation {#video-and-recognition--draw-and-save-the-annotation}
 
 Use the corresponding present-object annotation entry and draw a separate box for each missed instance. Keep the box close to the visible object.
 
 If the start point lies inside an existing box, check that the editor is in new-box mode rather than selecting, moving, or resizing the existing box. Check the cursor and instruction. If drawing still fails, keep the existing annotation and follow [Troubleshooting](#troubleshooting).
 
-#### 7.5.3 Detect the current image again {#video-and-recognition--detect-the-current-image-again}
+#### 8.5.3 Detect the current image again {#video-and-recognition--detect-the-current-image-again}
+
+After drawing boxes, click **Try this frame** in the right panel to check whether the newly marked targets can be detected in the current original image. You do not need to rescan the full video first.
 
 Annotations on that frame can serve as temporary references for the trial. Verify that the algorithm detects the annotated location. The manual purple box is not itself a successful algorithm detection.
 
@@ -1671,17 +1823,17 @@ Check the number of annotations, detections, and matched annotations. For unmatc
 
 **“One algorithm detection” is different from “one of one manual boxes matched.”** The detection may be elsewhere in the image.
 
-#### 7.5.4 Adopt the annotation {#video-and-recognition--adopt-the-annotation}
+#### 8.5.4 Adopt the annotation {#video-and-recognition--adopt-the-annotation}
 
 A saved-but-not-adopted annotation is not yet part of the plan's reference library. Use the adoption control, then check pending references, reference count, and capacity.
 
 Do not draw the same box repeatedly because the capacity did not change. Check adoption state, duplicate-reference handling, and the actual result of the operation.
 
-#### 7.5.5 Recheck the video {#video-and-recognition--recheck-the-video}
+#### 8.5.5 Recheck the video {#video-and-recognition--recheck-the-video}
 
 Scan the selected range again after adoption. Inspect neighboring frames and an independently recorded video. A successful single-image trial does not establish stable video recognition or that a running task uses the saved update.
 
-### 7.6 Interpret scores and thresholds {#video-and-recognition--6-interpret-scores-and-thresholds}
+### 8.6 Interpret scores and thresholds {#video-and-recognition--6-interpret-scores-and-thresholds}
 
 A candidate score is a recognition clue, not the accuracy of the SOP. Check each reference and its own threshold. Do not apply one reference's maximum score indiscriminately to another.
 
@@ -1695,7 +1847,7 @@ Before adjusting a threshold, check:
 
 Do not keep lowering thresholds until every frame is green. Background, hands, and nearby tools may start matching. Persistent misses in clear views call for better references, capture conditions, or a recognition capability review.
 
-### 7.7 Recognition review cases {#video-and-recognition--7-recognition-review-cases}
+### 8.7 Recognition review cases {#video-and-recognition--7-recognition-review-cases}
 
 | Case | Expected observation |
 |---|---|
@@ -1711,12 +1863,12 @@ Continue with [Rules, regions, and timing](#rules-and-regions), or the dedicated
 
 *Example footage and reference views in the screenshots: [wooden-box assembly dataset and CC BY 4.0 credits](#reference--7-sample-and-screenshot-credits).*
 
-## 8. Checks, Global Regions, and Timing {#rules-and-regions}
+## 9. Checks, Global Regions, and Timing {#rules-and-regions}
 
 
 Describe completion in ordinary workplace language first. Then separate it into objects, regions, quantity, timing, and completion method.
 
-### 8.1 Steps, stages, and conditions {#rules-and-regions--1-steps-stages-and-conditions}
+### 9.1 Steps, stages, and conditions {#rules-and-regions--1-steps-stages-and-conditions}
 
 A step describes an action with a purpose, such as tool readiness. A stage can contain one step or several steps that may finish in any order. Stages run from top to bottom, and all steps in a group must finish before the next stage.
 
@@ -1732,7 +1884,7 @@ Within one step, several detection conditions can be combined. **Steps finishing
 
 [![Condition combination options in the English interface](../../assets/sop/en-29-combination.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-29-combination.png)
 
-### 8.2 Configure an object check {#rules-and-regions--2-configure-an-object-check}
+### 9.2 Configure an object check {#rules-and-regions--2-configure-an-object-check}
 
 1. Open **Step checks → Edit**.
 2. Select an object.
@@ -1747,9 +1899,9 @@ References tell recognition what the object looks like. Conditions define what t
 
 Quantity counts detected instances meeting the target, score, region, and other applicable requirements. Test the correct and incorrect physical quantities. Duplicate boxes and confusion between similar objects must be addressed before relying on counts.
 
-### 8.3 Check selected regions {#rules-and-regions--3-check-selected-regions}
+### 9.3 Check selected regions {#rules-and-regions--3-check-selected-regions}
 
-#### 8.3.1 Draw a global region {#rules-and-regions--draw-a-global-region}
+#### 9.3.1 Draw a global region {#rules-and-regions--draw-a-global-region}
 
 1. Locate a clear, correctly oriented frame.
 2. Click **Draw region** and place vertices around the work area.
@@ -1761,7 +1913,7 @@ Quantity counts detected instances meeting the target, score, region, and other 
 
 Use names describing the workplace rather than several indistinguishable numbered regions. Avoid placing boundaries exactly at the normal limits of object movement.
 
-#### 8.3.2 Bind the check to the region {#rules-and-regions--bind-the-check-to-the-region}
+#### 9.3.2 Bind the check to the region {#rules-and-regions--bind-the-check-to-the-region}
 
 Select the named region under the relevant object. Alternatively, drag the toolbar region to a compatible region position; see [Toolbar and drag operations](#toolbar-and-drag).
 
@@ -1777,13 +1929,13 @@ Drawing a region does not automatically bind every requirement to it. Read the r
 
 After editing a shared region, review and revalidate every step that uses it.
 
-#### 8.3.3 Region tests {#rules-and-regions--region-tests}
+#### 9.3.3 Region tests {#rules-and-regions--region-tests}
 
 Test the object inside, outside, crossing the boundary, near an edge, and partly occluded. With several objects, place some inside and others outside. Overlapping regions are not automatically mutually exclusive.
 
 Recheck regions after a camera position, mirroring, or resolution change. Failing a region requirement does not necessarily mean the object was not detected, or that recognition stopped processing the rest of the picture.
 
-### 8.4 Spatial relationships {#rules-and-regions--4-spatial-relationships}
+### 9.4 Spatial relationships {#rules-and-regions--4-spatial-relationships}
 
 Spatial checks evaluate the visible positions of two targets. Uses include placement relative to a region or object, left/right relationships, and proximity. Available options depend on the current interface and device capability.
 
@@ -1793,7 +1945,7 @@ A hand near a cup establishes a visible position relationship. It does not direc
 
 If capability is unavailable or still being checked, retain the configuration and follow the message. A disabled or read-only control is not evidence that the rule is active.
 
-### 8.5 Simultaneous, alternative, and ordered checks {#rules-and-regions--5-simultaneous-alternative-and-ordered-checks}
+### 9.5 Simultaneous, alternative, and ordered checks {#rules-and-regions--5-simultaneous-alternative-and-ordered-checks}
 
 **All simultaneously:** Use when conditions must hold together. A configured hold time applies to the combined requirement; separate appearances several seconds apart cannot simply be added.
 
@@ -1803,7 +1955,7 @@ If capability is unavailable or still being checked, retain the configuration an
 
 See [Hand operations](#hand-operations) for ordered templates. Validate step order and within-step order separately before combining them.
 
-### 8.6 Completion and timing {#rules-and-regions--6-completion-and-timing}
+### 9.6 Completion and timing {#rules-and-regions--6-completion-and-timing}
 
 [![Automatic completion after a sustained condition](../../assets/sop/en-12-auto-completion.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-12-auto-completion.png)
 
@@ -1819,7 +1971,7 @@ A hold time filters brief observations; it is not the length of the demonstratio
 
 Establish the normal path before adding deadlines so that visual and timing problems remain distinguishable.
 
-### 8.7 Stage ranges and the overall range {#rules-and-regions--7-stage-ranges-and-the-overall-range}
+### 9.7 Stage ranges and the overall range {#rules-and-regions--7-stage-ranges-and-the-overall-range}
 
 Each stage retains its own range. Ranges may overlap because real operations and preparation can overlap in time. They need not form consecutive non-overlapping pieces.
 
@@ -1829,7 +1981,7 @@ Demonstrations train the operator; validation ranges define the evidence to chec
 
 [![Independent stage selection](../../assets/sop/en-14-stage-range.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-14-stage-range.png)
 
-### 8.8 Grouping and order {#rules-and-regions--8-grouping-and-order}
+### 9.8 Grouping and order {#rules-and-regions--8-grouping-and-order}
 
 Use **Reorder** in the step list to organize the actual dependencies. Steps in an unordered stage can finish in any order, but all are required before advancing.
 
@@ -1841,14 +1993,14 @@ Keep dependent steps in sequential stages. After changes, review names, grouping
 
 *Example footage and reference views in the screenshots: [wooden-box assembly dataset and CC BY 4.0 credits](#reference--7-sample-and-screenshot-credits).*
 
-## 9. Hand Operations: From Selecting a Hand to Validating a Process {#hand-operations}
+## 10. Hand Operations: From Selecting a Hand to Validating a Process {#hand-operations}
 
 
 Use this chapter when a process needs to check which hand is operating, whether a hand approaches or withdraws from a tool, or whether it accompanies an object during a transfer. Complete the single-object example first.
 
 **Detecting a hand is an observation; checking how the hand and object cooperate is a process condition.** Hand landmarks do not directly establish grip strength, tightening torque, press-fit quality, contact pressure, or the internal state of a part.
 
-### 9.1 Convert the requirement into visible conditions {#hand-operations--1-convert-the-requirement-into-visible-conditions}
+### 10.1 Convert the requirement into visible conditions {#hand-operations--1-convert-the-requirement-into-visible-conditions}
 
 | Process requirement | Observable conditions | Additional review |
 |---|---|---|
@@ -1861,7 +2013,7 @@ Use this chapter when a process needs to check which hand is operating, whether 
 
 Do not enable hand checks simply because hands happen to appear in the recording. If the process only needs object readiness, object-only checks reduce configuration and review work.
 
-### 9.2 Add hand recognition {#hand-operations--2-add-hand-recognition}
+### 10.2 Add hand recognition {#hand-operations--2-add-hand-recognition}
 
 1. Open **Detection settings** from the stage toolbar.
 2. Find the hand-operation recognition card.
@@ -1875,13 +2027,13 @@ Detection settings are shared by the station and saved with the task. Adding a s
 
 If the entry is unavailable, check the device's plugins and capabilities rather than repeatedly creating additional hand sources.
 
-### 9.3 Calibrate the operator's left and right hands {#hand-operations--3-calibrate-the-operators-left-and-right-hands}
+### 10.3 Calibrate the operator's left and right hands {#hand-operations--3-calibrate-the-operators-left-and-right-hands}
 
-#### 9.3.1 Whose left and right? {#hand-operations--31-whose-left-and-right}
+#### 10.3.1 Whose left and right? {#hand-operations--31-whose-left-and-right}
 
 Use **the operator's own left and right**, not the left and right edges of the screen. An operator facing the camera may have their left hand on the right of the image. Camera mirroring, mounting, and image rotation can affect the labels.
 
-#### 9.3.2 Calibration procedure {#hand-operations--32-calibration-procedure}
+#### 10.3.2 Calibration procedure {#hand-operations--32-calibration-procedure}
 
 1. Have the actual operator stand in the normal working position.
 2. Open the hand-direction setting in **Detection settings**.
@@ -1896,7 +2048,7 @@ Use **the operator's own left and right**, not the left and right edges of the s
 
 **Checkpoint:** Labels agree with the operator's own hands. Enabling distinction is a configuration action, not evidence that calibration has passed.
 
-#### 9.3.3 Either hand, a specified hand, and two hands {#hand-operations--33-either-hand-a-specified-hand-and-two-hands}
+#### 10.3.3 Either hand, a specified hand, and two hands {#hand-operations--33-either-hand-a-specified-hand-and-two-hands}
 
 | Selection | Meaning | Use |
 |---|---|---|
@@ -1907,7 +2059,7 @@ Use **the operator's own left and right**, not the left and right edges of the s
 
 A limit of two detected hands **does not prove that both belong to one person**. Review station isolation and regions when several people, crossing hands, or ambiguous targets are present. A disabled two-hand entry is not an enabled capability. Check the supported version, or use explicit left/right conditions with operator review as appropriate.
 
-### 9.4 Use the toolbar to create a hand → object operation {#hand-operations--4-use-the-toolbar-to-create-a-hand--object-operation}
+### 10.4 Use the toolbar to create a hand → object operation {#hand-operations--4-use-the-toolbar-to-create-a-hand--object-operation}
 
 1. Select the stage.
 2. Select either hand, left hand, or right hand in its toolbar.
@@ -1922,7 +2074,7 @@ The toolbar may offer complete templates such as approach-then-withdraw and tran
 
 A single near/away relationship can instead be configured in step checks. A complete operation template and one instantaneous relationship are different requirements.
 
-### 9.5 Single condition: hand near object {#hand-operations--5-single-condition-hand-near-object}
+### 10.5 Single condition: hand near object {#hand-operations--5-single-condition-hand-near-object}
 
 Specify the hand, object, region, required hold time, and completion method.
 
@@ -1934,7 +2086,7 @@ The hand and object must have reliable observations in the same valid frame. The
 
 A hand that stays near a tool without operating it can satisfy proximity. To describe a complete process, add observable ordering, arrival, object retention, or operator review.
 
-### 9.6 Single condition: visible hand away from object {#hand-operations--6-single-condition-visible-hand-away-from-object}
+### 10.6 Single condition: visible hand away from object {#hand-operations--6-single-condition-visible-hand-away-from-object}
 
 “Away” needs valid visible evidence for the selected hand and object and a sufficient spatial separation.
 
@@ -1948,13 +2100,13 @@ Do not equate these situations with a confirmed withdrawal:
 
 “Hand not detected” is not the same as “visible hand away.” If the process requires leaving an area, choose an appropriate condition and test whether the footage distinguishes departure from occlusion.
 
-### 9.7 Complete template: approach, then withdraw {#hand-operations--7-complete-template-approach-then-withdraw}
+### 10.7 Complete template: approach, then withdraw {#hand-operations--7-complete-template-approach-then-withdraw}
 
-#### 9.7.1 When to use it {#hand-operations--71-when-to-use-it}
+#### 10.7.1 When to use it {#hand-operations--71-when-to-use-it}
 
 For example, an operator works near the mallet and then withdraws. The system checks the visible sequence; a person reviews process quality that the sequence cannot establish.
 
-#### 9.7.2 Configure the operation {#hand-operations--72-configure-the-operation}
+#### 10.7.2 Configure the operation {#hand-operations--72-configure-the-operation}
 
 1. Select the hand and the mallet.
 2. Choose the approach-then-withdraw operation.
@@ -1969,15 +2121,15 @@ For example, an operator works near the mallet and then withdraws. The system ch
 
 **Expected result:** Remaining near the tool does not complete the whole sequence. Starting far away must not skip the approach. A later phase requires a valid change after the preceding phase is complete.
 
-#### 9.7.3 Test meaningful negative cases {#hand-operations--73-test-meaningful-negative-cases}
+#### 10.7.3 Test meaningful negative cases {#hand-operations--73-test-meaningful-negative-cases}
 
 Test no reach, a hand that never withdraws, sudden occlusion, both hand and tool leaving the image, another person's hand entering, and two similar tools that cannot be uniquely associated.
 
 The result should reflect the evidence—waiting, unmet, or uncertain where appropriate—rather than passing every case.
 
-### 9.8 Complete template: accompany an object, then release it at its destination {#hand-operations--8-complete-template-accompany-an-object-then-release-it-at-its-destination}
+### 10.8 Complete template: accompany an object, then release it at its destination {#hand-operations--8-complete-template-accompany-an-object-then-release-it-at-its-destination}
 
-#### 9.8.1 Prepare regions {#hand-operations--81-prepare-regions}
+#### 10.8.1 Prepare regions {#hand-operations--81-prepare-regions}
 
 1. Draw the **start region** in the actual picture.
 2. Draw the **destination region**.
@@ -1985,7 +2137,7 @@ The result should reflect the evidence—waiting, unmet, or uncertain where appr
 4. Choose an **operation region** covering the entire route, not just the endpoints.
 5. Avoid boundaries that make start and destination simultaneously true without an observable transition.
 
-#### 9.8.2 Configure the operation {#hand-operations--82-configure-the-operation}
+#### 10.8.2 Configure the operation {#hand-operations--82-configure-the-operation}
 
 1. Select the hand and object.
 2. Choose the transfer-to-position operation.
@@ -1994,13 +2146,13 @@ The result should reflect the evidence—waiting, unmet, or uncertain where appr
 5. Read the summary of start, in-transit requirements, arrival, and withdrawal.
 6. Add the operation and inspect the conditions and times.
 
-#### 9.8.3 Requirements during movement {#hand-operations--83-requirements-during-movement}
+#### 10.8.3 Requirements during movement {#hand-operations--83-requirements-during-movement}
 
 If the interface requires the hand to remain near the object during movement, two endpoint pictures are insufficient. The system also needs valid observations along the route. At the destination, the object must remain there until the hand withdraws. Loss of visibility, unmet intermediate conditions, or non-unique targets may reset progress.
 
 This is not re-identification of the same physical object after full occlusion. Do not treat another similar tool appearing later as proof that the original tool completed a transfer.
 
-### 9.9 Set hand regions and object relationships separately {#hand-operations--9-set-hand-regions-and-object-relationships-separately}
+### 10.9 Set hand regions and object relationships separately {#hand-operations--9-set-hand-regions-and-object-relationships-separately}
 
 | Requirement | Condition to express |
 |---|---|
@@ -2011,7 +2163,7 @@ This is not re-identification of the same physical object after full occlusion. 
 
 Regions constrain positions in the image; they do not establish operator identity. Review both ends of cross-region relationships rather than relying on the presence of a region chip.
 
-### 9.10 Hold time, input gaps, and deadlines {#hand-operations--10-hold-time-input-gaps-and-deadlines}
+### 10.10 Hold time, input gaps, and deadlines {#hand-operations--10-hold-time-input-gaps-and-deadlines}
 
 | Setting | What it controls | Example |
 |---|---|---|
@@ -2021,7 +2173,7 @@ Regions constrain positions in the image; they do not establish operator identit
 
 An observed false condition differs from having no fresh trusted observation. Increasing gap tolerance should not hide a clearly observed error. Tracked sequences can impose a stricter gap limit; follow the actual control limits and explanations.
 
-### 9.11 Validate hand operations in layers {#hand-operations--11-validate-hand-operations-in-layers}
+### 10.11 Validate hand operations in layers {#hand-operations--11-validate-hand-operations-in-layers}
 
 1. Verify object recognition first.
 2. Verify reliable hand observations and left/right labels.
@@ -2041,7 +2193,7 @@ An observed false condition differs from having no fresh trusted observation. In
 | Sequence repeatedly resets | Uniqueness, occlusion, continuous observation, in-transit requirements | Removing every protection to force a pass |
 | Several people trigger a check | Station regions, isolation, hand selection | Assuming two hands belong to the same person |
 
-### 9.12 Handover checklist {#hand-operations--12-handover-checklist}
+### 10.12 Handover checklist {#hand-operations--12-handover-checklist}
 
 - [ ] Only steps that need hand checks require them.
 - [ ] Critical hand and object evidence is clearly visible from a fixed camera.
@@ -2058,12 +2210,12 @@ An observed false condition differs from having no fresh trusted observation. In
 
 *Example footage and reference views in the screenshots: [wooden-box assembly dataset and CC BY 4.0 credits](#reference--7-sample-and-screenshot-credits).*
 
-## 10. Toolbar, Drag Operations, and Undo {#toolbar-and-drag}
+## 11. Toolbar, Drag Operations, and Undo {#toolbar-and-drag}
 
 
 The stage toolbar contains regions, objects, and hands. Read the drop hint, then verify the actual result after release. Highlighting identifies a compatible position; it does not prove that a condition was added.
 
-### 10.1 Toolbar controls {#toolbar-and-drag--1-toolbar-controls}
+### 11.1 Toolbar controls {#toolbar-and-drag--1-toolbar-controls}
 
 | Control | Click | Drag |
 |---|---|---|
@@ -2076,7 +2228,7 @@ The stage toolbar contains regions, objects, and hands. Read the drop hint, then
 
 If hands are unavailable, add the capability in **Detection settings**, then verify handedness. Object and region names are user data and are not rewritten when the interface language changes.
 
-### 10.2 Make a drag operation {#toolbar-and-drag--2-make-a-drag-operation}
+### 11.2 Make a drag operation {#toolbar-and-drag--2-make-a-drag-operation}
 
 1. Find the object or region in the current stage's toolbar.
 2. Hold the card and move it.
@@ -2096,7 +2248,7 @@ If hands are unavailable, add the capability in **Detection settings**, then ver
 
 Do not rely only on the operating system's cursor. Use page highlighting, the action hint, and the final condition. Do not force a drop onto a position without a receiving indication.
 
-### 10.3 Add an object requirement {#toolbar-and-drag--3-add-an-object-requirement}
+### 11.3 Add an object requirement {#toolbar-and-drag--3-add-an-object-requirement}
 
 Drag the toolbar object onto **Drop an object here or click to add** at the bottom of the relationship diagram. After release, check that a separate requirement appears and existing checks remain.
 
@@ -2111,7 +2263,7 @@ Adding another required tool is different from replacing a target. Adding a refe
 
 Already-used targets, unsupported capability, or a capacity limit can disable a choice. Read the message rather than repeatedly dragging the same object.
 
-### 10.4 Replace a target {#toolbar-and-drag--4-replace-a-target}
+### 11.4 Replace a target {#toolbar-and-drag--4-replace-a-target}
 
 Drag a new object onto a compatible existing target and read the replacement hint. Replacement changes the subject of that requirement; it is not an additional condition.
 
@@ -2119,7 +2271,7 @@ After release, check the name, thumbnail, requirement type, region, score or qua
 
 Alternatively, select the diagram target and use the explicit replacement control. Revalidate affected steps after changing the target.
 
-### 10.5 Assign a region {#toolbar-and-drag--5-assign-a-region}
+### 11.5 Assign a region {#toolbar-and-drag--5-assign-a-region}
 
 1. Choose a named region from the toolbar.
 2. Drag it to the region position under the relevant object or hand.
@@ -2133,7 +2285,7 @@ Assigning a region changes the check's coverage, not the polygon's shape. Edit t
 
 When one actor is linked to several objects, editing its shared area may update several relationships. Read the message and inspect every related object.
 
-### 10.6 Hands and action templates {#toolbar-and-drag--6-hands-and-action-templates}
+### 11.6 Hands and action templates {#toolbar-and-drag--6-hands-and-action-templates}
 
 Hands and objects support visible relationships and action templates. Dropping a hand on an object does not by itself establish a physical action such as gripping or tightening.
 
@@ -2154,7 +2306,7 @@ The explicit click path is:
 
 An added operation in the same stage can form an unordered group with existing operations. If the business requires a dependency, reorganize the stages. The sequence inside the template does not establish order between separate operations.
 
-### 10.7 Remove and undo {#toolbar-and-drag--7-remove-and-undo}
+### 11.7 Remove and undo {#toolbar-and-drag--7-remove-and-undo}
 
 Removing a relationship is different from deleting target reference data from the entire plan.
 
@@ -2162,7 +2314,7 @@ Before using a context menu or delete control, read whether it removes one relat
 
 Use **Undo** after an accidental supported change and inspect the result. Undo is not an unlimited version history. Do not assume it remains available after saving, closing the editor, or other changes.
 
-### 10.8 Different kinds of dragging {#toolbar-and-drag--8-different-kinds-of-dragging}
+### 11.8 Different kinds of dragging {#toolbar-and-drag--8-different-kinds-of-dragging}
 
 | Action | Drag location | Effect |
 |---|---|---|
@@ -2174,7 +2326,7 @@ Use **Undo** after an accidental supported change and inspect the result. Undo i
 
 Move buttons and documented arrow-key controls provide alternatives for reordering.
 
-### 10.9 If dragging has no effect {#toolbar-and-drag--9-if-dragging-has-no-effect}
+### 11.9 If dragging has no effect {#toolbar-and-drag--9-if-dragging-has-no-effect}
 
 Check for an actual new condition, current stage, read-only state, capability, duplicates, and capacity. Cancel any unsubmitted template or dialog, then use the equivalent click-based addition or replacement entry.
 
@@ -2184,16 +2336,16 @@ If that works, retain the configuration and report the source object, receiving 
 
 *Example footage and reference views in the screenshots: [wooden-box assembly dataset and CC BY 4.0 credits](#reference--7-sample-and-screenshot-credits).*
 
-## 11. Complete Configuration Labs for Six Common Scenarios {#scenario-labs}
+## 12. Complete Configuration Labs for Six Common Scenarios {#scenario-labs}
 
 
 Complete Lab A first, then select labs that match the process. Expected-result tables are instructions for validation, not claims that your station has already passed.
 
 [Download the sample footage](../../assets/sop/workbench-60s.mp4). It supports the introductory readiness example. Count changes, transfers, and alternative orders require suitable separately recorded footage. Rules cannot manufacture actions missing from a recording.
 
-### 11.1 Lab A: Mallet ready → Operator confirmation {#scenario-labs--lab-a-mallet-ready--operator-confirmation}
+### 12.1 Lab A: Mallet ready → Operator confirmation {#scenario-labs--lab-a-mallet-ready--operator-confirmation}
 
-#### 11.1.1 A1. Objective {#scenario-labs--a1-objective}
+#### 12.1.1 A1. Objective {#scenario-labs--a1-objective}
 
 | Stage | Operation | Requirement | Completion |
 |---|---|---|---|
@@ -2202,7 +2354,7 @@ Complete Lab A first, then select labs that match the process. Expected-result t
 
 Illustrative ranges are 10–16 and 16–20 seconds. Check actual footage rather than treating these as fixed process times.
 
-#### 11.1.2 A2. Prepare footage {#scenario-labs--a2-prepare-footage}
+#### 12.1.2 A2. Prepare footage {#scenario-labs--a2-prepare-footage}
 
 1. Create an object-only SOP task.
 2. Select the station camera.
@@ -2212,7 +2364,7 @@ Illustrative ranges are 10–16 and 16–20 seconds. Check actual footage rather
 
 [![Lab A teaching footage](../../assets/sop/en-06-teaching-video.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-06-teaching-video.png)
 
-#### 11.1.3 A3. Establish one target {#scenario-labs--a3-establish-one-target}
+#### 12.1.3 A3. Establish one target {#scenario-labs--a3-establish-one-target}
 
 1. Pause on a clear mallet view.
 2. Add a target; box its visible body with little background.
@@ -2223,7 +2375,7 @@ Illustrative ranges are 10–16 and 16–20 seconds. Check actual footage rather
 
 **Exit criterion:** Clear normal views correspond to the correct object. Resolve material misses or duplicates before changing workflow order.
 
-#### 11.1.4 A4. Configure readiness {#scenario-labs--a4-configure-readiness}
+#### 12.1.4 A4. Configure readiness {#scenario-labs--a4-configure-readiness}
 
 1. Name the operation Mallet ready.
 2. Write instructions to place the mallet in the tool area.
@@ -2236,7 +2388,7 @@ Illustrative ranges are 10–16 and 16–20 seconds. Check actual footage rather
 
 [![Object and completion setup](../../assets/sop/en-12-auto-completion.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-12-auto-completion.png)
 
-#### 11.1.5 A5. Configure confirmation {#scenario-labs--a5-configure-confirmation}
+#### 12.1.5 A5. Configure confirmation {#scenario-labs--a5-configure-confirmation}
 
 1. Add a separate next step, outside the first stage's unordered group.
 2. Name it Review station and confirm.
@@ -2247,7 +2399,7 @@ Illustrative ranges are 10–16 and 16–20 seconds. Check actual footage rather
 
 [![Manual completion setup](../../assets/sop/en-13-manual-completion.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-13-manual-completion.png)
 
-#### 11.1.6 A6. Ranges and validation {#scenario-labs--a6-ranges-and-validation}
+#### 12.1.6 A6. Ranges and validation {#scenario-labs--a6-ranges-and-validation}
 
 1. Use the appropriate readiness interval, illustratively 10–16 seconds.
 2. Use the review interval, illustratively 16–20 seconds.
@@ -2263,17 +2415,17 @@ Illustrative ranges are 10–16 and 16–20 seconds. Check actual footage rather
 | No operator confirmation yet | The next step cannot impersonate confirmation |
 | Operator reviews current piece and confirms | Correct subject and advancement |
 
-#### 11.1.7 A7. Save and reopen {#scenario-labs--a7-save-and-reopen}
+#### 12.1.7 A7. Save and reopen {#scenario-labs--a7-save-and-reopen}
 
 Done → node confirmation if still open → task Save. Reopen and inspect order, target, region, hold, and ranges. Test runtime confirmation using the [Operator guide](#operator-guide).
 
-### 11.2 Lab B: Three tools must be ready together {#scenario-labs--lab-b-three-tools-must-be-ready-together}
+### 12.2 Lab B: Three tools must be ready together {#scenario-labs--lab-b-three-tools-must-be-ready-together}
 
-#### 11.2.1 B1. Requirement {#scenario-labs--b1-requirement}
+#### 12.2.1 B1. Requirement {#scenario-labs--b1-requirement}
 
 Mallet, drill, and paint cup must coexist. This is one step with several simultaneous requirements, not interchangeable alternatives.
 
-#### 11.2.2 B2. Configuration {#scenario-labs--b2-configuration}
+#### 12.2.2 B2. Configuration {#scenario-labs--b2-configuration}
 
 | Field | Setting |
 |---|---|
@@ -2284,7 +2436,7 @@ Mallet, drill, and paint cup must coexist. This is one step with several simulta
 | Completion | Illustrative 0.8-second hold, automatic or operator review |
 | Instructions | Explicit item names and placement |
 
-#### 11.2.3 B3. Procedure {#scenario-labs--b3-procedure}
+#### 12.2.3 B3. Procedure {#scenario-labs--b3-procedure}
 
 1. Create and verify each target separately.
 2. Edit the step's checks.
@@ -2305,13 +2457,13 @@ Mallet, drill, and paint cup must coexist. This is one step with several simulta
 | Separate appearances without coexistence | Cannot accumulate into simultaneous readiness |
 | Duplicate boxes on one drill | Cannot establish additional tools |
 
-### 11.3 Lab C: Count only the tool area {#scenario-labs--lab-c-count-only-the-tool-area}
+### 12.3 Lab C: Count only the tool area {#scenario-labs--lab-c-count-only-the-tool-area}
 
-#### 11.3.1 C1. Requirement {#scenario-labs--c1-requirement}
+#### 12.3.1 C1. Requirement {#scenario-labs--c1-requirement}
 
 Similar tools may appear on a neighboring table. Only the current station's tool area should contribute.
 
-#### 11.3.2 C2. Procedure {#scenario-labs--c2-procedure}
+#### 12.3.2 C2. Procedure {#scenario-labs--c2-procedure}
 
 1. Draw Tool work area on the correct fixed view.
 2. Close/name it and exclude the neighboring table.
@@ -2325,7 +2477,7 @@ Similar tools may appear on a neighboring table. Only the current station's tool
 
 [![Binding the actual requirement](../../assets/sop/en-26-object-region.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-26-object-region.png)
 
-#### 11.3.3 C3. Boundary tests {#scenario-labs--c3-boundary-tests}
+#### 12.3.3 C3. Boundary tests {#scenario-labs--c3-boundary-tests}
 
 | Placement | Verify |
 |---|---|
@@ -2337,13 +2489,13 @@ Similar tools may appear on a neighboring table. Only the current station's tool
 
 Drawing a region does not bind every step. An outside detection box is not necessarily wrong; check whether it incorrectly affects this requirement.
 
-### 11.4 Lab D: Approach the tool, then withdraw {#scenario-labs--lab-d-approach-the-tool-then-withdraw}
+### 12.4 Lab D: Approach the tool, then withdraw {#scenario-labs--lab-d-approach-the-tool-then-withdraw}
 
-#### 11.4.1 D1. Prerequisites {#scenario-labs--d1-prerequisites}
+#### 12.4.1 D1. Prerequisites {#scenario-labs--d1-prerequisites}
 
 Object recognition works, hands remain visible, and any directional requirement has been checked against the operator.
 
-#### 11.4.2 D2. Procedure {#scenario-labs--d2-procedure}
+#### 12.4.2 D2. Procedure {#scenario-labs--d2-procedure}
 
 1. Add hand recognition in Detection settings.
 2. Use Either hand unless direction is required.
@@ -2371,20 +2523,20 @@ Object recognition works, hands remain visible, and any directional requirement 
 
 This does not establish strike count, force, or assembly quality.
 
-### 11.5 Lab E: Either order, both preparations mandatory {#scenario-labs--lab-e-either-order-both-preparations-mandatory}
+### 12.5 Lab E: Either order, both preparations mandatory {#scenario-labs--lab-e-either-order-both-preparations-mandatory}
 
-#### 11.5.1 E1. Requirement {#scenario-labs--e1-requirement}
+#### 12.5.1 E1. Requirement {#scenario-labs--e1-requirement}
 
 Tool readiness and label review may occur in either order. Final confirmation follows both.
 
-#### 11.5.2 E2. Structure {#scenario-labs--e2-structure}
+#### 12.5.2 E2. Structure {#scenario-labs--e2-structure}
 
 | Stage | Contents | Rule |
 |---|---|---|
 | 1 | Tools ready, Label review | Unordered, all mandatory |
 | 2 | Final confirmation | After stage 1 |
 
-#### 11.5.3 E3. Procedure {#scenario-labs--e3-procedure}
+#### 12.5.3 E3. Procedure {#scenario-labs--e3-procedure}
 
 1. Create two separate preparation steps.
 2. Configure each independently; do not use Any condition to replace their conjunction.
@@ -2405,17 +2557,17 @@ Tool readiness and label review may occur in either order. Final confirmation fo
 
 If the process truly requires label work first, use separate ordered stages.
 
-### 11.6 Lab F: Transfer an object, place it, and withdraw {#scenario-labs--lab-f-transfer-an-object-place-it-and-withdraw}
+### 12.6 Lab F: Transfer an object, place it, and withdraw {#scenario-labs--lab-f-transfer-an-object-place-it-and-withdraw}
 
-#### 11.6.1 F1. Prerequisites {#scenario-labs--f1-prerequisites}
+#### 12.6.1 F1. Prerequisites {#scenario-labs--f1-prerequisites}
 
 The device offers the corresponding continuous-observation template. A physical object remains distinguishable along the route; hand, object, and destination are visible. Two endpoint photos do not establish continuous transfer.
 
-#### 11.6.2 F2. Areas {#scenario-labs--f2-areas}
+#### 12.6.2 F2. Areas {#scenario-labs--f2-areas}
 
 Define origin, destination, and an operation area covering the route. Avoid an initial placement satisfying both endpoints without a meaningful transition.
 
-#### 11.6.3 F3. Procedure {#scenario-labs--f3-procedure}
+#### 12.6.3 F3. Procedure {#scenario-labs--f3-procedure}
 
 1. Verify one object, hands, and handedness.
 2. Draw distinct origin and destination areas.
@@ -2429,7 +2581,7 @@ Define origin, destination, and an operation area covering the route. Avoid an i
 10. Add and inspect actual generated rules.
 11. Test normal transfer, intermediate release, wrong destination, occlusion, and multiple similar items.
 
-#### 11.6.4 F4. Validation matrix {#scenario-labs--f4-validation-matrix}
+#### 12.6.4 F4. Validation matrix {#scenario-labs--f4-validation-matrix}
 
 | Case | Verify |
 |---|---|
@@ -2441,7 +2593,7 @@ Define origin, destination, and an operation area covering the route. Avoid an i
 | Overlapping endpoint regions | No false transfer without change |
 | Gloves or temporary occlusion | Actual capability and uncertainty, not automatic success |
 
-### 11.7 Close every lab consistently {#scenario-labs--7-close-every-lab-consistently}
+### 12.7 Close every lab consistently {#scenario-labs--7-close-every-lab-consistently}
 
 1. Read back target, region, order, timing, and completion.
 2. Test another real recording.
@@ -2454,16 +2606,16 @@ Define origin, destination, and an operation area covering the route. Avoid an i
 
 *Footage attribution: [Sample and screenshot credits](#reference--7-sample-and-screenshot-credits).*
 
-## 12. Validation, Saving, and Station Operation {#validation-and-operation}
+## 13. Validation, Saving, and Station Operation {#validation-and-operation}
 
 
 Validate recognition, one stage, the complete plan, an independent recording, and saved station operation in that order. Establish each layer before proceeding.
 
-### 12.1 Pre-validation checks {#validation-and-operation--1-pre-validation-checks}
+### 13.1 Pre-validation checks {#validation-and-operation--1-pre-validation-checks}
 
 Confirm playable footage, seeking, correct targets and references, appropriate sources, regions, combination rules, timing, and completion methods. Overall and stage ranges must agree. Resolve configuration errors and unavailable targets. Verify camera orientation and operator-relative handedness when applicable.
 
-### 12.2 Validate recognition and then a stage {#validation-and-operation--2-validate-recognition-and-then-a-stage}
+### 13.2 Validate recognition and then a stage {#validation-and-operation--2-validate-recognition-and-then-a-stage}
 
 If the original picture contains the mallet but the detector misses it, address recognition first. Changing stage order does not solve that problem.
 
@@ -2480,7 +2632,7 @@ Click the stage validation control and inspect:
 
 Video pixels alone cannot establish that a person performed an operator-confirmation action. Check the actual confirmation control, timing, and following stage in the interactive workflow.
 
-### 12.3 Validate the plan {#validation-and-operation--3-validate-the-plan}
+### 13.3 Validate the plan {#validation-and-operation--3-validate-the-plan}
 
 Use **Validate plan** to check stage order, all steps within groups, and the final state. Separate stage success does not establish correct integration if dependencies, grouping, or required steps are wrong.
 
@@ -2495,13 +2647,13 @@ Use **Validate plan** to check stage order, all steps within groups, and the fin
 
 Read checks and reasons alongside timestamps and overlays. One green box is not acceptance evidence for the complete plan.
 
-### 12.4 Exercise failure paths {#validation-and-operation--4-exercise-failure-paths}
+### 13.4 Exercise failure paths {#validation-and-operation--4-exercise-failure-paths}
 
 Include missing objects, wrong regions, too few or too many objects, a hand that never approaches or never withdraws, reversed order, exceeded deadlines, blur, occlusion, stream interruption, missing frames, and an unfinished step within an unordered group.
 
 Expected failures should produce understandable waiting, unmet, exception, or review states rather than automatic completion. Use site quality requirements to decide whether operation may continue.
 
-### 12.5 Use independent footage {#validation-and-operation--5-use-independent-footage}
+### 13.5 Use independent footage {#validation-and-operation--5-use-independent-footage}
 
 Add another validation recording through the corresponding control. Record a different execution at the same station, then cover normal variation in position, speed, lighting, and operators.
 
@@ -2509,7 +2661,7 @@ Teaching footage establishes references; independent footage checks behavior bey
 
 Retain plan version, footage, range, and result for each run. After changing recognition or rules, check whether revalidation is required.
 
-### 12.6 Three save levels {#validation-and-operation--6-three-save-levels}
+### 13.6 Three save levels {#validation-and-operation--6-three-save-levels}
 
 [![Outer task save and run controls](../../assets/sop/en-23-save-task.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/en-23-save-task.png)
 
@@ -2523,7 +2675,7 @@ Reopen the task and check targets, references, region geometry and assignments, 
 
 Do not submit repeatedly during a slow save. Retain the window and error message, check connectivity, and follow the recovery prompt.
 
-### 12.7 Station operation {#validation-and-operation--7-station-operation}
+### 13.7 Station operation {#validation-and-operation--7-station-operation}
 
 After saving and starting the task, enter **Station operation** from its task card.
 
@@ -2531,13 +2683,13 @@ Read the current step and instructions. Demonstration playback should show that 
 
 Follow site procedures for exceptions, stopping, and restarting a cycle. A previous cycle's completion must not be treated as completion of the current product. Changes to a running configuration require saving, checking, and revalidation.
 
-### 12.8 History and storage {#validation-and-operation--8-history-and-storage}
+### 13.8 History and storage {#validation-and-operation--8-history-and-storage}
 
 Scan results and plan-validation records are retained for review and traceability. Follow storage warnings and the explicit cleanup workflow. Clearing tasks, deleting videos, or re-recording is not a routine refresh mechanism.
 
 Before cleanup, identify task, version, and retention needs, and back up according to site policy. Do not combine old-plan, current-plan, and different-recording results into one unexplained statistic.
 
-### 12.9 Handover evidence {#validation-and-operation--9-handover-evidence}
+### 13.9 Handover evidence {#validation-and-operation--9-handover-evidence}
 
 | Item | Record |
 |---|---|
@@ -2554,12 +2706,12 @@ Configuration completeness is not production acceptance. Acceptance requires tru
 
 *Example footage and reference views in the screenshots: [wooden-box assembly dataset and CC BY 4.0 credits](#reference--7-sample-and-screenshot-credits).*
 
-## 13. Operator Station Manual {#operator-guide}
+## 14. Operator Station Manual {#operator-guide}
 
 
 For operators and supervisors. Configuration and validation should be completed first. Operators work with the current step of a saved, started task. Starting the task and beginning an individual workpiece are separate actions.
 
-### 13.1 At the start of a shift {#operator-guide--1-at-the-start-of-a-shift}
+### 14.1 At the start of a shift {#operator-guide--1-at-the-start-of-a-shift}
 
 1. Identify station, product, task, and approved plan.
 2. Check that camera direction and visibility remain correct.
@@ -2569,7 +2721,7 @@ For operators and supervisors. Configuration and validation should be completed 
 6. Identify who decides recovery, rework, and abortion.
 7. Report camera, tool, or process changes for revalidation.
 
-### 13.2 Enter station operation {#operator-guide--2-enter-station-operation}
+### 14.2 Enter station operation {#operator-guide--2-enter-station-operation}
 
 [![Outer task Save and Run controls before operation](../../assets/sop/en-23-save-task.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/en-23-save-task.png)
 
@@ -2583,7 +2735,7 @@ This figure shows the configuration entry before operation, not a passing produc
 
 A stopped task may have no active instance. Repeated confirmation does not start the background task.
 
-### 13.3 Read the screen {#operator-guide--3-read-the-screen}
+### 14.3 Read the screen {#operator-guide--3-read-the-screen}
 
 | Area | Location/content | Check |
 |---|---|---|
@@ -2602,7 +2754,7 @@ A stopped task may have no active instance. Repeated confirmation does not start
 
 Playable video and synchronized process state are distinct. Neither a last known picture nor a stale state justifies a current confirmation.
 
-### 13.4 Begin a workpiece {#operator-guide--4-begin-a-workpiece}
+### 14.4 Begin a workpiece {#operator-guide--4-begin-a-workpiece}
 
 **Prerequisites:** Task running, station available, previous work clearly ended/aborted or waiting for a workpiece, synchronized state.
 
@@ -2616,7 +2768,7 @@ The current piece has its own execution state. Previous green steps do not estab
 
 If disabled, inspect connection, synchronization, service health, and pending commands. Do not repeatedly click or try another station.
 
-### 13.5 Automatic visual steps {#operator-guide--5-automatic-visual-steps}
+### 14.5 Automatic visual steps {#operator-guide--5-automatic-visual-steps}
 
 For “Mallet ready”:
 
@@ -2628,7 +2780,7 @@ For “Mallet ready”:
 
 If it waits, inspect the reason: not detected, outside region, low confidence, wrong count, or unknown evidence.
 
-### 13.6 Visual checks followed by operator review {#operator-guide--6-visual-checks-followed-by-operator-review}
+### 14.6 Visual checks followed by operator review {#operator-guide--6-visual-checks-followed-by-operator-review}
 
 1. Wait for stable conditions and review-ready status.
 2. Inspect the actual work against the instructions.
@@ -2639,7 +2791,7 @@ If it waits, inspect the reason: not detected, outside region, low confidence, w
 
 A disabled confirmation is not a visual-check bypass.
 
-### 13.7 Manual confirmation {#operator-guide--7-manual-confirmation}
+### 14.7 Manual confirmation {#operator-guide--7-manual-confirmation}
 
 [![Configuration example for a manual step](../../assets/sop/en-13-manual-completion.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-13-manual-completion.png)
 
@@ -2653,7 +2805,7 @@ The figure illustrates configuration. During operation, use the runtime control 
 
 Availability of a button does not justify confirming incomplete work.
 
-### 13.8 Unordered groups {#operator-guide--8-unordered-groups}
+### 14.8 Unordered groups {#operator-guide--8-unordered-groups}
 
 All grouped steps remain mandatory, although order is flexible.
 
@@ -2665,7 +2817,7 @@ All grouped steps remain mandatory, although order is flexible.
 
 Selecting a step changes focus, not completion. A completed selected step can remain visible. Use **View active step** when offered to return to pending work. Read the selected name before confirming.
 
-### 13.9 Demonstration playback {#operator-guide--9-demonstration-playback}
+### 14.9 Demonstration playback {#operator-guide--9-demonstration-playback}
 
 | Control | Purpose | Important detail |
 |---|---|---|
@@ -2676,7 +2828,7 @@ Selecting a step changes focus, not completion. A completed selected step can re
 
 If the demo fails to load, preserve the workpiece and ask the administrator to inspect media, network, and task version. Do not re-record over the configuration.
 
-### 13.10 Pause and reviewed recovery {#operator-guide--10-pause-and-reviewed-recovery}
+### 14.10 Pause and reviewed recovery {#operator-guide--10-pause-and-reviewed-recovery}
 
 Use **Pause** when the procedure requires a temporary stop and wait for its acknowledgement. Software pause does not replace machine shutdown or the site's mechanical safety procedure.
 
@@ -2690,7 +2842,7 @@ Before recovery:
 
 If source/configuration changes are pending, follow the instruction to restore the original configuration or abort and begin again under the new one.
 
-### 13.11 Rework {#operator-guide--11-rework}
+### 14.11 Rework {#operator-guide--11-rework}
 
 Rework returns to a specified step; it does not silently erase the incident.
 
@@ -2704,7 +2856,7 @@ Rework returns to a specified step; it does not silently erase the incident.
 
 The current reason field permits up to 300 characters, subject to interface validation. Prefer a factual explanation over “test” or “error.”
 
-### 13.12 Abort {#operator-guide--12-abort}
+### 14.12 Abort {#operator-guide--12-abort}
 
 1. Identify the current station and piece.
 2. Select **Abort workpiece**.
@@ -2715,7 +2867,7 @@ The current reason field permits up to 300 characters, subject to interface vali
 
 Abort differs from pause. Do not assume the old execution can resume at the same position.
 
-### 13.13 Finish {#operator-guide--13-finish}
+### 14.13 Finish {#operator-guide--13-finish}
 
 When required steps are complete, inspect the final result and use **Finish workpiece** if offered.
 
@@ -2725,7 +2877,7 @@ When required steps are complete, inspect the final result and use **Finish work
 - Distinguish ended from compliant completion.
 - Record the required outcome before the next piece.
 
-### 13.14 Commands and availability {#operator-guide--14-commands-and-availability}
+### 14.14 Commands and availability {#operator-guide--14-commands-and-availability}
 
 | Function | Typically available when | Typical restriction |
 |---|---|---|
@@ -2743,7 +2895,7 @@ When required steps are complete, inspect the final result and use **Finish work
 
 Runtime labels may depend on interface localization. Use the stated function and actual current-state prompt.
 
-### 13.15 Slow network or unknown confirmation {#operator-guide--15-slow-network-or-unknown-confirmation}
+### 14.15 Slow network or unknown confirmation {#operator-guide--15-slow-network-or-unknown-confirmation}
 
 1. Keep the page and do not double-confirm.
 2. Read whether the original request is retained.
@@ -2754,7 +2906,7 @@ Runtime labels may depend on interface localization. Use the stated function and
 
 Do not bypass uncertainty by refreshing and issuing a new confirmation. Recheck identity after switching stations or pieces.
 
-### 13.16 State reference {#operator-guide--16-state-reference}
+### 14.16 State reference {#operator-guide--16-state-reference}
 
 | State | Action |
 |---|---|
@@ -2769,13 +2921,13 @@ Do not bypass uncertainty by refreshing and issuing a new confirmation. Recheck 
 | Not synchronized | Restore connection; no duplicate commands |
 | Video stalled/error | Last frame is not current observation |
 
-### 13.17 Alarms and recording evidence {#operator-guide--17-alarms-and-recording-evidence}
+### 14.17 Alarms and recording evidence {#operator-guide--17-alarms-and-recording-evidence}
 
 An alarm submitted to another capability does not guarantee a complete usable recording. Inspect delivery, recording, and evidence-readability states separately.
 
 Preserve event, station, time, and run identity for partial evidence, recorder failure, or unknown outcome. Do not delete history to remove a warning.
 
-### 13.18 Shift handover {#operator-guide--18-shift-handover}
+### 14.18 Shift handover {#operator-guide--18-shift-handover}
 
 Record unfinished and exceptional work. Closing the browser does not necessarily stop the task. Retain required evidence, report camera/tool/process changes, and avoid replacing references, media, or shared regions during production.
 
@@ -2783,13 +2935,13 @@ Record unfinished and exceptional work. Closing the browser does not necessarily
 
 *Footage attribution: [Sample and screenshot credits](#reference--7-sample-and-screenshot-credits).*
 
-### 13.19 Complete live example: tool ready → operator confirmation → workpiece completed {#station-live-example}
+### 14.19 Complete live example: tool ready → operator confirmation → workpiece completed {#station-live-example}
 
 This section records an actual device run using the same workbench footage and a saved, published two-step test plan. These are native lossless screenshots of the running station, not configuration previews or simulated results. Both steps were verified, **Finish workpiece** was accepted, and the test task was then stopped.
 
 The example demonstrates the operation and state checks. It does not cover independent footage, missing parts, wrong order, occlusion, multiple people, or long-duration production acceptance. It is not evidence that every process scenario has passed.
 
-#### 13.19.1 Enter and check the station
+#### 14.19.1 Enter and check the station {#13191-enter-and-check-the-station}
 
 1. In task management, check the task, camera and published plan, then start the correct task.
 2. Open **Station operation** on that task to enter the dedicated station page.
@@ -2797,9 +2949,9 @@ The example demonstrates the operation and state checks. It does not cover indep
 4. Read the task title. The upper-right controls provide language, Light/Dark, copy station link, fullscreen and Task management.
 5. The language selector supports 中文, English, Tiếng Việt, ខ្មែរ and ລາວ. Changing language updates fixed interface text; it does not restart the workpiece or automatically translate user-authored task, station, object names or instructions.
 
-#### 13.19.2 Review recovery before continuing, when required
+#### 14.19.2 Review recovery before continuing, when required {#13192-review-recovery-before-continuing-when-required}
 
-[![Figure 13-A: real restart recovery, retaining the verified first step](../../assets/sop/en-39-station-recovery.png){loading="lazy" decoding="async" width="2560" height="1440"}](../../assets/sop/en-39-station-recovery.png)
+[![Figure 14-A: real restart recovery, retaining the verified first step](../../assets/sop/en-39-station-recovery.png){loading="lazy" decoding="async" width="2560" height="1440"}](../../assets/sop/en-39-station-recovery.png)
 
 This test resumed a workpiece after an earlier task stop. It therefore first displayed **Recovery review required**, while retaining the verified first step. This protection is not permission to continue without reviewing the physical workpiece.
 
@@ -2808,9 +2960,9 @@ This test resumed a workpiece after an earlier task stop. It therefore first dis
 3. Read the confirmation dialog and choose **Confirm and resume** only when it matches the actual station.
 4. Wait for the running state and verify the pending step. If the workpiece, source or configuration has changed, ask the responsible person to resolve it instead of blindly resuming.
 
-#### 13.19.3 Confirm the manual step after the tool check passes
+#### 14.19.3 Confirm the manual step after the tool check passes {#13193-confirm-the-manual-step-after-the-tool-check-passes}
 
-[![Figure 13-B: the mallet-ready step is verified; operator confirmation is the active second step](../../assets/sop/en-36-station-manual.png){loading="lazy" decoding="async" width="2560" height="1440"}](../../assets/sop/en-36-station-manual.png)
+[![Figure 14-B: the mallet-ready step is verified; operator confirmation is the active second step](../../assets/sop/en-36-station-manual.png){loading="lazy" decoding="async" width="2560" height="1440"}](../../assets/sop/en-36-station-manual.png)
 
 | Location | What this example shows | What to do |
 |---|---|---|
@@ -2822,33 +2974,33 @@ This test resumed a workpiece after an earlier task stop. It therefore first dis
 
 After **Confirm completion**, wait for a successful read-back. Do not repeatedly click. If the result is unknown, follow the network/unknown-confirmation procedure in this chapter.
 
-#### 13.19.4 Explicitly finish the workpiece after both steps
+#### 14.19.4 Explicitly finish the workpiece after both steps {#13194-explicitly-finish-the-workpiece-after-both-steps}
 
 1. Verify that both step cards say **Verified**.
 2. If **Finish workpiece** is offered, use it to perform the final closing action.
 3. Wait for **Workpiece completed in compliance** and the two green verified entries.
 4. **Start workpiece** is now for the next item. Do not press it just to recheck the previous result.
 
-[![Figure 13-C: actual terminal state after confirmation and Finish workpiece; both steps verified](../../assets/sop/en-37-station-completed.png){loading="lazy" decoding="async" width="2560" height="1440"}](../../assets/sop/en-37-station-completed.png)
+[![Figure 14-C: actual terminal state after confirmation and Finish workpiece; both steps verified](../../assets/sop/en-37-station-completed.png){loading="lazy" decoding="async" width="2560" height="1440"}](../../assets/sop/en-37-station-completed.png)
 
 !!! note "Read the video and runtime result separately"
     During this capture, the runtime panel on the right had synchronized to completion, while the preview on the left still showed an earlier recovery frame. Device records confirm that the time visible in the video precedes the workpiece completion record. This screenshot alone therefore does not establish that the overlay failed to update. If the preview stalls or falls behind, refresh the video, wait for visible updates, and then check workpiece details and device records. The screenshot preserves this capture discrepancy. On-site acceptance must still check consistency among video, overlays and workflow state.
 
-#### 13.19.5 Stop the task after a test
+#### 14.19.5 Stop the task after a test {#13195-stop-the-task-after-a-test}
 
 Finishing one workpiece does not stop background detection. Return to **Task management**, stop the test task, and confirm that it is stopped. Closing the station page, changing language or leaving fullscreen does not stop the task.
 
-[![Figure 13-D: stopped-task station page, shown as a diagnostic example](../../assets/sop/en-38-station-stopped.png){loading="lazy" decoding="async" width="2560" height="1440"}](../../assets/sop/en-38-station-stopped.png)
+[![Figure 14-D: stopped-task station page, shown as a diagnostic example](../../assets/sop/en-38-station-stopped.png){loading="lazy" decoding="async" width="2560" height="1440"}](../../assets/sop/en-38-station-stopped.png)
 
 A stopped task or missing live instance is a stop diagnostic, not evidence that a new workpiece completed. Whether production runs continuously is determined by the site's operating procedure.
 
 
-## 14. Backup, Migration, Maintenance, and Handover {#maintenance}
+## 15. Backup, Migration, Maintenance, and Handover {#maintenance}
 
 
 For process owners, installers, and administrators. A reusable deployment needs traceable changes and recoverable faults, beyond a demonstration in one browser.
 
-### 14.1 Keep a station record {#maintenance--1-keep-a-station-record}
+### 15.1 Keep a station record {#maintenance--1-keep-a-station-record}
 
 | Item | Record |
 |---|---|
@@ -2865,13 +3017,13 @@ For process owners, installers, and administrators. A reusable deployment needs 
 
 A name alone does not identify applicable evidence. Check version, footage, and viewpoint.
 
-### 14.2 Before saving {#maintenance--2-before-saving}
+### 15.2 Before saving {#maintenance--2-before-saving}
 
 Verify completed drawings, understandable instructions, adoption state, actual region bindings, handedness, combinations, timing, ranges, and change impact. Distinguish passed, failed, untested, and unknown.
 
 Export success, closing a window, or scan completion is not task-save acknowledgement.
 
-### 14.3 Save and reopen {#maintenance--3-save-and-reopen}
+### 15.3 Save and reopen {#maintenance--3-save-and-reopen}
 
 [![Outer task Save location](../../assets/sop/en-23-save-task.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/en-23-save-task.png)
 
@@ -2884,7 +3036,7 @@ Export success, closing a window, or scan completion is not task-save acknowledg
 7. Inspect shared and dependent steps.
 8. Revalidate before operation where required.
 
-#### 14.3.1 Reopen checklist {#maintenance--reopen-checklist}
+#### 15.3.1 Reopen checklist {#maintenance--reopen-checklist}
 
 - [ ] Target names and reference counts.
 - [ ] Pending adoption handled as intended.
@@ -2896,9 +3048,9 @@ Export success, closing a window, or scan completion is not task-save acknowledg
 - [ ] Readable instructions and playable demos.
 - [ ] Version and validation status.
 
-### 14.4 Export a plan {#maintenance--4-export-a-plan}
+### 15.4 Export a plan {#maintenance--4-export-a-plan}
 
-#### 14.4.1 Procedure {#maintenance--41-procedure}
+#### 15.4.1 Procedure {#maintenance--41-procedure}
 
 1. Open the intended plan.
 2. Verify that the current draft is the intended backup.
@@ -2907,25 +3059,25 @@ Export success, closing a window, or scan completion is not task-save acknowledg
 5. Record task, plan, date, and matching version.
 6. Do not manually edit package internals to bypass validation.
 
-#### 14.4.2 Contents {#maintenance--42-contents}
+#### 15.4.2 Contents {#maintenance--42-contents}
 
 The current **.sopbundle** format uses a checked manifest. Depending on the plan, it contains its definition, portable plugin graph, bindings, detector reference images, and assets referenced by instructions/regions.
 
 It is not a whole-device backup. Camera addresses, credentials, runtime state, scan/validation history, and unrelated unreferenced media must not be assumed preserved by that bundle.
 
-#### 14.4.3 Limits {#maintenance--43-limits}
+#### 15.4.3 Limits {#maintenance--43-limits}
 
 Current bundle material is limited to 64 MiB total, 32 MiB for an individual plan asset, and 8 MiB for a reference image, with additional item-count limits. These are bundle transfer limits, not universal limits for every recording/upload entry.
 
 Resolve explicit size messages by reducing unnecessary content, shortening demonstrations, or dividing stations. Do not remove referenced material blindly. Retain important original recordings separately.
 
-### 14.5 Import at another station {#maintenance--5-import-at-another-station}
+### 15.5 Import at another station {#maintenance--5-import-at-another-station}
 
-#### 14.5.1 Prerequisites {#maintenance--51-prerequisites}
+#### 15.5.1 Prerequisites {#maintenance--51-prerequisites}
 
 Back up the destination plan. Check required object, hand, spatial, and sequence capabilities. Prepare local camera/network credentials and arrange a controlled validation period.
 
-#### 14.5.2 Procedure {#maintenance--52-procedure}
+#### 15.5.2 Procedure {#maintenance--52-procedure}
 
 1. Open the destination SOP editor.
 2. Import the original supported bundle/ZIP.
@@ -2938,13 +3090,13 @@ Back up the destination plan. Check required object, hand, spatial, and sequence
 9. Save and reopen.
 10. Test operator interaction under controlled conditions.
 
-#### 14.5.3 Different models or capabilities {#maintenance--53-different-models-or-capabilities}
+#### 15.5.3 Different models or capabilities {#maintenance--53-different-models-or-capabilities}
 
 If explicit local adaptation is offered, read what remains and which numerical thresholds need reevaluation. Old validation and recommendations do not establish the adapted plan's performance.
 
 When capability is unavailable, unknown, or incompatible and no valid adaptation is offered, retain the file for an installer rather than bypassing the check.
 
-### 14.6 Revalidation triggers {#maintenance--6-revalidation-triggers}
+### 15.6 Revalidation triggers {#maintenance--6-revalidation-triggers}
 
 | Change | Revalidate at least |
 |---|---|
@@ -2961,7 +3113,7 @@ When capability is unavailable, unknown, or incompatible and no valid adaptation
 
 Playable old footage does not waive business revalidation.
 
-### 14.7 History retention {#maintenance--7-history-retention}
+### 15.7 History retention {#maintenance--7-history-retention}
 
 Scan and plan-validation records are retained for review. Each belongs to its own task, version, asset, and range.
 
@@ -2974,7 +3126,7 @@ Scan and plan-validation records are retained for review. Each belongs to its ow
 
 Refresh and Load more read data. They do not rerun recognition or restore missing files automatically.
 
-### 14.8 Low storage {#maintenance--8-low-storage}
+### 15.8 Low storage {#maintenance--8-low-storage}
 
 1. Avoid adding more large assets; preserve draft and message.
 2. Identify whether upload, recording, scan, validation, or evidence failed.
@@ -2986,7 +3138,7 @@ Refresh and Load more read data. They do not rerun recognition or restore missin
 
 Deleting all tasks is not routine storage maintenance.
 
-### 14.9 Report a fault effectively {#maintenance--9-report-a-fault-effectively}
+### 15.9 Report a fault effectively {#maintenance--9-report-a-fault-effectively}
 
 | Information | Include |
 |---|---|
@@ -3003,33 +3155,33 @@ Deleting all tasks is not routine storage maintenance.
 
 Keep passwords out of instructions. Apply your organization's rules to account, personal, and production information before sending support material.
 
-### 14.10 Station acceptance procedure {#maintenance--10-station-acceptance-procedure}
+### 15.10 Station acceptance procedure {#maintenance--10-station-acceptance-procedure}
 
-#### 14.10.1 Basic usability {#maintenance--basic-usability}
+#### 15.10.1 Basic usability {#maintenance--basic-usability}
 
 Connection, playback, seeking, thumbnails, drawing, regions, scrolling, buttons, and narrow-window layout.
 
-#### 14.10.2 Recognition {#maintenance--recognition}
+#### 15.10.2 Recognition {#maintenance--recognition}
 
 Document real behavior for targets, views, missing items, confusers, duplicates, counts, gloves, and occlusion before process logic.
 
-#### 14.10.3 Rules {#maintenance--rules}
+#### 15.10.3 Rules {#maintenance--rules}
 
 Check conditions, timing, geometry, dependencies, unordered groups, and correct confirmation identity using normal and negative cases.
 
-#### 14.10.4 Persistence and recovery {#maintenance--persistence-and-recovery}
+#### 15.10.4 Persistence and recovery {#maintenance--persistence-and-recovery}
 
 Save/reopen consistency, bundle limits, slow network, unknown outcome, interruption, low storage, and exception recovery.
 
-#### 14.10.5 Independent operator use {#maintenance--independent-operator-use}
+#### 15.10.5 Independent operator use {#maintenance--independent-operator-use}
 
 Have the actual operator complete a real workflow using only the manual and interface. Record obstacles and ambiguous words. The engineer performing it instead does not establish operator usability.
 
-#### 14.10.6 Handover {#maintenance--handover}
+#### 15.10.6 Handover {#maintenance--handover}
 
 Retain version, sources, cases, expected/actual outcomes, issues, backups, and ownership. Complete configuration screens alone do not establish acceptance.
 
-### 14.11 Acceptance worksheet {#maintenance--11-acceptance-worksheet}
+### 15.11 Acceptance worksheet {#maintenance--11-acceptance-worksheet}
 
 | Item | Expected | Actual | Result/issue | Owner |
 |---|---|---|---|---|
@@ -3048,12 +3200,12 @@ Retain version, sources, cases, expected/actual outcomes, issues, backups, and o
 
 *Footage attribution: [Sample and screenshot credits](#reference--7-sample-and-screenshot-credits).*
 
-## 15. Troubleshooting and Recovery {#troubleshooting}
+## 16. Troubleshooting and Recovery {#troubleshooting}
 
 
 Retain the current configuration. Investigate connection/video, recognition, regions/conditions, stages/plan, and saving/runtime in that order. Deleting tasks or repeatedly recording again is not a recovery procedure.
 
-### 15.1 Video and timeline {#troubleshooting--1-video-and-timeline}
+### 16.1 Video and timeline {#troubleshooting--1-video-and-timeline}
 
 | Symptom | Check and action |
 |---|---|
@@ -3066,13 +3218,13 @@ Retain the current configuration. Investigate connection/video, recognition, reg
 
 [![Loaded video and timeline](../../assets/sop/en-06-teaching-video.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-06-teaching-video.png)
 
-#### 15.1.1 Stage selection and demonstration differ {#troubleshooting--stage-selection-and-demonstration-differ}
+#### 16.1.1 Stage selection and demonstration differ {#troubleshooting--stage-selection-and-demonstration-differ}
 
 Check whether you edited validation or demonstration mode, whether the step uses separate material, and the actual player endpoints. Close and reopen the player and check persistence.
 
 If inconsistent, retain the stage name, both ranges, and screenshots. Do not change other stages merely to make displays agree. Stage ranges are independent and may overlap.
 
-### 15.2 Manual boxes and recognition {#troubleshooting--2-manual-boxes-and-recognition}
+### 16.2 Manual boxes and recognition {#troubleshooting--2-manual-boxes-and-recognition}
 
 **Capacity did not increase:** A saved annotation is not necessarily adopted. Check pending state, adoption result, duplicate references, and capacity.
 
@@ -3084,7 +3236,7 @@ If inconsistent, retain the stage name, both ranges, and screenshots. Do not cha
 
 **Cannot start a new box inside an old box:** Check new-box versus select/move mode. Cancel the old selection and use the explicit addition entry. If still blocked, retain correct annotations and report the start position and visible hint rather than deleting a valid box.
 
-### 15.3 Regions and rules {#troubleshooting--3-regions-and-rules}
+### 16.3 Regions and rules {#troubleshooting--3-regions-and-rules}
 
 | Problem | Check |
 |---|---|
@@ -3095,7 +3247,7 @@ If inconsistent, retain the stage name, both ranges, and screenshots. Do not cha
 | Later condition already true but sequence incomplete | A valid change after the previous phase may be required |
 | Read-only or unavailable capability | Retain configuration and inspect capability; disabled controls do not establish activation |
 
-### 15.4 Hands and spatial actions {#troubleshooting--4-hands-and-spatial-actions}
+### 16.4 Hands and spatial actions {#troubleshooting--4-hands-and-spatial-actions}
 
 **Reversed hand labels:** Verify the operator's own hands, camera mirroring, and orientation. Adjust handedness in detection settings and validate actual pictures. Renaming a step does not calibrate hands.
 
@@ -3105,7 +3257,7 @@ If inconsistent, retain the stage name, both ranges, and screenshots. Do not cha
 
 **Gloves or several people:** Validate actual gloves, pose, light, and speed. A hand-count limit does not prove two hands belong to one person. Adjust the viewpoint or workflow if identity cannot be established reliably.
 
-### 15.5 Dragging, scrolling, and editing {#troubleshooting--5-dragging-scrolling-and-editing}
+### 16.5 Dragging, scrolling, and editing {#troubleshooting--5-dragging-scrolling-and-editing}
 
 A highlighted drop without an added condition should be checked using the equivalent click entry, read-only state, duplicates, and capacity. Read whether a drop replaces or adds, and undo an unintended replacement.
 
@@ -3113,7 +3265,7 @@ For scrolling over video, release zoom modifiers and exit a drag/pan state. Ordi
 
 On narrow screens, collapse the step list and maximize the editor. After text editing, check which step is current before proceeding.
 
-### 15.6 Validation and saving {#troubleshooting--6-validation-and-saving}
+### 16.6 Validation and saving {#troubleshooting--6-validation-and-saving}
 
 **Processing reached 100%:** This is processing progress, not a pass rate. Inspect unmet steps, confirmation requirements, and input problems.
 
@@ -3125,7 +3277,7 @@ On narrow screens, collapse the step list and maximize the editor. After text ed
 
 **Low storage:** Avoid unnecessary repeated scans, identify retained records, back up according to site policy, and clean an explicit scope rather than all customer data.
 
-### 15.7 Information for support {#troubleshooting--7-information-for-support}
+### 16.7 Information for support {#troubleshooting--7-information-for-support}
 
 Provide device/software/browser versions, task and plan names, plan version, exact entry and action, recording duration and selected range, problem timestamp, expected versus actual result, screenshots, minimal reproduction, save/run state, and recent camera or source changes.
 
@@ -3133,12 +3285,12 @@ Do not include passwords or full camera credentials in screenshots or reports.
 
 *Example footage and reference views in the screenshots: [wooden-box assembly dataset and CC BY 4.0 credits](#reference--7-sample-and-screenshot-credits).*
 
-## 16. Controls, Glossary, and Acceptance Checklist {#reference}
+## 17. Controls, Glossary, and Acceptance Checklist {#reference}
 
 
 Use this page as a quick reference. For a first setup, follow the [introductory workflow](#quickstart).
 
-### 16.1 Control reference {#reference--1-control-reference}
+### 17.1 Control reference {#reference--1-control-reference}
 
 | Control | Purpose | Check afterward |
 |---|---|---|
@@ -3162,7 +3314,7 @@ Use this page as a quick reference. For a first setup, follow the [introductory 
 | Save | Persist the task | Success and reopening |
 | Run / Station operation | Start saved configuration and operator view | Current version and step |
 
-### 16.2 Glossary {#reference--2-glossary}
+### 17.2 Glossary {#reference--2-glossary}
 
 | Term | Meaning |
 |---|---|
@@ -3187,7 +3339,7 @@ Use this page as a quick reference. For a first setup, follow the [introductory 
 | Independent validation footage | Another recording checking behavior beyond the original |
 | Draft | Editable configuration, not necessarily saved or running |
 
-### 16.3 Choose a hand workflow {#reference--3-choose-a-hand-workflow}
+### 17.3 Choose a hand workflow {#reference--3-choose-a-hand-workflow}
 
 | Requirement | Starting configuration | Validation focus |
 |---|---|---|
@@ -3198,22 +3350,22 @@ Use this page as a quick reference. For a first setup, follow the [introductory 
 | Move between positions | Supported transfer template | Origin, process, destination, physical instance |
 | Quality cannot be judged visually | Visual review or manual confirmation | Clear instructions and correct confirmation |
 
-### 16.4 Interface language and user data {#reference--4-interface-language-and-user-data}
+### 17.4 Interface language and user data {#reference--4-interface-language-and-user-data}
 
 The interface provides Chinese, English, Vietnamese, Khmer, and Lao language entries. Task, plan, target, and region names and user-written instructions are not automatically translated. Use names understood by the site team.
 
 The Chinese and English guides use their corresponding interface language. Updates may move controls; follow their purpose and current hints. Report fixed interface text that does not match the selected language rather than changing business data to imitate a button translation.
 
-### 16.5 Pre-operation checklist {#reference--5-pre-operation-checklist}
+### 17.5 Pre-operation checklist {#reference--5-pre-operation-checklist}
 
-#### 16.5.1 Station and media {#reference--station-and-media}
+#### 17.5.1 Station and media {#reference--station-and-media}
 
 - [ ] Fixed camera, appropriate orientation, lighting, and picture quality.
 - [ ] Playable, seekable recording and correct demonstration clips.
 - [ ] Regions match the physical workplace.
 - [ ] Ownership of revalidation after camera/media changes is clear.
 
-#### 16.5.2 Recognition and requirements {#reference--recognition-and-requirements}
+#### 17.5.2 Recognition and requirements {#reference--recognition-and-requirements}
 
 - [ ] Representative references for every target.
 - [ ] Misses, false detections, and duplicates reviewed in normal clear views.
@@ -3222,7 +3374,7 @@ The Chinese and English guides use their corresponding interface language. Updat
 - [ ] Simultaneous, alternative, ordered, and grouped requirements match the process.
 - [ ] Hold times, deadlines, and human confirmation are appropriate.
 
-#### 16.5.3 Validation and operation {#reference--validation-and-operation}
+#### 17.5.3 Validation and operation {#reference--validation-and-operation}
 
 - [ ] Target, stage, and complete plan reviewed progressively.
 - [ ] Wrong-action cases and independent footage included.
@@ -3232,13 +3384,13 @@ The Chinese and English guides use their corresponding interface language. Updat
 - [ ] Operator can complete the process using instructions and demonstrations.
 - [ ] History, storage cleanup, and exception ownership are defined.
 
-### 16.6 Learning path {#reference--6-learning-path}
+### 17.6 Learning path {#reference--6-learning-path}
 
 [Quick start](#quickstart) → [Video and recognition](#video-and-recognition) → [Regions and checks](#rules-and-regions) → [Hand operations](#hand-operations) → [Toolbar and dragging](#toolbar-and-drag) → [Validation and operation](#validation-and-operation).
 
 Use [Troubleshooting](#troubleshooting) without rebuilding the task from scratch.
 
-### 16.7 Sample and screenshot credits {#reference--7-sample-and-screenshot-credits}
+### 17.7 Sample and screenshot credits {#reference--7-sample-and-screenshot-credits}
 
 The original workbench footage is from **Jiayun Zhang, Petr Byvshev, and Yu Xiao (2020), _A video dataset for wooden box assembly_, v2, Zenodo**, DOI: [10.5281/zenodo.4047982](https://zenodo.org/records/4047982), distributed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
 
