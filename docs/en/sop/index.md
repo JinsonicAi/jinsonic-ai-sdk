@@ -46,7 +46,7 @@ The example video shows a fixed-camera workbench with a rubber mallet, drill, pa
 | Stage | Step | Requirement | Completion | Example range |
 |---|---|---|---|---|
 | 1 | Mallet ready | The mallet is clearly visible; optionally restrict it to the tool work area | Automatically after 0.8 seconds of satisfaction | Seconds 10–16 of the source video |
-| 2 | Operator confirmation | The operator checks the tools and station | Operator confirms | Seconds 16–20 of the source video |
+| 2 | Operator confirmation | The operator checks the tools and station | Operator confirms | Seconds 16–60 of the source video |
 
 The full teaching video is approximately 60 seconds. These times explain range selection; choose times that match your own recording. After the two-step example, extend the plan to several tools, regions, hand operations, and unordered steps.
 
@@ -134,154 +134,329 @@ Use your own station names and verify the real page afterward. Screenshot states
 
 *Example footage and reference views in the screenshots: [wooden-box assembly dataset and CC BY 4.0 credits](#reference--7-sample-and-screenshot-credits).*
 
-## 2. Five-Minute Quick Start: Complete Your First SOP {#five-minute-quickstart}
+## 2. Five-minute quickstart: build a complete SOP, step by step {#five-minute-quickstart}
 
-Build one complete **Mallet ready → Operator confirmation** workflow, starting with a new task and continuing through recognition, validation, saving, and station operation. Follow the steps in order. Each step gives concrete settings and an outcome to check; detailed tool instructions follow later in this manual.
+Follow this worked example in order: **upload video → draw a rubber mallet → check and improve recognition → configure an automatic step and an operator step → validate each stage → validate the whole plan → save → operate the station**. Each section explains the exact action, expected result, and recovery when the result differs.
 
-**Get the example:** [Download the workbench video (MP4, 60 seconds, approximately 9.5 MB)](../../assets/sop/workbench-60s.mp4). One distinctive rubber mallet and one operator check make automatic and manual completion easy to understand. See the [source and license](#reference--7-sample-and-screenshot-credits).
+“Five-minute” describes the short learning route. Your first careful walkthrough, uploads, scans, and device validation take additional time. The new screenshots are native lossless PNG captures, mostly **3840 × 2160**; click an image to inspect it at 100%. The source video is 800 × 320, so a larger screenshot does not add video detail. Interface controls are English. User-defined names remain Chinese in this recorded example; they do not change when the interface language changes.
 
-| What you will build | Setting |
-|---|---|
-| Task / plan name | First SOP: tools ready and operator confirmation |
-| Target | Mallet, initially with one clear reference |
-| Overall validation range | Source seconds 10–20 |
-| Stage 1 | Mallet ready; object detected continuously for 0.8 seconds, then automatic completion; validate 10–16 seconds |
-| Stage 2 | Operator confirmation; operator completes the step; validate 16–20 seconds |
-| Final behavior | Automatic first step, a second step awaiting confirmation, then finish the workpiece |
+**Download first: [workbench-60s.mp4 — 60 seconds, approximately 9.5 MB](../../assets/sop/workbench-60s.mp4).** Use the mallet with a wooden handle and black head. Starting with one object makes it easier to understand automatic and human completion. See the [source and license credits](#reference--7-sample-and-screenshot-credits).
 
-*Five minutes is the learning route; uploading and device detection may require additional time. Click figures for Original 100%. Recheck with recordings from your own station before production use.*
-
-### 2.1 Create the task and upload or record a complete video {#five-minute-media}
-
-1. Sign in, check the device connection, and choose **Add task → SOP workflow → Check objects only**.
-2. Name it **First SOP: tools ready and operator confirmation**. Choose **Create and edit**, then **Edit steps**.
-3. Give the plan the same name in the SOP editor.
-4. Choose one media route below.
-
-=== "Practice with the supplied video"
-
-    Click **Upload** above the workspace and select `workbench-60s.mp4`. Once ready, play it and pause near **0:10**. Locate the rubber mallet on the bench.
-
-=== "Practice with your own station recording"
-
-    Use **Choose / change** at the top to select the station camera, then **Record** above the workspace. Show the tools, perform the operation, and retain a final view for inspection. Stop and replay. Read any replacement notice first. Replace this example's 10–20 second range with the actual times in your recording.
-
-5. Below the player, set the overall start to **0:10.0** and end to **0:20.0**. Preview the range. Magnifier **+/−** supports precise positioning; **1:1** restores the range view.
-
-[![Quick start 1: Upload or Record above the video, with the overall validation range below](../../assets/sop/en-06-teaching-video.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-06-teaching-video.png)
-
-**Check:** Playable video, real timeline images, and a 10–20 second range. The figure locates the controls; change its full range to the example range. Editor validation reads local video directly and needs no separate RTSP input.
-
-### 2.2 Create the mallet target and detect the current frame after boxing {#five-minute-recognition}
-
-1. Pause near **0:10** on a clear **Video** frame and click **Add target**.
-2. Draw a close box around the mallet's recognizable body, excluding hands, large background areas, and neighboring tools. Name it **Mallet** and confirm.
-3. Open **Targets**, select the mallet card under **This step**, and check its reference on the right.
-4. Choose **1 image every 30 frames** in the target toolbar, then **Improve**. This example is 15 fps, so sampling is approximately every two seconds; use the actual image timestamps.
-5. Inspect results as they appear. Check box position, misses, and duplicate boxes on the same mallet.
-
-[![Quick start 2: Select the mallet, open recognition review, and check its reference on the right](../../assets/sop/en-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-10-target-reference.png)
-
-**For a miss, complete this correction loop:**
-
-1. Open the missed image, choose **Present: draw boxes**, and box the mallet on the original image. Box every target of that type if several appear.
-2. **Click “Try this frame” on the right immediately; no full-video rescan is needed first.** Added boxes become temporary references for detecting their targets in this image.
-3. Read each box's result, such as **Detected**, **Below threshold**, or **No matching candidate**. Open **Recognition details** for candidates and scores. Compare the manual purple box with the new algorithm detection at the same physical location.
-4. If unmatched, check box placement, visibility, and reference angle, adjust, and **Try this frame** again. A purple annotation alone is not a detection.
-5. When suitable, choose **Clear image, all boxed**, explicitly apply the required boxes as references, then **recheck the target / selected range**.
-6. Inspect other images for improvement and new false or duplicate detections. With no misses, continue to the next step; mark obscured images **Unclear**.
-
-**Check:** Current-frame matches first, then results across the range. A single-frame trial and a video recheck are different checks; applying boxes does not save the whole task. [Detailed annotation instructions →](#video-and-recognition--5-complete-the-manual-box-workflow)
-
-### 2.3 Define two steps using the toolbar and check settings {#five-minute-authoring}
-
-**Configure stage 1, “Mallet ready”:**
-
-1. Select the first step on the left. Name it **Mallet ready** and enter **Keep the mallet clearly visible on the workstation** as its instruction.
-2. Open the step's **checks → Edit**, then select or drag **Mallet** from the stage toolbar.
-3. Choose the object-detected check and **Full frame** as its area.
-4. Open the completion settings. Choose **automatic after visual detection**, set the hold to **0.8 seconds**, and use a **0** time limit for this example (no timeout).
-
-[![Quick start 3: Add the mallet from the toolbar and configure the first step's detection check](../../assets/sop/en-11-object-condition.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-11-object-condition.png)
-
-**Create stage 2, “Operator confirmation”:**
-
-1. Click **Add step** on the left, after the first step, and name it **Operator confirmation**.
-2. Enter **Inspect tool placement and station condition; confirm when correct** as its instruction.
-3. Choose **Operator confirmation** as the completion mode. Do not add a mandatory visual target check to this purely manual step.
-4. Keep the steps sequential; do not put them in an unordered group.
-
-[![Quick start 3B: Configure the second step for operator confirmation](../../assets/sop/en-13-manual-completion.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/en-13-manual-completion.png)
-
-**Check:** Exactly two steps, correct order, a mallet check in the first, and explicit operator completion in the second. Toolbar **objects / regions / hands** add check items. **Detection settings** manages recognition sources; edit each step's specific rule in its relationship diagram.
-
-??? info "Optional exercise with the same example: Either hand near the mallet"
-
-    Complete the two-step example first, then extend it if needed:
-
-    1. Choose **Detection settings → Add hand recognition**, return to the steps, and start with **Either hand**. Calibrate direction before requiring left or right.
-    2. Add **Hand near mallet** between the existing steps. Select a hand and the mallet from the toolbar, open their relationship settings, and choose proximity. Start with the full frame.
-    3. Replay the source and find a continuous range in which the hand is clearly visible and actually near the mallet. Use it for this stage and ensure the overall range covers it.
-    4. **Validate this stage** and check the image, hand condition, hold, and outcome. Record a suitable action if the video has no sufficiently clear continuous example. An undetected hand does not prove withdrawal.
-    5. Revalidate the complete three-step plan after the exercise passes. Keep the original two-step plan if practicing only the main example.
-
-    [![Quick start extension: Hands, objects, and the hand-object action configuration entry](../../assets/sop/en-19-hand-actions.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-19-hand-actions.png)
-
-    The figure locates the movement-together tools. A proximity check, approach followed by withdrawal, and a region-constrained transfer have different requirements; choose using [Hand operations](#hand-operations). Proximity does not prove a secure grasp, and one image cannot establish a completed transfer.
-
-### 2.4 Validate stage 1, stage 2, and then the complete plan {#five-minute-validation}
-
-**A. Validate stage 1:**
-
-1. Below stage 1, select **Validation range** and set **0:10.0–0:16.0**.
-2. Click **Validate this stage**. Watch the device's actual detection output and check the mallet detection and 0.8 second hold.
-3. Check that this stage's one step completes. Otherwise, expand the step's checks and reasons, correct the target or rule, and revalidate.
-
-**B. Validate stage 2:**
-
-1. Select stage 2, set **0:16.0–0:20.0**, and **Validate this stage**.
-2. Review the image and instructions when the manual step is reached. Once allowed, click **Confirm step** in the stage. The corresponding button in the separate validation window reads **I reviewed the video; confirm this step**.
-3. Wait for the updated result and check completion. If the button is missing or unavailable, read the status before continuing; do not bypass the step or repeatedly click.
-
-[![Quick start 4: Set stage 2's own range and use Validate this stage](../../assets/sop/en-14-stage-range.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-14-stage-range.png)
-
-**C. Validate the complete sequence:**
-
-1. Check the overall range is **0:10.0–0:20.0**, then click **Validate plan**.
-2. Watch the first step run and complete, followed by the second awaiting operator confirmation. Review and confirm it using the current entry.
-3. Check that both steps complete in order and the final result is as expected. A recording-processing completion alone does not establish step completion.
-
-**Check:** Stage 1 completes automatically; stage 2 requires confirmation; full-plan validation reproduces their order. Revalidate affected parts and the plan after changing targets, ranges, order, or completion modes.
-
-### 2.5 Understand the example's automatic and manual paths {#five-minute-completion}
-
-The example follows **mallet condition stable for 0.8 seconds → automatic first-step completion → second step requests inspection → operator confirms → both steps complete**.
-
-[![Quick start 5: Configure the first step to complete automatically after a stable visual condition](../../assets/sop/en-12-auto-completion.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-12-auto-completion.png)
-
-| Required behavior | Configuration | Operator experience |
+| Final configuration | Value used in this example | Purpose |
 |---|---|---|
-| This example: automatic check, then human inspection | Automatic visual step followed by operator confirmation | Detection advances step 1; a person completes step 2 |
-| Visual check and human inspection in the same step | Visual detection plus operator review | Inspect and confirm after the visual conditions are ready |
-| Entirely automatic workflow | Every step has a reliable visible check and automatic completion | Rules advance the sequence; do not simply switch this example's rule-free manual step to automatic |
+| Task and plan | 入门教程:橡胶锤就绪与人工确认 | A separate, easily identifiable practice task |
+| Target | 橡胶锤 — rubber mallet; one primary image from 10 seconds | A clear baseline reference |
+| Stage 1 | 橡胶锤就绪 — mallet ready; detected in the full frame continuously for 0.8 seconds; automatic completion | Learn visual progression |
+| Stage 1 validation | 10–16 seconds | Check six seconds separately |
+| Stage 2 | 人工确认完成 — operator confirmation; 16–60 seconds | Allow enough time to inspect and click |
+| Whole-plan range | **0–60 seconds, the entire source video** | Validate both stages in sequence |
+| Time limits | 0 for both steps | No additional timeout in this exercise |
 
-A clear target, short range, and simple rule make the first successful workflow easier to diagnose. Investigate unmet checks rather than lowering thresholds or removing required conditions to get a pass.
+!!! note "Two distinct inputs"
+    **Editor validation reads the uploaded or recorded video file directly.** A running task uses its configured camera input. The downloaded video will not appear in your own camera automatically. Do not build an RTSP stream merely to validate an uploaded file, and do not copy the private test address shown in screenshots.
 
-### 2.6 Save and complete a real station cycle {#five-minute-station}
+### 2.1 Create a practice task and prepare the video {#five-minute-media}
 
-1. Click **Done** in the SOP editor to return the plan to the task draft. Confirm the node dialog if still open.
-2. Click **Save** in the outer task editor and wait for success. Reopen and check the steps, target, ranges, and completion modes.
-3. For your own station, select its camera and repeat this exercise with references and recordings of its real tools before operational use. The downloaded example teaches the workflow; your camera will not automatically show its workbench.
-4. Run the saved task, choose **Station operation / Open station**, and **Start workpiece**.
-5. Place the mallet at the real station. Watch detection complete the first step and advance to **Operator confirmation**.
-6. Read the instructions, inspect the actual tools and station, then choose **Operator confirmation**. Check that both step cards show **Verified**.
-7. Follow **Finish workpiece**, check the compliant completion result and both step results, then start the next piece.
+#### 2.1.1 Create a separate task
 
-[![Quick start 6: Actual station result for the same two-step workbench example, with both steps verified](../../assets/sop/en-37-station-completed.png){loading="lazy" decoding="async" width="2560" height="1440"}](../../assets/sop/en-37-station-completed.png)
+1. Sign in to the device page and check **Online**. If other tasks are running, coordinate resources rather than stopping somebody else's task.
+2. Click **Add Task → SOP Workflow → Check objects only**.
+3. Enter the practice task name above and click **Create and Edit**. Do not select a hand workflow yet.
+4. The task canvas should contain the generated input, detector, SOP, and output connections. Keep those connections.
 
-**Check:** Actual station video and a clear current step, instruction, confirmation action, and workpiece result on the right. This figure is an actual capture of the manual's two-step example. Editor validation uses local recordings; operational tasks use the camera input in their saved task graph.
+[![Figure 2-1: choose an SOP task and the object-only template](../../assets/sop/en-02-create-task.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-02-create-task.png)
 
-**Example complete:** Video, recognition, added-box trials, two-step authoring, stage and full-plan validation, saving, and station operation now form one complete route. Continue with the [tool reference](#control-reference) or the [complete station run record](#station-live-example).
+**Checkpoint:** the task name appears above the canvas. If creation did not complete, read the name or capability error before retrying; do not create multiple duplicate tasks.
+
+#### 2.1.2 Enter the SOP editor
+
+1. Double-click the **SOP Workflow** node on the task canvas.
+2. In its configuration window, click **Edit steps**. The outer **Run** button starts a task; it does not open this editor.
+3. In **SOP editor**, use the top-right **Maximize editor** icon for more room.
+4. Set **Plan name** to the same practice name. The first operation may still be called “Step 1”; rename it later.
+
+[![Figure 2-2: open the SOP node, then click “Edit steps.”](../../assets/sop/en-q03-open-editor.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-q03-open-editor.png)
+
+**Checkpoint:** the editor shows the plan field, step list, and teaching video area. If not, return to the task canvas and open the SOP node, rather than the network output settings.
+
+#### 2.1.3 Upload and play the sample
+
+1. Click **Upload** in the video toolbar; its file-picker control is **Upload complete workflow video**.
+2. Select **workbench-60s.mp4** and wait for upload and first-frame decoding. Do not select the file repeatedly while it is uploading.
+3. Play a few seconds, check that the workbench image actually moves, then pause.
+4. Check **Main clip: 0:00.0–1:00.0, 60.0 s**. Keep the complete video for the final whole-plan run.
+
+[![Figure 2-3: the uploaded workbench video and complete timeline.](../../assets/sop/en-q05-video-ready.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-q05-video-ready.png)
+
+**Checkpoint:** the actual video plays and lasts approximately 60 seconds. A loading placeholder is not a usable frame. Resolve upload/decoding errors before drawing. Replacing an existing video may invalidate ranges or target evidence; use the separate practice task.
+
+#### 2.1.4 Choose a camera; understand the recording alternative
+
+1. In **Station camera**, click **Choose / change** and choose a working camera for this station. When using an address, enter your own valid input and apply the selection.
+2. Check that the camera field no longer says no camera is selected. The private address in the captured example is a controlled demonstration source, not a customer service endpoint.
+3. To use a fresh site recording instead of the downloadable file, configure the camera first, then click **Record** in the video toolbar.
+4. If **Record the complete workflow again?** appears, read the replacement warning. Click **Start recording** only to replace the existing demonstration and reset step times; click **Cancel** to retain the downloaded example.
+5. After **Recording the complete workflow** appears, demonstrate tool readiness and the operator's inspection, retaining clear start/end pictures. Click **Stop and use video** on the recording status row, then wait for finishing and video checks. To abandon the attempt, use **Cancel**, rather than closing the webpage.
+6. Replay the complete result. For your own video, choose the actual reference and stage times again. The sample's 10-second frame and 10–16-second interval do not automatically apply.
+
+[![Figure 2-4: camera selection and configuration](../../assets/sop/en-05-camera.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-05-camera.png)
+
+[![Recording replacement confirmation: Cancel keeps the current demonstration](../../assets/sop/en-07-record-warning.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-07-record-warning.png)
+
+**Checkpoint:** the upload route still uses the downloaded file; the recording route uses the recorded, playable file. If Record is disabled, check the applied camera, active operation, and on-screen explanation. Do not change the real task's input simply to simulate file validation.
+
+### 2.2 Create the target and understand Improve recognition {#five-minute-recognition}
+
+#### 2.2.1 Locate the clear 10-second frame
+
+1. Select **Video** and pause playback.
+2. Seek to **0:10.0**. For an exact value, click the main clip's **Start time**, enter **10** in the seconds/time field, and use **Locate**.
+3. This Locate control also concerns the clip endpoint. If the main range becomes 10–60 seconds, restore its start to **0** and click **Save** after drawing; retain end **60**.
+4. If a stage is outside the main range, use **Expand range to include all stages**, then verify 0–60 seconds.
+
+**Checkpoint:** the wooden handle and black mallet head are both visible. Do not take the primary reference from a blurred, occluded, or absent target.
+
+#### 2.2.2 Draw the complete mallet and add it to the step
+
+1. Click **Add target**. Set the target name to **橡胶锤** (rubber mallet).
+2. Drag a rectangle around the **whole wooden handle and black head**, fitting closely without including the nearby screwdriver or hand.
+3. Inspect **Selection preview**. Adjust the corners and name if needed; use **Cancel selection** to start over when the box is wrong.
+4. Click **Add to step**. This creates one logical target with one primary reference and adds an object check to the selected step.
+
+[![Figure 2-5: target reference controls and reference preview](../../assets/sop/en-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-10-target-reference.png)
+
+**Checkpoint:** the current step contains the mallet and one reference. Reference count is not the required number of physical mallets. The first step may initially use visual checks plus operator review; explicitly change it to automatic in 2.3.
+
+#### 2.2.3 Save the initial task before checking recognition
+
+1. Check that the camera, video, and primary reference are present.
+2. Click the editor footer **Done**. If the SOP node window remains open, click **Confirm**; if you are already at the task canvas, continue.
+3. Click **Save** on the outer task toolbar and wait for success before refreshing.
+4. Reopen **SOP Workflow → Edit steps → Targets**, then select the mallet.
+
+[![Figure 2-6: the outer task Save action](../../assets/sop/en-23-save-task.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-23-save-task.png)
+
+**Checkpoint:** the camera, video, and one reference survive reopening, and **Improve** becomes available. If the page asks you to configure the camera, finish editing, and save first, complete this initial save. Allow capability loading to finish instead of creating another task.
+
+#### 2.2.4 Scan and inspect actual pictures
+
+1. In **Targets**, select the mallet and **1 image every 30 frames**. At this video's 15 fps, that is approximately one image every two seconds.
+2. Check the main range is **0–60 seconds**, then click **Improve** (accessible label **Improve recognition**).
+3. Wait for results. This run generates **30/30 detection images**; that is processing progress, not 30 human-accepted images.
+4. Select thumbnails and inspect the original image below. Check the actual object position, missed detections, duplicates, and boxes on other tools. Scroll the thumbnail strip to inspect later times too.
+
+[![Figure 2-7: the real 30-image scan, with per-frame detections and review state.](../../assets/sop/en-q11-scan-results.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-q11-scan-results.png)
+
+**Observed in this walkthrough:** the primary reference retained the correct mallet in the 10–18-second sampled images. Some other images contained extra detections. Therefore scan completion is not a claim that recognition across the whole video has passed.
+
+#### 2.2.5 Read yellow candidates, scores, and thresholds correctly
+
+| Display | Meaning | What to do |
+|---|---|---|
+| Teal algorithm box | A detection in the displayed result layer | Check its real location, identity, and duplicates |
+| Purple human box | Your annotation of where an object should be | It does not prove algorithm detection |
+| Yellow/orange dashed candidate | A candidate clue, potentially not in retained results | Read its label, score, and filtering explanation |
+| **Below threshold** | A matching candidate did not meet its reference's gate | Inspect the corresponding reference and gate |
+| No matching candidate | No candidate matched this human box in this result | Check box geometry, clarity, and reference angle |
+| Other boxes need review | Some results have not been reconciled with the annotations | Check duplicates and false detections |
+
+Click **ⓘ — Recognition details** on the added-box row. Compare **This trial** with **Previous scan** and expand the corresponding candidate/threshold explanations. Open **View low-score candidates by query** when available; scores from different queries locate evidence and must not be combined into one accuracy score.
+
+[![Figure 2-8: expanded recognition explanations distinguish the trial, previous scan, and query candidates.](../../assets/sop/en-q30-candidate-details.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-q30-candidate-details.png)
+
+If the candidate is truly below its gate, first improve a loose, unclear, or background-heavy reference and try the frame again. When a gate adjustment is justified, use that reference's threshold control, record the original value, and recheck both present and absent examples. If the score meets the gate but the candidate was filtered later, inspect region, duplicate, or other filtering reasons; lowering the threshold may not help. **The final configuration here retains the original threshold.**
+
+#### 2.2.6 Add a box, then immediately try the current frame
+
+Use the scan's **0.00 s** image for this exercise. It already contains a detected mallet; this lets you learn how human and algorithm boxes correspond. There is no need to invent a miss or add a reference when none is needed.
+
+1. Select **0.00 s**, then **Present: draw boxes**. Follow the request to draw on the original image.
+2. Draw the entire mallet. Box every visible instance of the same target type, rather than marking unclear objects as certain.
+3. Check **Added boxes 1 / #1** at the right. Use that row's **Edit** to adjust it, or **Delete** to remove just the wrong annotation.
+4. Click **Try this frame immediately**. It uses the added boxes as temporary references, without changing the plan or requiring a whole-video rescan first.
+5. When it finishes, compare the matched count, each annotation result, and any extra detection boxes. Expand **Per-box trial results** and **Recognition details** when needed.
+
+[![Figure 2-9: the added human box and the current-frame trial control.](../../assets/sop/en-q12-human-box.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-q12-human-box.png)
+
+[![Figure 2-10: matched 1/1 at 78.6%, but one extra box still needs review.](../../assets/sop/en-q13-trial-result.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-q13-trial-result.png)
+
+**Checkpoint:** use **This trial / Previous scan** to distinguish new and old evidence. Here the mallet matched, but a second box covered a screwdriver area. Matching 1/1 is not whole-frame acceptance. Adjust a wrong human box and retry; never annotate an imaginary second mallet simply to match an extra detection.
+
+#### 2.2.7 Review the whole image, adopt only useful references, and recover
+
+1. When the picture is clear and every real target is boxed, click **Clear image, all boxed**. This confirms your annotations, not every algorithm detection.
+2. Choose **Clear: target absent** only when absence is certain. Choose **Unclear** for occlusion or blur. Use **Undo review** to correct a mistaken review.
+3. To make an added box a real reference, click **Adopt and recheck** beside **Added boxes pending: 1**. Wait for the new scan.
+4. Check that reference count increased and pending count became zero. Compare multiple pictures: did the miss improve, and did false or duplicate detections increase?
+
+**Actual recovery in this example:** adopting the 0-second box as a second reference increased extra detections. The final tutorial deliberately keeps the original, single primary reference. To reproduce the recovery:
+
+1. Click **Finish** in the scan toolbar to return to reference pictures.
+2. Select **橡胶锤 view 2**, then its **Remove** action.
+3. Read **Remove reference view?** and confirm removal of that new angle only. Keep the logical target and primary image.
+4. Check **References: 1 · Pending: 0**. Run **Improve / Recheck** again against the restored configuration before validating the stages.
+
+[![Figure 2-11: the retained one-reference baseline; pending boxes are zero.](../../assets/sop/en-q15-reference-cleanup.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-q15-reference-cleanup.png)
+
+**Checkpoint:** annotations, explicit reference adoption, rescanning, and outer-task saving are separate operations. More references are not automatically better. Do not adopt the same problematic angle repeatedly or treat a busy scan as finished.
+
+### 2.3 Configure the automatic and operator stages {#five-minute-authoring}
+
+#### 2.3.1 Name the first step and enter instructions
+
+1. Select the first step in the left list and click its name's pencil button.
+2. Enter **橡胶锤就绪** (mallet ready) and press Enter.
+3. In **Instructions**, enter **确认橡胶锤清晰可见并放在工位上。** — ensure the mallet is clearly visible and on the workbench.
+4. Check the name updates in the sidebar. Instructions guide a person; they do not replace the detection rule.
+
+#### 2.3.2 Confirm the object rule through the toolbar
+
+1. Find **Objects** in the current-stage toolbar. The mallet is a reusable target, not a request to upload another image.
+2. In **Checks in this step**, click **Edit ›**. Adding the target earlier normally created its condition already; inspect before adding a duplicate.
+3. If missing, drag the mallet from the toolbar onto **Drop an object here or click to add**. Release when the valid drop position highlights, or click that area and choose the mallet.
+4. Set the object check to **Detected** and its scope to **Full frame**. This baseline does not add object counts or spatial restrictions.
+5. Check the diagram reads **Check objects → Detected → 橡胶锤**, with **Full frame** below.
+
+[![Figure 2-12: the first step detects the mallet in the full frame.](../../assets/sop/en-q17-object-rule.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-q17-object-rule.png)
+
+**Checkpoint:** only the needed condition is present. Correct a wrong condition in this diagram instead of deleting the reusable logical target. If no drop position highlights, first enter relationship editing and drag a target chip rather than the video image. “Satisfy all conditions” within a step is separate from stage ordering.
+
+#### 2.3.3 Complete the first step automatically after 0.8 seconds
+
+1. In **03 How is this step completed?**, click **Settings ›**.
+2. For **How to complete this step**, select **Complete automatically after visual checks**.
+3. Enter **0.8** in **Seconds** and retain **Require continuous detection**.
+4. Enter **0** for **Time limit**. Zero disables timeout checks; it does not make the step pass immediately.
+5. Verify the summary says **Hold 0.8 seconds → conditions met**. If it still requires operator review, change the completion method.
+
+[![Figure 2-13: explicit visual automatic completion, requiring 0.8 seconds continuously.](../../assets/sop/en-q16-auto-completion.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-q16-auto-completion.png)
+
+**Checkpoint:** correct detection and the continuous hold still matter. Investigate interruptions instead of setting the hold to zero to hide them.
+
+#### 2.3.4 Add a separate operator-confirmed stage
+
+1. Click **Add step** at the bottom of the left list. The new step must follow the first stage.
+2. Rename it **人工确认完成** and enter instructions to inspect tool placement and the station, then confirm the step.
+3. Open **How is this step completed? → Settings ›** and select **Operator confirmation**.
+4. Do not add a required visual object condition to this pure operator step. Keep **Time limit: 0**.
+5. Check the sidebar order: mallet ready, then operator confirmation. Keep two sequential stages; do not combine them into an any-order group. Use stage movement controls if the order is wrong.
+
+[![Figure 2-14: the second stage uses operator confirmation, with clear human instructions.](../../assets/sop/en-q18-manual-stage.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-q18-manual-stage.png)
+
+**Checkpoint:** seeing the mallet cannot complete this second step. If it still contains an object requirement, check whether you copied stage 1 or chose visual checks plus operator review.
+
+#### 2.3.5 Hand tools: an optional, separate extension after the baseline
+
+This final two-step example does not require a hand action. Add hand checks in a separate practice plan, so the working baseline remains available.
+
+1. Open **Detection settings** in the stage toolbar and add/check the supported hand-recognition source. The **Hands** toolbar should appear.
+2. Start with **Any hand**. Add the hand and mallet in the relationship editor, then choose the intended relationship. Near/far checks use distance; accompanied transfer additionally needs start and destination areas.
+3. For left/right checks, verify the operator's own anatomical left/right in the image. Use the swap control if the orientation is reversed.
+4. Draw and name distinct start/end areas before placing them in their respective slots; verify the selected area names too.
+5. Choose a continuous video interval with clear hand, object, and complete movement. **Validate stage**, inspect conditions, hold progress and reasons, then revalidate the entire extended plan. Missing hand detection does not prove a hand is far away; proximity does not prove grasping.
+
+[![Figure 2-15: hand-object tools and transfer areas](../../assets/sop/en-19-hand-actions.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/en-19-hand-actions.png)
+
+**Checkpoint:** do not reuse the object-only pass as evidence that hand actions passed. Resolve a missing source or missing continuous demonstration before testing the extension. See [Hand operations](#hand-operations) for the individual action controls.
+
+### 2.4 Validate each stage, then the whole plan {#five-minute-validation}
+
+#### 2.4.1 Validate stage 1 over 10–16 seconds
+
+1. Select the mallet-ready step and find its own timeline at the bottom of the stage. Choose **Validation range**, not the main clip above.
+2. Click its start time, enter **10**, then **Save**. Click its end time, enter **16**, then **Save**.
+3. Check **0:10.0–0:16.0 · 6.0 s**. Also inspect **Demonstration** so the operator's example playback is the intended clip; it is not another pass control.
+4. Click **Validate stage** at the right of this timeline and wait for preparation and actual file detection.
+5. Expand **Step checks and reasons**. Verify the mallet condition and continuous hold completed, and **Stage passed 1/1**.
+
+[![Figure 2-16: the stage validation timeline and controls](../../assets/sop/en-14-stage-range.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/en-14-stage-range.png)
+
+The actual 10–16-second run processed **90 frames** and passed stage 1. This is not whole-plan acceptance. For a failure, first distinguish a missing target, interrupted hold, and invalid input; fix one identified issue, then revalidate.
+
+#### 2.4.2 Validate stage 2 over 16–60 seconds and confirm while live
+
+1. Select the operator step, find its timeline, and choose **Validation range**.
+2. Set and save start **16** and end **60**. These 44 seconds give a beginner time to read and act.
+3. Click **Validate stage** and wait for readiness. When the operator-confirmation control appears, inspect the actual picture and instructions.
+4. Click the step's confirmation button **while validation is still running**, then wait for acknowledgment and the completed step state.
+5. Let the interval finish and check **Stage passed 1/1**. This walkthrough processed **660 frames** for that interval.
+
+**Checkpoint:** if EOF arrives with 0/1 because confirmation was missed, rerun the stage and confirm during the live interval. If a button is unavailable, read the reason and check the active step, live picture, and completion mode. Repeated clicking does not replace review.
+
+#### 2.4.3 Validate the complete 0–60-second sequence
+
+1. Return to the main range and verify **0:00.0–1:00.0 · 60.0 s**. Restore start **0**, end **60**, and save if you previously shortened it.
+2. Click **Validate plan**. The view shows the validation step list, decision details, and device detection video.
+3. Stage 1 first runs, then completes after the mallet condition holds for 0.8 seconds. Only then should stage 2 become **Awaiting confirmation**.
+4. Read its instructions and click **I reviewed the video; confirm this step** while the video is still running. This is the full-plan view's label; embedded stage validation may use a shorter confirm-step label.
+5. Wait for acknowledgment and natural EOF. Verify **2/2 completed**, both step results, and **Workflow conditions were met in this video**.
+
+[![Figure 2-17: stage 1 completed and stage 2 waiting for the actual operator confirmation.](../../assets/sop/en-q23-plan-manual-ready.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-q23-plan-manual-ready.png)
+
+[![Figure 2-18: all 900 frames processed; both steps retain their completed terminal states.](../../assets/sop/en-q25-plan-passed.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-q25-plan-passed.png)
+
+**Checkpoint:** processing EOF, passing one stage, and satisfying the complete sequence are different. A short 10–16-second test cannot establish the operator step. Revalidate affected stages and the entire plan after changing references, rules, ranges, or order.
+
+### 2.5 Understand the three completion methods {#five-minute-completion}
+
+| Intended behavior | Completion method | Expected interaction |
+|---|---|---|
+| Advance after stable visual conditions | Complete automatically after visual checks | Detection → continuous hold → completion |
+| A person inspects and confirms | Operator confirmation | Active operator step → confirmation button → completion |
+| Require visual checks before human review | Visual checks + operator review | Detection first; review becomes available when ready; human confirmation completes it |
+
+This example uses the first two: **mallet stable for 0.8 seconds → automatic stage 1 → operator stage 2 → confirmation → two completed steps**. A fully automatic plan needs a valid observable condition for every step; do not convert an empty operator step to automatic without adding one.
+
+Rings and light-flow effects indicate activity, not a pass. Check text, reasons, and the real image. The executing step or target is brought into view on state changes; browsing other content does not require constant page refresh. For paused, disconnected, or uncertain states, resolve the stated cause before continuing.
+
+### 2.6 Save, reopen, and complete a workpiece at the station {#five-minute-station}
+
+#### 2.6.1 Finish editing and save the actual task
+
+1. After full validation, click **Return to editing**. Recheck the two names, order, one primary reference, 0.8-second automatic first step, operator second step, and three ranges.
+2. Click **Done**. If the node configuration window remains, click **Confirm**; otherwise continue at the task canvas.
+3. Click the outer **Save** and wait for success. Done only returns the plan to the task draft.
+4. Reopen **SOP Workflow → Edit steps** and check the saved configuration remains correct. Wait for the video/capabilities to load before deciding something is missing.
+
+**Checkpoint:** the same settings survive reopening. A “current edits differ from the saved plan” message means you must investigate the actual draft/save state; an earlier pass does not validate newer edits.
+
+#### 2.6.2 Run the task and start a workpiece
+
+1. Verify the real task input sees the same tools and camera view used for its references. The captured station demonstration uses a controlled source of the same sample; at your site, use your own camera and revalidated reference/video.
+2. Click **Run** in the task canvas and wait for Running. Coordinate resource conflicts without stopping another person's task.
+3. Open this task's **Station operation** from its card. Check the station title, **Video: Live**, and a picture that actually updates.
+4. Click **Start workpiece**. Starting the task runs detection; starting a workpiece begins this item's SOP record.
+
+[![Figure 2-19: “Start workpiece” also begins the next item after a completed workpiece.](../../assets/sop/en-q27-station-ready.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-q27-station-ready.png)
+
+#### 2.6.3 Let stage 1 advance, confirm stage 2, then finish
+
+1. Put the mallet in view and keep it clear. The first card should become **Verified** after its continuous hold.
+2. The active operation becomes the operator step. In this pure operator mode the status may say **In progress** and offer **Confirm completion**. Read the instructions and inspect the station.
+3. Click **Confirm completion** once and wait for acknowledgment. Visual-plus-review mode instead waits for visual readiness and offers its review confirmation; do not confuse the two modes.
+4. Check both cards are **Verified** and the count is **2/2**. Click **Finish workpiece**.
+5. Verify **Workpiece ended** and **Workpiece completed in compliance**. Use **Start workpiece** only when beginning the next item.
+
+[![Figure 2-20: the first card is verified; the second offers “Confirm completion.”](../../assets/sop/en-q28-station-manual.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-q28-station-manual.png)
+
+[![Figure 2-21: actual station completion for the same two-step example.](../../assets/sop/en-q29-station-completed.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-q29-station-completed.png)
+
+**Recovery:** for stage 1, check the correct target, fresh video, and condition reasons. For stage 2, check that the confirmation was actually accepted. Recover invalid input or pauses; refreshing the webpage cannot make an unfinished step pass. Stop the practice task you started when the exercise is over.
+
+#### 2.6.4 Check your finished exercise
+
+| Checkpoint | Required result | Return to |
+|---|---|---|
+| Video | The same complete 60-second file plays | 2.1.3 |
+| Target | Complete mallet, one final primary reference | 2.2.2 and recovery in 2.2.7 |
+| Recognition | Human annotations distinguished from detections; extra boxes reviewed | 2.2.4–2.2.7 |
+| Stage 1 | 10–16 seconds, automatic 0.8-second hold, 1/1 | 2.3.2–2.4.1 |
+| Stage 2 | 16–60 seconds, live operator confirmation, 1/1 | 2.3.4 and 2.4.2 |
+| Whole plan | 0–60 seconds, correct order, completed 2/2 | 2.4.3 |
+| Save | Done → Confirm if shown → outer Save; correct after reopen | 2.6.1 |
+| Station | Start, automatic first step, human second step, compliant result | 2.6.2–2.6.3 |
+
+For your real process, also test missing/wrong parts, occlusion, wrong order, and input interruption. Use [Controls and their locations](#control-reference) for reference, and [Preparation](#preparation) to turn your own process into a new plan.
 
 ## 3. Deployment Preparation and Process Requirements {#preparation}
 
@@ -620,7 +795,7 @@ Choose visual detection plus operator review when a person must inspect the resu
 
 1. Find **Validation range** below the stage.
 2. For the first stage, select a clear view of the mallet—seconds **10–16** in this example.
-3. For the second, choose its corresponding segment—seconds **16–20**.
+3. For the second, choose its corresponding segment—seconds **16–60**.
 4. Click a displayed endpoint to enter seconds or minutes:seconds, then save, cancel, or locate the picture.
 5. You can also drag an endpoint. Verify the displayed times afterward.
 6. Open **Play demonstration** and verify that it uses the intended step segment.
@@ -2352,7 +2527,7 @@ Complete Lab A first, then select labs that match the process. Expected-result t
 | 1 | Mallet ready | Correct object visible in tool area for 0.8 seconds | Automatic after visual checks |
 | 2 | Review station and confirm | Operator reviews tools and workplace | Manual |
 
-Illustrative ranges are 10–16 and 16–20 seconds. Check actual footage rather than treating these as fixed process times.
+Illustrative ranges are 10–16 and 16–60 seconds. Check actual footage rather than treating these as fixed process times.
 
 #### 12.1.2 A2. Prepare footage {#scenario-labs--a2-prepare-footage}
 
@@ -2402,7 +2577,7 @@ Illustrative ranges are 10–16 and 16–20 seconds. Check actual footage rather
 #### 12.1.6 A6. Ranges and validation {#scenario-labs--a6-ranges-and-validation}
 
 1. Use the appropriate readiness interval, illustratively 10–16 seconds.
-2. Use the review interval, illustratively 16–20 seconds.
+2. Use the review interval, illustratively 16–60 seconds.
 3. Make the overall range cover both.
 4. Validate readiness and its hold.
 5. Validate the whole stage organization.

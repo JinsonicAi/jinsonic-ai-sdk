@@ -1,0 +1,107 @@
+{
+  "date": "2026-11-13",
+  "sample": {
+    "file": "workbench-60s.mp4",
+    "sha256": "f2defe28a40720f6be508730932ab254eea7a7b65608c9c8cc34c20d3dab6672",
+    "duration_seconds": 60,
+    "fps": 15,
+    "width": 800,
+    "height": 320
+  },
+  "scenario": {
+    "primary_reference_seconds": 10,
+    "final_reference_count": 1,
+    "stage_1_range_seconds": [
+      10,
+      16
+    ],
+    "stage_1_hold_seconds": 0.8,
+    "stage_2_range_seconds": [
+      16,
+      60
+    ],
+    "stage_2_completion": "operator confirmation",
+    "plan_range_seconds": [
+      0,
+      60
+    ]
+  },
+  "observed_results": {
+    "stage_1": {
+      "frames": 90,
+      "passed": "1/1"
+    },
+    "stage_2": {
+      "frames": 660,
+      "passed": "1/1"
+    },
+    "whole_plan": {
+      "frames": 900,
+      "completed": "2/2",
+      "manual_confirmation_accepted": true
+    },
+    "station": {
+      "completed": "2/2",
+      "result": "compliant",
+      "practice_task_stopped_after_capture": true
+    }
+  },
+  "recognition_review": {
+    "frame_seconds": 0,
+    "trial_matched": "1/1",
+    "trial_score_percent": 78.6,
+    "extra_detection_boxes": 1,
+    "adopted_extra_view_increased_false_detections": true,
+    "extra_view_removed_before_final_validation": true,
+    "commercial_acceptance": false
+  },
+  "images": [
+    "en-q03-open-editor.png",
+    "en-q05-video-ready.png",
+    "en-q11-scan-results.png",
+    "en-q12-human-box.png",
+    "en-q13-trial-result.png",
+    "en-q15-reference-cleanup.png",
+    "en-q16-auto-completion.png",
+    "en-q17-object-rule.png",
+    "en-q18-manual-stage.png",
+    "en-q23-plan-manual-ready.png",
+    "en-q25-plan-passed.png",
+    "en-q27-station-ready.png",
+    "en-q28-station-manual.png",
+    "en-q29-station-completed.png",
+    "en-q30-candidate-details.png",
+    "zh-q01-create-task.png",
+    "zh-q03-open-editor.png",
+    "zh-q05-video-ready.png",
+    "zh-q06-locate-frame.png",
+    "zh-q07-draw-target.png",
+    "zh-q08-camera-address.png",
+    "zh-q09-first-save.png",
+    "zh-q11-scan-results.png",
+    "zh-q12-human-box.png",
+    "zh-q13-trial-result.png",
+    "zh-q14-adopt-recheck.png",
+    "zh-q15-reference-cleanup.png",
+    "zh-q16-auto-completion.png",
+    "zh-q17-object-rule.png",
+    "zh-q18-manual-stage.png",
+    "zh-q19-stage1-range.png",
+    "zh-q20-plan-range.png",
+    "zh-q21-stage1-passed.png",
+    "zh-q22-stage2-manual-ready.png",
+    "zh-q23-plan-manual-ready.png",
+    "zh-q24-stage2-passed.png",
+    "zh-q25-plan-passed.png",
+    "zh-q26-complete-editor.png",
+    "zh-q27-station-ready.png",
+    "zh-q28-station-manual.png",
+    "zh-q29-station-completed.png"
+  ],
+  "notes": [
+    "Editor validations read the uploaded local video file.",
+    "Station demonstration used an isolated source of the same sample; it is not a public endpoint.",
+    "The owned demonstration source was stopped after the task stopped.",
+    "The tutorial does not certify recognition quality on all frames or hand actions."
+  ]
+}
