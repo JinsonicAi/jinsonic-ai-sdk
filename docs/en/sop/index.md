@@ -8,6 +8,7 @@ This guide is for process engineers, operators, deployment teams, and administra
 
 | What do you need to do? | Chapter |
 |---|---|
+| Check presence, an empty work zone, or arrival followed by departure | [Person presence and departure](#person-presence) |
 | Choose a production mode, trial it, and reconcile the batch | [Production modes](#production-modes) · [Production totals](#production-statistics) |
 | Complete your first SOP with a worked example | [Five-minute quick start](#five-minute-quickstart) |
 | Complete object, hand-action, and operator-review stages | [Toolbox and hand worked example](#five-minute-hand-example) |
@@ -2297,7 +2298,38 @@ Within one step, several detection conditions can be combined. **Steps finishing
 
 References tell recognition what the object looks like. Conditions define what the step requires. Adding a reference does not automatically create a process requirement.
 
+#### 9.2.1 Quantity requirements
+
 Quantity counts detected instances meeting the target, score, region, and other applicable requirements. Test the correct and incorrect physical quantities. Duplicate boxes and confusion between similar objects must be addressed before relying on counts.
+
+#### 9.2.2 Configure person presence, an empty zone, and departure {#person-presence}
+
+Suppose assembly may begin only while someone is at the bench. Define “a person is detected in the work zone.” If departure also matters, add a second step. **Person check** uses the device's person detector and needs no reference image. You can combine it with object and hand conditions.
+
+1. Open **Edit steps → Detection settings** and find **Person presence**. Select **Add person checks**. Once the source shows as added, select **Back to steps**. If it is already added, go straight back. If the control reports that the detector is missing or support is unconfirmed, check the device capability first.
+
+    [![Add person checks to the plan in Station detection settings.](../../assets/sop/en-person-source.png){loading="lazy" decoding="async" width="3840" height="3120"}](../../assets/sop/en-person-source.png)
+
+2. Select the relevant step. Open **Checks in this step → Edit → Add check**. Select **Person** in the picker, then **Add selected**. For “someone is at the bench and the fixture is ready,” select both Person and the existing fixture target, then choose **Satisfy all conditions at the same time**.
+
+    [![Person selected as a step check. Object and hand targets can be selected alongside it when configured.](../../assets/sop/en-person-picker.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-person-picker.png)
+
+3. Select the Person relationship in the diagram. Under **What to check**, choose **Object detected** for someone present or **Object not detected** for an empty zone in valid observations. Under **Where to check**, choose the work zone. To create one, use **Draw region** on the recording and outline the operating position, keeping the aisle outside. The control uses the word “Object” for several target types. The selected target here is Person. This check supports presence and absence. It does not establish an employee's identity or an exact headcount.
+
+    [![The selected target is Person. Choose Object detected or Object not detected under What to check.](../../assets/sop/en-person-rule.png){loading="lazy" decoding="async" width="3840" height="3120"}](../../assets/sop/en-person-rule.png)
+
+4. Under **How is this step completed?**, choose automatic completion for a visual decision or keep operator review where the process calls for it. For “operator present continuously for two seconds,” use two seconds as the duration in this exercise. For “arrived, then left,” use two ordered steps in the same zone. First require Person detected, then require Person not detected for the specified duration. Absence alone can also be true in a zone that was empty from the beginning. These two steps do not track an individual's identity across visits.
+
+**Validate on a local recording.** Validate the stage, then the complete plan. Expand the step's checks and reasons and compare the timestamps with the recording.
+
+| What the recording shows | Expected behavior |
+|---|---|
+| A person stays inside the zone for the required duration | The presence step can pass. If simultaneous fixture readiness is required, the fixture condition must also be met. |
+| Someone passes outside the zone or leaves it immediately | Someone outside the zone cannot satisfy presence inside it. A short visit must not satisfy a longer hold. |
+| The zone is empty, then someone enters, then leaves | The initial empty zone cannot complete the first step. Presence must pass before the absence step can finish. |
+| The camera disconnects before departure or the person detector stops supplying valid observations | Inspect the input status and evidence. The missing interval cannot establish departure. |
+
+For “which hand approaches the fixture,” use [hand actions](#hand-operations). To distinguish workpieces as they enter and leave, see [production mode](#production-modes).
 
 ### 9.3 Check selected regions {#rules-and-regions--3-check-selected-regions}
 
