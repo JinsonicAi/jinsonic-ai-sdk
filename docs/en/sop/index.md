@@ -9,6 +9,7 @@ This guide is for process engineers, operators, deployment teams, and administra
 | What do you need to do? | Chapter |
 |---|---|
 | Watch three workpieces and spot the missing part | [Three-workpiece replay](#three-piece-replay) |
+| Watch the automatic station judge each workpiece | [AX station recording](#rtsp-station-demo) |
 | Check presence, an empty work zone, or arrival followed by departure | [Person presence and departure](#person-presence) |
 | Choose a production mode, trial it, and reconcile the batch | [Production modes](#production-modes) · [Production totals](#production-statistics) |
 | Complete your first SOP with a worked example | [Five-minute quick start](#five-minute-quickstart) |
@@ -361,15 +362,21 @@ Proximity, near-then-away, and accompanying transfer are different rules. Comple
 
 ### 2.4 Validate each stage, then the whole plan {#five-minute-validation}
 
-**Follow the validation in 16 seconds.** This 4K walkthrough uses three device screenshots. It shows the operator-confirmation setting, the confirmation control during replay, and the final results for both steps.
-
-<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2160" poster="../../assets/sop/en-verify-preview.jpg" aria-label="Local validation walkthrough">
-  <source src="../../assets/sop/en-verify-steps-4k.mp4" type="video/mp4">
-  <track kind="captions" src="../../assets/sop/zh-verify-steps.vtt" srclang="zh" label="中文">
-  <track kind="captions" src="../../assets/sop/en-verify-steps.vtt" srclang="en" label="English" default>
-</video>
+Each subsection includes an AX editor recording. Follow an individual stage first, then watch both stages run in sequence.
 
 #### 2.4.1 Validate stage 1 over 10–16 seconds
+
+**AX editor recording · Mallet ready**
+
+In the 10–16 s interval, watch the mallet in its inspection area and the ready check.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2160" poster="../../assets/sop/ax-live-en-mallet-s1.jpg" aria-label="Mallet ready">
+  <source src="../../assets/sop/ax-live-en-mallet-s1.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-live-en-mallet-s1-zh.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/ax-live-en-mallet-s1-en.vtt" srclang="en" label="English" default>
+</video>
+
+[Watch the motion-focused recording (Chinese interface)](../../assets/sop/ax-live-zh-mallet-s1-motion.mp4)
 
 1. Select the mallet-ready step and find its own timeline at the bottom of the stage. Choose **Validation range**, not the main clip above.
 2. Click its start time, enter **10**, then **Save**. Click its end time, enter **16**, then **Save**.
@@ -383,6 +390,16 @@ The actual 10–16-second run processed **90 frames** and passed stage 1. This i
 
 #### 2.4.2 Validate stage 2 over 16–60 seconds and confirm while live
 
+**AX editor recording · Operator confirmation**
+
+Review the 16–60 s interval and confirm the step while its video is running.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2160" poster="../../assets/sop/ax-live-en-mallet-s2.jpg" aria-label="Operator confirmation">
+  <source src="../../assets/sop/ax-live-en-mallet-s2.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-live-en-mallet-s2-zh.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/ax-live-en-mallet-s2-en.vtt" srclang="en" label="English" default>
+</video>
+
 1. Select the operator step, find its timeline, and choose **Validation range**.
 2. Set and save start **16** and end **60**. These 44 seconds give a beginner time to read and act.
 3. Click **Validate stage** and wait for readiness. When the operator-confirmation control appears, inspect the actual picture and instructions.
@@ -392,6 +409,16 @@ The actual 10–16-second run processed **90 frames** and passed stage 1. This i
 **Checkpoint:** if EOF arrives with 0/1 because confirmation was missed, rerun the stage and confirm during the live interval. If a button is unavailable, read the reason and check the active step, live picture, and completion mode. Repeated clicking does not replace review.
 
 #### 2.4.3 Validate the complete 0–60-second sequence
+
+**AX editor recording · Complete mallet and confirmation sequence**
+
+Follow the ready check, operator review and final 2/2 result in a single replay.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2160" poster="../../assets/sop/ax-live-en-mallet-full.jpg" aria-label="Complete mallet and confirmation sequence">
+  <source src="../../assets/sop/ax-live-en-mallet-full.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-live-en-mallet-full-zh.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/ax-live-en-mallet-full-en.vtt" srclang="en" label="English" default>
+</video>
 
 1. Return to the main range and verify **0:00.0–1:00.0 · 60.0 s**. Restore start **0**, end **60**, and save if you previously shortened it.
 2. Click **Validate plan**. The view shows the validation step list, decision details, and device detection video.
@@ -569,6 +596,16 @@ The unmodified video is from FraunhoferIPK's IndEgo dataset under CC BY 4.0; see
 
 #### 2.7.7 Configure stage 1: Toolbox ready
 
+**AX editor recording · Toolbox ready**
+
+The toolbox is detected. The stage passes, 1/1.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2160" poster="../../assets/sop/ax-live-en-toolbox-s1.jpg" aria-label="Toolbox ready">
+  <source src="../../assets/sop/ax-live-en-toolbox-s1.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-live-en-toolbox-s1-zh.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/ax-live-en-toolbox-s1-en.vtt" srclang="en" label="English" default>
+</video>
+
 1. Select step 1 and use the pencil to name it **工具箱就绪**. Instructions: “Confirm the toolbox is clearly visible; wait for the object condition to stabilize.”
 2. Open **Checks in this step → Edit**. Keep one **toolbox detected** condition, **Full frame**.
 3. Open **How is this step completed? → Settings**, choose **Complete automatically after visual detection**, **Must be continuously satisfied**, and **0.8 s**.
@@ -614,6 +651,16 @@ The unmodified video is from FraunhoferIPK's IndEgo dataset under CC BY 4.0; see
 
 #### 2.7.11 Add the independent operator stage and save
 
+**AX editor recording · Operator review**
+
+Review the running video and confirm the step. The result appears in the stage card.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2160" poster="../../assets/sop/ax-live-en-toolbox-s3.jpg" aria-label="Operator review">
+  <source src="../../assets/sop/ax-live-en-toolbox-s3.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-live-en-toolbox-s3-zh.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/ax-live-en-toolbox-s3-en.vtt" srclang="en" label="English" default>
+</video>
+
 1. Click **Add step**, name it **人工核对完成**. Instructions: “Check the toolbox and actual operation before completing this workpiece; visible proximity does not prove grasping or assembly quality.”
 2. Keep **Operator confirmation**, no visual conditions, Time limit **0**.
 3. Set both stage ranges **0–31.2 s**. Check the left list contains toolbox ready → hand near toolbox → operator review, three stages with one step each.
@@ -622,6 +669,18 @@ The unmodified video is from FraunhoferIPK's IndEgo dataset under CC BY 4.0; see
 [![H-13: the independent operator-confirmation stage; Chinese UI from actual authoring.](../../assets/sop/zh-h11-manual-stage.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h11-manual-stage.png)
 
 #### 2.7.12 Validate the hand stage separately
+
+**AX editor recording · Hand near toolbox**
+
+Follow the hand and toolbox in the lower-left video, then check the stage result, 1/1.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2160" poster="../../assets/sop/ax-live-en-toolbox-s2.jpg" aria-label="Hand near toolbox">
+  <source src="../../assets/sop/ax-live-en-toolbox-s2.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-live-en-toolbox-s2-zh.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/ax-live-en-toolbox-s2-en.vtt" srclang="en" label="English" default>
+</video>
+
+[Watch the motion-focused recording (Chinese interface)](../../assets/sop/ax-live-zh-toolbox-s2-motion.mp4)
 
 1. Select **手靠近工具箱**, check its **Validation range: 0–31.2 s**, then click **Validate stage** under that stage.
 2. Wait for detection and inspect the real output, hand/toolbox condition reasons, and duration progress. Status rings and relationship highlights follow actual states; animation and input-processing progress are not pass criteria.
@@ -633,6 +692,16 @@ The unmodified video is from FraunhoferIPK's IndEgo dataset under CC BY 4.0; see
 **Recovery:** distinguish missing/invalid hand detection, missing toolbox, unmet distance, insufficient accumulated duration, and invalid input before changing anything. Review ambiguous-object observations against the image; they are not reliable count/absence evidence.
 
 #### 2.7.13 Validate the full plan and obtain an applied confirmation
+
+**AX editor recording · Complete toolbox and hand sequence**
+
+The object and hand checks advance automatically. Operator confirmation completes step 3 of 3.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2160" poster="../../assets/sop/ax-live-en-toolbox-full.jpg" aria-label="Complete toolbox and hand sequence">
+  <source src="../../assets/sop/ax-live-en-toolbox-full.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-live-en-toolbox-full-zh.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/ax-live-en-toolbox-full-en.vtt" srclang="en" label="English" default>
+</video>
 
 1. Read this subsection before starting and locate the third-step confirmation control: the original clip lasts only 31.2 seconds. Restore the main range to **0–31.2 s**, then click the upper **Validate plan**, not Validate stage under stage 2.
 2. Wait for actual replay. **工具箱就绪** then **手靠近工具箱** should become **Completed**. The current third step becomes **人工核对完成 / Waiting for confirmation**.
@@ -3110,17 +3179,21 @@ Read checks and reasons alongside timestamps and overlays. One green box is not 
 
 The left bottle represents the workpiece. The right bottle represents a required part. Watch the right side as the second workpiece enters.
 
-<video data-sop-demo controls muted playsinline loop preload="none" width="640" height="360" poster="../../assets/sop/three-pieces-preview.jpg" aria-label="Three-workpiece local validation footage">
-  <source src="../../assets/sop/station-three-pieces.mp4" type="video/mp4">
-  <track kind="captions" src="../../assets/sop/zh-three-pieces.vtt" srclang="zh" label="中文">
-  <track kind="captions" src="../../assets/sop/en-three-pieces.vtt" srclang="en" label="English" default>
+**AX editor recording · Three workpieces in local validation**
+
+Read the recording results in order: pass, fail, pass, with one process exception.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2160" poster="../../assets/sop/ax-live-en-pieces-full.jpg" aria-label="Three workpieces in local validation">
+  <source src="../../assets/sop/ax-live-en-pieces-full.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-live-en-pieces-full-zh.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/ax-live-en-pieces-full-en.vtt" srclang="en" label="English" default>
 </video>
 
 **Compare the device results.** In this AX local-video validation, the per-workpiece results show **pass, fail, pass**, with zero undetermined pieces and one process exception. The pending state on the left belongs to the step panel. Expand the recording results on the right to reconcile the three pieces. The change to official production totals was zero.
 
 [View the device results (Chinese UI)](../../assets/sop/three-piece-device-results.jpg) · [Download this three-workpiece practice clip](../../assets/sop/station-three-pieces.mp4)
 
-The practice clip uses [Intel IoT DevKit bottle footage](https://github.com/intel-iot-devkit/sample-videos/blob/57978890822836f2b4743852f04f62fc511757e4/bottle-detection.mp4) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Selected intervals were edited into a 27.77-second exercise at the original 640 × 360 resolution. The timed captions describe the exercise.
+The practice clip uses [Intel IoT DevKit bottle footage](https://github.com/intel-iot-devkit/sample-videos/blob/57978890822836f2b4743852f04f62fc511757e4/bottle-detection.mp4) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Selected intervals were edited into a 27.77-second exercise at the original 640 × 360 resolution. The captions follow the three workpieces in the AX editor.
 
 ### 13.4 Exercise failure paths {#validation-and-operation--4-exercise-failure-paths}
 
@@ -3181,6 +3254,20 @@ In Operator assisted mode, a process incident may hold the workpiece. Use rework
 4. If products touch as they pass, or the carrier stays in place, a single occupied zone cannot distinguish consecutive pieces. Choose a position that visibly clears or use Operator assisted to start and finish each piece.
 
 [![Workpiece detection expanded. The bottle uses the left arrival zone. Entry and exit timing is folded.](../../assets/sop/en-prod-workpiece.png){loading="lazy" decoding="async" width="3840" height="3120"}](../../assets/sop/en-prod-workpiece.png)
+
+#### Watch the live station process three workpieces {#rtsp-station-demo}
+
+This saved AX station receives the same three-piece exercise over a controlled RTSP feed, with debug observation off. The three corresponding workpiece records read pass, fail, pass, with one process exception and zero undetermined pieces. Station totals on screen also include earlier test runs. Of the three judged pieces, 66.7% passed and 33.3% failed.
+
+**AX station recording · Three consecutive workpieces at a fully automatic station**
+
+The left workpiece opens each cycle. Piece 2 lacks its right-hand part and fails. Piece 3 follows automatically.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="1920" height="1080" poster="../../assets/sop/ax-live-en-ax-rtsp-hd.jpg" aria-label="Three consecutive workpieces at a fully automatic station">
+  <source src="../../assets/sop/ax-live-en-ax-rtsp-hd.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-live-en-ax-rtsp-hd-zh.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/ax-live-en-ax-rtsp-hd-en.vtt" srclang="en" label="English" default>
+</video>
 
 ### 13.7.2 Reconcile workpiece results with production totals {#production-statistics}
 

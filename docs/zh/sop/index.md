@@ -9,6 +9,7 @@
 | 您现在要做什么 | 阅读位置 |
 |---|---|
 | 看三件录像，找出漏装的那一件 | [三件分件演示](#three-piece-replay) |
+| 看全自动实时工位逐件判定 | [AX 工位实录](#rtsp-station-demo) |
 | 检查工位有人、无人，或先到场再离开 | [人员在场与工位区域](#person-presence) |
 | 选择人工协作或全自动，试跑后核对产量与通过率 | [生产方式](#production-modes) · [生产统计](#production-statistics) |
 | 跟着完整实例完成第一个 SOP | [5 分钟快速上手](#five-minute-quickstart) |
@@ -368,15 +369,21 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 ### 2.4 验第一阶段、第二阶段，再验完整方案 {#five-minute-validation}
 
-**16 秒看懂整套验证。** 这段 4K 界面图解依次展示人工确认步骤的配置、录像运行时的确认入口，以及结束后的两步结果。
-
-<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2160" poster="../../assets/sop/zh-verify-preview.jpg" aria-label="本地录像验证流程">
-  <source src="../../assets/sop/zh-verify-steps-4k.mp4" type="video/mp4">
-  <track kind="captions" src="../../assets/sop/zh-verify-steps.vtt" srclang="zh" label="中文" default>
-  <track kind="captions" src="../../assets/sop/en-verify-steps.vtt" srclang="en" label="English">
-</video>
+每个小节都有 AX 编辑器实录。先看单个阶段如何判定，再看整套工序如何推进。
 
 #### 2.4.1 设置第一阶段 10–16 秒并验证
+
+**AX 编辑器实录 · 橡胶锤就绪**
+
+在 10–16 秒的选段内看橡胶锤和阶段的就绪判断。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="1920" height="1080" poster="../../assets/sop/ax-live-zh-mallet-s1-motion.jpg" aria-label="橡胶锤就绪">
+  <source src="../../assets/sop/ax-live-zh-mallet-s1-motion.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-live-zh-mallet-s1-motion-zh.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/ax-live-zh-mallet-s1-motion-en.vtt" srclang="en" label="English">
+</video>
+
+[查看 4K 界面细节](../../assets/sop/ax-live-zh-mallet-s1.mp4)
 
 1. 选择 **橡胶锤就绪**，向下找到该阶段底部的独立时间轴，点击 **验证范围**，不要改上方总片段。
 2. 点击起点时间，输入 **10**，点该时间轴的 **保存**；点击终点时间，输入 **16**，点 **保存**。
@@ -392,6 +399,16 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 #### 2.4.2 设置第二阶段 16–60 秒，亲手确认一次
 
+**AX 编辑器实录 · 人工确认完成**
+
+在 16–60 秒的选段里核对检测画面，并在阶段内确认。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2160" poster="../../assets/sop/ax-live-zh-mallet-s2.jpg" aria-label="人工确认完成">
+  <source src="../../assets/sop/ax-live-zh-mallet-s2.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-live-zh-mallet-s2-zh.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/ax-live-zh-mallet-s2-en.vtt" srclang="en" label="English">
+</video>
+
 1. 选 **人工确认完成**，找到它自己的阶段时间轴，点击 **验证范围**。
 2. 起点填 **16** 并保存，终点填 **60** 并保存。留 44 秒让新手阅读和操作，不使用只有几秒的人工确认窗口。
 3. 点击 **验证本阶段**，等准备结束。看到“等待确认”和 **确认本步** 后，先核对实际画面及操作要点。
@@ -405,6 +422,16 @@ SOP 将现场要求拆成可观察的条件。例如：
 **不符合时：** 如果录像结束仍为 0/1，检查是否错过实时确认；重新启动本阶段验证并在运行时确认。按钮不可用时读原因，检查当前步骤、画面是否有效及是否确实选择“操作员确认”，不要用重复点击代替核对。
 
 #### 2.4.3 用完整 0–60 秒检查两步串行推进
+
+**AX 编辑器实录 · 橡胶锤与人工确认整套验证**
+
+在同一段录像里看就绪检查、人工核对和最终的 2/2。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2160" poster="../../assets/sop/ax-live-zh-mallet-full.jpg" aria-label="橡胶锤与人工确认整套验证">
+  <source src="../../assets/sop/ax-live-zh-mallet-full.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-live-zh-mallet-full-zh.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/ax-live-zh-mallet-full-en.vtt" srclang="en" label="English">
+</video>
 
 1. 回到上方总片段，核对 **0:00.0–1:00.0 · 60.0 秒**。若显示 10–20 秒，改回起点 **0**、终点 **60** 并保存。
 2. 点击总片段下方 **验证本方案**，进入带“验证工序列表、判断详情、盒子检测画面”的验证视图。
@@ -583,6 +610,16 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 #### 2.7.7 编排阶段 1：工具箱就绪
 
+**AX 编辑器实录 · 工具箱就绪**
+
+识别到工具箱，阶段通过 1/1。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2160" poster="../../assets/sop/ax-live-zh-toolbox-s1.jpg" aria-label="工具箱就绪">
+  <source src="../../assets/sop/ax-live-zh-toolbox-s1.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-live-zh-toolbox-s1-zh.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/ax-live-zh-toolbox-s1-en.vtt" srclang="en" label="English">
+</video>
+
 1. 选择第一步，点名称旁铅笔，改名 **工具箱就绪**；操作要点填“确认工具箱清晰可见，等待物件条件稳定”。
 2. 点 **本步检查关系 → 编辑**，检查对象是 **工具箱**、关系是 **检测到**、范围是 **全画面**，保留一项条件。
 3. 点 **怎样确认完成 → 设置**，在“如何确认完成”选择 **视觉检测后自动完成**；检测中断时用 **必须连续满足**，秒数填 **0.8**。
@@ -628,6 +665,16 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 #### 2.7.11 添加阶段 3：操作员核对完成
 
+**AX 编辑器实录 · 操作员核对**
+
+录像运行时核对画面，确认后查看本阶段结果。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2160" poster="../../assets/sop/ax-live-zh-toolbox-s3.jpg" aria-label="操作员核对">
+  <source src="../../assets/sop/ax-live-zh-toolbox-s3.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-live-zh-toolbox-s3-zh.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/ax-live-zh-toolbox-s3-en.vtt" srclang="en" label="English">
+</video>
+
 1. 再点 **添加工序**，改名 **人工核对完成**。要点填“核对工具箱与现场操作，确认后完成本件；看见手靠近不代表抓取或装配合格”。
 2. 本步保持 **操作员确认**，不添加工具箱或手部视觉规则；完成时限 **0**。
 3. 阶段验证范围和示范范围均 **0–31.2 秒**。左侧顺序必须是工具箱就绪、手靠近工具箱、人工核对完成，共三阶段、每阶段一步。
@@ -636,6 +683,18 @@ SOP 将现场要求拆成可观察的条件。例如：
 [![图 H-12：最后一阶段是独立的操作员确认，不用另一条视觉条件代替人员核对。](../../assets/sop/zh-h11-manual-stage.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h11-manual-stage.png)
 
 #### 2.7.12 验证手部当前阶段，分清本阶段和整套结论
+
+**AX 编辑器实录 · 手靠近工具箱**
+
+看左下角手与工具箱的位置，再看阶段进度和 1/1 结果。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="1920" height="1080" poster="../../assets/sop/ax-live-zh-toolbox-s2-motion.jpg" aria-label="手靠近工具箱">
+  <source src="../../assets/sop/ax-live-zh-toolbox-s2-motion.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-live-zh-toolbox-s2-motion-zh.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/ax-live-zh-toolbox-s2-motion-en.vtt" srclang="en" label="English">
+</video>
+
+[查看 4K 界面细节](../../assets/sop/ax-live-zh-toolbox-s2.mp4)
 
 1. 重开编辑器，选择第二步 **手靠近工具箱**，确认本阶段 **验证范围 0–31.2 秒**，点该阶段底部 **验证本阶段**。
 2. 等检测准备好，看真实检测画面、手部与工具箱的检查原因。状态环、关系线高亮、持续进度随真实状态改变；动画或录像处理进度本身不是通过依据。
@@ -647,6 +706,16 @@ SOP 将现场要求拆成可观察的条件。例如：
 **不符合时：** 展开原因，先分清手未有效检出、工具箱未有效检出、距离不满足、时间未累计够，还是来源/视频无效。先修正对应前提，不要同时改多个阈值。页面显示“身份不明确”时也应看原图，不能当作数量或缺席的证据。
 
 #### 2.7.13 验证完整三阶段，并真正确认最后一步
+
+**AX 编辑器实录 · 工具箱与手部操作整套验证**
+
+物件和手部检查自动推进，人工确认后整套显示 3/3。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2160" poster="../../assets/sop/ax-live-zh-toolbox-full.jpg" aria-label="工具箱与手部操作整套验证">
+  <source src="../../assets/sop/ax-live-zh-toolbox-full.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-live-zh-toolbox-full-zh.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/ax-live-zh-toolbox-full-en.vtt" srclang="en" label="English">
+</video>
 
 1. 先读完本小节，确认知道第三步的按钮位置；原片只有 31.2 秒。检查总片段恢复为 **0–31.2 秒**，点上方 **验证本方案**，不要误点第二阶段的“验证本阶段”。
 2. 等录像正式开始检测，左侧先后应出现 **工具箱就绪 已完成**、**手靠近工具箱 已完成**。当前操作转到第三步 **人工核对完成 / 等待确认**。
@@ -3205,10 +3274,14 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 左瓶代表工件，右瓶代表必装配件。留意第 2 件进入时右侧的位置。
 
-<video data-sop-demo controls muted playsinline loop preload="none" width="640" height="360" poster="../../assets/sop/three-pieces-preview.jpg" aria-label="三件分件本地验证录像">
-  <source src="../../assets/sop/station-three-pieces.mp4" type="video/mp4">
-  <track kind="captions" src="../../assets/sop/zh-three-pieces.vtt" srclang="zh" label="中文" default>
-  <track kind="captions" src="../../assets/sop/en-three-pieces.vtt" srclang="en" label="English">
+**AX 编辑器实录 · 三件录像的逐件结果**
+
+展开录像分件结果，核对合格、不合格、合格，以及 1 次工序异常。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2160" poster="../../assets/sop/ax-live-zh-pieces-full.jpg" aria-label="三件录像的逐件结果">
+  <source src="../../assets/sop/ax-live-zh-pieces-full.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-live-zh-pieces-full-zh.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/ax-live-zh-pieces-full-en.vtt" srclang="en" label="English">
 </video>
 
 **对照盒子结果。** 在 AX 本地录像验证中，展开「录像分件结果（不计入生产）」可见 **第 1 件合格、第 2 件不合格、第 3 件合格**，未判定 0 件，工序异常 1 次。片尾左侧的「状态待确认」属于步骤面板。三件明细在右侧，可用来逐件对账。本次正式生产统计增量为 0。
@@ -3300,6 +3373,20 @@ SOP 将现场要求拆成可观察的条件。例如：
 4. 若相邻两件总是紧贴通过，或载具一直停在原位，单一区域的进出无法区分它们。可以改用能分别看到每次来件的位置，或用人工协作逐件开工和结束。
 
 [![来件识别已展开，水瓶用左侧区域分件，进出确认时间保持折叠。](../../assets/sop/zh-prod-workpiece.png){loading="lazy" decoding="async" width="3840" height="3120"}](../../assets/sop/zh-prod-workpiece.png)
+
+#### 实时工位怎样处理连续三件 {#rtsp-station-demo}
+
+已保存的 AX 工位从受控 RTSP 源读取与本地练习相同的三件录像。观察调试已关闭。这段录像对应的三条工件记录是合格、不合格、合格，共 1 次工序异常、0 件未判定。页面上的累计数还包含同一测试工位的历史记录。已判定 3 件，通过率 66.7%，不合格率 33.3%。
+
+**AX 工位实录 · 全自动工位连续处理三件**
+
+左侧工件进入后自动开工，右侧配件缺失的第 2 件判为不合格，第 3 件继续运行。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="1920" height="1080" poster="../../assets/sop/ax-live-zh-ax-rtsp-hd.jpg" aria-label="全自动工位连续处理三件">
+  <source src="../../assets/sop/ax-live-zh-ax-rtsp-hd.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-live-zh-ax-rtsp-hd-zh.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/ax-live-zh-ax-rtsp-hd-en.vtt" srclang="en" label="English">
+</video>
 
 ### 13.7.2 逐件核对生产统计 {#production-statistics}
 

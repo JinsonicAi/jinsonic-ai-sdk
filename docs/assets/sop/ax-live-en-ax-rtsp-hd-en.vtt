@@ -1,0 +1,10 @@
+WEBVTT
+
+00:00:20.361 --> 00:00:25.403
+Piece 1: both positions are occupied. The cycle closes on exit.
+
+00:00:28.519 --> 00:00:31.662
+Piece 2: the right-hand part is missing. Watch the failed result after exit.
+
+00:00:32.487 --> 00:00:37.775
+Piece 3: the part is present. The next cycle runs and passes.
