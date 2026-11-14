@@ -339,6 +339,8 @@ Start with one video input and one algorithm, such as “North Gate — Intrusio
 
 *Figure: an existing task in the flow editor. The component panel is on the left, nodes and connections are on the canvas, and Save, Run, and execution-location controls are above.*
 
+[See the device-side recording of adding nodes and connecting their ports](../user-manual/index.md#ax-demo-flow)
+
 ### 8.3 Understand each node's responsibility
 
 | Node category | Responsibility | Main configuration |

@@ -1,0 +1,13 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:01.572
+Start with an empty flow.
+
+00:00:01.572 --> 00:00:03.856
+Drag Network Pull Stream onto the canvas.
+
+00:00:03.856 --> 00:00:05.435
+Add Person Presence Detection.
+
+00:00:05.435 --> 00:00:08.144
+Drag from the upstream node’s right port to the downstream node’s left port. Release to connect.

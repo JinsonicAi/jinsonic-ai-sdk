@@ -1,0 +1,10 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:05.564
+Add person checks and return to the steps.
+
+00:00:05.564 --> 00:00:10.599
+Add a check to this step, select Person, and confirm.
+
+00:00:10.599 --> 00:00:12.434
+The step now includes a Detected Person condition.

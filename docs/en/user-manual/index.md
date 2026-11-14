@@ -334,8 +334,8 @@ stateDiagram-v2
 
 ### 6.4 Connect Nodes
 
-1. Each node has left (input/target) and right (output/source) handles
-2. Drag from **source left handle** to **target right handle**
+1. Inputs are on the left and outputs are on the right. A video source has only an output handle.
+2. Drag from the **upstream node’s right output** to the **downstream node’s left input**
 3. Canvas auto-arranges after new connections
 4. Use top "Arrange" button to re-layout
 
@@ -343,6 +343,18 @@ stateDiagram-v2
     You cannot connect from an output node back to an input node, nor connect in reverse. The direction must be **Input → Algorithm → Processing → Output**.
 
 ![](../../assets/user-manual/imgs/image-20260224171254513.png)
+
+<span id="ax-demo-flow"></span>
+
+**Connect a video input to person detection**
+
+Start with an empty canvas, add Network Pull Stream and Person Presence Detection, then drag from the upstream output on the right to the downstream input on the left.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3672" height="1710" poster="../../assets/sop/ax-guide-en-flow.jpg" aria-label="Connect a video input to person detection">
+  <source src="../../assets/sop/ax-guide-en-flow.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-guide-en-flow-zh.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/ax-guide-en-flow-en.vtt" srclang="en" label="English" default>
+</video>
 
 ### 6.5 Configure Node Parameters
 

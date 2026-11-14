@@ -14,6 +14,8 @@ The AIBox SDK provides an algorithm component matrix oriented to field business,
 | People counting | Retail, parks, exhibition halls |
 | Face detection and recognition | Access control, attendance, watchlist monitoring |
 
+[Watch a person-presence check being added to an SOP step on AX](sop/index.md#ax-demo-person)
+
 ## Vehicle Management
 
 | Capability | Typical scenarios |

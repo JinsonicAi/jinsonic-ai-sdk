@@ -1264,6 +1264,18 @@ Drag the playhead or follow the displayed seek instructions. Verify the main pic
 
 **Click to move the nearest endpoint** means clicking may edit the range. For viewing only, prefer drag-to-preview and explicit playback controls.
 
+<span id="ax-demo-time"></span>
+
+**Trim and preview one stage**
+
+Watch the end of stage 1 move from 16 s to about 13 s, then preview the trimmed interval.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2048" poster="../../assets/sop/ax-guide-en-time.jpg" aria-label="Trim and preview one stage">
+  <source src="../../assets/sop/ax-guide-en-time.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-guide-en-time-zh.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/ax-guide-en-time-en.vtt" srclang="en" label="English" default>
+</video>
+
 #### 5.6.3 Set start and Set end {#workspace-reference--63-set-start-and-set-end}
 
 Seek to the intended picture first, then use the appropriate control. When disabled, establish a valid loaded video position first. A disabled control is not evidence of a successful edit.
@@ -2262,6 +2274,18 @@ After changing the overall range, follow the prompt to scan again. Existing pict
 
 [![Target references and additional angles](../../assets/sop/en-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-10-target-reference.png)
 
+<span id="ax-demo-target"></span>
+
+**Box a screwdriver and inspect the reference crop**
+
+In this example the target is a screwdriver. Inspect the crop after dragging to check that it includes the handle and shaft.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2048" poster="../../assets/sop/ax-guide-en-target.jpg" aria-label="Box a screwdriver and inspect the reference crop">
+  <source src="../../assets/sop/ax-guide-en-target.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-guide-en-target-zh.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/ax-guide-en-target-en.vtt" srclang="en" label="English" default>
+</video>
+
 #### 8.3.1 References are not physical quantity {#video-and-recognition--references-are-not-physical-quantity}
 
 | Intended meaning | Configuration |
@@ -2404,6 +2428,18 @@ Suppose assembly may begin only while someone is at the bench. Define “a perso
 
 4. Under **How is this step completed?**, choose automatic completion for a visual decision or keep operator review where the process calls for it. For “operator present continuously for two seconds,” use two seconds as the duration in this exercise. For “arrived, then left,” use two ordered steps in the same zone. First require Person detected, then require Person not detected for the specified duration. Absence alone can also be true in a zone that was empty from the beginning. These two steps do not track an individual's identity across visits.
 
+<span id="ax-demo-person"></span>
+
+**Add a person-presence check to a step**
+
+This recording shows how to add the detector to a step. To verify the result, replay footage of a person entering and leaving the area.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2048" poster="../../assets/sop/ax-guide-en-person.jpg" aria-label="Add a person-presence check to a step">
+  <source src="../../assets/sop/ax-guide-en-person.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-guide-en-person-zh.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/ax-guide-en-person-en.vtt" srclang="en" label="English" default>
+</video>
+
 **Validate on a local recording.** Validate the stage, then the complete plan. Expand the step's checks and reasons and compare the timestamps with the recording.
 
 | What the recording shows | Expected behavior |
@@ -2428,6 +2464,18 @@ For “which hand approaches the fixture,” use [hand actions](#hand-operations
 [![Drawing the tool area](../../assets/sop/en-18-draw-region.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-18-draw-region.png)
 
 Use names describing the workplace rather than several indistinguishable numbered regions. Avoid placing boundaries exactly at the normal limits of object movement.
+
+<span id="ax-demo-region"></span>
+
+**Draw a tool area on the recording**
+
+Place four vertices on the workbench and close the shape. The next section shows how to assign the region to a check.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2048" poster="../../assets/sop/ax-guide-en-region.jpg" aria-label="Draw a tool area on the recording">
+  <source src="../../assets/sop/ax-guide-en-region.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-guide-en-region-zh.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/ax-guide-en-region-en.vtt" srclang="en" label="English" default>
+</video>
 
 #### 9.3.2 Bind the check to the region {#rules-and-regions--bind-the-check-to-the-region}
 

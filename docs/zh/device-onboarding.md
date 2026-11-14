@@ -172,6 +172,8 @@ RTSP 拉流 → 行人检测 → OSD 叠加 → RTSP 推流
 
 ![连接组件](../assets/deploy-guide/imgs/connect-plugins.png)
 
+[看 AX 上拖入节点和连线的实录](user-manual/index.md#ax-demo-flow)
+
 !!! warning "OSD 叠加的连接"
     OSD 叠加的输入需**同时**连接「网络拉流」和「行人检测」的输出。这是因为行人检测的输出只包含结构化数据（检测框等），不含视频画面，需由网络拉流提供视频流。
 

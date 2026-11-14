@@ -172,6 +172,8 @@ Each component has input / output ports. Connect them following the data flow.
 
 ![Connect components](../assets/deploy-guide/imgs/connect-plugins.png)
 
+[Watch nodes being added and connected on an AX device](user-manual/index.md#ax-demo-flow)
+
 !!! warning "OSD overlay connections"
     The OSD overlay input must connect to **both** the network-pull and the person-detection outputs. This is because person detection outputs only structured data (bounding boxes, etc.) without video frames — the video stream is supplied by the network-pull node.
 

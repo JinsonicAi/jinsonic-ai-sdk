@@ -381,7 +381,7 @@ stateDiagram-v2
 
 **步骤一：识别连接点**
 
-- 每个节点左右两侧各有一个小圆点（**handle**）
+- 节点的连接点显示为小圆点。视频输入节点只有右侧输出，算法节点通常同时有输入和输出。
 - **左侧**为输入（target），**右侧**为输出（source）
 - 数据从左侧流向右侧
 
@@ -401,6 +401,18 @@ stateDiagram-v2
     不可从输出节点连到输入节点，也不可反向连接；必须沿 **输入 → 算法 → 处理 → 输出** 的方向。
 
 ![image-20260224102907296](../../assets/user-manual/imgs/image-20260224102907296.png)
+
+<span id="ax-demo-flow"></span>
+
+**把视频输入连到人员检测**
+
+在空白任务画布上放入网络拉流和人员出现检测，再从上游的右侧输出拖到下游的左侧输入。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3672" height="1710" poster="../../assets/sop/ax-guide-zh-flow.jpg" aria-label="把视频输入连到人员检测">
+  <source src="../../assets/sop/ax-guide-zh-flow.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-guide-zh-flow-zh.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/ax-guide-zh-flow-en.vtt" srclang="en" label="English">
+</video>
 
 ### 6.5 配置节点参数（详细步骤）
 

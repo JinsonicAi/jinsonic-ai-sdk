@@ -1278,6 +1278,18 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 “单击移动最近端点”表示一次点击可能改变范围，不是单纯播放定位。只想回看时优先使用拖动预览和明确的播放控制。
 
+<span id="ax-demo-time"></span>
+
+**缩短一个阶段的验证范围并预览**
+
+看阶段 1 的终点怎样从 16 秒移到约 13 秒，再预览新选段。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2048" poster="../../assets/sop/ax-guide-zh-time.jpg" aria-label="缩短一个阶段的验证范围并预览">
+  <source src="../../assets/sop/ax-guide-zh-time.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-guide-zh-time-zh.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/ax-guide-zh-time-en.vtt" srclang="en" label="English">
+</video>
+
 #### 5.6.3 选起点与选终点 {#workspace-reference--63-选起点与选终点}
 
 先把视频定位到所需位置，再点“选起点”或“选终点”。灰色时先确认视频已加载并有有效位置。不要把灰色按钮当成已经设置成功。
@@ -2278,6 +2290,18 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 [![目标参考图与补充角度入口](../../assets/sop/zh-10-target-reference.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/zh-10-target-reference.png)
 
+<span id="ax-demo-target"></span>
+
+**在录像中框选螺丝刀，核对参考图**
+
+本例框选桌面上的螺丝刀，拖动后看选框预览是否保留了手柄和杆身。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2048" poster="../../assets/sop/ax-guide-zh-target.jpg" aria-label="在录像中框选螺丝刀，核对参考图">
+  <source src="../../assets/sop/ax-guide-zh-target.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-guide-zh-target-zh.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/ax-guide-zh-target-en.vtt" srclang="en" label="English">
+</video>
+
 #### 8.3.1 一个物件与多个参考角度 {#video-and-recognition--一个物件与多个参考角度}
 
 同一把锤的侧面、斜面和被正常握持的外观，可以作为同一个目标的多个参考角度。不要把“参考图数量”当成“物件数量”。
@@ -2438,6 +2462,18 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 4. 在 **怎样确认完成？** 选择视觉条件满足后自动完成，或保留必要的人工核对。如果工艺要求“人在操作区持续 2 秒”，可在练习中设为 2 秒。若要求“人员到场后又离开”，建两个先后执行的步骤，第一步检测到人员，第二步在同一区域持续未检出人员。仅设置第二步时，从一开始就空着的区域也可能满足它。这组规则判断区域状态的变化。
 
+<span id="ax-demo-person"></span>
+
+**把人员在场检查加入当前工序**
+
+实录演示如何把设备的人员检测加入本步。检查是否通过，要再用有人进入和离开的录像验证。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2048" poster="../../assets/sop/ax-guide-zh-person.jpg" aria-label="把人员在场检查加入当前工序">
+  <source src="../../assets/sop/ax-guide-zh-person.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-guide-zh-person-zh.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/ax-guide-zh-person-en.vtt" srclang="en" label="English">
+</video>
+
 **用本地录像验证。** 先验当前阶段，再验整套方案，展开 **本步检查与原因** 对照时间和画面。可用下面四种片段核对配置。
 
 | 录像中的情形 | 应怎样判断 |
@@ -2462,6 +2498,18 @@ SOP 将现场要求拆成可观察的条件。例如：
 [![绘制工具工作区](../../assets/sop/zh-18-draw-region.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-18-draw-region.png)
 
 区域应根据工位用途命名。避免“区域1”“区域2”难以区分。边界不要贴着物件正常活动的极限位置，以免轻微画面波动导致进出状态反复切换。
+
+<span id="ax-demo-region"></span>
+
+**在录像画面圈出工具区**
+
+沿桌面点出四个顶点，再闭合并命名。下一节说明怎样把这块区域用于具体的检查项。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2048" poster="../../assets/sop/ax-guide-zh-region.jpg" aria-label="在录像画面圈出工具区">
+  <source src="../../assets/sop/ax-guide-zh-region.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-guide-zh-region-zh.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/ax-guide-zh-region-en.vtt" srclang="en" label="English">
+</video>
 
 #### 9.3.2 创建区域后还要绑定条件 {#rules-and-regions--32-创建区域后还要绑定条件}
 
