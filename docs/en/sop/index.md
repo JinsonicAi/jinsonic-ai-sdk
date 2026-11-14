@@ -8,6 +8,7 @@ This guide is for process engineers, operators, deployment teams, and administra
 
 | What do you need to do? | Chapter |
 |---|---|
+| Watch three workpieces and spot the missing part | [Three-workpiece replay](#three-piece-replay) |
 | Check presence, an empty work zone, or arrival followed by departure | [Person presence and departure](#person-presence) |
 | Choose a production mode, trial it, and reconcile the batch | [Production modes](#production-modes) · [Production totals](#production-statistics) |
 | Complete your first SOP with a worked example | [Five-minute quick start](#five-minute-quickstart) |
@@ -360,6 +361,14 @@ Proximity, near-then-away, and accompanying transfer are different rules. Comple
 
 ### 2.4 Validate each stage, then the whole plan {#five-minute-validation}
 
+**Follow the validation in 16 seconds.** This 4K walkthrough uses three device screenshots. It shows the operator-confirmation setting, the confirmation control during replay, and the final results for both steps.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2160" poster="../../assets/sop/en-verify-preview.jpg" aria-label="Local validation walkthrough">
+  <source src="../../assets/sop/en-verify-steps-4k.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/zh-verify-steps.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/en-verify-steps.vtt" srclang="en" label="English" default>
+</video>
+
 #### 2.4.1 Validate stage 1 over 10–16 seconds
 
 1. Select the mallet-ready step and find its own timeline at the bottom of the stage. Choose **Validation range**, not the main clip above.
@@ -476,6 +485,12 @@ The recording shows hands working around a toolbox. We check **visible hand-to-t
 | Time limit | 0 for all three steps |
 
 The unmodified video is from FraunhoferIPK's IndEgo dataset under CC BY 4.0; see [credits](#reference--7-sample-and-screenshot-credits). New UI images are native **3840 × 2160 lossless PNGs**, linked to their originals. The video remains 480 × 480. The same observed run supplies the Chinese and English guide. Some action/result images retain the Chinese UI; this section gives their English control names. User-entered Chinese task and step names are deliberately unchanged when the interface language changes.
+
+**Watch the action first.** Follow the hand relative to the toolbox as the lid opens. In the exercise below you will use these two targets to build the check. This is the original input recording.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="480" height="480" poster="../../assets/sop/hand-preview.jpg" aria-label="Original toolbox and hand footage">
+  <source src="../../assets/sop/toolbox-hand-31s.mp4" type="video/mp4">
+</video>
 
 #### 2.7.1 Download the recording and create the hand-plus-object task
 
@@ -3090,6 +3105,22 @@ Use **Validate plan** to check stage order, the required or alternative paths wi
 | Missing input / insufficient picture evidence | Reliable observations are unavailable | Absence, withdrawal, or successful completion |
 
 Read checks and reasons alongside timestamps and overlays. One green box is not acceptance evidence for the complete plan.
+
+#### 13.3.2 Three-workpiece replay {#three-piece-replay}
+
+The left bottle represents the workpiece. The right bottle represents a required part. Watch the right side as the second workpiece enters.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="640" height="360" poster="../../assets/sop/three-pieces-preview.jpg" aria-label="Three-workpiece local validation footage">
+  <source src="../../assets/sop/station-three-pieces.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/zh-three-pieces.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/en-three-pieces.vtt" srclang="en" label="English" default>
+</video>
+
+**Compare the device results.** In this AX local-video validation, the per-workpiece results show **pass, fail, pass**, with zero undetermined pieces and one process exception. The pending state on the left belongs to the step panel. Expand the recording results on the right to reconcile the three pieces. The change to official production totals was zero.
+
+[View the device results (Chinese UI)](../../assets/sop/three-piece-device-results.jpg) · [Download this three-workpiece practice clip](../../assets/sop/station-three-pieces.mp4)
+
+The practice clip uses [Intel IoT DevKit bottle footage](https://github.com/intel-iot-devkit/sample-videos/blob/57978890822836f2b4743852f04f62fc511757e4/bottle-detection.mp4) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Selected intervals were edited into a 27.77-second exercise at the original 640 × 360 resolution. The timed captions describe the exercise.
 
 ### 13.4 Exercise failure paths {#validation-and-operation--4-exercise-failure-paths}
 

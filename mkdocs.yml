@@ -60,6 +60,7 @@ extra_javascript:
   - https://unpkg.com/mermaid@11.4.1/dist/mermaid.min.js
   - javascripts/mermaid.js
   - javascripts/sop-image-viewer.js
+  - javascripts/sop-demo-playback.js
   - javascripts/cloudflare-analytics.js
 
 plugins:

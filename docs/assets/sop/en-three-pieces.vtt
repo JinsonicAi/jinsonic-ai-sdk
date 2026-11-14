@@ -1,0 +1,16 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:04.000
+Wait for the starting bottle to leave the left zone.
+
+00:00:08.000 --> 00:00:15.000
+Piece 1: the required part is on the right. Pass.
+
+00:00:17.000 --> 00:00:20.000
+Piece 2: the part on the right is missing. Fail.
+
+00:00:20.700 --> 00:00:25.500
+Piece 3: the part is present again. Pass.
+
+00:00:25.500 --> 00:00:27.766
+Three results: two passed, one failed, one process exception.

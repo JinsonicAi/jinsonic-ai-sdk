@@ -8,6 +8,7 @@
 
 | 您现在要做什么 | 阅读位置 |
 |---|---|
+| 看三件录像，找出漏装的那一件 | [三件分件演示](#three-piece-replay) |
 | 检查工位有人、无人，或先到场再离开 | [人员在场与工位区域](#person-presence) |
 | 选择人工协作或全自动，试跑后核对产量与通过率 | [生产方式](#production-modes) · [生产统计](#production-statistics) |
 | 跟着完整实例完成第一个 SOP | [5 分钟快速上手](#five-minute-quickstart) |
@@ -367,6 +368,14 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 ### 2.4 验第一阶段、第二阶段，再验完整方案 {#five-minute-validation}
 
+**16 秒看懂整套验证。** 这段 4K 界面图解依次展示人工确认步骤的配置、录像运行时的确认入口，以及结束后的两步结果。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2160" poster="../../assets/sop/zh-verify-preview.jpg" aria-label="本地录像验证流程">
+  <source src="../../assets/sop/zh-verify-steps-4k.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/zh-verify-steps.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/en-verify-steps.vtt" srclang="en" label="English">
+</video>
+
 #### 2.4.1 设置第一阶段 10–16 秒并验证
 
 1. 选择 **橡胶锤就绪**，向下找到该阶段底部的独立时间轴，点击 **验证范围**，不要改上方总片段。
@@ -492,6 +501,12 @@ SOP 将现场要求拆成可观察的条件。例如：
 | 完成时限 | 三步均 0 秒，不额外检查超时 |
 
 素材来自 FraunhoferIPK 的 IndEgo 数据集，按 CC BY 4.0 提供，下载文件未裁剪、未转码。出处及固定版本见[素材署名](#reference--7-示例素材与截图来源)。本节配图都是实际界面原生 **3840 × 2160 PNG**，点击打开原图；录像自身仍是 480 × 480。
+
+**先认动作。** 看工具箱打开时手与箱体的位置，再在后面的练习中给这两者添加检查关系。这里播放的是原始操作录像。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="480" height="480" poster="../../assets/sop/hand-preview.jpg" aria-label="手靠近工具箱的原片">
+  <source src="../../assets/sop/toolbox-hand-31s.mp4" type="video/mp4">
+</video>
 
 #### 2.7.1 下载录像，创建“物件＋手部”的独立任务
 
@@ -3185,6 +3200,22 @@ SOP 将现场要求拆成可观察的条件。例如：
 | 输入中断或画面不足 | 当前没有足够可靠证据 | 物件不存在、手已离开或本步通过 |
 
 结果应结合“本步检查与原因”、时间点和叠加画面查看。不要只截取一个绿色框作为整套方案验收依据。
+
+#### 13.3.2 三件分件演示 {#three-piece-replay}
+
+左瓶代表工件，右瓶代表必装配件。留意第 2 件进入时右侧的位置。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="640" height="360" poster="../../assets/sop/three-pieces-preview.jpg" aria-label="三件分件本地验证录像">
+  <source src="../../assets/sop/station-three-pieces.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/zh-three-pieces.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/en-three-pieces.vtt" srclang="en" label="English">
+</video>
+
+**对照盒子结果。** 在 AX 本地录像验证中，展开「录像分件结果（不计入生产）」可见 **第 1 件合格、第 2 件不合格、第 3 件合格**，未判定 0 件，工序异常 1 次。片尾左侧的「状态待确认」属于步骤面板。三件明细在右侧，可用来逐件对账。本次正式生产统计增量为 0。
+
+[查看本次验证的设备原图](../../assets/sop/three-piece-device-results.jpg) · [下载同一段三件练习录像](../../assets/sop/station-three-pieces.mp4)
+
+本例取自 [Intel IoT DevKit 的瓶子取放录像](https://github.com/intel-iot-devkit/sample-videos/blob/57978890822836f2b4743852f04f62fc511757e4/bottle-detection.mp4)，按 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) 使用。教程重新选段并组合为 27.77 秒的练习片，保留 640 × 360 原始分辨率，另配逐件教学字幕。
 
 ### 13.4 检查错误路径 {#validation-and-operation--4-检查错误路径}
 

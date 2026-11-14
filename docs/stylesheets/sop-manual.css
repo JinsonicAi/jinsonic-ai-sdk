@@ -52,3 +52,16 @@
 .md-typeset a:has(>img[src*="/assets/sop/"]){cursor:zoom-in}
 @media(max-width:600px){.sop-image-viewer{width:calc(100vw - 12px);height:calc(100dvh - 12px)}.sop-image-viewer-bar{gap:6px;padding:8px}.sop-image-viewer-caption{flex-basis:100%}.sop-image-viewer button{min-height:40px;padding:6px 9px}}
 @media print{.sop-image-viewer{display:none!important}}
+
+.md-typeset video[data-sop-demo] {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 68vh;
+  margin: 1rem auto .5rem;
+  object-fit: contain;
+  background: #111821;
+  border-radius: .4rem;
+}
+.md-typeset video[data-sop-demo][width="480"] { max-width: 480px; }
+@media print { .md-typeset video[data-sop-demo] { display: none; } }
