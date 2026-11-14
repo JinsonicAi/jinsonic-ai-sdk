@@ -2,12 +2,13 @@
 
 [简体中文](../../zh/sop/index.md)
 
-This guide is for process engineers, operators, deployment teams, and administrators using AIBox SOP for the first time. Object-only and hand-plus-object worked examples take you through **choosing a camera → preparing a video → selecting a target → improving recognition → defining steps → validating stages → validating the plan → saving → station operation**. You do not need to write code, rule expressions, or JSON.
+This guide is for process engineers, operators, deployment teams, and administrators using AIBox SOP for the first time. Object-only and hand-plus-object worked examples take you through **preparing a local video → selecting a target → improving recognition → defining steps → validating stages → validating the plan → saving → configuring the live camera → station operation**. You do not need to write code, rule expressions, or JSON.
 
 **Read chapter 1 to understand the system, then follow the complete [five-minute example in chapter 2](#five-minute-quickstart). Consult the tool details afterward as needed.** All chapters are on this page. Use the table of contents on the right or the links below to jump directly to a section.
 
 | What do you need to do? | Chapter |
 |---|---|
+| Choose a production mode, trial it, and reconcile the batch | [Production modes](#production-modes) · [Production totals](#production-statistics) |
 | Complete your first SOP with a worked example | [Five-minute quick start](#five-minute-quickstart) |
 | Complete object, hand-action, and operator-review stages | [Toolbox and hand worked example](#five-minute-hand-example) |
 | Find additional guidance for the two-step example | [Detailed walkthrough: tool readiness and operator confirmation](#quickstart) |
@@ -69,7 +70,7 @@ The full teaching video is approximately 60 seconds. These times explain range s
 | Save task | Applies the edited task configuration to the device | Automatically starts production |
 | Station operation | Shows operators the current task, steps, and confirmation controls | The sampled-frame recognition review page |
 
-A **stage** is an execution group. It can contain one step or an unordered group. Stages execute from top to bottom. Steps in an unordered group may finish in either order, and all must finish before the next stage. This differs from several conditions being true simultaneously; see [Rules, regions, and timing](#rules-and-regions).
+A stage contains one or more steps. Stages run from top to bottom. The group heading sets the order within a stage and whether all steps or one alternative must finish. See [Group execution rules](#group-execution).
 
 ### 1.4 Recommended learning path {#overview--4-recommended-learning-path}
 
@@ -191,7 +192,9 @@ This chapter contains **2.1–2.6, object detection plus operator confirmation**
 
 **Checkpoint:** the actual video plays and lasts approximately 60 seconds. A loading placeholder is not a usable frame. Resolve upload/decoding errors before drawing. Replacing an existing video may invalidate ranges or target evidence; use the separate practice task.
 
-#### 2.1.4 Choose a camera; understand the recording alternative
+#### 2.1.4 Optional: record from the station camera
+
+If you uploaded the example, continue to 2.2. Configure the camera when recording on site or preparing to start the live task.
 
 1. In **Station camera**, click **Choose / change** and choose a working camera for this station. When using an address, enter your own valid input and apply the selection.
 2. Check that the camera field no longer says no camera is selected. The private address in the captured example is a controlled demonstration source, not a customer service endpoint.
@@ -228,16 +231,16 @@ This chapter contains **2.1–2.6, object detection plus operator confirmation**
 
 **Checkpoint:** the current step contains the mallet and one reference. Reference count is not the required number of physical mallets. The first step may initially use visual checks plus operator review; explicitly change it to automatic in 2.3.
 
-#### 2.2.3 Save the initial task before checking recognition
+#### 2.2.3 Save the practice task and reopen it
 
-1. Check that the camera, video, and primary reference are present.
+1. Check that the local video and the primary mallet reference are present.
 2. Click the editor footer **Done**. If the SOP node window remains open, click **Confirm**; if you are already at the task canvas, continue.
 3. Click **Save** on the outer task toolbar and wait for success before refreshing.
 4. Reopen **SOP Workflow → Edit steps → Targets**, then select the mallet.
 
 [![Figure 2-6: the outer task Save action](../../assets/sop/en-23-save-task.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-23-save-task.png)
 
-**Checkpoint:** the camera, video, and one reference survive reopening, and **Improve** becomes available. If the page asks you to configure the camera, finish editing, and save first, complete this initial save. Allow capability loading to finish instead of creating another task.
+**Checkpoint:** reopen the task and verify that the original recording plays and the primary reference is visible. Recording checks use the local file and work with the station camera unset.
 
 #### 2.2.4 Scan and inspect actual pictures
 
@@ -266,6 +269,8 @@ Click **ⓘ — Recognition details** on the added-box row. Compare **This trial
 [![Figure 2-8: expanded recognition explanations distinguish the trial, previous scan, and query candidates.](../../assets/sop/en-q30-candidate-details.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/en-q30-candidate-details.png)
 
 If the candidate is truly below its gate, first improve a loose, unclear, or background-heavy reference and try the frame again. When a gate adjustment is justified, use that reference's threshold control, record the original value, and recheck both present and absent examples. If the score meets the gate but the candidate was filtered later, inspect region, duplicate, or other filtering reasons; lowering the threshold may not help. **The final configuration here retains the original threshold.**
+
+If the same workpiece is detected on one side and missed on the other, test one clear frame from each position against the same target. Compare object size, occlusion, the primary reference and the zone edges. If another view is needed, add it to the existing target. Recheck footage showing the piece and the empty position so arrival detection and the step still refer to the same object.
 
 #### 2.2.6 Add a box, then immediately try the current frame
 
@@ -751,7 +756,8 @@ Ask:
 | Answer | Configuration | Critical validation |
 |---|---|---|
 | B follows A | Separate ordered stages | Reversed operation cannot count as the required order |
-| Either order, both mandatory | An unordered stage | Both orders work; omitting one step cannot finish the group |
+| Either order, both mandatory | Any order · Complete all | Both orders work; omitting one step cannot finish the group |
+| A and B are alternative operations | Any order · Complete one | A alone and B alone should each advance the group. Completing neither should leave it waiting. |
 | Same time | All conditions together within one step | Separate appearances cannot be added together |
 | Equivalent alternatives | Any condition within one step | Each option is a permitted substitute |
 
@@ -910,6 +916,8 @@ The task name, plan name, and station name can differ. The task name identifies 
 Collapse the step list or maximize the editor when you need space. Numbered navigation remains available when the list is collapsed. Use ordinary scrolling to move through the page. Use the displayed modifier key or the plus/minus controls to zoom the image.
 
 ### 4.4 Choose the station camera {#quickstart--4-choose-the-station-camera}
+
+If you already have a local video, continue to the upload section. Configure this camera for on-site recording and for live operation of the saved task.
 
 1. Click **Choose / change** in the plan bar.
 2. Prefer a camera already configured for this station.
@@ -1563,6 +1571,10 @@ Removing a box, deleting a region, and deleting a step affect different objects.
 
 ### 6.8 Timeline controls {#control-reference--8-timeline-controls}
 
+Choose **⋯** on the timeline to **Set start**, **Set end**, or **Edit start and end times**. Check whether you are editing the validation range or the demonstration. You can also click a displayed time to enter a precise endpoint.
+
+[![Open More timeline actions on the recording to set an endpoint or edit both times.](../../assets/sop/en-prod-timeline.png){loading="lazy" decoding="async" width="3840" height="3120"}](../../assets/sop/en-prod-timeline.png)
+
 <div class="sop-ui-map" markdown="1">
 
 [![Figure C8 · Timeline: exact times, preview, endpoints, and playhead](../../assets/sop/en-08-plan-range.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-08-plan-range.png)
@@ -1898,7 +1910,7 @@ If no proposal is available, read which evidence is missing. No proposal is not 
 | Reorder | Organize stages | Establish process dependencies first |
 | Move up/down | Move identified stage or grouped step | One direction may be disabled at an edge |
 | Drag handle | Pointer or documented arrow-key reordering | Do not drag a reference image to reorder |
-| Group with next in any order | Combine independent work | Every grouped step remains mandatory |
+| Group heading → Execution mode | Choose ordered all, unordered all, or one alternative | See [Group execution rules](#group-execution) |
 | Join/merge group | Organize an unordered stage | Do not relax genuine dependencies |
 | Separate/remove from group, when offered | Restore independent stage | Revalidate order |
 | Delete this step | Remove identified operation | Read confirmation; back up important configuration |
@@ -2258,7 +2270,7 @@ Describe completion in ordinary workplace language first. Then separate it into 
 
 ### 9.1 Steps, stages, and conditions {#rules-and-regions--1-steps-stages-and-conditions}
 
-A step describes an action with a purpose, such as tool readiness. A stage can contain one step or several steps that may finish in any order. Stages run from top to bottom, and all steps in a group must finish before the next stage.
+A step describes an action such as tool preparation. Each stage contains one or more steps. Stages run from top to bottom. Within a stage the [group rule](#group-execution) sets the execution order and the completion requirement.
 
 Within one step, several detection conditions can be combined. **Steps finishing in any order is different from conditions being satisfied simultaneously.**
 
@@ -2371,7 +2383,19 @@ Demonstrations train the operator; validation ranges define the evidence to chec
 
 ### 9.8 Grouping and order {#rules-and-regions--8-grouping-and-order}
 
-Use **Reorder** in the step list to organize the actual dependencies. Steps in an unordered stage can finish in any order, but all are required before advancing.
+<a id="group-execution"></a>
+
+Click the **group heading** in the left step list to choose its execution rule. Stages still run from top to bottom.
+
+| Group heading | When the next stage opens | Example |
+|---|---|---|
+| In order · Complete all | Every step finishes in the listed order | Fit the washer, then tighten the nut |
+| Any order · Complete all | Every step finishes, in either order | Prepare both the fixture and the tool |
+| Any order · Complete one | One step finishes and the remaining branches show as skipped | Scan the code or read an approved alternative label |
+
+Use **Reorder** to change which steps belong together. To give the video more room, drag the divider to the far left to collapse the list. Drag right or use the expand button to restore it. Validate both an allowed path and a path the revised group should block.
+
+[![Open the group heading in the step list to choose one of the three execution rules.](../../assets/sop/en-prod-groups.png){loading="lazy" decoding="async" width="3840" height="3120"}](../../assets/sop/en-prod-groups.png)
 
 [![Reordering stages and steps](../../assets/sop/en-17-ordering.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-17-ordering.png)
 
@@ -2745,7 +2769,7 @@ Illustrative ranges are 10–16 and 16–60 seconds. Check actual footage rather
 #### 12.1.2 A2. Prepare footage {#scenario-labs--a2-prepare-footage}
 
 1. Create an object-only SOP task.
-2. Select the station camera.
+2. For an existing video, go straight to upload. Choose a camera first when recording on site.
 3. Upload the sample or record your workplace.
 4. Play the beginning, middle, and end.
 5. Verify real timeline thumbnails.
@@ -3022,7 +3046,7 @@ Video pixels alone cannot establish that a person performed an operator-confirma
 
 ### 13.3 Validate the plan {#validation-and-operation--3-validate-the-plan}
 
-Use **Validate plan** to check stage order, all steps within groups, and the final state. Separate stage success does not establish correct integration if dependencies, grouping, or required steps are wrong.
+Use **Validate plan** to check stage order, the required or alternative paths within each group, and the final state. Separate stage success does not establish correct integration if dependencies, grouping, or required steps are wrong.
 
 | Information | Meaning | Does not establish |
 |---|---|---|
@@ -3037,7 +3061,7 @@ Read checks and reasons alongside timestamps and overlays. One green box is not 
 
 ### 13.4 Exercise failure paths {#validation-and-operation--4-exercise-failure-paths}
 
-Include missing objects, wrong regions, too few or too many objects, a hand that never approaches or never withdraws, reversed order, exceeded deadlines, blur, occlusion, stream interruption, missing frames, and an unfinished step within an unordered group.
+Include missing objects, wrong regions, too few or too many objects, a hand that never approaches or never withdraws, reversed order, exceeded deadlines, blur, occlusion, stream interruption, missing frames, and an omitted mandatory step in a Complete all group, and a Complete one group with no successful alternative.
 
 Expected failures should produce understandable waiting, unmet, exception, or review states rather than automatic completion. Use site quality requirements to decide whether operation may continue.
 
@@ -3070,6 +3094,43 @@ After saving and starting the task, enter **Station operation** from its task ca
 Read the current step and instructions. Demonstration playback should show that step's clip. Inspect unmet requirements rather than repeatedly confirming to skip them. When review is required, inspect the physical work before confirming the current step.
 
 Follow site procedures for exceptions, stopping, and restarting a cycle. A previous cycle's completion must not be treated as completion of the current product. Changes to a running configuration require saving, checking, and revalidation.
+
+### 13.7.1 Choose a production mode and try it before going live {#production-modes}
+
+Double-click **SOP Workflow** on the task canvas. **Production mode** controls who starts and finishes each workpiece. The separate **Observe / debug (excluded from production)** switch controls whether its results count toward production.
+
+| How the station works | Select | What the operator does |
+|---|---|---|
+| An operator assembles parts and signs off selected steps | **Operator assisted** (formerly Guide mode) | Start the workpiece. Visual steps advance as their rules are met. Inspect and confirm steps that require sign-off, then finish the workpiece. |
+| A fixed position receives one workpiece at a time and is visibly empty between pieces | **Fully automatic** | Keep the arrival zone visible. Stable entry starts a workpiece. Stable departure closes it, records the result, and arms the station for the next piece. |
+
+**Commissioning a station or checking a change?** Select the production mode and enable **Observe / debug**. Try the actual cycle and review the individual results. Production totals stay unchanged in either mode. For production, turn debug off, confirm, and save the task. An older task saved in Observe mode opens as Operator assisted with Observe / debug enabled.
+
+[![Production mode in SOP Workflow. Observe / debug is enabled for this example.](../../assets/sop/en-prod-modes.png){loading="lazy" decoding="async" width="3840" height="3120"}](../../assets/sop/en-prod-modes.png)
+
+In Operator assisted mode, a process incident may hold the workpiece. Use rework when the site procedure calls for it. To reject the piece, choose **Mark piece as failed** and enter the reason.
+
+**Set up automatic workpiece detection**
+
+1. Select **Fully automatic** under **Production mode**. If a named step needs confirmation, keep Operator assisted or open **Edit steps**, define an observable automatic check, and validate it on a recording.
+2. Read the **Workpiece detection** summary. If the workpiece and zone are correct, continue. To change them, expand the row. In the illustration, 水瓶 means “water bottle” and 左侧分件位 means “left arrival position.” The zone must clear between pieces. A separate zone can check for an accessory on the right.
+3. Click **Confirm**, then **Save** on the task canvas. Start the saved task. Present the empty zone first, then the first piece. Remove each piece before introducing the next one. A piece that stays in the zone occupies a single cycle.
+4. If products touch as they pass, or the carrier stays in place, a single occupied zone cannot distinguish consecutive pieces. Choose a position that visibly clears or use Operator assisted to start and finish each piece.
+
+[![Workpiece detection expanded. The bottle uses the left arrival zone. Entry and exit timing is folded.](../../assets/sop/en-prod-workpiece.png){loading="lazy" decoding="async" width="3840" height="3120"}](../../assets/sop/en-prod-workpiece.png)
+
+### 13.7.2 Reconcile workpiece results with production totals {#production-statistics}
+
+Start the saved task, open **Station operation** on its card, and expand **Station production totals**. Both production modes use the same counters. Record the starting totals so you can check the change for a particular batch.
+
+| Reading | Interpretation |
+|---|---|
+| Passed and failed pieces | Each closed, judged piece counts once. With continuous evidence, a piece that leaves with a required operation missing can finish as failed. The next piece can proceed. |
+| Pass and fail rates | Both divide by judged pieces, the sum of passed and failed pieces. Unjudged pieces have their own count. |
+| Unjudged | Loss of evidence, such as an interrupted stream, can leave a piece without a verdict for review. |
+| Process incidents | Counts recorded process events. One piece may have more than one incident. |
+
+Example: use the left zone for arrival and check for an accessory on the right. Run three pieces, clearing the arrival zone after each: accessory present, accessory missing, accessory present. With one missing-operation incident, the individual results should be **pass → fail → pass**. Production should gain **2 passed, 1 failed, 0 unjudged, and 1 incident**. The batch pass rate is **66.67%** and the fail rate is **33.33%**, rounded. Repeat with Observe / debug enabled and review the same individual results. The production counters should gain zero.
 
 ### 13.8 History and storage {#validation-and-operation--8-history-and-storage}
 
@@ -3144,6 +3205,8 @@ Playable video and synchronized process state are distinct. Neither a last known
 
 ### 14.4 Begin a workpiece {#operator-guide--4-begin-a-workpiece}
 
+The start and finish buttons described below apply to **Operator assisted**. At an automatic station, follow [Workpiece detection](#production-modes). Stable departure finishes the piece.
+
 **Prerequisites:** Task running, station available, previous work clearly ended/aborted or waiting for a workpiece, synchronized state.
 
 1. Distinguish the previous and current pieces.
@@ -3193,15 +3256,15 @@ The figure illustrates configuration. During operation, use the runtime control 
 
 Availability of a button does not justify confirming incomplete work.
 
-### 14.8 Unordered groups {#operator-guide--8-unordered-groups}
+### 14.8 Working through a group {#operator-guide--8-unordered-groups}
 
-All grouped steps remain mandatory, although order is flexible.
+Read the [group heading](#group-execution) to see which operations the stage requires.
 
-1. Read the unordered-group completion count.
+1. Check the group rule and current progress.
 2. Select a step to read its instructions.
-3. Perform and confirm that operation.
-4. Continue other unfinished group members.
-5. Check advancement after all required members finish.
+3. Perform the operation and confirm it when prompted.
+4. In a Complete all group, continue with the other required steps. In a Complete one group, the remaining paths show as skipped after one finishes.
+5. Check the current step in the next stage.
 
 Selecting a step changes focus, not completion. A completed selected step can remain visible. Use **View active step** when offered to return to pending work. Read the selected name before confirming.
 
@@ -3256,6 +3319,8 @@ The current reason field permits up to 300 characters, subject to interface vali
 Abort differs from pause. Do not assume the old execution can resume at the same position.
 
 ### 14.13 Finish {#operator-guide--13-finish}
+
+A fully automatic station finishes the piece on stable departure. The manual finish action below applies to Operator assisted.
 
 When required steps are complete, inspect the final result and use **Finish workpiece** if offered.
 
@@ -3718,7 +3783,7 @@ Use this page as a quick reference. For a first setup, follow the [introductory 
 | All simultaneously | All requirements hold at the same time |
 | Any one | At least one genuine alternative holds |
 | In order | Conditions occur in the configured order |
-| Unordered group | All grouped steps are required, in any order |
+| Step group | Its [heading](#group-execution) specifies ordered all, unordered all, or one alternative |
 | Hold time | How long a condition must remain satisfied |
 | Deadline | Maximum permitted time for completion |
 | Operator review | Visual conditions first, human inspection afterward |
