@@ -263,6 +263,8 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 **本次实测观察：** 主参考能在 10–18 秒的抽样图片中保留正确锤框；整段某些画面仍有额外框。因此本章不会把“扫描结束”说成整段识别质量已经通过。先完成下面的核对练习，再采用经过复查的参考。
 
+[看实录：核对两张抽帧](#ax-sop-scan)
+
 #### 2.2.5 颜色、黄色候选和低于阈值分别是什么意思
 
 | 画面/标签 | 应怎样读 | 下一步 |
@@ -494,6 +496,8 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 **不符合时：** 第一步卡住先看是否看到正确锤、视频是否新鲜、条件为何不满足；第二步卡住先看是否已确认以及确认是否被接受。断流或暂停先恢复有效输入，不能通过刷新网页把未完成步骤变成通过。本件结束后再点“开始本件”才进入下一件；练习结束停止自己启动的教程任务。
 
+[看 AX 实时工位从开件到结束](#ax-sop-operator)
+
 #### 2.6.4 最后按这张表验收自己的练习
 
 | 位置 | 应核对的结果 | 不一致时回到哪里 |
@@ -652,6 +656,8 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 **检查点：** 关系图为 **任意一手 → 靠近 → 工具箱**。工具栏中的“靠近后离开”或“伴随移送”是不同动作模板，需要完整离开过程或起终点；本例不要用它们替代单项靠近。
 
+[看实录：在编辑器中添加手与工具箱的关系](#ax-sop-hand)
+
 #### 2.7.10 让靠近步骤自动完成，正确理解时间保护
 
 1. 点第二步 **怎样确认完成 → 设置**。新建手物关系可能默认“视觉检测＋人工核对”；本例改为 **视觉检测后自动完成**，把人工核对留在独立第三步。
@@ -681,6 +687,8 @@ SOP 将现场要求拆成可观察的条件。例如：
 4. 先点编辑器底部 **完成**，若出现节点配置点 **确定**，再点外层 **保存**。等保存完成后重开，核对三阶段、参考 2、待采用 0，避免上面的临时试检补框混入最终方案。
 
 [![图 H-12：最后一阶段是独立的操作员确认，不用另一条视觉条件代替人员核对。](../../assets/sop/zh-h11-manual-stage.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h11-manual-stage.png)
+
+<a id="ax-hand-validation"></a>
 
 #### 2.7.12 验证手部当前阶段，分清本阶段和整套结论
 
@@ -2334,6 +2342,18 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 抽样间隔越小，生成图片越多，扫描和人工复核时间也越长。先验代表片段，再验完整录像，能够更快定位问题。片段成功只说明对应片段，不能替代整段结论。
 
+<a id="ax-sop-scan"></a>
+
+**核对录像抽帧中的识别结果**
+
+打开橡胶锤录像在第 10 秒的抽帧，查看上次扫描保留的检测框，再与第 12 秒的画面对照。两张抽帧都保留原来的人工核对状态。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2048" poster="../../assets/sop/ax-sop-lesson-zh-scan.jpg" aria-label="核对录像抽帧中的识别结果">
+  <source src="../../assets/sop/ax-sop-lesson-zh-scan.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-zh-scan-zh.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-zh-scan-en.vtt" srclang="en" label="English">
+</video>
+
 ### 8.5 人工补框的完整流程 {#video-and-recognition--5-人工补框的完整流程}
 
 #### 8.5.1 第一步：确认原图中真的有目标 {#video-and-recognition--第一步确认原图中真的有目标}
@@ -2612,6 +2632,18 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 需要改变组成员时打开 **调整顺序**。要给录像腾出空间，可把左栏分隔线拖到最左侧收起列表，再向右拖或点击展开按钮恢复。改完组关系后，分别用允许的路径和应被拦住的路径复验。
 
+<a id="ax-sop-group"></a>
+
+**修改组内通过条件并撤销**
+
+点击组标题，把“任一步完成即可”改为“任意顺序 · 全部完成”。观察组标题更新，再点撤销恢复原规则。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="2774" height="2460" poster="../../assets/sop/ax-sop-lesson-zh-group.jpg" aria-label="修改组内通过条件并撤销">
+  <source src="../../assets/sop/ax-sop-lesson-zh-group.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-zh-group-zh.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-zh-group-en.vtt" srclang="en" label="English">
+</video>
+
 [![点击工序列表的组标题，可直接选择三种执行方式。](../../assets/sop/zh-prod-groups.png){loading="lazy" decoding="async" width="3840" height="3120"}](../../assets/sop/zh-prod-groups.png)
 
 [![阶段与组内顺序调整](../../assets/sop/zh-17-ordering.png){loading="lazy" decoding="async" width="2459" height="1935"}](../../assets/sop/zh-17-ordering.png)
@@ -2720,6 +2752,18 @@ SOP 将现场要求拆成可观察的条件。例如：
 **不宜直接当成：** 已拿起工具、已用力压紧、已拧紧、已成功安装。
 
 如果手在物件附近但不执行操作，也会满足“靠近”的位置条件。想区分完整过程，应增加先后、到达区域、物件保留或人工核对。
+
+<a id="ax-sop-hand"></a>
+
+**在草稿中添加“手靠近工具箱”**
+
+从草稿中的一个人工确认步骤进入编辑，切换为视觉检查，添加空间关系，依次选择“任意一手”、“工具箱”和“靠近”。接着可以[看这个条件在录像中怎样通过](#ax-hand-validation)。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2048" poster="../../assets/sop/ax-sop-lesson-zh-hand.jpg" aria-label="在草稿中添加“手靠近工具箱”">
+  <source src="../../assets/sop/ax-sop-lesson-zh-hand.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-zh-hand-zh.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-zh-hand-en.vtt" srclang="en" label="English">
+</video>
 
 ### 10.6 单项条件：可见手远离物件 {#hand-operations--6-单项条件可见手远离物件}
 
@@ -2967,6 +3011,8 @@ SOP 将现场要求拆成可观察的条件。例如：
 - 发生误操作，使用当前页面的撤销按钮，再核对关系图和条件数量。
 - 撤销覆盖的是页面支持的最近修改，不是无限历史版本回退。
 - 已经完成保存、关闭页面或进行其他修改后，不应假定旧撤销仍有效。
+
+[看实录：撤销组规则修改](#ax-sop-group)
 
 ### 11.8 工序排序与拖拽不同 {#toolbar-and-drag--8-工序排序与拖拽不同}
 
@@ -3422,6 +3468,18 @@ SOP 将现场要求拆成可观察的条件。例如：
 
 [![来件识别已展开，水瓶用左侧区域分件，进出确认时间保持折叠。](../../assets/sop/zh-prod-workpiece.png){loading="lazy" decoding="async" width="3840" height="3120"}](../../assets/sop/zh-prod-workpiece.png)
 
+<a id="ax-sop-mode"></a>
+
+**设置全自动运行，再开启观察调试**
+
+在同一个工位切换到全自动，展开“来件识别”，核对水瓶和左侧分件位，再打开“观察调试”。此时生产方式仍是全自动，试跑结果单独记录。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="2440" height="3840" poster="../../assets/sop/ax-sop-lesson-zh-mode.jpg" aria-label="设置全自动运行，再开启观察调试">
+  <source src="../../assets/sop/ax-sop-lesson-zh-mode.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-zh-mode-zh.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-zh-mode-en.vtt" srclang="en" label="English">
+</video>
+
 #### 实时工位怎样处理连续三件 {#rtsp-station-demo}
 
 已保存的 AX 工位从受控 RTSP 源读取与本地练习相同的三件录像。观察调试已关闭。这段录像对应的三条工件记录是合格、不合格、合格，共 1 次工序异常、0 件未判定。页面上的累计数还包含同一测试工位的历史记录。已判定 3 件，通过率 66.7%，不合格率 33.3%。
@@ -3539,6 +3597,18 @@ SOP 将现场要求拆成可观察的条件。例如：
 **预期结果：** 当前件获得自己的执行状态，第一阶段进入当前操作。上一件的绿色完成标记不能代替当前件执行。
 
 如果按钮禁用，先看同步、连接、服务健康和正在提交的操作。不要连续点击或切换到另一工位“试一下”。
+
+<a id="ax-sop-operator"></a>
+
+**操作员完成一件，再准备下一件**
+
+这是 AX 工位接收受控 RTSP 回放的实际页面。点击“开始本件”后，橡胶锤由视觉检查自动通过。操作员核对并确认第二步，再结束本件。页面显示 2/2，并再次出现“开始本件”。此次已开启观察调试，正式产量增量为 0。
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="2564" height="1580" poster="../../assets/sop/ax-sop-lesson-zh-operator.jpg" aria-label="操作员完成一件，再准备下一件">
+  <source src="../../assets/sop/ax-sop-lesson-zh-operator.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-zh-operator-zh.vtt" srclang="zh" label="中文" default>
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-zh-operator-en.vtt" srclang="en" label="English">
+</video>
 
 ### 14.5 执行自动检查步骤 {#operator-guide--5-执行自动检查步骤}
 

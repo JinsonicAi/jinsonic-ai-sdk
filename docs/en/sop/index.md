@@ -256,6 +256,8 @@ If you uploaded the example, continue to 2.2. Configure the camera when recordin
 
 **Observed in this walkthrough:** the primary reference retained the correct mallet in the 10–18-second sampled images. Some other images contained extra detections. Therefore scan completion is not a claim that recognition across the whole video has passed.
 
+[Watch the two-frame inspection](#ax-sop-scan)
+
 #### 2.2.5 Read yellow candidates, scores, and thresholds correctly
 
 | Display | Meaning | What to do |
@@ -478,6 +480,8 @@ Rings and light-flow effects indicate activity, not a pass. Check text, reasons,
 
 **Recovery:** for stage 1, check the correct target, fresh video, and condition reasons. For stage 2, check that the confirmation was actually accepted. Recover invalid input or pauses; refreshing the webpage cannot make an unfinished step pass. Stop the practice task you started when the exercise is over.
 
+[Watch one complete cycle on the AX station](#ax-sop-operator)
+
 #### 2.6.4 Check your finished exercise
 
 | Checkpoint | Required result | Return to |
@@ -638,6 +642,8 @@ The toolbox is detected. The stage passes, 1/1.
 
 **Checkpoint:** **Any hand → Near → 工具箱**. Near-then-away and accompanying-transfer templates are different operations requiring their own complete motion and, where applicable, start/end regions. Do not substitute them here.
 
+[Watch the hand-to-toolbox check being configured](#ax-sop-hand)
+
 #### 2.7.10 Configure automatic hand completion and timing safeguards
 
 1. Open stage 2 completion settings. A new hand/object relation may default to visual-plus-operator-review. For this example choose **Complete automatically after visual detection**; the independent third stage supplies human review.
@@ -667,6 +673,8 @@ Review the running video and confirm the step. The result appears in the stage c
 4. **Done → Confirm if shown → outer Save**, wait, then reopen. Check all three stages, References: 2, Pending: 0. Temporary unadopted trial boxes must not enter this final version.
 
 [![H-13: the independent operator-confirmation stage; Chinese UI from actual authoring.](../../assets/sop/zh-h11-manual-stage.png){loading="lazy" decoding="async" width="3840" height="2160"}](../../assets/sop/zh-h11-manual-stage.png)
+
+<a id="ax-hand-validation"></a>
 
 #### 2.7.12 Validate the hand stage separately
 
@@ -2310,6 +2318,18 @@ A good reference keeps the object clear and dominant, covers realistic orientati
 
 A smaller sampling interval creates more pictures and requires more processing and review. Review a representative segment first, then the complete recording. A successful segment does not establish that the whole video is reliable.
 
+<a id="ax-sop-scan"></a>
+
+**Inspect detections in sampled frames**
+
+Open the 10-second sample from the mallet recording, inspect the boxes kept by the last scan, then compare the frame at 12 seconds. Both samples retain their original review status.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2048" poster="../../assets/sop/ax-sop-lesson-en-scan.jpg" aria-label="Inspect detections in sampled frames">
+  <source src="../../assets/sop/ax-sop-lesson-en-scan.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-en-scan-zh.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-en-scan-en.vtt" srclang="en" label="English" default>
+</video>
+
 ### 8.5 Complete the manual-box workflow {#video-and-recognition--5-complete-the-manual-box-workflow}
 
 #### 8.5.1 Confirm the object in the original image {#video-and-recognition--confirm-the-object-in-the-original-image}
@@ -2559,6 +2579,18 @@ Click the **group heading** in the left step list to choose its execution rule. 
 
 Use **Reorder** to change which steps belong together. To give the video more room, drag the divider to the far left to collapse the list. Drag right or use the expand button to restore it. Validate both an allowed path and a path the revised group should block.
 
+<a id="ax-sop-group"></a>
+
+**Change a group rule and undo the edit**
+
+Open the group heading and change **Any order · Complete one** to **Any order · Complete all**. Watch the heading update, then undo the edit to restore the original rule.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="2774" height="2460" poster="../../assets/sop/ax-sop-lesson-en-group.jpg" aria-label="Change a group rule and undo the edit">
+  <source src="../../assets/sop/ax-sop-lesson-en-group.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-en-group-zh.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-en-group-en.vtt" srclang="en" label="English" default>
+</video>
+
 [![Open the group heading in the step list to choose one of the three execution rules.](../../assets/sop/en-prod-groups.png){loading="lazy" decoding="async" width="3840" height="3120"}](../../assets/sop/en-prod-groups.png)
 
 [![Reordering stages and steps](../../assets/sop/en-17-ordering.png){loading="lazy" decoding="async" width="2650" height="1935"}](../../assets/sop/en-17-ordering.png)
@@ -2661,6 +2693,18 @@ The hand and object must have reliable observations in the same valid frame. The
 **Insufficient by itself for:** Proving the tool was picked up, a part was pressed firmly, a screw was tightened, or an assembly succeeded.
 
 A hand that stays near a tool without operating it can satisfy proximity. To describe a complete process, add observable ordering, arrival, object retention, or operator review.
+
+<a id="ax-sop-hand"></a>
+
+**Add a hand-near-toolbox check to a draft**
+
+Open a manual confirmation step in the draft, switch to a visual check, and add a spatial relationship. Choose either hand, the toolbox (工具箱), and **Near**. Then [watch the check pass during video validation](#ax-hand-validation).
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="3840" height="2048" poster="../../assets/sop/ax-sop-lesson-en-hand.jpg" aria-label="Add a hand-near-toolbox check to a draft">
+  <source src="../../assets/sop/ax-sop-lesson-en-hand.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-en-hand-zh.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-en-hand-en.vtt" srclang="en" label="English" default>
+</video>
 
 ### 10.6 Single condition: visible hand away from object {#hand-operations--6-single-condition-visible-hand-away-from-object}
 
@@ -2889,6 +2933,8 @@ Removing a relationship is different from deleting target reference data from th
 Before using a context menu or delete control, read whether it removes one relationship, an actor group, or a step. Some diagrams support dragging out to remove; release only after an explicit removal indication.
 
 Use **Undo** after an accidental supported change and inspect the result. Undo is not an unlimited version history. Do not assume it remains available after saving, closing the editor, or other changes.
+
+[Watch a group-rule change being undone](#ax-sop-group)
 
 ### 11.8 Different kinds of dragging {#toolbar-and-drag--8-different-kinds-of-dragging}
 
@@ -3303,6 +3349,18 @@ In Operator assisted mode, a process incident may hold the workpiece. Use rework
 
 [![Workpiece detection expanded. The bottle uses the left arrival zone. Entry and exit timing is folded.](../../assets/sop/en-prod-workpiece.png){loading="lazy" decoding="async" width="3840" height="3120"}](../../assets/sop/en-prod-workpiece.png)
 
+<a id="ax-sop-mode"></a>
+
+**Set up fully automatic operation and enable debug**
+
+Switch the station to **Fully automatic**, expand **Workpiece detection**, and check the bottle (水瓶) and its left arrival zone (左侧分件位). Turn on **Observe / debug**. The station keeps its automatic cycle and records trial results separately.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="2440" height="3840" poster="../../assets/sop/ax-sop-lesson-en-mode.jpg" aria-label="Set up fully automatic operation and enable debug">
+  <source src="../../assets/sop/ax-sop-lesson-en-mode.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-en-mode-zh.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-en-mode-en.vtt" srclang="en" label="English" default>
+</video>
+
 #### Watch the live station process three workpieces {#rtsp-station-demo}
 
 This saved AX station receives the same three-piece exercise over a controlled RTSP feed, with debug observation off. The three corresponding workpiece records read pass, fail, pass, with one process exception and zero undetermined pieces. Station totals on screen also include earlier test runs. Of the three judged pieces, 66.7% passed and 33.3% failed.
@@ -3416,6 +3474,18 @@ The start and finish buttons described below apply to **Operator assisted**. At 
 The current piece has its own execution state. Previous green steps do not establish current completion.
 
 If disabled, inspect connection, synchronization, service health, and pending commands. Do not repeatedly click or try another station.
+
+<a id="ax-sop-operator"></a>
+
+**Run one operator-assisted workpiece from start to finish**
+
+This AX station receives a controlled RTSP replay. Start a workpiece and watch the mallet check pass automatically. Confirm the second step, then finish the piece. The station shows 2/2 and offers to start the next piece. Debug was enabled for this run, so production totals increased by zero.
+
+<video data-sop-demo controls muted playsinline loop preload="none" width="2564" height="1580" poster="../../assets/sop/ax-sop-lesson-en-operator.jpg" aria-label="Run one operator-assisted workpiece from start to finish">
+  <source src="../../assets/sop/ax-sop-lesson-en-operator.mp4" type="video/mp4">
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-en-operator-zh.vtt" srclang="zh" label="中文">
+  <track kind="captions" src="../../assets/sop/ax-sop-lesson-en-operator-en.vtt" srclang="en" label="English" default>
+</video>
 
 ### 14.5 Automatic visual steps {#operator-guide--5-automatic-visual-steps}
 
