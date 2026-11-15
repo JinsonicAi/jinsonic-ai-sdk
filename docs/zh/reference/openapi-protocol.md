@@ -3,9 +3,9 @@
 | 文档属性 | 内容 |
 |---|---|
 | 文档名称 | AIBox 第三方开放 API 对接协议 |
-| 文档版本 | `1.4.9` |
+| 文档版本 | `1.4.10` |
 | 协议版本 | `OpenAPI v1` |
-| 发布日期 | `2026-09-06` |
+| 发布日期 | `2026-11-16` |
 | 适用对象 | 第三方平台、客户自研 Web/服务端应用 |
 | English version | [AIBOX_OPENAPI_INTEGRATION_PROTOCOL_EN.md](../../en/reference/openapi-protocol.md) |
 
@@ -13,6 +13,7 @@
 
 | 版本 | 日期 | 变更摘要 |
 |---|---|---|
+| `1.4.10` | `2026-11-16` | 新增 SOP 第三方接入、逐件统计和事件，说明 AI 助手的会话限制。 |
 | `1.4.9` | `2026-09-06` | 补充客户 WSS 错误帧处理、有限退避及历史证书兼容说明；业务接口不变 |
 | `1.4.8` | `2026-09-06` | 仅补用户名密码自助领取 Client 凭据和改密失效；保留原 Client Credentials 与业务协议 |
 | `1.4.6` | `2026-09-06` | 增加 Python/Node.js/curl 客户可运行示例；修正拉流参数为 rtsp_url；修改任务示例保留原图，补充测试与交付边界；业务协议未改变 |
@@ -34,6 +35,7 @@
 | 接收实时告警、任务/节点状态和设备状态 | 第 6 章 |
 | 获取媒体输出、录像和告警历史 | 第 7 章、第 8.14 节 |
 | 查询全部 API | 第 8 章 |
+| 对接 SOP 工位，或确认 AI 助手是否开放 | [SOP 工位与录像验证](#sop-api) · [AI 助手接入范围](#assistant-api) |
 | 处理分页、重试和错误 | 第 9～10 章 |
 | 安全和版本兼容要求 | 第 11～12 章 |
 | 确认当前版本能力边界 | 第 13 章 |
@@ -120,7 +122,13 @@ client_secret 私密密钥，例如 aibsk_xxx，仅展示一次
 | `face.write` | 注册、更新、删除和批量导入人脸 |
 | `retrieval.use` | 检索状态、设置、索引同步和查询；订阅检索事件 |
 | `upgrade.manage` | 检查、启动、取消升级及订阅升级事件 |
+| `sop.read` | 读取工位、记录、证据和生产累计，订阅工位事件 |
+| `sop.execute` | 操作工位，包括开始、签认、交接和结束 |
+| `sop.resolve` | 处理工位异常，包括判为不合格、返工和中止 |
+| `sop.templates.manage` | 管理模板和录像验证，第 8.18 节列出编辑操作所需的额外任务权限 |
 | `openapi.clients.manage` | 设备本地交付管理员管理第三方凭证；禁止授予第三方 Client |
+
+自助签发 SOP Client 时，账号须已获相应的显式 SOP 权限。旧账号的通配符本身不会授予这些权限。
 
 `task.write` 不隐含 `task.read`，`alarm.manage` 不隐含 `alarm.read`，其他 Scope 也不会自动继承。客户需要同时读写时，必须显式申请两者。
 
@@ -270,7 +278,7 @@ curl -X POST "https://<设备IP>:8099/openapi/v1/command" \
 | `uri` | 是 | API 路径 |
 | `param` | 是 | 业务参数，无参数时传 `{}` |
 | `request_id` | 建议 | 客户端生成的请求追踪 ID；建议使用 1～128 个可打印 ASCII 字符并在单次调用中唯一 |
-| `idempotency_key` | 写接口必须 | 同一次业务重试必须保持不变，1～128 个可打印 ASCII 字符 |
+| `idempotency_key` | 第 9.2 节列出的写接口必须，SOP 工位命令使用第 8.18 节的 `param.command_id` | 同一次业务重试必须保持不变，1～128 个可打印 ASCII 字符 |
 
 ### 3.2 成功响应
 
@@ -617,6 +625,7 @@ succeeded | failed | canceled | interrupted
 | 新告警 | `alarm.created` | `alarms/get` | 告警记录及快照写入成功后通知 |
 | 告警删除 | `alarm.deleted` | 无；从客户缓存删除 | 告警记录删除后通知 |
 | 任务运行状态 | `task.state.changed` | `tasks/runtime` | 启动、停止、重启及失败等状态变化 |
+| SOP 工位变化 | `sop.runtime.changed` | `sop/instances/get` | 核对工位、当件结果和修订号 |
 | 节点状态 | `node.state.changed` | `tasks/node_metrics` | 节点状态快照可能变化，收到后刷新整份任务节点快照 |
 | 设备控制面状态 | `device.state.changed` | `device/get` | 设备到 AIBox 云控制面的 `offline/connecting/online` 变化 |
 | 设备资源指标 | 无周期事件 | `device/metrics` | CPU、NPU、内存、温度和存储按需采集 |
@@ -640,6 +649,7 @@ succeeded | failed | canceled | interrupted
 | `task.deleted` | `task.read` | `task` | 任务定义已删除 |
 | `task.state.changed` | `task.read` | `task` | 任务运行状态变化 |
 | `node.state.changed` | `task.read` | `task_nodes` | 某任务的节点状态快照可能变化 |
+| `sop.runtime.changed` | `sop.read` | `sop_instance` | SOP 实例提交了新状态 |
 | `plugin.catalog.changed` | `task.read` | `plugin_catalog` | 插件安装、更新、启停或卸载后目录变化 |
 | `device.state.changed` | `device.read` | `device` | 设备云控制通道连接状态变化 |
 | `face.library.changed` | `face.read` | `face_library` | 人脸或人脸分组发生变更 |
@@ -660,6 +670,7 @@ succeeded | failed | canceled | interrupted
 | `task.deleted` | 从客户侧缓存删除对应 `resource.id` |
 | `task.state.changed` | `tasks/runtime` |
 | `node.state.changed` | `tasks/node_metrics` |
+| `sop.runtime.changed` | `sop/instances/get` |
 | `plugin.catalog.changed` | `nodes/catalog` 或 `plugins/list` |
 | `device.state.changed` | `device/get`、`device/metrics` |
 | `face.library.changed` | `faces/folders`、`faces/list` |
@@ -1416,6 +1427,7 @@ Operation。
 | `task.deleted` | `task.read` | `task_id`、`deleted=true` |
 | `task.state.changed` | `task.read` | 任务运行时摘要、`reason`；权威状态调用 `tasks/runtime` |
 | `node.state.changed` | `task.read` | `task_id`、`reason`、`snapshot_required`、`snapshot_uri` |
+| `sop.runtime.changed` | `sop.read` | `runtime_epoch`、`revision` |
 | `plugin.catalog.changed` | `task.read` | `reason`、目录 `revision`、`ready/discovered/settled`、`snapshot_uri` |
 | `device.state.changed` | `device.read` | `state`、`control_plane_state`、`detail` |
 | `face.library.changed` | `face.read` | `reason`、`folder_id?`、`affected_count`、快照 URI |
@@ -1456,6 +1468,7 @@ Operation。
 | `task.deleted` | `task_id,deleted,snapshot_required` | `deleted=true`、`snapshot_required=false` |
 | `task.state.changed` | TaskRuntime 字段及 `reason`，或 `operation_id,operation_kind,state,code,msg,result?,error?` | 事件可能由直接运行态变化或异步 Operation 产生；统一以 `tasks/runtime` 为权威状态 |
 | `node.state.changed` | `task_id,state,snapshot_required,snapshot_uri,reason?,operation_id?` | `reason` 与 `operation_id` 取决于触发路径；必须整体读取 `tasks/node_metrics` |
+| `sop.runtime.changed` | `runtime_epoch,revision` | 收到后重读实例。生产计数读取 `sop/instances/records`，参数见第 8.18 节 |
 | `plugin.catalog.changed` | `reason,revision,ready,discovered,settled,snapshot_required,snapshot_uri,plugin_type?` | `plugin_type` 仅在单插件变化时出现 |
 | `device.state.changed` | `state,control_plane_state,detail` | 只有 `state` 的 `offline/connecting/online` 是稳定业务枚举 |
 | `face.library.changed` | `reason,affected_count,snapshot_required,snapshot_uri,folders_snapshot_uri,folder_id?` | 不包含人员身份、照片或特征向量 |
@@ -2725,6 +2738,67 @@ Operation 成功完成后的 `result` 包含 `atomic=false`、`total`、`succeed
 
 - 注意：进入安装/重启阶段后可能不可取消；此时按服务端错误和当前状态处理。
 
+### 8.18 SOP 工位与录像验证 {#sop-api}
+
+MES 只需读取工位和产量时，给 Client 申请 `sop.read` 即可。按第 2 节换取 Token，通过 HTTPS `POST /openapi/v1/command` 或已鉴权的 WSS 发送同一业务 URI。下表路径均以 `/openapi/v1/sop/` 开头。
+
+| 要做的事 | 业务路径 | Scope | 请求和结果 |
+|---|---|---|---|
+| 检查设备支持什么 | `capabilities` | `sop.read` | 参数为 `{}`。先检查 `host_ready` 和 `plugin_loaded`，再检查所需功能，例如 `recorded_validation.available` 或 `teaching_capture.available`。 |
+| 找到正在运行的工位 | `instances/list`、`instances/get` | `sop.read` | 用 `task_id` 列出 `instances[]`，再用 `task_id` 和 `instance_id` 读快照。记录 `runtime_epoch`、`revision` 和当前 `snapshot.run_id`。空列表表示该任务当前没有活动实例。 |
+| 查逐件过程、记录索引和生产累计 | `instances/events`、`instances/records` | `sop.read` | 均传任务和实例 ID。事件用整数 `after` 续读，响应含 `events, cursor, has_more`。记录默认返回最近最多 100 条索引，字段为 `record_id, revision, updated_at_ms`。加 `production_counts:true` 改为读取该工位累计。 |
+| 查异常输出和证据 | `instances/outbox`、`instances/evidence` | `sop.read` | 先用任务和实例 ID 读输出回执，再携带同一对 ID 和 1–8 个不同的 `action_ids` 查证据。录像可播放时使用返回的限时地址。 |
+| 校验、发布工序模板 | `templates/validate`、`templates/publish` | `sop.templates.manage` | 均传 `definition`。校验返回规范化的定义和 `valid`。发布按模板 ID 和版本保存。将配置应用到任务、启动任务分别使用第 8.13 节的任务接口及权限。 |
+| 操作人工协作工位 | `runs/begin`、`runs/manual_confirm`、`runs/finish`、`runs/pause`、`runs/resume`、`runs/handover` | `sop.execute` | 开始、签认、结束针对单件。签认传 `step_id`，交接传 `reason`，恢复前核实工件后传 `workpiece_verified:true`。 |
+| 处理工位异常 | `runs/reject`、`runs/rework`、`runs/abort` | `sop.resolve` | 传 `reason`，返工另传 `step_id`。根据实例当前状态决定可用操作。 |
+| 引用录像资产 | `assets/import`、`assets/get` | 导入需 `sop.templates.manage`，查询需 `sop.read` | 导入引用设备已完成上传的 `filename` 和 `sha256`。查询传 `asset_id`。导入请求本身不传输视频字节。 |
+| 用本地录像验证 | `validations/{prepare,start,get,confirm,cancel}` | `sop.templates.manage` + `task.read` | 准备传 `editor_id, request_key, draft`。后续调用复用同一编辑身份及返回的 `validation_id`。回放签认另传 `command_id, step_id, expected_frame, expected_revision`。未保存草稿使用 `validations/draft/prepare`，关联已保存草稿使用 `validations/link_saved_draft`，两者还需 `task.write`。 |
+| 采集示范、复核识别样本 | `captures/{prepare,start,get,stop,cancel}`、`calibrations/{prepare,start,get,read_preview,submit_review,cancel}`、`calibrations/{scans,frame-scans}/{start,get,frames,preview,cancel}` | `sop.templates.manage` + `task.read` | 花括号中的名称各对应一个命令。按能力响应启用相应流程。`captures/draft/prepare` 还需 `task.write`。现场录制完成后按本地资产验证。 |
+
+**最短只读对接流程。** 依次发送以下三条请求。将示例任务 ID 换成已启动的 SOP 任务，将最后一条的实例 ID 换成第二条返回的值。若还需通过 `tasks/list` 查找任务，额外申请 `task.read`。
+
+```json
+{"uri":"/openapi/v1/sop/capabilities","param":{}}
+```
+
+```json
+{"uri":"/openapi/v1/sop/instances/list","param":{"task_id":"assembly"}}
+```
+
+```json
+{"uri":"/openapi/v1/sop/instances/records","param":{"task_id":"assembly","instance_id":"station","production_counts":true}}
+```
+
+例如三件正式作业依次合格、不合格、合格，第二件发生一次工序异常时，最后一条的 `result` 为 `{"ok":2,"ng":1,"unjudged":0,"incidents":1}`（假设初始累计为零）。通过率为 `2/3`，不合格率为 `1/3`。两者的分母均为 `ok + ng`，分母为零时显示「—」。`unjudged` 单列，`incidents` 按发生次数累计。人工协作与全自动的正式结算均计入，观察调试与编辑回放排除。对已有历史的工位，验收时比较前后差值。
+
+**验证模板定义。** 下例校验一个含单个人工确认步骤的模板。返回 `code:0`、`result.valid:true` 和规范化的 `result.definition`。它可用来先验证授权和模板结构，无需启动生产任务。
+
+```json
+{"uri":"/openapi/v1/sop/templates/validate","param":{"definition":{"template_id":"manual_check","version":1,"name":"Final inspection","steps":[{"id":"check","name":"Confirm assembly","complete_when":{"kind":"manual"}}]}}}
+```
+
+**生产方式和写入。** 任务图的 SOP 节点用 `sop_mode:"guide"` 选择人工协作，用 `sop_mode:"automatic"` 选择全自动，`sop_debug` 独立控制观察调试。全自动还需有效的 `sop_piece_boundary`，包含来源、工件目标、固定区域和识别阈值。保存的实时任务由相机分件，稳定进件后开工、离件后结算。客户系统无需为每件发送开始和结束。运行时可读取快照顶层的 `production_mode` 和 `observation_only` 核对实际状态。旧版 `capabilities.modes` 列表不能单独用来判断是否支持全自动。[工位生产方式与配置](../sop/index.md#production-modes)
+
+人工协作的写操作先读最新快照。下例中的 ID、运行代数和修订号必须替换为当前件和当前待签步骤的值。
+
+```json
+{"uri":"/openapi/v1/sop/runs/manual_confirm","param":{"task_id":"assembly","instance_id":"station","runtime_epoch":3,"expected_revision":42,"run_id":"run_example","step_id":"check","command_id":"confirm_001"}}
+```
+
+每个独立操作生成新的 `param.command_id`。同一次操作保持相同的命令 ID 和参数。顶层 `request_id` 用于追踪，不能替代 `command_id`。收到 `40902` 或响应丢失时，重读实例并核对当前件、步骤及事件后再决定是否操作。收到 `40901` 时核实工位状态。`finish` 返回成功表示命令已处理，工件结果以快照的 `snapshot.status` 和 `snapshot.outcome` 为准。订阅 `sop.runtime.changed`（`sop.read`）后按通知重读实例。外层事件游标和 `instances/events` 的整数游标分别保存。
+
+### 8.19 AI 助手的第三方接入范围 {#assistant-api}
+
+当前设备直连 OpenAPI v1 **没有面向第三方 Client 的自然语言会话、计划审批或模型管理接口**。AIBox 网页中的对话、任务编辑、配置和模型管理依赖已登录的交互会话。网页内部出现的 `assistant/chat`、`assistant/task-edit`、`assistant/model` 或 `agent/turn` 不能作为第三方 HTTPS/WSS 接口使用。增加 Client Scope 也不会建立该会话。
+
+| 客户需求 | 第三方集成方式 |
+|---|---|
+| 通过自有平台管理任务 | 使用第 8.13 节的 `tasks/get`、`tasks/save`、`tasks/start` 等结构化接口，使用该操作所需的 Scope。 |
+| 查询设备、告警或录像，进行智能检索 | 使用 `device/metrics`、`alarms/list`、`records/list` 或 `retrieval/query`，分别申请 `device.read`、`alarm.read`、`media.read` 或 `retrieval.use`。 |
+| 与 SOP 工位对接 | 直接使用第 8.18 节的 SOP 接口。人工签认须对应当件的实际确认，不能以模型生成的文字作为工位确认回执。 |
+
+需要自然语言交互的操作员可使用设备内置的 [AI 助手](../ai-assistant/index.md)。
+
 ## 9. 分页、幂等和重试
 
 ### 9.1 分页
@@ -2840,6 +2914,8 @@ retrieval/settings/set, retrieval/sync
 |---|---|---|
 | 能力发现 | 部分结构化支持 | `device/capabilities` 返回运行位置、节点类型和高层 Feature；全部 URI、Topic、Scope 与限制以本协议为准 |
 | 任务创建、编辑、复制、删除、启停 | 已支持 | HTTPS/WSS Command；写操作使用幂等键，修改使用 Revision |
+| SOP 工位、生产统计和录像验证 | 支持，按设备能力和授权开放 | [接口、示例和权限](#sop-api) |
+| AI 助手自然语言对话、计划审批和模型管理 | 当前仅限设备网页交互会话 | [第三方可用的结构化接口](#assistant-api) |
 | 任务运行状态 | 已支持 | `task.state.changed` 通知，`tasks/runtime` 读取权威状态 |
 | 节点状态 | 部分支持 | `node.state.changed` + `tasks/node_metrics`；当前为任务运行态聚合，不含真实逐插件 FPS、延迟、丢帧和资源占用 |
 | 设备身份、版本、授权 | 已支持 | `device/get` |
@@ -2882,5 +2958,6 @@ retrieval/settings/set, retrieval/sync
 | 状态与告警 | 能处理任务/节点/设备状态事件；实时告警落库后读取 `alarms/get`，并正确处理删除事件 |
 | 媒体与录像 | 能获取任务输出；录像 Ticket 过期受控、支持 Range 下载，删除后客户缓存同步 |
 | 可选业务域 | 按已授予 Scope 验证人脸、检索和升级；未授予 Scope 必须稳定返回 `40301` |
+| SOP 生产对账 | 对已授权的测试工位记录初值。三件按合格、不合格、合格运行，中间件发生一次异常，预期累计增量为 `2/1/0/1`（合格/不合格/未判定/异常）。观察调试再跑同一组，四项增量均为零 |
 | 重试与过载 | 相同幂等键不重复执行；不同参数复用 Key 返回 `40902`；429 按 `Retry-After` 退避且不影响本地网页和 CloudWS |
 | 重启恢复 | 设备/服务重启后客户可重新鉴权、重建快照和事件订阅，不依赖旧 Ticket、旧订阅 ID 或过期游标 |

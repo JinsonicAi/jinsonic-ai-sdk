@@ -3,9 +3,9 @@
 | Document property | Value |
 |---|---|
 | Document title | AIBox Third-Party OpenAPI Integration Protocol |
-| Document version | `1.4.9` |
+| Document version | `1.4.10` |
 | Protocol version | `OpenAPI v1` |
-| Release date | `2026-09-06` |
+| Release date | `2026-11-16` |
 | Intended audience | Third-party platforms and customer-developed web/server applications |
 | Chinese version | [AIBOX_OPENAPI_INTEGRATION_PROTOCOL_ZH.md](../../zh/reference/openapi-protocol.md) |
 
@@ -13,6 +13,7 @@
 
 | Version | Date | Summary |
 |---|---|---|
+| `1.4.10` | `2026-11-16` | Document SOP integration, workpiece totals and events, and the AI Assistant session boundary. |
 | `1.4.9` | `2026-09-06` | Document bounded WSS error handling/retries and legacy certificate compatibility; business APIs unchanged |
 | `1.4.8` | `2026-09-06` | Add only self-service Client provisioning and password-change invalidation; existing Client Credentials/business APIs unchanged |
 | `1.4.6` | `2026-09-06` | Added runnable Python/Node.js/curl customer examples; corrected the input field to rtsp_url; preserved the graph in the task-update example; documented validation and delivery boundaries. No business protocol changes. |
@@ -34,6 +35,7 @@
 | Receive realtime alarms and task/node/device state | Section 6 |
 | Obtain media outputs, recordings, and alarm history | Section 7 and Section 8.14 |
 | Look up every API | Section 8 |
+| Integrate SOP or check AI Assistant availability | [SOP stations](#sop-api) · [AI Assistant access](#assistant-api) |
 | Handle pagination, retries, and errors | Sections 9–10 |
 | Apply security and compatibility requirements | Sections 11–12 |
 | Confirm current capability boundaries | Section 13 |
@@ -120,7 +122,13 @@ Provision the minimum required scopes; do not grant all scopes by default.
 | `face.write` | Register, update, delete, and batch-import faces |
 | `retrieval.use` | Read and configure retrieval, synchronize indexes, run searches, and subscribe to retrieval events |
 | `upgrade.manage` | Check, start, and cancel upgrades; subscribe to upgrade events |
+| `sop.read` | Read stations, records, evidence and production totals, and subscribe to station events |
+| `sop.execute` | Operate a station, including begin, manual confirmation, handover and finish |
+| `sop.resolve` | Resolve station exceptions by rejecting, reworking or aborting |
+| `sop.templates.manage` | Manage templates and recorded validation. See Section 8.18 for additional task scopes required by editor operations |
 | `openapi.clients.manage` | Local delivery administrator credential management; never grant to a third-party Client |
+
+Self-service issuance of SOP scopes requires explicit SOP grants on the underlying account. A legacy wildcard alone does not confer these grants.
 
 Scopes do not imply one another. For example, `task.write` does not imply `task.read`, and `alarm.manage` does not imply `alarm.read`. Grant both explicitly when the client needs both read and write access.
 
@@ -264,7 +272,7 @@ Recommended initialization order:
 | `uri` | Yes | Command URI |
 | `param` | Yes | Business parameters; send `{}` when empty |
 | `request_id` | Recommended | Client-generated trace ID; use 1–128 printable ASCII characters and keep it unique per call |
-| `idempotency_key` | Required for mutation APIs | Preserve for retries of the same business request; 1–128 printable ASCII characters |
+| `idempotency_key` | Required for writes listed in Section 9.2. SOP station commands use `param.command_id` in Section 8.18 | Preserve for retries of the same business request; 1–128 printable ASCII characters |
 
 ### 3.2 Successful Response
 
@@ -601,6 +609,7 @@ After establishing WSS, a third-party platform can subscribe to realtime alarms 
 | New alarm | `alarm.created` | `alarms/get` | Sent after the alarm record and snapshot have been stored |
 | Alarm deletion | `alarm.deleted` | Remove from customer cache | Sent after deletion |
 | Task runtime state | `task.state.changed` | `tasks/runtime` | Start, stop, restart, failure, and other state changes |
+| SOP station change | `sop.runtime.changed` | `sop/instances/get` | Reconcile the station, workpiece outcome and revision |
 | Node state | `node.state.changed` | `tasks/node_metrics` | The node-state snapshot for a task may have changed |
 | Device control-plane state | `device.state.changed` | `device/get` | Device-to-AIBox-cloud state: `offline/connecting/online` |
 | Device resource metrics | No periodic event | `device/metrics` | CPU, NPU, memory, temperature, and storage are sampled on demand |
@@ -622,6 +631,7 @@ After establishing WSS, a third-party platform can subscribe to realtime alarms 
 | `task.deleted` | `task.read` | `task` | Task definition deleted |
 | `task.state.changed` | `task.read` | `task` | Task runtime state changed |
 | `node.state.changed` | `task.read` | `task_nodes` | Node snapshot for a task may have changed |
+| `sop.runtime.changed` | `sop.read` | `sop_instance` | A SOP instance committed a state change |
 | `plugin.catalog.changed` | `task.read` | `plugin_catalog` | Plugin catalog changed |
 | `device.state.changed` | `device.read` | `device` | Cloud control-channel state changed |
 | `face.library.changed` | `face.read` | `face_library` | Face or face-group data changed |
@@ -642,6 +652,7 @@ Task-definition, node, and plugin events use a lightweight-event-plus-snapshot m
 | `task.deleted` | Remove `resource.id` from the customer cache |
 | `task.state.changed` | `tasks/runtime` |
 | `node.state.changed` | `tasks/node_metrics` |
+| `sop.runtime.changed` | `sop/instances/get` |
 | `plugin.catalog.changed` | `nodes/catalog` or `plugins/list` |
 | `device.state.changed` | `device/get`, `device/metrics` |
 | `face.library.changed` | `faces/folders`, `faces/list` |
@@ -1295,6 +1306,7 @@ Stable `data` fields by Topic:
 | `task.deleted` | `task_id,deleted,snapshot_required` | `deleted=true`, `snapshot_required=false` |
 | `task.state.changed` | TaskRuntime fields and `reason`, or `operation_id,operation_kind,state,code,msg,result?,error?` | Always confirm with `tasks/runtime` |
 | `node.state.changed` | `task_id,state,snapshot_required,snapshot_uri,reason?,operation_id?` | Read the complete `tasks/node_metrics` snapshot |
+| `sop.runtime.changed` | `runtime_epoch,revision` | Refresh the instance. Read counters with `sop/instances/records` as shown in Section 8.18 |
 | `plugin.catalog.changed` | `reason,revision,ready,discovered,settled,snapshot_required,snapshot_uri,plugin_type?` | `plugin_type` is optional |
 | `device.state.changed` | `state,control_plane_state,detail` | Only `state=offline/connecting/online` is a stable business enum |
 | `face.library.changed` | `reason,affected_count,snapshot_required,snapshot_uri,folders_snapshot_uri,folder_id?` | No identity data, photos, or vectors |
@@ -2156,6 +2168,67 @@ Parameters: `{}`. Result: `upgrade`, containing the post-cancellation status des
 
 An upgrade may no longer be cancellable after entering installation or restart. In that case, follow the returned error and current status.
 
+### 8.18 SOP stations and recorded validation {#sop-api}
+
+A manufacturing execution system (MES) that only reads station state and production totals needs `sop.read`. Obtain a token as described in Section 2. Send the same business URI through HTTPS `POST /openapi/v1/command` or an authenticated WSS connection. All paths in this table are relative to `/openapi/v1/sop/`.
+
+| Goal | Business path | Scope | Request and result |
+|---|---|---|---|
+| Discover device support | `capabilities` | `sop.read` | Send `{}`. Check `host_ready` and `plugin_loaded`, then the relevant feature, such as `recorded_validation.available` or `teaching_capture.available`. |
+| Find a live station | `instances/list`, `instances/get` | `sop.read` | List `instances[]` by `task_id`. Read a snapshot using `task_id` and `instance_id`. Keep `runtime_epoch`, `revision` and the current `snapshot.run_id`. An empty list means the task has no active instance. |
+| Read workpiece events, the record index and production totals | `instances/events`, `instances/records` | `sop.read` | Send both IDs. Events accept an integer `after` and return `events, cursor, has_more`. Records return up to 100 recent index entries with `record_id, revision, updated_at_ms`. Set `production_counts:true` to request cumulative station totals instead. |
+| Retrieve output receipts and evidence | `instances/outbox`, `instances/evidence` | `sop.read` | Read output receipts with both IDs. Request evidence with the same IDs and 1–8 distinct `action_ids`. Use the returned time-limited playback URL when a recording is available. |
+| Validate and publish templates | `templates/validate`, `templates/publish` | `sop.templates.manage` | Both take `definition`. Validation returns a normalized definition and `valid`. Publishing stores it by template ID and version. Applying it to a task and starting the task use the task commands and scopes in Section 8.13. |
+| Operate an assisted station | `runs/begin`, `runs/manual_confirm`, `runs/finish`, `runs/pause`, `runs/resume`, `runs/handover` | `sop.execute` | Start, confirm and finish act on one workpiece. Send `step_id` for confirmation, `reason` for handover and `workpiece_verified:true` after verifying the workpiece before resuming. |
+| Resolve a station exception | `runs/reject`, `runs/rework`, `runs/abort` | `sop.resolve` | Supply `reason` and, for rework, `step_id`. The current instance state determines which operations are available. |
+| Reference a video asset | `assets/import`, `assets/get` | Import requires `sop.templates.manage`. Lookup requires `sop.read`. | Import takes the `filename` and `sha256` of a completed upload on the device. Lookup takes `asset_id`. Import does not transfer video bytes. |
+| Validate against a local recording | `validations/{prepare,start,get,confirm,cancel}` | `sop.templates.manage` + `task.read` | Prepare with `editor_id, request_key, draft`. Reuse the editor identity and returned `validation_id` for subsequent calls. Replay confirmation also takes `command_id, step_id, expected_frame, expected_revision`. Preparing an unsaved draft with `validations/draft/prepare` and linking it with `validations/link_saved_draft` also require `task.write`. |
+| Capture demonstrations and review recognition samples | `captures/{prepare,start,get,stop,cancel}`, `calibrations/{prepare,start,get,read_preview,submit_review,cancel}`, `calibrations/{scans,frame-scans}/{start,get,frames,preview,cancel}` | `sop.templates.manage` + `task.read` | Each name in braces selects a separate command. Enable each workflow according to the capability response. `captures/draft/prepare` also requires `task.write`. Validate the resulting recording as a local asset. |
+
+**Read production totals in three calls.** Replace the example task ID with a running SOP task. Use the instance ID from the second response in the third request. To discover the task through `tasks/list`, also request `task.read`.
+
+```json
+{"uri":"/openapi/v1/sop/capabilities","param":{}}
+```
+
+```json
+{"uri":"/openapi/v1/sop/instances/list","param":{"task_id":"assembly"}}
+```
+
+```json
+{"uri":"/openapi/v1/sop/instances/records","param":{"task_id":"assembly","instance_id":"station","production_counts":true}}
+```
+
+For example, if production starts at zero and three workpieces pass, fail and pass, with one process incident on the second piece, the last `result` is `{"ok":2,"ng":1,"unjudged":0,"incidents":1}`. The pass rate is `2/3` and the failure rate is `1/3`. Both use `ok + ng` as the denominator. Display a dash when it is zero. `unjudged` is a separate count. `incidents` counts occurrences. Both assisted and automatic production contribute. Observation/debug runs and editor replay are excluded. For a station with existing history, compare the counts before and after a test.
+
+**Validate a definition.** This example checks a template with one manual confirmation step. Expect `code:0`, `result.valid:true` and a normalized `result.definition`. Use it to verify authorization and template structure before starting a production task.
+
+```json
+{"uri":"/openapi/v1/sop/templates/validate","param":{"definition":{"template_id":"manual_check","version":1,"name":"Final inspection","steps":[{"id":"check","name":"Confirm assembly","complete_when":{"kind":"manual"}}]}}}
+```
+
+**Production mode and commands.** On the task graph's SOP node, set `sop_mode:"guide"` for assisted production or `sop_mode:"automatic"` for automatic production. `sop_debug` controls observation/debug independently. Automatic operation requires a valid `sop_piece_boundary` with a source, workpiece target, fixed region and detection threshold. The live camera starts each workpiece on stable entry and settles it on departure. Clients do not need to send begin or finish for each piece. Read the top-level snapshot fields `production_mode` and `observation_only` to verify the running mode. The legacy `capabilities.modes` list alone cannot establish automatic-mode support. [Station mode and configuration](../sop/index.md#production-modes)
+
+Before sending an assisted command, read the latest snapshot. Replace the example IDs, epoch and revision below with values for the current workpiece and step awaiting confirmation.
+
+```json
+{"uri":"/openapi/v1/sop/runs/manual_confirm","param":{"task_id":"assembly","instance_id":"station","runtime_epoch":3,"expected_revision":42,"run_id":"run_example","step_id":"check","command_id":"confirm_001"}}
+```
+
+Generate a new `param.command_id` for each distinct action. Preserve the ID and payload for the same action. Top-level `request_id` correlates requests and cannot replace `command_id`. After `40902` or a lost response, reread the instance and check the workpiece, step and events before deciding to act. For `40901`, check station state. A successful `finish` means the command was processed. Read `snapshot.status` and `snapshot.outcome` for the workpiece verdict. Subscribe to `sop.runtime.changed` with `sop.read` and refresh the instance on a notification. Store the outer event cursor separately from the integer `instances/events` cursor.
+
+### 8.19 AI Assistant access for third-party clients {#assistant-api}
+
+The current device-direct OpenAPI v1 **does not expose natural-language conversations, plan approval or assistant model administration to third-party clients**. The AIBox web interface binds chat, task editing, configuration and model management to an authenticated interactive session. Internal names such as `assistant/chat`, `assistant/task-edit`, `assistant/model` and `agent/turn` are unavailable through third-party HTTPS/WSS. Adding client scopes cannot establish that session.
+
+| Customer goal | Third-party integration |
+|---|---|
+| Manage tasks from your platform | Use structured commands such as `tasks/get`, `tasks/save` and `tasks/start` in Section 8.13, with the scope required by each command. |
+| Query device metrics, alarms or recordings, or run a retrieval query | Use `device/metrics`, `alarms/list`, `records/list` or `retrieval/query`, with `device.read`, `alarm.read`, `media.read` or `retrieval.use` respectively. |
+| Integrate a SOP station | Use the SOP commands in Section 8.18. Manual confirmation represents an actual confirmation for that workpiece. Model-generated text is not a station receipt. |
+
+Operators who need a conversational interface can use the built-in [AI Assistant](../ai-assistant/index.md).
+
 ## 9. Pagination, Idempotency, and Retry
 
 ### 9.1 Pagination
@@ -2271,6 +2344,8 @@ This section prevents customer systems from treating “queryable status,” “
 |---|---|---|
 | Capability discovery | Partially structured | `device/capabilities` returns execution locations, node types, and high-level Features; this protocol is authoritative for all URIs, Topics, Scopes, and limits |
 | Task create/edit/clone/delete/start/stop | Supported | HTTPS/WSS Command; use idempotency keys for writes and Revision for modifications |
+| SOP stations, totals and recorded validation | Supported according to device capabilities and granted scopes | [Commands, examples and scopes](#sop-api) |
+| AI Assistant conversation, plan approval and model administration | Device web sessions only | [Structured alternatives](#assistant-api) |
 | Task runtime state | Supported | `task.state.changed`; read authoritative state with `tasks/runtime` |
 | Node state | Partially supported | `node.state.changed` + `tasks/node_metrics`; currently task-runtime aggregation, without true per-plugin FPS, latency, dropped frames, or resource usage |
 | Device identity/version/authorization | Supported | `device/get` |
@@ -2313,5 +2388,6 @@ Acceptance must cover at least the following items. A pass requires retaining `r
 | State and alarms | Process task/node/device-state events; read `alarms/get` after a realtime alarm is persisted and correctly handle deletion events |
 | Media and recordings | Discover task outputs; verify controlled Ticket expiry and Range download, and synchronize customer cache after deletion |
 | Optional domains | Verify face, retrieval, and upgrade functions for granted Scopes; missing Scopes must consistently return `40301` |
+| SOP production reconciliation | Record a baseline for an authorized test station. Run pass/fail/pass with one incident on the second piece. Expect a delta of `2/1/0/1` (pass/fail/unjudged/incidents). Repeat in observation/debug mode and expect zero change to all four counters |
 | Retry and overload | Same idempotency key does not repeat execution; reusing it with different parameters returns `40902`; 429 obeys `Retry-After` without affecting local web or CloudWS |
 | Restart recovery | After device/service restart, reauthenticate, rebuild snapshots and subscriptions, and do not depend on old Tickets, subscription IDs, or expired cursors |
